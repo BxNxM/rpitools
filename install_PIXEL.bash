@@ -35,23 +35,23 @@ then
 else
 
     message "install: sudo apt-get update"
-    sudo apt-get update
+    echo "Y" | sudo apt-get update
 
     message "install: sudo apt-get install --no-install-recommends xserver-xorg"
-    sudo apt-get install --no-install-recommends xserver-xorg
+    echo "Y" | sudo apt-get install --no-install-recommends xserver-xorg
 
     message "install: sudo apt-get install --no-install-recommends xinit"
-    sudo apt-get install --no-install-recommends xinit
+    echo "Y" | sudo apt-get install --no-install-recommends xinit
 
     message "install: sudo apt-get install raspberrypi-ui-mods"
-    sudo apt-get install raspberrypi-ui-mods
+    echo "Y" | sudo apt-get install raspberrypi-ui-mods
 
 
     message "install: sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs"
-    sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
+    echo "Y" | sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
 
     message "install: sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader"
-    sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
+    echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
 
     if [ ! -f "$x11_config" ]
     then
