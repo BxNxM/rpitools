@@ -16,11 +16,11 @@ then
     OS=$(uname)
     if [ "$OS" == "GNU/Linux" ]
     then
-        message "This script work on raspbian, this OS $OS is not supported!"
+        message "This script work on Mac, this OS $OS is not supported!"
         exit 1
     fi
 else
-    message "This script work on raspbian, this OS $OS is not supported!"
+    message "This script work on Mac, this OS $OS is not supported!"
     exit 2
 fi
 
