@@ -49,6 +49,14 @@ else
     message "${MYDIR}/template/aliases is already sourced"
 fi
 
+if [ -e ~/.bash_aliases ]
+then
+    message "~/.bash_aliases is already exists."
+else
+    message "Create ~/.bash_aliases with ${MYDIR}/template/aliases"
+    echo -e "source ${MYDIR}/template/aliases" > ~/.bash_aliases
+fi
+
 # install tools apps
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/install_apps.bash
