@@ -37,7 +37,7 @@ function install_vnc() {
         message "update: sudo apt-get update"
         sudo apt-get update
         message "install: sudo apt-get install realvnc-vnc-server realvnc-vnc-viewer"
-        sudo apt-get install realvnc-vnc-server realvnc-vnc-viewer
+        echo "Y" | sudo apt-get install realvnc-vnc-server realvnc-vnc-viewer
         message "For more info: https://www.raspberrypi.org/documentation/remote-access/vnc/"
         echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
 
