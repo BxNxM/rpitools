@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #source colors
 source colors.bash
 

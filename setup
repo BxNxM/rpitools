@@ -4,6 +4,8 @@ MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export REPOROOT="$MYDIR"
 export OS=$(uname -o)
+alias clean_cache="rm -f ${REPOROOT}/*"
+
 
 #source colors
 source colors.bash
