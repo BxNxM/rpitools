@@ -50,7 +50,7 @@ function install_secure() {
         output=$(command -v "$app")
         if [ -z "$output" ]
         then
-            sudo apt install "$app"
+            echo "Y" | sudo apt install "$app"
             message "$app install ...DONE"
         else
            message "$app is already installed"
@@ -66,3 +66,4 @@ function main() {
     done
 }
 main
+message "After program installations good to make a reboot -> sudo reboot"
