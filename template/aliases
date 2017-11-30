@@ -1,0 +1,11 @@
+alias llt='ls -lath'
+alias ll='ls -lah'
+alias temp='/opt/vc/bin/vcgencmd measure_temp'
+alias piip='hostname -I'
+alias pifreq='frg=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq) && echo "$frg Hz"'
+alias servicelist='systemctl list-unit-files | grep enabled'
+
+if [ ! -z $REPOROOT ]
+then
+    alias doc='cat ${REPOROOT}/template/help.dat'
+fi

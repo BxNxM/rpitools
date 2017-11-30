@@ -1,0 +1,52 @@
+#!/bin/bash
+
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export REPOROOT="$MYDIR"
+export OS=$(uname -o)
+
+#source colors
+source colors.bash
+
+# message handler function
+function message() {
+
+    local msg="$1"
+    if [ ! -z "$msg" ]
+    then
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $msg"
+    fi
+}
+
+if [ "$OS" != "GNU/Linux" ]
+ then
+    message "This script work on raspbian, this OS $OS is not supported!"
+    sleep 4
+    exit 1
+fi
+
+# set display environment (for PIXEL startx)
+export DISPLAY=:0
+
+# set vimrc
+if [ -f ~/.vimrc ]
+then
+    message "~/Desktop/.vimrc is already set"
+else
+    cp ${MYDIR}/template/vimrc ~/Desktop/.vimrc
+    message "cp ${MYDIR}/template/vimrc ~/.vimrc ...DONE"
+fi
+
+# source custom aliases
+if [ -z $RPITOOLS_ALIASES ]
+then
+    source ${MYDIR}/template/aliases
+    message "${MYDIR}/template/aliases source ...DONE"
+    export RPITOOLS_ALIASES="true"
+else
+    message "${MYDIR}/template/aliases is already sourced"
+fi
+
+# install tools apps
+message "Install requested programs from list ${MYDIR}/template/programs.dat:"
+. ${MYDIR}/install_apps.bash

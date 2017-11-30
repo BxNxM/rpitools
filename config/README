@@ -1,0 +1,3 @@
+FOR EDIT THESE CONFIG FILES USE SUDO USER
+
+sudo vim wpa_supplicant.conf
