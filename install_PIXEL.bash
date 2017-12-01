@@ -92,6 +92,14 @@ else
             sed -i "s/allowed_users = console/allowed_users = anybody/g" "$x11_config"
             check_exitcode "$?"
         fi
+
+        if [ -e "$REBOOT/config/Xwrapper.config" ]
+        then
+            message "$REBOOT/config/Xwrapper.config config already linked"
+        else
+            message "Create link: ln -s $x11_config $REBOOT/config/Xwrapper.config"
+            ln -s "$x11_config" "$REBOOT/config/Xwrapper.config"
+        fi
     fi
 
     echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
