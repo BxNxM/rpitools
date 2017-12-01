@@ -92,7 +92,7 @@ fi
 
 # update once (first run ever) before install apps
 is_installed_file_indicator="$REPOROOT/cache/.first_boot_update_update_installed"
-if [ -e "is_installed_file_indicator" ]
+if [ -e "$is_installed_file_indicator" ]
 then
     message "After first boot update already done"
 else
