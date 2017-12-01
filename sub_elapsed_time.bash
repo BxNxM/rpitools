@@ -21,6 +21,6 @@ function elapsed_time() {
     fi
 }
 
-elapsed_time "start"
-sleep 5
-elapsed_time "stop"
+#elapsed_time "start"
+#sleep 5
+#elapsed_time "stop"
