@@ -92,6 +92,15 @@ then
     ln -s /etc/wpa_supplicant/wpa_supplicant.conf $REPOROOT/config/wpa_supplicant.conf
 fi
 
+#link boot.config.txt config file
+if [  -e "$REPOROOT/config/config.txt" ]
+then
+    message "$REPOROOT/config/config.txt is already linked"
+ else
+    message "Linking: ln -s /boot/config.txt $REPOROOT/config/config.txt"
+    ln -s /boot/config.txt $REPOROOT/config/config.txt
+fi
+
 # update once (first run ever) before install apps
 is_installed_file_indicator="$REPOROOT/cache/.first_boot_update_update_installed"
 if [ -e "$is_installed_file_indicator" ]

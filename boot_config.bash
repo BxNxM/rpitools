@@ -65,7 +65,17 @@ function set_boot_config() {
         message "Set $config_path file - add new line dtoverlay=dwc2 [ USB ETHERNET ]"
         echo -e "\n# Enable usb-ethernet\ndtoverlay=dwc2" >> "$config_path"
     else
-        message "$config_path is already set"
+        message "In $config_path , dtoverlay=dwc2 is already set"
+    fi
+
+    #config.txt add -> gpu_mem=128 <- end of the file
+    is_added=$(grep -rnw "$config_path" -e "gpu_mem")
+    if [ "$is_added" == "" ]
+    then
+        message "Set $config_path file - add new line gpu_mem=128 [ for video playing ]"
+        echo -e "\n# Set GPU allocated memory\ngpu_mem=128" >> "$config_path"
+    else
+        message "In $config_path , gpu_mem is already set"
     fi
 
     #cmdline.txt add -> modules-load=dwc2,g_ether <- after rootwait, before quiet
