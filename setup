@@ -96,11 +96,11 @@ if [ -e "$is_installed_file_indicator" ]
 then
     message "After first boot update already done"
 else
-    message "Make updates after fist boot."
+    message "Make updates after first boot."
     . ${MYDIR}/install_updates.bash
     if [ "$?" -eq 0 ]
     then
-       echo "$(date) Fist boot update done" > "$is_installed_file_indicator"
+       echo "$(date) First boot update done" > "$is_installed_file_indicator"
     else
         message "ERROR: ${MYDIR}/install_updates.bash"
     fi

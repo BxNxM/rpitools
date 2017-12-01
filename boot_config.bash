@@ -100,7 +100,7 @@ function set_boot_config() {
         wpa_conf_templ+='}'
         echo -e "$wpa_conf_templ" > "$wpa_supplicant_path"
     fi
-    message "Change parameters: NETWORK-NAME and NETWORK-PASSWORD in wpa_supplicant.conf"
+    message "---> Change parameters: NETWORK-NAME and NETWORK-PASSWORD in wpa_supplicant.conf <---"
     message "Then unmount sd card and put it to the raspberry pi."
 
     message "[!!!] ONLY DO THESE STEP ONCE BEFORE FIRST BOOT [!!!]"
