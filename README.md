@@ -6,7 +6,7 @@ git push -u origin master
 ###############################################################
 ON macOS/Linux:
 ---------------
-git clone <THIS REPO LINK>
+git clone https://github.com/BxNxM/rpitools.git
 cd rpitools
 cp ~/Downloads/*raspbian*.img raspbian_img/
 ./raspbian_imager.bash
