@@ -2,14 +2,17 @@
 
 #source colors
 source colors.bash
+source sub_elapsed_time.bash
 
 # message handler function
 function message() {
+    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${LIGHT_PURPLE}[ update ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${LIGHT_PURPLE}[ update ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
@@ -40,4 +43,6 @@ function update_grade_dits_clean() {
     echo "Y" | sudo apt clean
 }
 
+elapsed_time "start"
 update_grade_dits_clean
+elapsed_time "stop"

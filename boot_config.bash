@@ -2,14 +2,17 @@
 
 #source colors
 source colors.bash
+source sub_elapsed_time.bash
 
 # message handler function
 function message() {
+    local rpitools_log_path="cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${BROWN}[ boot config ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${BROWN}[ boot config ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
@@ -107,5 +110,7 @@ function set_boot_config() {
     read -p "Press ENTER, if you read and accept!"
 }
 
+elapsed_time "start"
 set_boot_config
+elapsed_time "stop"
 

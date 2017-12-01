@@ -4,7 +4,7 @@ MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export REPOROOT="$MYDIR"
 export OS=$(uname -o)
-alias clean_cache="rm -f ${REPOROOT}/cache/.*_installed"
+alias clean_cache="rm -f ${REPOROOT}/cache/.*_installed && rm -f ${REPOROOT}/cache/rpitools.log"
 
 
 #source colors
@@ -12,11 +12,13 @@ source colors.bash
 
 # message handler function
 function message() {
+    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 

@@ -2,14 +2,17 @@
 
 #source colors
 source colors.bash
+source sub_elapsed_time.bash
 
 # message handler function
 function message() {
+    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ install vnc ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ install vnc ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
@@ -47,4 +50,6 @@ function install_vnc() {
     fi
 }
 
+elapsed_time "start"
 install_vnc
+elapsed_time "stop"

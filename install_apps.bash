@@ -2,15 +2,18 @@
 
 #source colors
 source colors.bash
+source sub_elapsed_time.bash
 was_installation=0
 
 # message handler function
 function message() {
+    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ appinstall ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ appinstall ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
@@ -67,8 +70,10 @@ function main() {
         install_secure "$current_app"
     done
 }
+elapsed_time "start"
 main
 if [ "$was_installation" -eq 1 ]
 then
     message "After program installations good to make a reboot -> sudo reboot"
 fi
+elapsed_time "stop"

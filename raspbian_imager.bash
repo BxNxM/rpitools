@@ -2,14 +2,17 @@
 
 #source colors
 source colors.bash
+source sub_elapsed_time.bash
 
 # message handler function
 function message() {
+    local rpitools_log_path="cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${CYAN}[ img deploy ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${CYAN}[ img deploy ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
@@ -26,6 +29,7 @@ else
     exit 2
 fi
 
+elapsed_time "start"
 img_path=$(echo raspbian_img/*.img)
 if [ -e "$img_path" ]
 then
@@ -51,6 +55,7 @@ then
     else
         message "Invalid $drive drive"
     fi
+    elapsed_time "stop"
 else
     message "Image not found in $img_path"
     exit 1

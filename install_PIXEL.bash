@@ -2,14 +2,17 @@
 
 #source colors
 source colors.bash
+source sub_elapsed_time.bash
 
 # message handler function
 function message() {
+    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${GREEN}[ PIXEL GUI ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${GREEN}[ PIXEL GUI ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
@@ -38,9 +41,11 @@ fi
 is_installed_file_indicator=${REPOROOT}/cache/.PIXEL_installed
 x11_config=/etc/X11/Xwrapper.config
 
+elapsed_time "start"
 if [ -f "$is_installed_file_indicator" ]
 then
     message "PIXEL GUI is already installed"
+    elapsed_time "stop"
 else
 
     message "install: sudo apt-get update"
@@ -93,11 +98,11 @@ else
             check_exitcode "$?"
         fi
 
-        status=$(grep -rnw "$x11_config" -e "needs_root_rights = no")
+        status=$(grep -rnw "$x11_config" -e "needs_root_rights=no")
         if [ "$status" == "" ]
         then
-            message "Add new line for $x11_config : needs_root_rights = no"
-            echo -e "needs_root_rights = no" >> "$x11_config"
+            message "Add new line for $x11_config : needs_root_rights= no"
+            echo -e "needs_root_rights=no" | sudo tee -a "$x11_config"
         fi
 
         if [ -e "$REPOROOT/config/Xwrapper.config" ]
@@ -111,6 +116,7 @@ else
 
     echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
 
+    elapsed_time "stop"
     message "REBOOT..."
     sleep 3
     sudo reboot
