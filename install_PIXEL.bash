@@ -43,33 +43,33 @@ then
     message "PIXEL GUI is already installed"
 else
 
-#    message "install: sudo apt-get update"
-#    echo "Y" | sudo apt-get update
-#    check_exitcode "$?"
+    message "install: sudo apt-get update"
+    echo "Y" | sudo apt-get update
+    check_exitcode "$?"
 
-#    message "install: sudo apt-get install --no-install-recommends xserver-xorg"
-#    echo "Y" | sudo apt-get install --no-install-recommends xserver-xorg
-#    check_exitcode "$?"
+    message "install: sudo apt-get install --no-install-recommends xserver-xorg"
+    echo "Y" | sudo apt-get install --no-install-recommends xserver-xorg
+    check_exitcode "$?"
 
-#    message "install: sudo apt-get install --no-install-recommends xinit"
-#    echo "Y" | sudo apt-get install --no-install-recommends xinit
-#    check_exitcode "$?"
+    message "install: sudo apt-get install --no-install-recommends xinit"
+    echo "Y" | sudo apt-get install --no-install-recommends xinit
+    check_exitcode "$?"
 
-#    message "install: sudo apt-get install raspberrypi-ui-mods"
-#    echo "Y" | sudo apt-get install raspberrypi-ui-mods
-#    check_exitcode "$?"
+    message "install: sudo apt-get install raspberrypi-ui-mods"
+    echo "Y" | sudo apt-get install raspberrypi-ui-mods
+    check_exitcode "$?"
 
-#    message "install: sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs"
-#    echo "Y" | sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
-#    check_exitcode "$?"
+    message "install: sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs"
+    echo "Y" | sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
+    check_exitcode "$?"
 
-#    message "install: sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader"
-#    echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
-#    check_exitcode "$?"
+    message "install: sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader"
+    echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
+    check_exitcode "$?"
 
- #   message "install: sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy"
- #   echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
- #   check_exitcode "$?"
+    message "install: sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy"
+    echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
+    check_exitcode "$?"
 
     if [ ! -f "$x11_config" ]
     then
@@ -109,9 +109,9 @@ else
         fi
     fi
 
-    #echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
+    echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
 
-    #message "REBOOT..."
-    #sleep 3
-    #sudo reboot
+    message "REBOOT..."
+    sleep 3
+    sudo reboot
 fi
