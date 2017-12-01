@@ -57,6 +57,30 @@ else
     echo -e "source ${MYDIR}/template/aliases" > ~/.bash_aliases
 fi
 
+# set ssh folder
+if [ ! -d ~/.ssh ]
+then
+    message "Create ~/.ssh folder and ~/.ssh/authorized_keys file"
+    mkdir ~/.ssh
+    echo "" > ~/.ssh/authorized_keys
+    message "Set you public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
+else
+    if [ -e ~/.ssh/authorized_keys ]
+    then
+        is_set=$(cat ~/.ssh/authorized_keys)
+        if [ "$is_set" == "" ]
+        then
+           message "Set you public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
+        else
+           message "~/.ssh/authorized_keys is already set"
+        fi
+    else
+        message "Create ~/.ssh/authorized_keys file."
+        echo "" > ~/.ssh/authorized_keys
+        message "Set you public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
+    fi
+fi
+
 # install tools apps
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/install_apps.bash
