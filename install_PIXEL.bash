@@ -38,30 +38,48 @@ else
     sudo apt-get update
 
     message "install: sudo apt-get install --no-install-recommends xserver-xorg"
-    sudo apt-get install --no-install-recommends xserver-xorg
+    echo "Y" | sudo apt-get install --no-install-recommends xserver-xorg
 
     message "install: sudo apt-get install --no-install-recommends xinit"
-    sudo apt-get install --no-install-recommends xinit
+    echo "Y" | sudo apt-get install --no-install-recommends xinit
 
     message "install: sudo apt-get install raspberrypi-ui-mods"
-    sudo apt-get install raspberrypi-ui-mods
+    echo "Y" | sudo apt-get install raspberrypi-ui-mods
 
 
     message "install: sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs"
-    sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
+    echo "Y" | sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
 
     message "install: sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader"
-    sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
+    echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
+
+    message "install: sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy"
+    echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
 
     if [ ! -f "$x11_config" ]
     then
         config_text="allowed_users = anybody\nneeds_root_rights = no"
-        echo -e "$config_text" > $x11_config
+        echo -e "$config_text" > "$x11_config"
+        echo -e "$config_text" | sudo tee "$x11_config"
+    else
+        status=$(grep -rnw "$x11_config" -e "allowed_users=console")
+        if [ "$status" != "" ]
+        then
+            message "Configure $x11_config for allowed_users=anybody"
+            sed "s/allowed_users=console/allowed_users=anybody/g" "$x11_config"
+        fi
+
+        status=$(grep -rnw "$x11_config" -e "allowed_users = console")
+        if [ "$status" != "" ]
+        then
+            message "Configure $x11_config for allowed_users = anybody"
+            sed "s/allowed_users = console/allowed_users = anybody/g" "$x11_config"
+        fi
     fi
 
     echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
 
-    message "REBOOT..."
-    sleep 3
-    reboot
+    #message "REBOOT..."
+    #sleep 3
+    #sudo reboot
 fi

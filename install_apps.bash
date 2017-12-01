@@ -2,6 +2,7 @@
 
 #source colors
 source colors.bash
+was_installation=0
 
 # message handler function
 function message() {
@@ -52,6 +53,7 @@ function install_secure() {
         then
             echo "Y" | sudo apt install "$app"
             message "$app install ...DONE"
+            was_installation=1
         else
            message "$app is already installed"
         fi
@@ -66,4 +68,7 @@ function main() {
     done
 }
 main
-message "After program installations good to make a reboot -> sudo reboot"
+if [ "$was_installation" -eq 1 ]
+then
+    message "After program installations good to make a reboot -> sudo reboot"
+fi
