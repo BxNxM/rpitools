@@ -13,6 +13,15 @@ function message() {
     fi
 }
 
+function check_exitcode() {
+    local status="$1"
+    if [ "$status" -ne 0 ]
+    then
+        message "ERROR: $status"
+        exit 2
+    fi
+}
+
 # check we are sourced up
 if [ -z "$REPOROOT" ]
 then
@@ -36,25 +45,31 @@ else
 
     message "install: sudo apt-get update"
     echo "Y" | sudo apt-get update
+    check_exitcode "$?"
 
     message "install: sudo apt-get install --no-install-recommends xserver-xorg"
     echo "Y" | sudo apt-get install --no-install-recommends xserver-xorg
+    check_exitcode "$?"
 
     message "install: sudo apt-get install --no-install-recommends xinit"
     echo "Y" | sudo apt-get install --no-install-recommends xinit
+    check_exitcode "$?"
 
     message "install: sudo apt-get install raspberrypi-ui-mods"
     echo "Y" | sudo apt-get install raspberrypi-ui-mods
-
+    check_exitcode "$?"
 
     message "install: sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs"
     echo "Y" | sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
+    check_exitcode "$?"
 
     message "install: sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader"
     echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
+    check_exitcode "$?"
 
     message "install: sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy"
     echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
+    check_exitcode "$?"
 
     if [ ! -f "$x11_config" ]
     then
@@ -66,14 +81,16 @@ else
         if [ "$status" != "" ]
         then
             message "Configure $x11_config for allowed_users=anybody"
-            sed "s/allowed_users=console/allowed_users=anybody/g" "$x11_config"
+            sed -i "s/allowed_users=console/allowed_users=anybody/g" "$x11_config"
+            check_exitcode "$?"
         fi
 
         status=$(grep -rnw "$x11_config" -e "allowed_users = console")
         if [ "$status" != "" ]
         then
             message "Configure $x11_config for allowed_users = anybody"
-            sed "s/allowed_users = console/allowed_users = anybody/g" "$x11_config"
+            sed -i "s/allowed_users = console/allowed_users = anybody/g" "$x11_config"
+            check_exitcode "$?"
         fi
     fi
 
