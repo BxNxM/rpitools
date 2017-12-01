@@ -43,33 +43,33 @@ then
     message "PIXEL GUI is already installed"
 else
 
-    message "install: sudo apt-get update"
-    echo "Y" | sudo apt-get update
-    check_exitcode "$?"
+#    message "install: sudo apt-get update"
+#    echo "Y" | sudo apt-get update
+#    check_exitcode "$?"
 
-    message "install: sudo apt-get install --no-install-recommends xserver-xorg"
-    echo "Y" | sudo apt-get install --no-install-recommends xserver-xorg
-    check_exitcode "$?"
+#    message "install: sudo apt-get install --no-install-recommends xserver-xorg"
+#    echo "Y" | sudo apt-get install --no-install-recommends xserver-xorg
+#    check_exitcode "$?"
 
-    message "install: sudo apt-get install --no-install-recommends xinit"
-    echo "Y" | sudo apt-get install --no-install-recommends xinit
-    check_exitcode "$?"
+#    message "install: sudo apt-get install --no-install-recommends xinit"
+#    echo "Y" | sudo apt-get install --no-install-recommends xinit
+#    check_exitcode "$?"
 
-    message "install: sudo apt-get install raspberrypi-ui-mods"
-    echo "Y" | sudo apt-get install raspberrypi-ui-mods
-    check_exitcode "$?"
+#    message "install: sudo apt-get install raspberrypi-ui-mods"
+#    echo "Y" | sudo apt-get install raspberrypi-ui-mods
+#    check_exitcode "$?"
 
-    message "install: sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs"
-    echo "Y" | sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
-    check_exitcode "$?"
+#    message "install: sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs"
+#    echo "Y" | sudo apt-get install --no-install-recommends raspberrypi-ui-mods lxterminal gvfs
+#    check_exitcode "$?"
 
-    message "install: sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader"
-    echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
-    check_exitcode "$?"
+#    message "install: sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader"
+#    echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
+#    check_exitcode "$?"
 
-    message "install: sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy"
-    echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
-    check_exitcode "$?"
+ #   message "install: sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy"
+ #   echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
+ #   check_exitcode "$?"
 
     if [ ! -f "$x11_config" ]
     then
@@ -81,7 +81,7 @@ else
         if [ "$status" != "" ]
         then
             message "Configure $x11_config for allowed_users=anybody"
-            sed -i "s/allowed_users=console/allowed_users=anybody/g" "$x11_config"
+            sudo sed -i "s/allowed_users=console/allowed_users=anybody/g" "$x11_config"
             check_exitcode "$?"
         fi
 
@@ -89,22 +89,29 @@ else
         if [ "$status" != "" ]
         then
             message "Configure $x11_config for allowed_users = anybody"
-            sed -i "s/allowed_users = console/allowed_users = anybody/g" "$x11_config"
+            sudo sed -i "s/allowed_users = console/allowed_users = anybody/g" "$x11_config"
             check_exitcode "$?"
         fi
 
-        if [ -e "$REBOOT/config/Xwrapper.config" ]
+        status=$(grep -rnw "$x11_config" -e "needs_root_rights = no")
+        if [ "$status" == "" ]
         then
-            message "$REBOOT/config/Xwrapper.config config already linked"
+            message "Add new line for $x11_config : needs_root_rights = no"
+            echo -e "needs_root_rights = no" >> "$x11_config"
+        fi
+
+        if [ -e "$REPOROOT/config/Xwrapper.config" ]
+        then
+            message "$REPOROOT/config/Xwrapper.config config already linked"
         else
-            message "Create link: ln -s $x11_config $REBOOT/config/Xwrapper.config"
-            ln -s "$x11_config" "$REBOOT/config/Xwrapper.config"
+            message "Create link: ln -s $x11_config $REPOROOT/config/Xwrapper.config"
+            ln -s "$x11_config" "$REPOROOT/config/Xwrapper.config"
         fi
     fi
 
-    echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
+    #echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
 
-    message "REBOOT..."
-    sleep 3
-    sudo reboot
+    #message "REBOOT..."
+    #sleep 3
+    #sudo reboot
 fi

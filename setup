@@ -81,6 +81,15 @@ else
     fi
 fi
 
+#link wifi config file
+if [  -e "$REPOROOT/config/wpa_supplicant.conf" ]
+then
+    message "$REPOROOT/config/wpa_supplicant.conf is already linked"
+ else
+    message "Linking: ln -s /etc/wpa_supplicant/wpa_supplicant.conf $REPOROOT/config/wpa_supplicant.conf"
+    ln -s /etc/wpa_supplicant/wpa_supplicant.conf $REPOROOT/config/wpa_supplicant.conf
+fi
+
 # install tools apps
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/install_apps.bash

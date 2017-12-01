@@ -1,3 +1,10 @@
-FOR EDIT THESE CONFIG FILES USE SUDO USER
-
+# FOR EDITING THESE CONFIG FILES USE SUDO USER
 sudo vim wpa_supplicant.conf
+
+# DESCRIPTIONS:
+
+# config for xserver - gui
+Xwrapper.config
+
+# config for wifi
+wpa_supplicant.conf
