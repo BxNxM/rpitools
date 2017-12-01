@@ -76,9 +76,10 @@ else
     echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
     check_exitcode "$?"
 
+    root_rights="yes"
     if [ ! -f "$x11_config" ]
     then
-        config_text="allowed_users = anybody\nneeds_root_rights = no"
+        config_text="allowed_users=anybody\nneeds_root_rights=$root_rights"
         echo -e "$config_text" > "$x11_config"
         echo -e "$config_text" | sudo tee "$x11_config"
     else
@@ -93,16 +94,16 @@ else
         status=$(grep -rnw "$x11_config" -e "allowed_users = console")
         if [ "$status" != "" ]
         then
-            message "Configure $x11_config for allowed_users = anybody"
-            sudo sed -i "s/allowed_users = console/allowed_users = anybody/g" "$x11_config"
+            message "Configure $x11_config for allowed_users=anybody"
+            sudo sed -i "s/allowed_users = console/allowed_users=anybody/g" "$x11_config"
             check_exitcode "$?"
         fi
 
-        status=$(grep -rnw "$x11_config" -e "needs_root_rights=no")
+        status=$(grep -rnw "$x11_config" -e "needs_root_rights=$root_rights")
         if [ "$status" == "" ]
         then
-            message "Add new line for $x11_config : needs_root_rights= no"
-            echo -e "needs_root_rights=no" | sudo tee -a "$x11_config"
+            message "Add new line for $x11_config : needs_root_rights=$root_rights"
+            echo -e "needs_root_rights=$root_rights" | sudo tee -a "$x11_config"
         fi
 
         if [ -e "$REPOROOT/config/Xwrapper.config" ]
