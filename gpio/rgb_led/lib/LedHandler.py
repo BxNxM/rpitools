@@ -7,7 +7,7 @@ import time
 class LedHandler():
 
     def __init__(self, channel, freq=100):
-        channel = channel
+        self.channel = channel
         self.dc = 0                              # where dc is the duty cycle (0.0 <= dc <= 100.0)
         frequency = freq                    # Hz
 
@@ -53,7 +53,7 @@ class LedHandler():
 
     def __del__(self):
         self.pin.stop()
-        GPIO.cleanup()
+        GPIO.cleanup(self.channel)
 
 if __name__ == "__main__":
     green = LedHandler(channel=12)

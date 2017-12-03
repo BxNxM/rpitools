@@ -15,6 +15,8 @@ def rgb_config_manager():
     red = LedHandler.LedHandler(channel=32)
     blue = LedHandler.LedHandler(channel=33)
 
+    led_state = ""
+
     while True:
         try:
             rgb_dict = rgb.config_watcher()
@@ -22,6 +24,24 @@ def rgb_config_manager():
                 red.set_dc_with_gradient(rgb_dict["RED"])
                 green.set_dc_with_gradient(rgb_dict["GREEN"])
                 blue.set_dc_with_gradient(rgb_dict["BLUE"])
+                # start led
+                if rgb_dict["LED"] != "ON" and led_state != rgb_dict["LED"]:
+                    led_state = rgb_dict["LED"]
+                    red.stop()
+                    green.stop()
+                    blue.stop()
+                # stop led
+                elif rgb_dict["LED"] == "ON" and led_state != rgb_dict["LED"]:
+                    led_state = rgb_dict["LED"]
+                    red.start()
+                    green.start()
+                    blue.start()
+
+                if rgb_dict["SERVICE"] != "ON":
+                    red.__del__()
+                    green.__del__()
+                    blue.__del__()
+                    break
         except KeyboardInterrupt as e:
             print("Program is existing: Ctrl-C")
 

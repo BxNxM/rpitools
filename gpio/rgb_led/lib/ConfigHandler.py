@@ -47,7 +47,7 @@ class ConfigHandler():
         try:
             all_param = None
             while loop:
-                time.sleep(0.5)
+                time.sleep(0.1)
                 if self.file_is_modified():
                     all_param = self.get_all()
                     #print(all_param)
@@ -62,19 +62,29 @@ class ConfigHandler():
             raise Exception(e)
             print("Program is existing: Ctrl-C")
 
-    def write_cfg_file(self, dictionary):
-        try:
-            with open(self.cfg_path, 'w') as f:
-                json.dump(dictionary, f, sort_keys=True, indent=2)
-        except Exception as e:
-            print("ConfigHandler.write_cfg_file write json: " + str(e))
+    def write_cfg_file(self, dictionary, retry=5, delay=0.1):
+        while retry > 0:
+            try:
+                with open(self.cfg_path, 'w') as f:
+                    json.dump(dictionary, f, sort_keys=True, indent=2)
+                    return True
+            except Exception as e:
+                print("ConfigHandler.write_cfg_file write json: " + str(e))
+                retry -= 1
+                time.sleep(delay)
+        return False
 
-    def read_cfg_file(self):
-        try:
-            with open(self.cfg_path, 'r') as f:
-                data_dict = json.load(f)
-        except:
-            data_dict = {}
+    def read_cfg_file(self, retry=5, delay=0.1):
+        while retry > 0:
+            try:
+                with open(self.cfg_path, 'r') as f:
+                    data_dict = json.load(f)
+                    return data_dict
+            except Exception as e:
+                print("ConfigHandler.read_cfg_file write json: " + str(e))
+                retry -= 1
+                time.sleep(delay)
+        data_dict = {}
         return data_dict
 
 class RGB_config_handler(ConfigHandler):
@@ -85,6 +95,8 @@ class RGB_config_handler(ConfigHandler):
             self.put("RED", 0)
             self.put("GREEN", 0)
             self.put("BLUE", 0)
+            super().put("SERVICE", "ON")
+            super().put("LED", "ON")
         else:
             config_dict = self.get_all()
             if not "RED" in config_dict.keys():
@@ -93,23 +105,35 @@ class RGB_config_handler(ConfigHandler):
                 self.put("GREEN", 0)
             if not "BLUE" in config_dict.keys():
                 self.put("BLUE", 0)
+            super().put("SERVICE", "ON")
+            super().put("LED", "ON")
 
-    def put(self, color, duty_cycle):
-        if color == "RED" or color == "GREEN" or color == "BLUE":
-            if duty_cycle < 100.0 or duty_cycle >= 0.0:
-                super().put(color, duty_cycle)
+    def put(self, color, duty_cycle, secure=True):
+        if secure:
+            if color == "RED" or color == "GREEN" or color == "BLUE":
+                if duty_cycle < 100.0 or duty_cycle >= 0.0:
+                    super().put(color, duty_cycle)
+                else:
+                    print("Duty cycle not in range (0.0-100.0): " + str(duty_cycle))
             else:
-                print("Duty cycle not in range (0.0-100.0): " + str(duty_cycle))
+                print("Color is invalud: " + str(color))
         else:
-            print("Color is invalud: " + str(color))
+            key = color
+            value = duty_cycle
+            super().put(key, value)
 
-    def get(self, color):
-        if color == "RED" or color == "GREEN" or color == "BLUE":
-            dc = super().get(color)
+    def get(self, color, secure=True):
+        if secure:
+            if color == "RED" or color == "GREEN" or color == "BLUE":
+                dc = super().get(color)
+            else:
+                print("Color is invalud: " + str(color))
+                dc = None
+            return dc
         else:
-            print("Color is invalud: " + str(color))
-            dc = None
-        return dc
+            key = color
+            dc = super().get(key)
+            return dc
 
     def config_watcher(self):
         rgb_dict = super().config_watcher(loop=True)
