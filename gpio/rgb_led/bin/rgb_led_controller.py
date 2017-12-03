@@ -38,6 +38,9 @@ def rgb_config_manager():
                     blue.start()
 
                 if rgb_dict["SERVICE"] != "ON":
+                    red.stop()
+                    green.stop()
+                    blue.stop()
                     red.__del__()
                     green.__del__()
                     blue.__del__()

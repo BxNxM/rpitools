@@ -47,7 +47,7 @@ class ConfigHandler():
         try:
             all_param = None
             while loop:
-                time.sleep(0.1)
+                time.sleep(0.3)
                 if self.file_is_modified():
                     all_param = self.get_all()
                     #print(all_param)
@@ -62,28 +62,30 @@ class ConfigHandler():
             raise Exception(e)
             print("Program is existing: Ctrl-C")
 
-    def write_cfg_file(self, dictionary, retry=5, delay=0.1):
+    def write_cfg_file(self, dictionary, retry=10, delay=0.1):
         while retry > 0:
             try:
                 with open(self.cfg_path, 'w') as f:
                     json.dump(dictionary, f, sort_keys=True, indent=2)
                     return True
             except Exception as e:
-                print("ConfigHandler.write_cfg_file write json: " + str(e))
+                print("[DEBUG] ConfigHandler.write_cfg_file write json: " + str(e))
                 retry -= 1
                 time.sleep(delay)
+        print("[ERROR] write_cfg_file")
         return False
 
-    def read_cfg_file(self, retry=5, delay=0.1):
+    def read_cfg_file(self, retry=10, delay=0.1):
         while retry > 0:
             try:
                 with open(self.cfg_path, 'r') as f:
                     data_dict = json.load(f)
                     return data_dict
             except Exception as e:
-                print("ConfigHandler.read_cfg_file write json: " + str(e))
+                print("[DEBUG] ConfigHandler.read_cfg_file write json: " + str(e))
                 retry -= 1
                 time.sleep(delay)
+        print("[ERROR] read_cfg_file")
         data_dict = {}
         return data_dict
 

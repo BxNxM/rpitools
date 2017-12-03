@@ -6,7 +6,7 @@ import time
 
 class LedHandler():
 
-    def __init__(self, channel, freq=100):
+    def __init__(self, channel, freq=80):
         self.channel = channel
         self.dc = 0                              # where dc is the duty cycle (0.0 <= dc <= 100.0)
         frequency = freq                    # Hz

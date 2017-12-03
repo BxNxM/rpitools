@@ -3,15 +3,18 @@ import random
 import time
 
 change_time = 5
-change_cycle = 100
+change_cycle = 1000
 
 # CHANGE COLOR
 for cycle in range(0, change_cycle):
-    red = random.randint(0, 100)
-    green = random.randint(0, 100)
-    blue = random.randint(0, 100)
+    #red = random.randint(0, 100)
+    red = int(random.randrange(0, 100, 5))
+    #green = random.randint(0, 100)
+    green = int(random.randrange(0, 100, 5))
+    #blue = random.randint(0, 100)
+    blue = int(random.randrange(0, 100, 5))
 
-    print("CAHNGE COLOR: R {} G {} B {}".format(red, green, blue))
+    print("[{}/{}] CAHNGE COLOR: R {} G {} B {}".format(cycle, change_cycle, red, green, blue))
     args = ["./rgb_interface.py", "-r", str(red), "-g", str(green), "-b", str(blue)]
     p = subprocess.Popen(args)
     time.sleep(change_time)
