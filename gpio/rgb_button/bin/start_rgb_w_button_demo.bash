@@ -5,6 +5,13 @@ rgb_demo="/home/pi/rpitools/gpio/rgb_led/bin/rgb_demo.py"
 button_event_handler_path="/home/pi/rpitools/gpio/rgb_button/lib/ButtonHandler.py"
 button_event_path="/home/pi/rpitools/gpio/rgb_button/lib/button_event"
 rgb_interface_path="/home/pi/rpitools/gpio/rgb_led/bin/rgb_interface.py"
+rgb_button_cache_folder="./cache"
+
+if [ ! -d "$rgb_button_cache_folder" ]
+then
+    mkdir "$rgb_button_cache_folder"
+fi
+
 
 function start_servive() {
     is_run_service=$(ps aux | grep [r]gb_led_controller.py)
@@ -15,9 +22,9 @@ function start_servive() {
         ./rgb_led_controller.py & > /dev/null
         pid=$(ps axf | grep rgb_led_controller.py | grep -v grep | awk '{print $1}')
         popd
-        echo -e "$pid" > rgb_led_controller_pid.dat
+        echo -e "$pid" > "${rgb_button_cache_folder}/rgb_led_controller_pid.dat"
     else
-        echo -e "rgb_led_controller.py already run."
+        echo -e "rgb_led_controller.py already running."
     fi
 }
 
@@ -31,7 +38,7 @@ function start_demo() {
         echo -e "TRURN ON LED"
         (./rgb_interface.py -l ON)
         popd
-        echo -e "$pid" > rgb_demo_pid.dat
+        echo -e "$pid" > "${rgb_button_cache_folder}/rgb_demo_pid.dat"
     else
         pushd /home/pi/rpitools/gpio/rgb_led/bin/
         ./rgb_interface.py -l OFF &
@@ -51,9 +58,9 @@ function start_button_handler() {
         (./ButtonHandler.py & > /dev/null)
         pid="$?"
         popd
-        echo -e "$pid" > button_handler_pid.dat
+        echo -e "$pid" > "${rgb_button_cache_folder}/button_handler_pid.dat"
     else
-        echo -e "ButtonHandler.py already run."
+        echo -e "ButtonHandler.py already running."
     fi
 }
 
