@@ -28,24 +28,29 @@ def rgb_config_manager():
     while True:
         try:
             rgb_dict = rgb.config_watcher()
+            mylogger.logger.info("config watcher dict: {}".format(rgb_dict))
             if rgb_dict is not None:
                 red.set_dc_with_gradient(rgb_dict["RED"])
                 green.set_dc_with_gradient(rgb_dict["GREEN"])
                 blue.set_dc_with_gradient(rgb_dict["BLUE"])
+                mylogger.logger.info("RGB dict: R{} G{} B{}".format(rgb_dict["RED"], rgb_dict["GREEN"], rgb_dict["BLUE"]))
                 # start led
                 if rgb_dict["LED"] != "ON" and led_state != rgb_dict["LED"]:
+                    mylogger.logger.info("Turn OFF LED")
                     led_state = rgb_dict["LED"]
                     red.stop()
                     green.stop()
                     blue.stop()
                 # stop led
                 elif rgb_dict["LED"] == "ON" and led_state != rgb_dict["LED"]:
+                    mylogger.logger.info("Turn ON LED")
                     led_state = rgb_dict["LED"]
                     red.start()
                     green.start()
                     blue.start()
 
                 if rgb_dict["SERVICE"] != "ON":
+                    mylogger.logger.info("Turn OFF service")
                     red.stop()
                     green.stop()
                     blue.stop()

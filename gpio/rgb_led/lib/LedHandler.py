@@ -27,7 +27,7 @@ class LedHandler():
     def set_dc(self, dc):
         self.dc = dc
         self.pin.ChangeDutyCycle(self.dc)
-        #mylogger.logger.info('Change duty cycle: ' + str(self.dc))
+        mylogger.logger.info('Change duty cycle: ' + str(self.dc))
 
     # SET DC WITH DIM EFFECT
     def set_dc_with_gradient(self, dc):
@@ -73,5 +73,10 @@ if __name__ == "__main__":
     time.sleep(1)
     green.set_dc_with_gradient(50)
     time.sleep(1)
-    green.set_dc_with_gradient(10)
+    green.set_dc_with_gradient(100)
+    time.sleep(1)
+    green.set_dc_with_gradient(50)
+    time.sleep(1)
+    green.set_dc_with_gradient(0)
+    time.sleep(1)
     input()

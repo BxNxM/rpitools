@@ -49,6 +49,7 @@ if B is not None:
 
 if led_status is not None:
     if led_status == "ON" or led_status == "OFF":
+        print("set led status: " + str(led_status))
         rgb.put("LED", led_status, secure=False)
     else:
         print("Invalid input (ON/OFF): " + str(led_status))
@@ -57,9 +58,12 @@ if service_status is not None:
     if service_status == "ON" or service_status == "OFF":
         rgb.put("SERVICE", service_status, secure=False)
         if service_status == "ON":
+                print("set led status: OFF")
                 rgb.put("SERVICE", "OFF", secure=False)
-                time.sleep(1)
+                time.sleep(2)
                 subprocess.Popen("./rgb_led_controller.py")
+                print("set led status: ON")
+                rgb.put("SERVICE", "ON", secure=False)
                 print("rgb_led_controller.py lounched")
         else:
             print("rgb_led_controller.py shutdown")

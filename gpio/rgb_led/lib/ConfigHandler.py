@@ -94,21 +94,12 @@ class ConfigHandler():
 class RGB_config_handler(ConfigHandler):
     def __init__(self, config_path):
         super().__init__(config_path)
-        if not os.path.isfile(config_path):
-            # Create json file
+        if not os.path.exists(config_path):
+            # Create json filie
+            mylogger.logger.info("set default config (config file not exists)")
             self.put("RED", 0)
             self.put("GREEN", 0)
             self.put("BLUE", 0)
-            super().put("SERVICE", "ON")
-            super().put("LED", "ON")
-        else:
-            config_dict = self.get_all()
-            if not "RED" in config_dict.keys():
-                self.put("RED", 0)
-            if not "GREEN" in config_dict.keys():
-                self.put("GREEN", 0)
-            if not "BLUE" in config_dict.keys():
-                self.put("BLUE", 0)
             super().put("SERVICE", "ON")
             super().put("LED", "ON")
 
