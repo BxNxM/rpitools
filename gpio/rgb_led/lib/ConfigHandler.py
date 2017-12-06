@@ -6,11 +6,13 @@ import os
 import sys
 myfolder = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(myfolder)
+import LogHandler
+mylogger = LogHandler.LogHandler("confighandler")
 
 class ConfigHandler():
     def __init__(self, cfg_path):
-            self.cfg_path = cfg_path
-            self.file_last_modified_date = 0
+        self.cfg_path = cfg_path
+        self.file_last_modified_date = 0
 
     # EXTERNAL FUNCTIONS - GET VALUE
     def get(self, key):
@@ -60,7 +62,7 @@ class ConfigHandler():
             return all_param
         except KeyboardInterrupt as e:
             raise Exception(e)
-            print("Program is existing: Ctrl-C")
+            mylogger.logger.info("Program is existing: Ctrl-C")
 
     def write_cfg_file(self, dictionary, retry=10, delay=0.1):
         while retry > 0:
@@ -69,10 +71,10 @@ class ConfigHandler():
                     json.dump(dictionary, f, sort_keys=True, indent=2)
                     return True
             except Exception as e:
-                print("[DEBUG] ConfigHandler.write_cfg_file write json: " + str(e))
+                mylogger.logger.info("ConfigHandler.write_cfg_file write json: " + str(e))
                 retry -= 1
                 time.sleep(delay)
-        print("[ERROR] write_cfg_file")
+        mylogger.logger.error("write_cfg_file")
         return False
 
     def read_cfg_file(self, retry=10, delay=0.1):
@@ -82,10 +84,10 @@ class ConfigHandler():
                     data_dict = json.load(f)
                     return data_dict
             except Exception as e:
-                print("[DEBUG] ConfigHandler.read_cfg_file write json: " + str(e))
+                mylogger.logger.info("ConfigHandler.read_cfg_file write json: " + str(e))
                 retry -= 1
                 time.sleep(delay)
-        print("[ERROR] read_cfg_file")
+        mylogger.logger.error("[ERROR] read_cfg_file")
         data_dict = {}
         return data_dict
 
@@ -116,9 +118,9 @@ class RGB_config_handler(ConfigHandler):
                 if duty_cycle < 100.0 or duty_cycle >= 0.0:
                     super().put(color, duty_cycle)
                 else:
-                    print("Duty cycle not in range (0.0-100.0): " + str(duty_cycle))
+                    mylogger.logger.warning("Duty cycle not in range (0.0-100.0): " + str(duty_cycle))
             else:
-                print("Color is invalud: " + str(color))
+                mylogger.logger.warning("Color is invalud: " + str(color))
         else:
             key = color
             value = duty_cycle
@@ -129,7 +131,7 @@ class RGB_config_handler(ConfigHandler):
             if color == "RED" or color == "GREEN" or color == "BLUE":
                 dc = super().get(color)
             else:
-                print("Color is invalud: " + str(color))
+                mylogger.logger.warning("Color is invalud: " + str(color))
                 dc = None
             return dc
         else:

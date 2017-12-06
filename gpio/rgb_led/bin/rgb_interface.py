@@ -6,6 +6,8 @@ import sys
 myfolder = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(myfolder, "../lib/"))
 import ConfigHandler
+import subprocess
+import time
 
 config_path = os.path.join(myfolder, "../lib/config/rgb_config.json")
 rgb = ConfigHandler.RGB_config_handler(config_path)
@@ -54,7 +56,13 @@ if led_status is not None:
 if service_status is not None:
     if service_status == "ON" or service_status == "OFF":
         rgb.put("SERVICE", service_status, secure=False)
-        print("rgb_led_controller.py shutdown")
+        if service_status == "ON":
+                rgb.put("SERVICE", "OFF", secure=False)
+                time.sleep(1)
+                subprocess.Popen("./rgb_led_controller.py")
+                print("rgb_led_controller.py lounched")
+        else:
+            print("rgb_led_controller.py shutdown")
     else:
         print("Invalid input (ON/OFF): " + str(led_status))
 

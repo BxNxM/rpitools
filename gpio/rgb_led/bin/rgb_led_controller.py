@@ -6,16 +6,24 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(myfolder, "../lib/"))
 import LedHandler
 import ConfigHandler
+import LogHandler
+mylogger = LogHandler.LogHandler("rgb_led_controller")
 
 def rgb_config_manager():
+    # set config handler
     config_path = os.path.join(myfolder, "../lib/config/rgb_config.json")
     rgb = ConfigHandler.RGB_config_handler(config_path)
 
+    # set pins
     green = LedHandler.LedHandler(channel=12)
     red = LedHandler.LedHandler(channel=32)
     blue = LedHandler.LedHandler(channel=33)
 
+    #ledstate init
     led_state = ""
+
+    # init service status on config
+    rgb.put("SERVICE", "ON", secure=False)
 
     while True:
         try:
@@ -46,7 +54,7 @@ def rgb_config_manager():
                     blue.__del__()
                     break
         except KeyboardInterrupt as e:
-            print("Program is existing: Ctrl-C")
+            mylogger.logger.info("Program is existing: Ctrl-C")
 
 def rgb_demo():
     green = LedHandler.LedHandler(channel=12)

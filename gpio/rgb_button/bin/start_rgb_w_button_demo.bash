@@ -41,7 +41,7 @@ function start_demo() {
         echo -e "$pid" > "${rgb_button_cache_folder}/rgb_demo_pid.dat"
     else
         pushd /home/pi/rpitools/gpio/rgb_led/bin/
-        ./rgb_interface.py -l OFF &
+        ./rgb_interface.py -l OFF
         popd
         killpid=$(ps axf | grep rgb_demo.py | grep -v grep | awk '{print $1}')
         echo -e "rgb_demo.py - pid $killpid KILL"
@@ -67,12 +67,12 @@ function start_button_handler() {
 start_button_handler
 while true
 do
-    if [ -e "$button_event_path" ]
-    then
-        start_servive
-        start_demo
-        rm -f "$button_event_path"
-    fi
-    sleep .2
+        if [ -e "$button_event_path" ]
+        then
+            start_servive
+            start_demo
+            rm -f "$button_event_path"
+        fi
+        sleep .2
 done
 

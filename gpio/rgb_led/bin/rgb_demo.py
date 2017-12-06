@@ -16,8 +16,8 @@ for cycle in range(0, change_cycle):
     #blue = random.randint(0, 100)
     blue = int(random.randrange(0, 100, 5))
 
-    print("[{}/{}] CAHNGE COLOR: R {} G {} B {} -l ON".format(cycle, change_cycle, red, green, blue))
-    args = ["./rgb_interface.py", "-r", str(red), "-g", str(green), "-b", str(blue), "-l", "ON"]
+    print("[{}/{}] CAHNGE COLOR: R {} G {} B {}".format(cycle, change_cycle, red, green, blue))
+    args = ["./rgb_interface.py", "-r", str(red), "-g", str(green), "-b", str(blue)]
     p = subprocess.Popen(args)
     time.sleep(change_time)
 

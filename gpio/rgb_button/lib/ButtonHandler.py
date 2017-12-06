@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-
+import LogHandler
+mylogger = LogHandler.LogHandler("button handler")
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
-    print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
+    mylogger.logger.error("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
 
 import os
 import time
@@ -21,16 +22,15 @@ def simple_input_read():
         while True:
             state = GPIO.input(channel)
             #print("Touch button: " + str(state))
-            time.sleep(0.05)
             if state == 1:
                 return True
             else:
                 return False
     except KeyboardInterrupt:
         return None
-        print("CTRL-C exit")
+        mylogger.logger.info("CTRL-C exit")
 
-def write_button_file(retry=10, try_delay=0.1):
+def write_button_file(retry=10, try_delay=0.05):
     global button_file_path
     while retry > 0:
         try:
@@ -52,14 +52,14 @@ def button_loop():
                     break
                 if state:
                     is_pressed = True
-                    print("Button was pressed")
+                    mylogger.logger.info("Button was pressed")
                     write_button_file()
             if state is None:
                 break
 
     except KeyboardInterrupt:
         return False
-        print("CTRL-C exit")
+        mylogger.logger.info("CTRL-C exit")
 
 def init():
     global button_file_path

@@ -1,0 +1,284 @@
+2017-12-06 20:17:35,774 - ledhandler - INFO - Start PWM
+2017-12-06 20:17:35,778 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:17:36,783 - ledhandler - INFO - Make gradient: 0 to 50
+2017-12-06 20:17:38,299 - ledhandler - INFO - Make gradient: 49 to 10
+2017-12-06 20:39:48,364 - ledhandler - INFO - Start PWM
+2017-12-06 20:39:48,367 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:39:48,372 - ledhandler - INFO - Start PWM
+2017-12-06 20:39:48,376 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:39:48,380 - ledhandler - INFO - Start PWM
+2017-12-06 20:39:48,383 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:39:48,692 - ledhandler - INFO - Make gradient: 0 to 90
+2017-12-06 20:39:49,613 - ledhandler - INFO - Make gradient: 0 to 40
+2017-12-06 20:39:50,026 - ledhandler - INFO - Make gradient: 0 to 30
+2017-12-06 20:39:50,337 - ledhandler - INFO - set dc from self.dc: 89
+2017-12-06 20:39:50,343 - ledhandler - INFO - Start PWM
+2017-12-06 20:39:50,350 - ledhandler - INFO - set dc from self.dc: 39
+2017-12-06 20:39:50,358 - ledhandler - INFO - Start PWM
+2017-12-06 20:39:50,363 - ledhandler - INFO - set dc from self.dc: 29
+2017-12-06 20:39:50,369 - ledhandler - INFO - Start PWM
+2017-12-06 20:40:21,061 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:40:21,075 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:40:21,089 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:40:27,424 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:40:27,438 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:40:27,452 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:40:27,466 - ledhandler - INFO - stoping pwd
+2017-12-06 20:40:27,469 - ledhandler - INFO - stoping pwd
+2017-12-06 20:40:27,473 - ledhandler - INFO - stoping pwd
+2017-12-06 20:41:53,782 - ledhandler - INFO - Start PWM
+2017-12-06 20:41:53,786 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:41:53,790 - ledhandler - INFO - Start PWM
+2017-12-06 20:41:53,794 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:41:53,798 - ledhandler - INFO - Start PWM
+2017-12-06 20:41:53,801 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:41:54,111 - ledhandler - INFO - Make gradient: 0 to 90
+2017-12-06 20:41:55,031 - ledhandler - INFO - Make gradient: 0 to 40
+2017-12-06 20:41:55,467 - ledhandler - INFO - Make gradient: 0 to 30
+2017-12-06 20:41:55,778 - ledhandler - INFO - set dc from self.dc: 89
+2017-12-06 20:41:55,783 - ledhandler - INFO - Start PWM
+2017-12-06 20:41:55,789 - ledhandler - INFO - set dc from self.dc: 39
+2017-12-06 20:41:55,794 - ledhandler - INFO - Start PWM
+2017-12-06 20:41:55,799 - ledhandler - INFO - set dc from self.dc: 29
+2017-12-06 20:41:55,803 - ledhandler - INFO - Start PWM
+2017-12-06 20:42:02,126 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:42:02,140 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:42:02,155 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:42:02,169 - ledhandler - INFO - stoping pwd
+2017-12-06 20:42:02,172 - ledhandler - INFO - stoping pwd
+2017-12-06 20:42:02,175 - ledhandler - INFO - stoping pwd
+2017-12-06 20:42:09,399 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:42:09,413 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:42:09,427 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:42:09,441 - ledhandler - INFO - set dc from self.dc: 89
+2017-12-06 20:42:09,445 - ledhandler - INFO - Start PWM
+2017-12-06 20:42:09,448 - ledhandler - INFO - set dc from self.dc: 39
+2017-12-06 20:42:09,451 - ledhandler - INFO - Start PWM
+2017-12-06 20:42:09,455 - ledhandler - INFO - set dc from self.dc: 29
+2017-12-06 20:42:09,462 - ledhandler - INFO - Start PWM
+2017-12-06 20:42:23,302 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:42:23,318 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:42:23,333 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:42:37,784 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:42:37,803 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:42:37,818 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:43:36,367 - ledhandler - INFO - Start PWM
+2017-12-06 20:43:36,370 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:43:36,375 - ledhandler - INFO - Start PWM
+2017-12-06 20:43:36,379 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:43:36,382 - ledhandler - INFO - Start PWM
+2017-12-06 20:43:36,385 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:43:36,694 - ledhandler - INFO - Make gradient: 0 to 90
+2017-12-06 20:43:37,614 - ledhandler - INFO - Make gradient: 0 to 40
+2017-12-06 20:43:38,027 - ledhandler - INFO - Make gradient: 0 to 30
+2017-12-06 20:43:38,338 - ledhandler - INFO - set dc from self.dc: 89
+2017-12-06 20:43:38,362 - ledhandler - INFO - Start PWM
+2017-12-06 20:43:38,368 - ledhandler - INFO - set dc from self.dc: 39
+2017-12-06 20:43:38,372 - ledhandler - INFO - Start PWM
+2017-12-06 20:43:38,376 - ledhandler - INFO - set dc from self.dc: 29
+2017-12-06 20:43:38,381 - ledhandler - INFO - Start PWM
+2017-12-06 20:43:49,818 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:43:49,831 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:43:49,846 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:43:49,860 - ledhandler - INFO - stoping pwd
+2017-12-06 20:43:49,864 - ledhandler - INFO - stoping pwd
+2017-12-06 20:43:49,870 - ledhandler - INFO - stoping pwd
+2017-12-06 20:45:21,863 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:21,867 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:45:21,871 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:21,875 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:45:21,879 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:21,882 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:45:22,191 - ledhandler - INFO - Make gradient: 0 to 90
+2017-12-06 20:45:23,112 - ledhandler - INFO - Make gradient: 0 to 40
+2017-12-06 20:45:23,535 - ledhandler - INFO - Make gradient: 0 to 30
+2017-12-06 20:45:23,846 - ledhandler - INFO - set dc from self.dc: 89
+2017-12-06 20:45:23,851 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:23,858 - ledhandler - INFO - set dc from self.dc: 39
+2017-12-06 20:45:23,863 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:23,869 - ledhandler - INFO - set dc from self.dc: 29
+2017-12-06 20:45:23,873 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:32,912 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:45:32,926 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:45:32,941 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:45:32,955 - ledhandler - INFO - stoping pwd
+2017-12-06 20:45:32,959 - ledhandler - INFO - stoping pwd
+2017-12-06 20:45:32,962 - ledhandler - INFO - stoping pwd
+2017-12-06 20:45:39,585 - ledhandler - INFO - Make gradient: 89 to 90
+2017-12-06 20:45:39,599 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:45:39,613 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:45:39,627 - ledhandler - INFO - set dc from self.dc: 89
+2017-12-06 20:45:39,631 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:39,635 - ledhandler - INFO - set dc from self.dc: 39
+2017-12-06 20:45:39,641 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:39,646 - ledhandler - INFO - set dc from self.dc: 29
+2017-12-06 20:45:39,651 - ledhandler - INFO - Start PWM
+2017-12-06 20:45:51,089 - ledhandler - INFO - Make gradient: 89 to 100
+2017-12-06 20:45:51,205 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:45:51,219 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:46:14,396 - ledhandler - INFO - Make gradient: 99 to 100
+2017-12-06 20:46:14,412 - ledhandler - INFO - Make gradient: 39 to 40
+2017-12-06 20:46:14,428 - ledhandler - INFO - Make gradient: 29 to 30
+2017-12-06 20:46:20,458 - ledhandler - INFO - Make gradient: 99 to 0
+2017-12-06 20:46:21,470 - ledhandler - INFO - Make gradient: 39 to 0
+2017-12-06 20:46:21,873 - ledhandler - INFO - Make gradient: 29 to 0
+2017-12-06 20:46:33,003 - ledhandler - INFO - Make gradient: 1 to 0
+2017-12-06 20:46:33,021 - ledhandler - INFO - Make gradient: 1 to 0
+2017-12-06 20:46:33,036 - ledhandler - INFO - Make gradient: 1 to 0
+2017-12-06 20:46:44,787 - ledhandler - INFO - Make gradient: 1 to 100
+2017-12-06 20:46:45,798 - ledhandler - INFO - Make gradient: 1 to 0
+2017-12-06 20:46:45,813 - ledhandler - INFO - Make gradient: 1 to 0
+2017-12-06 20:46:58,609 - ledhandler - INFO - Start PWM
+2017-12-06 20:46:58,613 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:46:58,617 - ledhandler - INFO - Start PWM
+2017-12-06 20:46:58,621 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:46:58,625 - ledhandler - INFO - Start PWM
+2017-12-06 20:46:58,629 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:46:58,938 - ledhandler - INFO - Make gradient: 0 to 100
+2017-12-06 20:46:59,960 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:46:59,966 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:46:59,971 - ledhandler - INFO - set dc from self.dc: 99
+2017-12-06 20:46:59,977 - ledhandler - INFO - Start PWM
+2017-12-06 20:46:59,982 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:46:59,987 - ledhandler - INFO - Start PWM
+2017-12-06 20:46:59,991 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:46:59,996 - ledhandler - INFO - Start PWM
+2017-12-06 20:47:15,342 - ledhandler - INFO - Make gradient: 99 to 100
+2017-12-06 20:47:15,356 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:47:15,360 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:47:27,399 - ledhandler - INFO - Make gradient: 99 to 100
+2017-12-06 20:47:27,413 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:47:27,417 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:47:49,382 - ledhandler - INFO - Make gradient: 99 to 10
+2017-12-06 20:47:50,289 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:47:50,294 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:48:00,529 - ledhandler - INFO - Make gradient: 11 to 100
+2017-12-06 20:48:01,436 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:48:01,439 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:48:07,461 - ledhandler - INFO - Make gradient: 99 to 100
+2017-12-06 20:48:07,475 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:48:07,479 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:18,355 - ledhandler - INFO - Start PWM
+2017-12-06 20:49:18,359 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:49:18,363 - ledhandler - INFO - Start PWM
+2017-12-06 20:49:18,367 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:49:18,371 - ledhandler - INFO - Start PWM
+2017-12-06 20:49:18,375 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:49:18,684 - ledhandler - INFO - Make gradient: 0 to 100
+2017-12-06 20:49:19,721 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:19,736 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:19,742 - ledhandler - INFO - set dc from self.dc: 100
+2017-12-06 20:49:19,748 - ledhandler - INFO - Start PWM
+2017-12-06 20:49:19,756 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:49:19,761 - ledhandler - INFO - Start PWM
+2017-12-06 20:49:19,768 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:49:19,774 - ledhandler - INFO - Start PWM
+2017-12-06 20:49:28,204 - ledhandler - INFO - Make gradient: 100 to 0
+2017-12-06 20:49:29,223 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:29,228 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:37,960 - confighandler - INFO - ConfigHandler.read_cfg_file write json: Expecting value: line 1 column 1 (char 0)
+2017-12-06 20:49:38,066 - ledhandler - INFO - Make gradient: 1 to 100
+2017-12-06 20:49:39,089 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:39,094 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:46,923 - ledhandler - INFO - Make gradient: 100 to 0
+2017-12-06 20:49:47,943 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:47,947 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:58,791 - ledhandler - INFO - Make gradient: 1 to 100
+2017-12-06 20:49:59,819 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:49:59,823 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:31,430 - ledhandler - INFO - Start PWM
+2017-12-06 20:50:31,434 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:50:31,439 - ledhandler - INFO - Start PWM
+2017-12-06 20:50:31,443 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:50:31,447 - ledhandler - INFO - Start PWM
+2017-12-06 20:50:31,450 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:50:31,760 - ledhandler - INFO - Make gradient: 0 to 100
+2017-12-06 20:50:32,792 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:32,797 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:32,804 - ledhandler - INFO - set dc from self.dc: 100
+2017-12-06 20:50:32,809 - ledhandler - INFO - Start PWM
+2017-12-06 20:50:32,814 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:50:32,819 - ledhandler - INFO - Start PWM
+2017-12-06 20:50:32,824 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:50:32,828 - ledhandler - INFO - Start PWM
+2017-12-06 20:50:38,249 - ledhandler - INFO - Make gradient: 100 to 0
+2017-12-06 20:50:39,258 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:39,263 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:48,596 - ledhandler - INFO - Make gradient: 2 to 0
+2017-12-06 20:50:48,613 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:48,618 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:58,255 - ledhandler - INFO - Make gradient: 2 to 100
+2017-12-06 20:50:59,266 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:50:59,270 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:51:38,234 - ledhandler - INFO - Start PWM
+2017-12-06 20:51:38,238 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:51:38,242 - ledhandler - INFO - Start PWM
+2017-12-06 20:51:38,246 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:51:38,250 - ledhandler - INFO - Start PWM
+2017-12-06 20:51:38,254 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:51:38,564 - ledhandler - INFO - Make gradient: 0 to 100
+2017-12-06 20:51:39,709 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:51:39,715 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:51:39,721 - ledhandler - INFO - set dc from self.dc: 100
+2017-12-06 20:51:39,728 - ledhandler - INFO - Start PWM
+2017-12-06 20:51:39,734 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:51:39,742 - ledhandler - INFO - Start PWM
+2017-12-06 20:51:39,747 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:51:39,754 - ledhandler - INFO - Start PWM
+2017-12-06 20:51:46,981 - ledhandler - INFO - Make gradient: 100 to 0
+2017-12-06 20:51:48,117 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:51:48,123 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:51:56,553 - ledhandler - INFO - Make gradient: 0 to 100
+2017-12-06 20:51:57,670 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:51:57,677 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:15,006 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:15,010 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:52:15,014 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:15,018 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:52:15,021 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:15,024 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:52:15,334 - ledhandler - INFO - Make gradient: 0 to 100
+2017-12-06 20:52:16,367 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:16,372 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:16,378 - ledhandler - INFO - set dc from self.dc: 100
+2017-12-06 20:52:16,383 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:16,387 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:52:16,394 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:16,402 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:52:16,409 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:24,840 - ledhandler - INFO - Make gradient: 100 to 0
+2017-12-06 20:52:25,873 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:25,878 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:40,672 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:40,676 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:52:40,680 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:40,684 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:52:40,687 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:40,690 - ledhandler - INFO - LedHandler object is created
+2017-12-06 20:52:41,000 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:41,003 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:41,007 - ledhandler - INFO - Make gradient: 0 to 0
+2017-12-06 20:52:41,011 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:52:41,015 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:41,018 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:52:41,021 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:41,024 - ledhandler - INFO - set dc from self.dc: 0
+2017-12-06 20:52:41,027 - ledhandler - INFO - Start PWM
+2017-12-06 20:52:50,057 - ledhandler - INFO - Make gradient: 0 to 1
+2017-12-06 20:52:50,081 - ledhandler - INFO - Make gradient: 0 to 1
+2017-12-06 20:52:50,106 - ledhandler - INFO - Make gradient: 0 to 1
+2017-12-06 20:53:00,361 - ledhandler - INFO - Make gradient: 1 to 100
+2017-12-06 20:53:01,384 - ledhandler - INFO - Make gradient: 1 to 100
+2017-12-06 20:53:02,408 - ledhandler - INFO - Make gradient: 1 to 100
+2017-12-06 20:53:13,062 - ledhandler - INFO - Make gradient: 100 to 20
+2017-12-06 20:53:13,893 - ledhandler - INFO - Make gradient: 100 to 20
+2017-12-06 20:53:14,722 - ledhandler - INFO - Make gradient: 100 to 20
+2017-12-06 20:53:29,090 - ledhandler - INFO - Make gradient: 20 to 75
+2017-12-06 20:53:29,663 - ledhandler - INFO - Make gradient: 20 to 20
+2017-12-06 20:53:29,666 - ledhandler - INFO - Make gradient: 20 to 10
+2017-12-06 20:53:33,995 - ledhandler - INFO - Make gradient: 75 to 50
+2017-12-06 20:53:34,265 - ledhandler - INFO - Make gradient: 20 to 90
+2017-12-06 20:53:34,991 - ledhandler - INFO - Make gradient: 10 to 95
+2017-12-06 20:53:39,181 - ledhandler - INFO - Make gradient: 50 to 75
+2017-12-06 20:53:39,449 - ledhandler - INFO - Make gradient: 90 to 15
+2017-12-06 20:53:40,226 - ledhandler - INFO - Make gradient: 95 to 85
