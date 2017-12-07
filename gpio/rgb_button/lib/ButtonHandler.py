@@ -44,9 +44,11 @@ def write_button_file(retry=10, try_delay=0.05):
 def button_loop():
     try:
         while True:
+            time.sleep(0.1)
             is_pressed = False
             state = simple_input_read()
             while not state:
+                time.sleep(0.1)
                 state = simple_input_read()
                 if state is None:
                     break
@@ -54,6 +56,7 @@ def button_loop():
                     is_pressed = True
                     mylogger.logger.info("Button was pressed")
                     write_button_file()
+                    time.sleep(3)                                       # wait after press happaned
             if state is None:
                 break
 

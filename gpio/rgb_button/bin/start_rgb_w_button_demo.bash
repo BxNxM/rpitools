@@ -6,11 +6,19 @@ button_event_handler_path="/home/pi/rpitools/gpio/rgb_button/lib/ButtonHandler.p
 button_event_path="/home/pi/rpitools/gpio/rgb_button/lib/button_event"
 rgb_interface_path="/home/pi/rpitools/gpio/rgb_led/bin/rgb_interface.py"
 rgb_button_cache_folder="./cache"
+logfile="button_demo.log"
+
 
 if [ ! -d "$rgb_button_cache_folder" ]
 then
     mkdir "$rgb_button_cache_folder"
 fi
+
+function logger() {
+    local msg="$1"
+    echo -e "$(date) - start_rgb_w_button_demo - $msg"
+    echo -e "$(date) - start_rgb_w_button_demo - $msg" >> "$logfile"
+}
 
 
 function start_servive() {
