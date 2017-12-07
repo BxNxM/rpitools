@@ -6,6 +6,7 @@ alias pifreq='frg=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq) &
 alias servicelist='systemctl list-unit-files | grep enabled'
 alias disk='df -h'
 alias startvnc='sudo systemctl start vncserver-x11-serviced.service; systemctl status vncserver-x11-serviced.service'
+alias cpm='/home/$USER/rpitools/gpio/cpmonitor/cprocess_monitor.bash'
 
 if [ ! -z $REPOROOT ]
 then
