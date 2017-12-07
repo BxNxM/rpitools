@@ -6,7 +6,7 @@ source sub_elapsed_time.bash
 
 # message handler function
 function message() {
-    local rpitools_log_path="cache/rpitools.log"
+    local rpitools_log_path="../cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]

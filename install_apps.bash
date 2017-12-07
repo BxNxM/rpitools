@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #source colors
-source colors.bash
-source sub_elapsed_time.bash
+source prepare_sd/colors.bash
+source prepare_sd/sub_elapsed_time.bash
 was_installation=0
 
 # message handler function
