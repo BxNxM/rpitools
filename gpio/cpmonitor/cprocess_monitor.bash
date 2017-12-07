@@ -40,7 +40,7 @@ function get_process_info() {
     then
         echo -e "$pid\t\t$cpu\t\t$mem\t\t$runtime\t\t$p_name\t\t$cmd"
     else
-        echo -e ""
+        echo -e "--\t\t--\t\t--\t\t--\t\t$p_name\t\t-- is NOT running"
     fi
 }
 
