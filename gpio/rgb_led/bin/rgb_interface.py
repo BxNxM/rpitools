@@ -18,6 +18,7 @@ parser.add_argument("-g", "--green", help="GREEN component 0-100")
 parser.add_argument("-b", "--blue",  help="BLUE component 0-100")
 parser.add_argument("-s", "--service",  help="led service ON / OFF")
 parser.add_argument("-l", "--led",  help="led ON / OFF")
+parser.add_argument("-sh", "--show",  action='store_true', help="show database values")
 
 args = parser.parse_args()
 R = args.red
@@ -25,6 +26,7 @@ G = args.green
 B = args.blue
 led_status = args.led
 service_status = args.service
+show=args.show
 
 if R is not None:
     if 100 >= int(R) >= 0:
@@ -70,5 +72,9 @@ if service_status is not None:
     else:
         print("Invalid input (ON/OFF): " + str(led_status))
 
-
+if show:
+    database = rgb.get_all()
+    for key, value in database.items():
+        spacer = (10 - len(key)) * " "
+        print("{}:{}{}".format(key, spacer, value))
 
