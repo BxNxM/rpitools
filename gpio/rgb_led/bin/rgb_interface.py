@@ -28,6 +28,15 @@ led_status = args.led
 service_status = args.service
 show=args.show
 
+def process_is_run(process_name):
+    ps = subprocess.Popen("ps aux | grep -v grep | grep " + str(process_name), shell=True, stdout=subprocess.PIPE)
+    stdout_list = ps.communicate()[0]
+    if len(stdout_list) != 0:
+        #print(stdout_list)
+        return True
+    else:
+        return False
+
 if R is not None:
     if 100 >= int(R) >= 0:
         print("Set red: " + str(R))
@@ -60,13 +69,12 @@ if service_status is not None:
     if service_status == "ON" or service_status == "OFF":
         rgb.put("SERVICE", service_status, secure=False)
         if service_status == "ON":
-                print("set led status: OFF")
-                rgb.put("SERVICE", "OFF", secure=False)
-                time.sleep(2)
-                subprocess.Popen("./rgb_led_controller.py")
-                print("set led status: ON")
-                rgb.put("SERVICE", "ON", secure=False)
-                print("rgb_led_controller.py lounched")
+                if not process_is_run("rgb_led_controller.py"):
+                    print("set led status: " + str(service_status))
+                    subprocess.Popen("nohup ./rgb_led_controller.py &>/de/null &", shell=True)
+                    print("rgb_led_controller.py lounched")
+                else:
+                    print("rgb_led_controller.py is already run")
         else:
             print("rgb_led_controller.py shutdown")
     else:
