@@ -40,7 +40,7 @@ then
         echo -e "Restore backup"
         if [ -e "${backup_path}/cache" ]
         then
-            cp -r "${backup_path}/cache" "${REPOROOT}/cache"
+            cp -r "${backup_path}/cache" "${REPOROOT}"
         else
             echo -e "Backup not found! ${backup_path}/cache"
         fi
