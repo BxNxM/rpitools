@@ -8,7 +8,7 @@ alias clean_cache="rm -f ${REPOROOT}/cache/.*_installed && rm -f ${REPOROOT}/cac
 
 
 #source colors
-source colors.bash
+source prepare_sd/colors.bash
 
 # message handler function
 function message() {
