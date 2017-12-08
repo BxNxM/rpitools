@@ -1,6 +1,5 @@
 rgb_led_controller.py
 start_rgb_w_button_demo.bash
 ButtonHandler.py
-rgb_led_controller.py
 rgb_interface.py
 rgb_demo.py
