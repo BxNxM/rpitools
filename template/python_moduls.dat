@@ -1,2 +1,7 @@
-python-dev python-rpi.gpio
+python-dev
+python-rpi.gpio
 python3-RPi.GPIO
+build-essential
+python-pip
+python-imaging
+python-smbus
