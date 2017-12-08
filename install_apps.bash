@@ -32,6 +32,8 @@ fi
 
 # start install stuff
 applist=${REPOROOT}/template/programs.dat
+pymodulelist=${REPOROOT}/template/python_moduls.dat
+installed_python_module=${REPOROOT}/cache/installed_pymodules.dat
 
 function fileReader {
     lineS=()
@@ -47,7 +49,7 @@ function fileReader {
     fi
 }
 
-function install_secure() {
+function install_apps_secure() {
     local app="$1"
     if [ ! -z "$app" ]
     then
@@ -63,11 +65,39 @@ function install_secure() {
     fi
 }
 
+function install_pymodule_secure() {
+    local app="$1"
+    if [ ! -f "$installed_python_module" ]
+    then
+        echo -e "" > "$installed_python_module"
+    fi
+
+    if [ ! -z "$app" ]
+    then
+        output=$(cat $installed_python_module | grep  "$app")
+        if [ -z "$output" ]
+        then
+            echo "Y" | sudo apt install "$app"
+            echo -e "$app" >> "$installed_python_module"
+            message "$app install python module ...DONE"
+            was_installation=1
+        else
+           message "$app python module is already installed"
+        fi
+    fi
+}
+
 function main() {
     fileReader "$applist"
     for current_app in "${lineS[@]}"
     do
-        install_secure "$current_app"
+        install_apps_secure "$current_app"
+    done
+
+    fileReader "$pymodulelist"
+    for current_modul in "${lineS[@]}"
+    do
+        install_pymodule_secure "$current_modul"
     done
 }
 elapsed_time "start"

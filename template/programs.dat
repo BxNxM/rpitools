@@ -6,6 +6,4 @@ tree
 omxplayer
 shellcheck
 git
-python-dev python-rpi.gpio
-python3-RPi.GPIO
 epiphany-browser
