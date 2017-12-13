@@ -40,12 +40,14 @@ class Oled_window_manager():
         self.font = ImageFont.load_default()
 
         # Draw a black filled box to clear the image.
-        #draw.rectangle((0,0,width,height), outline=0, fill=0)
+        #self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+
         self.page_list = []                                     # page list tuples: page name, page index, page instance
         self.actual_page_index = 0                              # actual page index
         self.stored_files_number = 0                            # stores file pieces in pages folder
         self.display_is_avaible = True
         self.threads = []
+        self.sys_message_cleanup = False
 
     # show contents on display if device is not busy
     def display_show(self):
@@ -84,8 +86,8 @@ class Oled_window_manager():
     # read pages and reload if necessarry
     def manage_pages_thread(self):
             is_reload = self.__read_pages()
-            #if is_reload:
-            self.__load_pages()
+            if is_reload:
+                self.__load_pages()
             sleep(thread_refresh)
 
     # page bar
@@ -112,6 +114,25 @@ class Oled_window_manager():
         self.__draw_time_text(time)
         # Display image.
         self.display_show()
+
+    # system message box
+    def oled_sys_message(self, text=None):
+        # main frame
+        self.draw.rectangle((10, 8, self.disp.width-10, self.disp.height-7), outline=255, fill=0)
+        header_text = "SYS MESS"
+        w, h = self.font.getsize(header_text)
+        self.draw_text(header_text, (self.disp.width - w)/2, 9)
+        if text is not None:
+            if len(text) >= 18:
+                text1 = text[0:17]
+                text2 = text[17:len(text)]
+                self.draw_text(text1, 14, 12+h)
+                self.draw_text(text2, 14, 14+h+h)
+            else:
+                self.draw_text(text, 14, 12+h)
+            self.sys_message_cleanup = True
+            self.display_show()
+            sleep(2)
 
     def __draw_time_text(self, text):
         text = str(text)
@@ -200,9 +221,13 @@ class Oled_window_manager():
             if int(page[1]) == self.actual_page_index:
                 oledlog.logger.info("Call page: " + str(page))
                 try:
+                    if self.sys_message_cleanup:
+                        self.sys_message_cleanup = False
+                        self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
                     page[2].page(self)
                 except Exception as e:
                     oledlog.logger.warn("run page exception" + str(e))
+                    self.oled_sys_message("run page exception" + str(e))
                 # Display image.
                 self.display_show()
 
