@@ -28,5 +28,7 @@ def page(display):
     y+=h
     display.draw_text(str(Disk), x, y)
 
-    display.virtual_button("right")
+    #display.virtual_button("right")
     #display.oled_sys_message("test message, hello bello")
+
+    return False

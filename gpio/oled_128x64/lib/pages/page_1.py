@@ -23,7 +23,9 @@ def page(display):
     display.draw.line((x, top, x+shape_width, bottom), fill=255)
     x += shape_width+padding
 
-    display.virtual_button("right")
+    #display.virtual_button("right")
+
+    return True
 
 def main():
     print("hello bello")

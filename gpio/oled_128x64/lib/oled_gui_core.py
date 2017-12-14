@@ -20,7 +20,9 @@ oledlog = LogHandler.LogHandler("oled")
 
 import threading
 
-thread_refresh = 1
+thread_refresh_header_bar = 1
+thread_refresh_page_bar = 1
+thread_refresh_dynamic_pages = 3
 
 class Oled_window_manager():
 
@@ -44,7 +46,7 @@ class Oled_window_manager():
 
         self.page_list = []                                     # page list tuples: page name, page index, page instance
         self.actual_page_index = 0                              # actual page index
-        self.last_page_index = -1                               # last page index -> check is page changed
+        self.last_page_index = self.actual_page_index           # last page index -> check is page changed
         self.stored_files_number = 0                            # stores file pieces in pages folder
         self.display_is_avaible = True
         self.threads = []
@@ -77,6 +79,7 @@ class Oled_window_manager():
     def display_show(self):
         if self.display_is_avaible:
             self.display_is_avaible = False
+            self.disp_buffer = self.disp._buffer
             oledlog.logger.info("self.image draw over i2c: " + str(self.image))
             self.disp.image(self.image)
             self.disp.display()
@@ -102,20 +105,21 @@ class Oled_window_manager():
             else:
                 self.draw_page_bar(len(self.page_list), self.actual_page_index)
             # sleep in therad
-            sleep(thread_refresh)
+            sleep(thread_refresh_page_bar)
 
     # header bar thread
     def draw_header_bar_thread(self):
         while True:
             self.draw_header_bar()
-            sleep(thread_refresh)
+            sleep(thread_refresh_header_bar)
 
     # read pages and reload if necessarry
     def manage_pages_thread(self):
+        while True:
             is_reload = self.__read_pages()
             if is_reload:
                 self.__load_pages()
-            sleep(thread_refresh)
+            sleep(thread_refresh_dynamic_pages)
 
     # page bar
     def draw_page_bar(self, all_page_int, actaul_page_int):
@@ -257,12 +261,13 @@ class Oled_window_manager():
                     if self.last_page_index != self.actual_page_index:
                         self.last_page_index = self.actual_page_index
                         self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
-                    page[2].page(self)
+                    is_show = page[2].page(self)
                 except Exception as e:
                     oledlog.logger.warn("run page exception" + str(e))
                     self.oled_sys_message("run page exception" + str(e))
-                # Display image.
-                self.display_show()
+                if is_show:
+                    # Display image.
+                    self.display_show()
 
 if __name__ == "__main__":
     display = Oled_window_manager()
