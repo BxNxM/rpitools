@@ -3,3 +3,4 @@ start_rgb_w_button_demo.bash
 ButtonHandler.py
 rgb_interface.py
 rgb_demo.py
+oled_gui_core.py

@@ -12,8 +12,8 @@ function message() {
     local msg="$1"
     if [ ! -z "$msg" ]
     then
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ cache backup/retore ]${NC} $msg"
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ cache backup/retore ]${NC} $msg" >> "$rpitools_log_path"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ appinstall ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ appinstall ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
