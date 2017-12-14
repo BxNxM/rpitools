@@ -44,10 +44,34 @@ class Oled_window_manager():
 
         self.page_list = []                                     # page list tuples: page name, page index, page instance
         self.actual_page_index = 0                              # actual page index
+        self.last_page_index = -1                               # last page index -> check is page changed
         self.stored_files_number = 0                            # stores file pieces in pages folder
         self.display_is_avaible = True
         self.threads = []
         self.sys_message_cleanup = False
+        self.head_page_bar_is_enable = [True, True]
+
+    def head_page_bar_switch(self, head_bar, page_bar):
+        if isinstance(head_bar, bool) and isinstance(page_bar, bool):
+            self.head_page_bar_is_enable = [ head_bar, page_bar ]
+
+    def virtual_button(self, cmd):
+        # test sleep after button press TODO: clean it
+        sleep(3)
+
+        pages_pcs = len(self.page_list)
+        #print("all page: " + str(pages_pcs))
+        if cmd == "right":
+            self.actual_page_index +=1
+            if self.actual_page_index >= pages_pcs:
+                self.actual_page_index = 0
+        elif cmd == "left":
+            self.actual_page_index -=1
+            if self.actual_page_index < 0:
+                self.actual_page_index = pages_pcs-1
+        else:
+            oledlog.logger.error("virtual_button cmd not found: " + str(cmd))
+        #print("Virtual button: " + str(cmd) + " index: " + str(self.actual_page_index))
 
     # show contents on display if device is not busy
     def display_show(self):
@@ -67,6 +91,8 @@ class Oled_window_manager():
         for thd in self.threads:
             thd.daemon = True                                   # with this set, can stop therad
             thd.start()
+        # sleep a little while manage_pages_thread read contents
+        sleep(1)
 
     # page bar thread
     def draw_page_bar_thread(self):
@@ -93,28 +119,30 @@ class Oled_window_manager():
 
     # page bar
     def draw_page_bar(self, all_page_int, actaul_page_int):
-        one_bar_width = int(self.disp.width / all_page_int)
-        one_bar_height = 4
+        if self.head_page_bar_is_enable[1]:
+            one_bar_width = int(self.disp.width / all_page_int)
+            one_bar_height = 4
 
-        # Draw some shapes.
-        # First define some constants to allow easy resizing of shapes.
-        for x_pos in range(0, self.disp.width, one_bar_width):
-            top_pos = self.disp.height-one_bar_height
-            right_pos = x_pos + one_bar_width
-            if right_pos >= self.disp.width:
-                right_pos = self.disp.width - 1
-            self.draw.rectangle((x_pos, top_pos, right_pos, self.disp.height-1), outline=255, fill=0)
-            if x_pos / one_bar_width == actaul_page_int:
-                self.draw.rectangle((x_pos, top_pos, right_pos, self.disp.height-1), outline=255, fill=1)
-        # Display image.
-        self.display_show()
+            # Draw some shapes.
+            # First define some constants to allow easy resizing of shapes.
+            for x_pos in range(0, self.disp.width, one_bar_width):
+                top_pos = self.disp.height-one_bar_height
+                right_pos = x_pos + one_bar_width
+                if right_pos >= self.disp.width:
+                    right_pos = self.disp.width - 1
+                self.draw.rectangle((x_pos, top_pos, right_pos, self.disp.height-1), outline=255, fill=0)
+                if x_pos / one_bar_width == actaul_page_int:
+                    self.draw.rectangle((x_pos, top_pos, right_pos, self.disp.height-1), outline=255, fill=1)
+            # Display image.
+            self.display_show()
 
     # header bar
     def draw_header_bar(self):
-        time = strftime("%H:%M:%S", gmtime())
-        self.__draw_time_text(time)
-        # Display image.
-        self.display_show()
+        if self.head_page_bar_is_enable[0]:
+            time = strftime("%H:%M:%S", gmtime())
+            self.__draw_time_text(time)
+            # Display image.
+            self.display_show()
 
     # system message box
     def oled_sys_message(self, text=None):
@@ -225,6 +253,9 @@ class Oled_window_manager():
                 try:
                     if self.sys_message_cleanup:
                         self.sys_message_cleanup = False
+                        self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+                    if self.last_page_index != self.actual_page_index:
+                        self.last_page_index = self.actual_page_index
                         self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
                     page[2].page(self)
                 except Exception as e:

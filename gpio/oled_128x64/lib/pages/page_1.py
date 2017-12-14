@@ -1,30 +1,29 @@
 import subprocess
 
 def page(display):
-    # Draw a black filled box to clear the image.
-    #self.draw.rectangle((0,0,self.disp.width,self.disp.height), outline=0, fill=0)
+    display.head_page_bar_switch(False, False)
 
-    # Shell scripts for system monitoring from here : https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
-    cmd = "hostname -I | cut -d\' \' -f1"
-    IP = subprocess.check_output(cmd, shell = True )
-    cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
-    CPU = subprocess.check_output(cmd, shell = True )
-    cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
-    MemUsage = subprocess.check_output(cmd, shell = True )
-    cmd = "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%dGB %s\", $3,$2,$5}'"
-    Disk = subprocess.check_output(cmd, shell = True )
+    padding = 4
+    shape_width = 20
+    top = padding + 8
+    bottom = display.disp.height-padding - 8
+    # Move left to right keeping track of the current x position for drawing shapes.
+    x = padding
+    # Draw an ellipse.
+    display.draw.ellipse((x, top , x+shape_width, bottom), outline=255, fill=0)
+    x += shape_width+padding
+    # Draw a rectangle.
+    display.draw.rectangle((x, top, x+shape_width, bottom), outline=255, fill=0)
+    x += shape_width+padding
+    # Draw a triangle.
+    display.draw.polygon([(x, bottom), (x+shape_width/2, top), (x+shape_width, bottom)], outline=255, fill=0)
+    x += shape_width+padding
+    # Draw an X.
+    display.draw.line((x, bottom, x+shape_width, top), fill=255)
+    display.draw.line((x, top, x+shape_width, bottom), fill=255)
+    x += shape_width+padding
 
-    x = 5
-    y = 14
-
-    # Write two lines of text.
-    w, h = display.draw_text("IP: " + str(IP), x, y)
-    y+=h
-    display.draw_text(str(CPU), x, y)
-    y+=h
-    display.draw_text(str(MemUsage), x, y)
-    y+=h
-    display.draw_text(str(Disk), x, y)
+    display.virtual_button("right")
 
 def main():
     print("hello bello")

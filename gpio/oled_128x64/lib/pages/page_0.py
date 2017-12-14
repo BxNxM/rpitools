@@ -1,10 +1,8 @@
 import subprocess
 
 def page(display):
-    # Draw a black filled box to clear the image.
-    #self.draw.rectangle((0,0,self.disp.width,self.disp.height), outline=0, fill=0)
+    display.head_page_bar_switch(True, True)
 
-    # Shell scripts for system monitoring from here : https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
     cmd = "hostname -I | cut -d\' \' -f1"
     IP = subprocess.check_output(cmd, shell = True)
 
@@ -29,3 +27,6 @@ def page(display):
     display.draw_text(str(MemUsage), x, y)
     y+=h
     display.draw_text(str(Disk), x, y)
+
+    display.virtual_button("right")
+    #display.oled_sys_message("test message, hello bello")
