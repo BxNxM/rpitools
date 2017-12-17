@@ -5,3 +5,4 @@ build-essential
 python-pip
 python-imaging
 python-smbus
+python-prctl

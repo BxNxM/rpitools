@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import LogHandler
-mylogger = LogHandler.LogHandler("button handler")
+mylogger = LogHandler.LogHandler("button_handler")
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:

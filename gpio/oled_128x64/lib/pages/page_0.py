@@ -1,6 +1,9 @@
 import subprocess
+import time
 
 def page(display):
+    time.sleep(3)
+
     display.head_page_bar_switch(True, True)
 
     cmd = "hostname -I | cut -d\' \' -f1"

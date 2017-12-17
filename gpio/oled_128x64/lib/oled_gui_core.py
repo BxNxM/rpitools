@@ -20,9 +20,15 @@ oledlog = LogHandler.LogHandler("oled")
 
 import threading
 
+import ButtonHandler
+import prctl
+
+# timing
 thread_refresh_header_bar = 1
 thread_refresh_page_bar = 1
 thread_refresh_dynamic_pages = 3
+thread_refresh_display_show_thread = 0.2
+main_page_refresh_min_delay = 0.02
 
 class Oled_window_manager():
 
@@ -52,28 +58,27 @@ class Oled_window_manager():
         self.threads = []
         self.sys_message_cleanup = False
         self.head_page_bar_is_enable = [True, True]
+        self.redraw = True
 
     def head_page_bar_switch(self, head_bar, page_bar):
         if isinstance(head_bar, bool) and isinstance(page_bar, bool):
             self.head_page_bar_is_enable = [ head_bar, page_bar ]
 
     def virtual_button(self, cmd):
-        # test sleep after button press TODO: clean it
-        sleep(3)
-
         pages_pcs = len(self.page_list)
         #print("all page: " + str(pages_pcs))
-        if cmd == "right":
+        if cmd == "right" or cmd == "RIGHT":
+            oledlog.logger.info("=> Button: right pressed")
             self.actual_page_index +=1
             if self.actual_page_index >= pages_pcs:
                 self.actual_page_index = 0
-        elif cmd == "left":
+        elif cmd == "left" or cmd == "LEFT":
+            oledlog.logger.info("=> Button: left pressed")
             self.actual_page_index -=1
             if self.actual_page_index < 0:
                 self.actual_page_index = pages_pcs-1
         else:
             oledlog.logger.error("virtual_button cmd not found: " + str(cmd))
-        #print("Virtual button: " + str(cmd) + " index: " + str(self.actual_page_index))
 
     # show contents on display if device is not busy
     def display_show(self):
@@ -90,6 +95,8 @@ class Oled_window_manager():
         self.threads.append(threading.Thread(target=self.draw_header_bar_thread))
         self.threads.append(threading.Thread(target=self.draw_page_bar_thread))
         self.threads.append(threading.Thread(target=self.manage_pages_thread))
+        self.threads.append(threading.Thread(target=self.button_handler_thread))
+        self.threads.append(threading.Thread(target=self.display_show_thread))
         # write more threads here...
         for thd in self.threads:
             thd.daemon = True                                   # with this set, can stop therad
@@ -97,8 +104,22 @@ class Oled_window_manager():
         # sleep a little while manage_pages_thread read contents
         sleep(1)
 
+    # showes display content if self.redraw is true
+    def display_show_thread(self):
+        prctl.set_name("thread_dipshow")
+        try:
+            while True:
+                if self.redraw:
+                    self.display_show()
+                    self.redraw = False
+                sleep(thread_refresh_display_show_thread)
+        except Exception as e:
+            oledlog.logger.error("display_show: " + str(e))
+            raise Exception(e)
+
     # page bar thread
     def draw_page_bar_thread(self):
+        prctl.set_name("thread_pagebar")
         while True:
             if len(self.page_list) == 0:
                 self.draw_page_bar(1, self.actual_page_index)
@@ -109,17 +130,25 @@ class Oled_window_manager():
 
     # header bar thread
     def draw_header_bar_thread(self):
+        prctl.set_name("thread_headerbar")
         while True:
             self.draw_header_bar()
             sleep(thread_refresh_header_bar)
 
     # read pages and reload if necessarry
     def manage_pages_thread(self):
+        prctl.set_name("thread_pagemanag")
         while True:
             is_reload = self.__read_pages()
             if is_reload:
                 self.__load_pages()
             sleep(thread_refresh_dynamic_pages)
+
+    def button_handler_thread(self):
+        prctl.set_name("thread_button")
+        while True:
+            status = ButtonHandler.oled_buttons.oled_read_all_function_buttons()
+            self.virtual_button(status)
 
     # page bar
     def draw_page_bar(self, all_page_int, actaul_page_int):
@@ -138,7 +167,8 @@ class Oled_window_manager():
                 if x_pos / one_bar_width == actaul_page_int:
                     self.draw.rectangle((x_pos, top_pos, right_pos, self.disp.height-1), outline=255, fill=1)
             # Display image.
-            self.display_show()
+            # self.display_show()
+            self.redraw = True
 
     # header bar
     def draw_header_bar(self):
@@ -146,7 +176,8 @@ class Oled_window_manager():
             time = strftime("%H:%M:%S", gmtime())
             self.__draw_time_text(time)
             # Display image.
-            self.display_show()
+            #self.display_show()
+            self.redraw = True
 
     # system message box
     def oled_sys_message(self, text=None):
@@ -202,6 +233,7 @@ class Oled_window_manager():
     def __executor(self):
             # write here you want to run in main loop permanently
             self.run_page()
+            sleep(main_page_refresh_min_delay)
 
     # read pages from file
     def __read_pages(self):
@@ -255,19 +287,35 @@ class Oled_window_manager():
             if int(page[1]) == self.actual_page_index:
                 oledlog.logger.info("Call page: " + str(page))
                 try:
+                    # clean system message if it was printed
                     if self.sys_message_cleanup:
                         self.sys_message_cleanup = False
                         self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
-                    if self.last_page_index != self.actual_page_index:
-                        self.last_page_index = self.actual_page_index
-                        self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+                    # if page changed clean page
+                    self.clever_screen_clean()
                     is_show = page[2].page(self)
                 except Exception as e:
                     oledlog.logger.warn("run page exception" + str(e))
                     self.oled_sys_message("run page exception" + str(e))
                 if is_show:
                     # Display image.
-                    self.display_show()
+                    #self.display_show()
+                    self.redraw = True
+
+    def clever_screen_clean(self, clean_full=False):
+        head_bar_height = 8
+        page_bar_height = 6
+        if self.last_page_index != self.actual_page_index:
+            self.last_page_index = self.actual_page_index
+            if self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:
+                self.draw.rectangle((0,head_bar_height,self.disp.width, self.disp.height-page_bar_height), outline=0, fill=0)
+                oledlog.logger.info("Clean screen without head - page bar")
+            else:
+                oledlog.logger.info("TODO: Make smart clean smarter...")
+
+        if clean_full:
+            self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+            oledlog.logger.info("Clean full page")
 
 if __name__ == "__main__":
     display = Oled_window_manager()
