@@ -49,7 +49,7 @@ class ConfigHandler():
         try:
             all_param = None
             while loop:
-                time.sleep(0.3)
+                time.sleep(0.8)
                 if self.file_is_modified():
                     all_param = self.get_all()
                     #print(all_param)
