@@ -4,7 +4,7 @@ import subprocess
 import random
 import time
 
-change_time = 5
+change_time = 10
 change_cycle = 1000
 
 # CHANGE COLOR
@@ -25,7 +25,7 @@ for cycle in range(0, change_cycle):
 print("TURN OFF LED")
 args = ["./rgb_interface.py", "-l", "OFF"]
 p = subprocess.Popen(args)
-time.sleep(4)
+time.sleep(3)
 
 #print("TURN ON LED SERVICE")
 # TURN OFF LED SERVICE

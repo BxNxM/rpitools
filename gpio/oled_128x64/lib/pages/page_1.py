@@ -1,31 +1,25 @@
 import subprocess
+import time
 
 def page(display):
+    time.sleep(3)
+
     display.head_page_bar_switch(True, True)
 
-    padding = 4
-    shape_width = 20
-    top = padding + 8
-    bottom = display.disp.height-padding - 8
-    # Move left to right keeping track of the current x position for drawing shapes.
-    x = padding
-    # Draw an ellipse.
-    display.draw.ellipse((x, top , x+shape_width, bottom), outline=255, fill=0)
-    x += shape_width+padding
-    # Draw a rectangle.
-    display.draw.rectangle((x, top, x+shape_width, bottom), outline=255, fill=0)
-    x += shape_width+padding
-    # Draw a triangle.
-    display.draw.polygon([(x, bottom), (x+shape_width/2, top), (x+shape_width, bottom)], outline=255, fill=0)
-    x += shape_width+padding
-    # Draw an X.
-    display.draw.line((x, bottom, x+shape_width, top), fill=255)
-    display.draw.line((x, top, x+shape_width, bottom), fill=255)
-    x += shape_width+padding
+    cmd = "/opt/vc/bin/vcgencmd measure_temp"
+    temp = subprocess.check_output(cmd, shell = True)
+    temp = "temp: " + temp.split("=")[1]
 
-    #display.virtual_button("right")
+    cmd = 'frg=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq) && echo "$frg Hz"'
+    #cmd = "cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq"
+    freq = subprocess.check_output(cmd, shell = True)
+    freq = "cpu freq: " + freq
 
-    return True
+    x = 5
+    y = 14
+    # Write two lines of text.
+    w, h = display.draw_text(str(temp), x, y)
+    y+=h
+    display.draw_text(str(freq), x, y)
 
-def main():
-    print("hello bello")
+    return False

@@ -1,7 +1,7 @@
 {
-  "BLUE": 0,
-  "GREEN": 50,
+  "BLUE": 45,
+  "GREEN": 40,
   "LED": "OFF",
-  "RED": 25,
+  "RED": 100,
   "SERVICE": "ON"
 }

@@ -304,7 +304,7 @@ class Oled_window_manager():
 
     def clever_screen_clean(self, clean_full=False):
         head_bar_height = 8
-        page_bar_height = 6
+        page_bar_height = 5
         if self.last_page_index != self.actual_page_index:
             self.last_page_index = self.actual_page_index
             if self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:
@@ -317,6 +317,15 @@ class Oled_window_manager():
             self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
             oledlog.logger.info("Clean full page")
 
-if __name__ == "__main__":
+    def __del__(self):
+        self.clever_screen_clean(clean_full=True)
+        self.disp.clear()
+        self.disp.display()
+
+def run():
     display = Oled_window_manager()
     display.run()
+    display.__del__()
+
+if __name__ == "__main__":
+    run()

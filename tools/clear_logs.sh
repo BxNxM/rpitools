@@ -2,7 +2,7 @@
 
 logs_path=($(find ../ -iname "*.log"))
 nohups=($(find ../ -iname "nohup*"))
-pycs_path=($(find ../ -iname "*pyc"))
+pycs_path=($(find ../ -iname "*.pyc"))
 
 #echo -e "${logs_path[*]}"
 #echo -e "${nohups[*]}"
