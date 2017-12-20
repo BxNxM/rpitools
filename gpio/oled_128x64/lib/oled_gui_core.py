@@ -23,6 +23,8 @@ import threading
 import ButtonHandler
 import prctl
 
+from datetime import datetime
+
 # timing
 thread_refresh_header_bar = 1
 thread_refresh_page_bar = 1
@@ -173,7 +175,9 @@ class Oled_window_manager():
     # header bar
     def draw_header_bar(self):
         if self.head_page_bar_is_enable[0]:
-            time = strftime("%H:%M:%S", gmtime())
+            #time = strftime("%H:%M:%S", gmtime())
+            date = datetime.now().strftime('%Y-%m-%d')
+            time = datetime.now().strftime('%H:%M:%S')
             self.__draw_time_text(time)
             # Display image.
             #self.display_show()
