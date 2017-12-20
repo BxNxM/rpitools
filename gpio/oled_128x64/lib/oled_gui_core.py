@@ -10,6 +10,7 @@ import subprocess
 import os
 import sys
 import importlib
+import oled_gui_widgets
 
 # import pages source path
 page_files_path = "pages"
@@ -181,13 +182,43 @@ class Oled_window_manager():
     # header bar
     def draw_header_bar(self):
         if self.head_page_bar_is_enable[0]:
-            #time = strftime("%H:%M:%S", gmtime())
+            # time / date
             date = datetime.now().strftime('%Y-%m-%d')
             time = datetime.now().strftime('%H:%M:%S')
             self.__draw_time_text(time)
+
+            # wifi
+            self.wifi_quality()
+
             # Display image.
             #self.display_show()
             self.redraw = True
+
+    # wifi indicator
+    def wifi_quality(self):
+        try:
+            strenght = oled_gui_widgets.wifi_quality()
+        except Exception as e:
+            oledlog.logger.error("wifi_quality: " + str(e))
+            strenght = None
+        size = 8
+        for i in range(3):
+            start_x = 0+size*i
+            start_y = 0
+            end_x = 0+size*(i+1)
+            end_y = 0+size
+            self.draw.rectangle((start_x, start_y, end_x, end_y), outline=1, fill=0)
+            # if wifi is not avaible
+            if strenght is None or strenght ==  -1:
+                self.draw.rectangle((3, 3, 21, 5), outline=1, fill=1)
+                self.display_show()
+                sleep(0.2)
+                self.draw.rectangle((3, 3, 21, 5), outline=0, fill=0)
+                self.display_show()
+                sleep(0.2)
+            # if wifi is avaible
+            elif strenght >= i+1:
+                self.draw.rectangle((start_x+2, start_y+2, end_x-2, end_y-2), outline=1, fill=1)
 
     # system message box
     def oled_sys_message(self, text=None):
