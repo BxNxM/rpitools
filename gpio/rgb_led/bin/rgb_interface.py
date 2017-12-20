@@ -71,7 +71,7 @@ if service_status is not None:
         if service_status == "ON":
                 if not process_is_run("rgb_led_controller.py"):
                     print("set led status: " + str(service_status))
-                    subprocess.Popen("nohup ./rgb_led_controller.py &>/dev/null &", shell=True)
+                    subprocess.Popen("nohup " + os.path.join(myfolder, "rgb_led_controller.py") + " &>/dev/null &", shell=True)
                     print("rgb_led_controller.py lounched")
                 else:
                     print("rgb_led_controller.py is already run")
