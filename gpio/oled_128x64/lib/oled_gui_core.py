@@ -326,7 +326,20 @@ class Oled_window_manager():
                     # Display image.
                     #self.display_show()
                     self.redraw = True
-        sleep(self.display_refresh_time_sec)
+                # clever wait, if button press happen, break sleep
+                self.run_page_wait(int(page[1]))
+
+    def run_page_wait(self, page_weight_index_buff):
+        # clever wait between refresh page - if change page evenet happen break wait
+        wait = 0
+        while wait < self.display_refresh_time_sec:
+            wait += 0.1
+            sleep(0.1)
+            print("=> SLEEP AFTER PAGE REFRESH: " + str(wait) + "/" + str(self.display_refresh_time_sec))
+            print("{} actual <-> {} buffer".format(self.actual_page_index, page_weight_index_buff))
+            if page_weight_index_buff != self.actual_page_index:
+                print("\n\n=> SLEEP AFTER PAGE REFRESH !!! BREAK !!!\n\n")
+                break
 
     def clever_screen_clean(self, clean_full=False):
         head_bar_height = 9
