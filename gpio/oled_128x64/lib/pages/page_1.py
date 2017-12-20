@@ -1,10 +1,12 @@
 import subprocess
 import time
 
-def page(display):
-    time.sleep(3)
-
+def page_setup(display):
     display.head_page_bar_switch(True, True)
+    display.display_refresh_time_setter(3)
+
+def page(display):
+    #time.sleep(3)
 
     cmd = "/opt/vc/bin/vcgencmd measure_temp"
     temp = subprocess.check_output(cmd, shell = True)

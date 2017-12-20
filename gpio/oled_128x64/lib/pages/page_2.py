@@ -8,9 +8,11 @@ import time
 #                                                                       #
 #########################################################################
 
-def page(display):
+def page_setup(display):
     display.head_page_bar_switch(True, True)
+    display.display_refresh_time_setter(0)
 
+def page(display):
     size = 10
     x = random.randint(0, 128-size)
     y = random.randint(8, 64-4-size)

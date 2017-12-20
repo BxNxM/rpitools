@@ -27,6 +27,6 @@ def page(display):
     x += shape_width+padding
 
     #display.virtual_button("right")
-    #display.oled_sys_message("test message, hello bello, asd, ad, asd, asd")
+    display.oled_sys_message("test message, hello bello, asd, ad, asd, asd")
 
     return True

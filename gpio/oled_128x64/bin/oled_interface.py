@@ -6,7 +6,6 @@ import sys
 myfolder = os.path.dirname(os.path.abspath(__file__))
 import subprocess
 import time
-print(myfolder)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--oled", help="Oled service ON or OFF")

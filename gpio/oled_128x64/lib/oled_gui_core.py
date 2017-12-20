@@ -31,6 +31,7 @@ thread_refresh_page_bar = 1
 thread_refresh_dynamic_pages = 3
 thread_refresh_display_show_thread = 0.2
 main_page_refresh_min_delay = 0.02
+oled_sys_message_wait_sec = 5
 
 class Oled_window_manager():
 
@@ -61,6 +62,11 @@ class Oled_window_manager():
         self.sys_message_cleanup = False
         self.head_page_bar_is_enable = [True, True]
         self.redraw = True
+        self.display_refresh_time_sec = 1
+
+    def display_refresh_time_setter(self, time):
+        if isinstance(time, int):
+            self.display_refresh_time_sec = time
 
     def head_page_bar_switch(self, head_bar, page_bar):
         if isinstance(head_bar, bool) and isinstance(page_bar, bool):
@@ -186,21 +192,33 @@ class Oled_window_manager():
     # system message box
     def oled_sys_message(self, text=None):
         # main frame
-        self.draw.rectangle((10, 8, self.disp.width-10, self.disp.height-7), outline=255, fill=0)
-        header_text = "SYS MESS"
-        w, h = self.font.getsize(header_text)
-        self.draw_text(header_text, (self.disp.width - w)/2, 9)
-        if text is not None:
-            if len(text) >= 18:
-                text1 = text[0:17]
-                text2 = text[17:len(text)]
-                self.draw_text(text1, 14, 12+h)
-                self.draw_text(text2, 14, 14+h+h)
-            else:
-                self.draw_text(text, 14, 12+h)
-            self.sys_message_cleanup = True
-            self.display_show()
-            sleep(4)
+        global oled_sys_message_wait_sec
+        time_wait = oled_sys_message_wait_sec
+        while time_wait > 0:
+            self.draw.rectangle((10, 8, self.disp.width-10, self.disp.height-7), outline=255, fill=0)
+            header_text = "SYS MESS - {} s".format(time_wait)
+            w, h = self.font.getsize(header_text)
+            self.draw_text(header_text, (self.disp.width - w)/2, 9)
+            if text is not None:
+                if len(text) >= 18:
+                    text1 = text[0:17]
+                    if len(text) > 17*2:
+                        text2 = text[17:34]
+                        text3 = text[34:len(text)]
+                    else:
+                        text2 = text[17:len(text)]
+                        text3 = ""
+                    self.draw_text(text1, 14, 12+h)
+                    self.draw_text(text2, 14, 12+h+h)
+                    self.draw_text(text3, 14, 12+h+h+h)
+                else:
+                    self.draw_text(text, 14, 12+h)
+                self.sys_message_cleanup = True
+                self.display_show()
+                sleep(1)
+                time_wait-=1
+        else:
+            self.draw.rectangle((10, 8, self.disp.width-10, self.disp.height-7), outline=0, fill=0)
 
     def __draw_time_text(self, text):
         text = str(text)
@@ -295,8 +313,11 @@ class Oled_window_manager():
                     if self.sys_message_cleanup:
                         self.sys_message_cleanup = False
                         self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+                    # run page setup function
+                    page[2].page_setup(self)
                     # if page changed clean page
                     self.clever_screen_clean()
+                    # run page
                     is_show = page[2].page(self)
                 except Exception as e:
                     oledlog.logger.warn("run page exception" + str(e))
@@ -305,15 +326,18 @@ class Oled_window_manager():
                     # Display image.
                     #self.display_show()
                     self.redraw = True
+        sleep(self.display_refresh_time_sec)
 
     def clever_screen_clean(self, clean_full=False):
-        head_bar_height = 8
+        head_bar_height = 9
         page_bar_height = 5
         if self.last_page_index != self.actual_page_index:
             self.last_page_index = self.actual_page_index
             if self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:
                 self.draw.rectangle((0,head_bar_height,self.disp.width, self.disp.height-page_bar_height), outline=0, fill=0)
                 oledlog.logger.info("Clean screen without head - page bar")
+            elif not self.head_page_bar_is_enable[0] and not self.head_page_bar_is_enable[1]:
+                clean_full = True
             else:
                 oledlog.logger.info("TODO: Make smart clean smarter...")
 

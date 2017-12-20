@@ -15,6 +15,6 @@ function hard_kill() {
 }
 
 soft_kill
-sleep 2
+sleep 1
 hard_kill
 
