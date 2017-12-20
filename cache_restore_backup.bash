@@ -2,6 +2,7 @@
 
 arg_len=$#
 arg_list=$@
+REPOROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 backup_path=~/.rpitools_bckp/
 
@@ -17,13 +18,6 @@ function message() {
     fi
 }
 
-# check we are sourced up
-if [ -z "$REPOROOT" ]
-then
-    message "Please ${RED}source rpitools/setup${NC} before use these script!"
-    exit 1
-fi
-
 if [ "$arg_len" == 1 ]
 then
     if [ "${arg_list[0]}" == "backup" ]
@@ -34,6 +28,12 @@ then
             mkdir "$backup_path"
         fi
         cp -r "${REPOROOT}/cache" "$backup_path"
+        if [ "$?" -eq 0 ]
+        then
+            echo -e "Create backup SUCCESS"
+        else
+            echo -e "Create backup FAIL"
+        fi
 
     elif [ "${arg_list[0]}" == "restore" ]
     then
@@ -41,6 +41,12 @@ then
         if [ -e "${backup_path}/cache" ]
         then
             cp -r "${backup_path}/cache" "${REPOROOT}"
+            if [ "$?" -eq 0 ]
+            then
+                echo -e "Restore backup SUCCESS"
+            else
+                echo -e "Restore backup FAIL"
+            fi
         else
             echo -e "Backup not found! ${backup_path}/cache"
         fi
