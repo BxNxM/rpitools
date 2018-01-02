@@ -32,7 +32,7 @@ thread_refresh_page_bar = 1
 thread_refresh_dynamic_pages = 3
 thread_refresh_display_show_thread = 0.2
 main_page_refresh_min_delay = 0.02
-oled_sys_message_wait_sec = 5
+oled_sys_message_wait_sec = 3
 
 class Oled_window_manager():
 
@@ -112,8 +112,9 @@ class Oled_window_manager():
         for thd in self.threads:
             thd.daemon = True                                   # with this set, can stop therad
             thd.start()
+            sleep(0.1)
         # sleep a little while manage_pages_thread read contents
-        sleep(1)
+        sleep(0.5)
 
     # showes display content if self.redraw is true
     def display_show_thread(self):
@@ -192,6 +193,9 @@ class Oled_window_manager():
             # wifi
             self.wifi_quality()
 
+            # performance
+            self.performance_widget()
+
             # Display image.
             #self.display_show()
             self.redraw = True
@@ -221,6 +225,42 @@ class Oled_window_manager():
             # if wifi is avaible
             elif strenght >= i+1:
                 self.draw.rectangle((start_x+2, start_y+2, end_x-2, end_y-2), outline=1, fill=1)
+
+    def performance_widget(self):
+        try:
+            CPU, MemUsage, temp, DiskUsage = oled_gui_widgets.performance_widget()
+        except Exception as e:
+            oledlog.logger.error("wifi_quality: " + str(e))
+
+        self.draw.rectangle((100, 0, 105, 9), outline=1, fill=0)
+        self.draw.rectangle((107, 0, 112, 9), outline=1, fill=0)
+        self.draw.rectangle((114, 0, 119, 9), outline=1, fill=0)
+        self.draw.rectangle((121, 0, 126, 9), outline=1, fill=0)
+
+        max_val = 100
+        step = 7 / float(max_val)
+
+        # CPU BAR
+        input_val = int(CPU)
+        lvl = int(input_val*step)
+        self.draw.rectangle((101, 8-lvl, 104, 8), outline=1, fill=1)
+
+        # Mem BAR
+        input_val = int(MemUsage)
+        lvl = int(input_val*step)
+        self.draw.rectangle((108, 8-lvl, 111, 8), outline=1, fill=1)
+
+        # temp BAR
+        input_val = int(temp)
+        lvl = int(input_val*step)
+        self.draw.rectangle((115, 8-lvl, 118, 8), outline=1, fill=1)
+
+        # disk BAR
+        input_val = int(DiskUsage)
+        lvl = int(input_val*step)
+        self.draw.rectangle((122, 8-lvl, 125, 8), outline=1, fill=1)
+
+        self.display_show()
 
     # system message box
     def oled_sys_message(self, text=None):
@@ -392,7 +432,7 @@ class Oled_window_manager():
                     oledlog.logger.warn("run page destructor" + str(err))
 
     def clever_screen_clean(self, clean_full=False):
-        head_bar_height = 8
+        head_bar_height = 9
         page_bar_height = 5
         if self.page_is_changed():
             if self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:

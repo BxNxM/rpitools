@@ -23,5 +23,28 @@ def wifi_quality():
         blocks = -1
     return blocks
 
+def performance_widget():
+    cmd = "/home/$USER/rpitools/tools/proc_stat.sh -s"
+    CPU = subprocess.check_output(cmd, shell = True)
+
+    cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
+    MemUsage = subprocess.check_output(cmd, shell = True)
+    MemUsage = MemUsage.split(" ")[2]
+    MemUsage = MemUsage.split(".")[0]
+
+    cmd = "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%dGB %s\", $3,$2,$5}'"
+    Disk = subprocess.check_output(cmd, shell = True )
+    DiskUsage = Disk.split(" ")[2]
+    DiskUsage = DiskUsage[0:-1]
+
+    cmd = "/opt/vc/bin/vcgencmd measure_temp"
+    temp = subprocess.check_output(cmd, shell = True)
+    temp = temp.split("=")[1]
+    temp = temp.split(".")[0]
+
+    return CPU, MemUsage, temp, DiskUsage
+
 if __name__ == "__main__":
     print("WIFI signal quality: " + str(wifi_quality()))
+    cpu, mem, temp, disk = performance_widget()
+    print("cpu: {}\nmem: {}\ntemp: {}\ndisk: {}".format(cpu, mem, temp, disk))

@@ -25,11 +25,11 @@ def page(display):
 
     w, h = display.draw_text("LED:", x, y)
     y += h
-    w, h = display.draw_text("    r: " + str(r_value), x, y)
+    w, h = display.draw_text("    r: " + str(r_value) + " ", x, y)
     y += h
-    w, h = display.draw_text("    g: " + str(g_value), x, y)
+    w, h = display.draw_text("    g: " + str(g_value) + " ", x, y)
     y += h
-    w, h = display.draw_text("    b: " + str(b_value), x, y)
+    w, h = display.draw_text("    b: " + str(b_value) + " ", x, y)
 
     return False
 

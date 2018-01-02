@@ -20,8 +20,6 @@ def page(display):
     #cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
     cmd = "/home/$USER/rpitools/tools/proc_stat.sh -s"
     CPU = subprocess.check_output(cmd, shell = True )
-    #CPU_percent = float(CPU.split()[2])*100
-    #CPU_ = "CPU Load: " + str(CPU_percent) + " %"
     CPU_ = str(CPU) + " %"
 
     cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
@@ -30,11 +28,9 @@ def page(display):
     mem_string += " (" + MemUsage.split(" ")[1] + ")"
     MemUsage = mem_string
 
-    cmd = "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%dGB %s\", $3,$2,$5}'"
-    Disk = subprocess.check_output(cmd, shell = True )
-    disk_string = Disk.split(" ")[2]
-    disk_string += " (" + Disk.split(" ")[1] + ")"
-    Disk = disk_string
+    cmd = "/opt/vc/bin/vcgencmd measure_temp"
+    temp = subprocess.check_output(cmd, shell = True)
+    temp = temp.split("=")[1]
 
     x = 0
     y = 14
@@ -45,7 +41,7 @@ def page(display):
     y+=h
     display.draw_text("MEM:  " + str(MemUsage), x, y)
     y+=h
-    display.draw_text("DISK: " + str(Disk), x, y)
+    display.draw_text("TEMP: " + str(temp), x+1, y)
 
     #display.virtual_button("right")
     #display.oled_sys_message("test message, hello bello")

@@ -14,9 +14,11 @@ def page_setup(display):
 def page(display):
     #time.sleep(3)
 
-    cmd = "/opt/vc/bin/vcgencmd measure_temp"
-    temp = subprocess.check_output(cmd, shell = True)
-    temp = temp.split("=")[1]
+    cmd = "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%dGB %s\", $3,$2,$5}'"
+    Disk = subprocess.check_output(cmd, shell = True )
+    disk_string = Disk.split(" ")[2]
+    disk_string += " (" + Disk.split(" ")[1] + ")"
+    Disk = disk_string
 
     cmd = 'frg=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq) && echo "$frg Hz"'
     freq = subprocess.check_output(cmd, shell = True)
@@ -25,7 +27,7 @@ def page(display):
     x = 0
     y = 14
     # Write two lines of text.
-    w, h = display.draw_text("TEMP: " + str(temp), x+1, y)
+    w, h = display.draw_text("DISK: " + str(Disk), x, y)
     y+=h
     display.draw_text("CPU:  " + str(freqMhz) + " MHz ", x, y)
 
