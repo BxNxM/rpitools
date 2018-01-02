@@ -9,6 +9,7 @@ alias startvnc='sudo systemctl start vncserver-x11-serviced.service; systemctl s
 alias cpm='/home/$USER/rpitools/gpio/cpmonitor/cprocess_monitor.bash'
 alias rgbinterface='/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py'
 alias oledinterface='/home/$USER/rpitools/gpio/oled_128x64/bin/oled_interface.py'
+alias myprocstat='/home/$USER/rpitools/tools/cpmonitor/cprocess_monitor.bash'
 
 if [ ! -z $REPOROOT ]
 then

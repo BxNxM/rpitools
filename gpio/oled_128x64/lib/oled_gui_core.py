@@ -373,7 +373,7 @@ class Oled_window_manager():
                 break
 
     def clever_screen_clean(self, clean_full=False):
-        head_bar_height = 9
+        head_bar_height = 8
         page_bar_height = 5
         if self.last_page_index != self.actual_page_index:
             self.last_page_index = self.actual_page_index
