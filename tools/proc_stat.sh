@@ -20,7 +20,7 @@ function GetCPULoad {
   local mode="$1"
 
   avgCpuLoad=0
-  measureTime=4
+  measureTime=3
   #measure $measureTime times
   for ((cnt=0; cnt<$measureTime; cnt++))
   do
@@ -79,7 +79,7 @@ then
 		echo -e "arg: <-l>\t write average CPU LOAD continously"
                 echo -e "arg: <-s>\t outputs without format, just int"
 		echo -e "arg: <>\t write one result to stdio"
-		echo -e "arg: <-help or -h> helper menu" 
+		echo -e "arg: <-help or -h> helper menu"
 	fi
 
 #default output

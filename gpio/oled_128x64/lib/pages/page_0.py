@@ -16,24 +16,30 @@ def page(display):
     CPU = subprocess.check_output(cmd, shell = True )
     #CPU_percent = float(CPU.split()[2])*100
     #CPU_ = "CPU Load: " + str(CPU_percent) + " %"
-    CPU_ = "CPU Load: " + str(CPU) + " %"
+    CPU_ = str(CPU) + " %"
 
     cmd = "free -m | awk 'NR==2{printf \"Mem: %s/%sMB %.2f%%\", $3,$2,$3*100/$2 }'"
     MemUsage = subprocess.check_output(cmd, shell = True )
+    mem_string = MemUsage.split(" ")[2]
+    mem_string += " (" + MemUsage.split(" ")[1] + ")"
+    MemUsage = mem_string
 
     cmd = "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%dGB %s\", $3,$2,$5}'"
     Disk = subprocess.check_output(cmd, shell = True )
+    disk_string = Disk.split(" ")[2]
+    disk_string += " (" + Disk.split(" ")[1] + ")"
+    Disk = disk_string
 
-    x = 5
+    x = 0
     y = 14
     # Write two lines of text.
-    w, h = display.draw_text("IP: " + str(IP), x, y)
+    w, h = display.draw_text("IP:   " + str(IP), x, y)
     y+=h
-    display.draw_text(str(CPU_), x, y)
+    display.draw_text("CPU:  " + str(CPU_), x, y)
     y+=h
-    display.draw_text(str(MemUsage), x, y)
+    display.draw_text("MEM:  " + str(MemUsage), x, y)
     y+=h
-    display.draw_text(str(Disk), x, y)
+    display.draw_text("DISK: " + str(Disk), x, y)
 
     #display.virtual_button("right")
     #display.oled_sys_message("test message, hello bello")
