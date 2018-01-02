@@ -350,6 +350,11 @@ class Oled_window_manager():
                     self.clever_screen_clean()
                     # run page
                     is_show = page[2].page(self)
+                    # page destructor
+                    try:
+                        page[2].page_destructor(self)
+                    except Exception as err:
+                        oledlog.logger.warn("run page destructor" + str(err))
                 except Exception as e:
                     oledlog.logger.warn("run page exception" + str(e))
                     self.oled_sys_message("run page exception" + str(e))

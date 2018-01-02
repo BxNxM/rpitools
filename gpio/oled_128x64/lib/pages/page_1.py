@@ -19,7 +19,7 @@ def page(display):
     x = 0
     y = 14
     # Write two lines of text.
-    w, h = display.draw_text("TEMP: " + str(temp), x, y)
+    w, h = display.draw_text("TEMP: " + str(temp), x+1, y)
     y+=h
     display.draw_text("CPU:  " + str(freqMhz) + " MHz ", x, y)
 
