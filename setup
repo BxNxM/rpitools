@@ -92,6 +92,16 @@ then
     ln -s /etc/wpa_supplicant/wpa_supplicant.conf $REPOROOT/config/wpa_supplicant.conf
 fi
 
+#link systemd.system folder
+if [  -e "$REPOROOT/config/systemd" ]
+then
+    message "$REPOROOT/config/systemd is already linked"
+ else
+    message "Linking: ln -s /lib/systemd/system/ $REPOROOT/config/systemd"
+    ln -s /lib/systemd/system/ $REPOROOT/config/systemd
+fi
+
+
 #link boot.config.txt config file
 if [  -e "$REPOROOT/config/config.txt" ]
 then

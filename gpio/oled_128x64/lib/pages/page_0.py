@@ -51,3 +51,6 @@ def page(display):
     #display.oled_sys_message("test message, hello bello")
 
     return False
+
+def page_destructor(display):
+    pass

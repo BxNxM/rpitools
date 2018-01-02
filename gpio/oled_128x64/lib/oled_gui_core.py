@@ -86,6 +86,8 @@ class Oled_window_manager():
             self.actual_page_index -=1
             if self.actual_page_index < 0:
                 self.actual_page_index = pages_pcs-1
+        elif cmd == "ok" or cmd == "OK":
+            self.oled_sys_message(text="     OK     ")
         else:
             oledlog.logger.error("virtual_button cmd not found: " + str(cmd))
 

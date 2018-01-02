@@ -1,0 +1,14 @@
+[Unit]
+Description=oled service 128x64
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python -u oled_gui_core.py
+WorkingDirectory=/home/pi/rpitools/gpio/oled_128x64/lib/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target

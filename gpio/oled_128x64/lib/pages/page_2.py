@@ -20,3 +20,6 @@ def page(display):
 
     #display.virtual_button("right")
     return True
+
+def page_destructor(display):
+    pass

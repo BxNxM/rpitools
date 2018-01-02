@@ -30,3 +30,6 @@ def page(display):
     display.draw_text("CPU:  " + str(freqMhz) + " MHz ", x, y)
 
     return False
+
+def page_destructor(display):
+    pass
