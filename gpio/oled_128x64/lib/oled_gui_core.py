@@ -350,11 +350,6 @@ class Oled_window_manager():
                     self.clever_screen_clean()
                     # run page
                     is_show = page[2].page(self)
-                    # page destructor
-                    try:
-                        page[2].page_destructor(self)
-                    except Exception as err:
-                        oledlog.logger.warn("run page destructor" + str(err))
                 except Exception as e:
                     oledlog.logger.warn("run page exception" + str(e))
                     self.oled_sys_message("run page exception" + str(e))
@@ -377,11 +372,27 @@ class Oled_window_manager():
                 print("\n\n=> SLEEP AFTER PAGE REFRESH !!! BREAK !!!\n\n")
                 break
 
+    def page_is_changed(self):
+        state = False
+        if self.last_page_index != self.actual_page_index:
+            self.run_page_x_destructor(self.last_page_index)
+            self.last_page_index = self.actual_page_index
+            state = True
+        return state
+
+    def run_page_x_destructor(self, last_page_index_to_clean):
+        for index, page in enumerate(self.page_list):
+            if int(page[1]) == last_page_index_to_clean:
+                # page destructor
+                try:
+                    page[2].page_destructor(self)
+                except Exception as err:
+                    oledlog.logger.warn("run page destructor" + str(err))
+
     def clever_screen_clean(self, clean_full=False):
         head_bar_height = 8
         page_bar_height = 5
-        if self.last_page_index != self.actual_page_index:
-            self.last_page_index = self.actual_page_index
+        if self.page_is_changed():
             if self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:
                 self.draw.rectangle((0,head_bar_height,self.disp.width, self.disp.height-page_bar_height), outline=0, fill=0)
                 oledlog.logger.info("Clean screen without head - page bar")

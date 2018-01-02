@@ -34,4 +34,5 @@ def page(display):
     return False
 
 def page_destructor(display):
-    pass
+    cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
+    subprocess.call(cmd_aliad, shell=True)
