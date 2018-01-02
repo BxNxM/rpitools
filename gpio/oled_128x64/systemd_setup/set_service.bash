@@ -18,7 +18,7 @@ function check_exitcode() {
 }
 
 function function_demo() {
-    service="oledinterface.service"
+    service="oled_gui_core.service"
     message "INFO about service (systemd)"
     message "systemctl status $service"
     message "systemctl is-active $service"
@@ -33,18 +33,18 @@ function function_demo() {
 
 }
 
-if [ ! -e /lib/systemd/system/oledinterface.service ]
+if [ ! -e /lib/systemd/system/oled_gui_core.service ]
 then
-    message "COPY: /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oledinterface.service -> /lib/systemd/system/oledinterface.service"
-    sudo cp /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oledinterface.service /lib/systemd/system/oledinterface.service
+    message "COPY: /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service -> /lib/systemd/system/oled_gui_core.service"
+    sudo cp /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service /lib/systemd/system/oled_gui_core.service
     check_exitcode "$?"
 
-    message "ENABLE SERICE: sudo systemctl enable oledinterface.service"
-    sudo systemctl enable oledinterface.service
+    message "ENABLE SERICE: sudo systemctl enable oled_gui_core.service"
+    sudo systemctl enable oled_gui_core.service
     check_exitcode "$?"
 
     function_demo
 else
-    message "/lib/systemd/system/oledinterface.service is already exists:"
+    message "/lib/systemd/system/oled_gui_core.service is already exists:"
     function_demo
 fi
