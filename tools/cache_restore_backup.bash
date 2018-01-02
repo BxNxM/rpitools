@@ -2,7 +2,8 @@
 
 arg_len=$#
 arg_list=$@
-REPOROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+mypath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+REPOROOT="$(dirname $mypath)"
 
 backup_path=~/.rpitools_bckp/
 
