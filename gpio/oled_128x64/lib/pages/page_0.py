@@ -1,6 +1,12 @@
 import subprocess
 import time
 
+#################################################################################
+#                              PAGE 0 - performance monitor                     #
+#                              ----------------------------                     #
+#                             * IP, * CPU load, * MEM, * DISK                   #
+#################################################################################
+
 def page_setup(display):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(3)
