@@ -23,6 +23,13 @@ def wifi_quality():
         blocks = -1
     return blocks
 
+def wifi_get_ssid():
+    try:
+        output = wifi_info.run_main()
+    except:
+        output = None
+    return str(output[6])
+
 def performance_widget():
     cmd = "/home/$USER/rpitools/tools/proc_stat.sh -s"
     CPU = subprocess.check_output(cmd, shell = True)
@@ -48,3 +55,4 @@ if __name__ == "__main__":
     print("WIFI signal quality: " + str(wifi_quality()))
     cpu, mem, temp, disk = performance_widget()
     print("cpu: {}\nmem: {}\ntemp: {}\ndisk: {}".format(cpu, mem, temp, disk))
+    print("SSID: {}".format(wifi_get_ssid()))

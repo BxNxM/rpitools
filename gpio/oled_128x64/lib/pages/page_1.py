@@ -1,5 +1,11 @@
 import subprocess
 import time
+import os
+import sys
+myfolder = os.path.dirname(os.path.abspath(__file__))
+widget_module_path = os.path.dirname(myfolder)
+sys.path.append(widget_module_path)
+import oled_gui_widgets
 
 #################################################################################
 #                              PAGE 1 - performance monitor                     #
@@ -24,12 +30,16 @@ def page(display):
     freq = subprocess.check_output(cmd, shell = True)
     freqMhz = int(freq.split(" ")[0]) / 1000
 
+    ssid = oled_gui_widgets.wifi_get_ssid()
+
     x = 0
     y = 14
     # Write two lines of text.
     w, h = display.draw_text("DISK: " + str(Disk), x, y)
     y+=h
     display.draw_text("CPU:  " + str(freqMhz) + " MHz ", x, y)
+    y+=h
+    display.draw_text("SSID: " + str(ssid), x, y)
 
     return False
 
