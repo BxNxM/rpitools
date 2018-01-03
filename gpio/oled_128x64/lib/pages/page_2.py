@@ -13,9 +13,9 @@ def page_setup(display):
     display.display_refresh_time_setter(1)
 
 def page(display):
-    size = 10
+    size = 4
     x = random.randint(0, 128-size)
-    y = random.randint(9, 64-4-size)
+    y = random.randint(9, 64-9-size)
     display.draw.rectangle((x, y, x+size, y+size), outline=255, fill=0)
 
     #display.virtual_button("right")

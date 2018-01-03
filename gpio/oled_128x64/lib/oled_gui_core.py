@@ -27,11 +27,11 @@ import prctl
 from datetime import datetime
 
 # timing
-thread_refresh_header_bar = 1
-thread_refresh_page_bar = 1
+thread_refresh_header_bar = 1.01
+thread_refresh_page_bar = 1.02
 thread_refresh_dynamic_pages = 3
-thread_refresh_display_show_thread = 0.2
-main_page_refresh_min_delay = 0.02
+thread_refresh_display_show_thread = 0.3
+main_page_refresh_min_delay = 0.03
 oled_sys_message_wait_sec = 3
 
 class Oled_window_manager():
