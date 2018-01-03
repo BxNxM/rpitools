@@ -6,11 +6,11 @@ alias pifreq='frg=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq) &
 alias servicelist='systemctl list-unit-files | grep enabled'
 alias disk='df -h'
 alias startvnc='sudo systemctl start vncserver-x11-serviced.service; systemctl status vncserver-x11-serviced.service'
-alias cpm='/home/$USER/rpitools/gpio/cpmonitor/cprocess_monitor.bash'
 alias rgbinterface='/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py'
 alias oledinterface='/home/$USER/rpitools/gpio/oled_128x64/bin/oled_interface.py'
 alias myprocstat='/home/$USER/rpitools/tools/cpmonitor/cprocess_monitor.bash'
 alias cleanuplogs='pushd /home/$USER/rpitools/tools/ && ./clear_logs.sh && popd'
+
 
 if [ ! -z $REPOROOT ]
 then

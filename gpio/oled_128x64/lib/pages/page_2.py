@@ -15,7 +15,7 @@ def page_setup(display):
 def page(display):
     size = 4
     x = random.randint(0, 128-size)
-    y = random.randint(9, 64-9-size)
+    y = random.randint(9, 64-10-size)
     display.draw.rectangle((x, y, x+size, y+size), outline=255, fill=0)
 
     #display.virtual_button("right")

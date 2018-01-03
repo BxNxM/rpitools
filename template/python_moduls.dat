@@ -6,3 +6,4 @@ python-pip
 python-imaging
 python-smbus
 python-prctl
+python3-easygui

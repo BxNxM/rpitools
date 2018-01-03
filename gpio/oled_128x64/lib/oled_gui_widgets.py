@@ -9,26 +9,33 @@ import wifi_info
 def wifi_quality():
     try:
         output = wifi_info.run_main()
-        #print(output)
-        quality = int(output[8])
-        if quality <= 33:
-            blocks = 1
-        elif quality <= 66:
-            blocks = 2
-        elif quality <=100:
-            blocks = 3
+        print(output)
+        if str(wifi_get_ssid()) in output:
+            quality = int(output[8])
+            if quality <= 33:
+                blocks = 1
+            elif quality <= 66:
+                blocks = 2
+            elif quality <=100:
+                blocks = 3
+            else:
+                blocks = 0
         else:
-            blocks = 0
+            blocks = -1
     except:
         blocks = -1
     return blocks
 
 def wifi_get_ssid():
     try:
-        output = wifi_info.run_main()
+        cmd = 'iwlist wlan0 scan | grep "ESSID"'
+        ssid_connected = subprocess.check_output(cmd, shell = True)
+        ssid_connected = ssid_connected.split("\n")[0]
+        ssid_connected = ssid_connected.split(":")[1]
+        ssid_connected = ssid_connected[1:-1]
     except:
-        output = None
-    return str(output[6])
+        ssid_connected = None
+    return str(ssid_connected)
 
 def performance_widget():
     cmd = "/home/$USER/rpitools/tools/proc_stat.sh -s"

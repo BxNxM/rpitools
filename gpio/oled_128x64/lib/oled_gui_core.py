@@ -197,7 +197,6 @@ class Oled_window_manager():
             self.performance_widget()
 
             # Display image.
-            #self.display_show()
             self.redraw = True
 
     # wifi indicator
@@ -225,6 +224,10 @@ class Oled_window_manager():
             # if wifi is avaible
             elif strenght >= i+1:
                 self.draw.rectangle((start_x+2, start_y+2, end_x-2, end_y-2), outline=1, fill=1)
+
+        # cleanup area if state is false after draw - needed because multithreading sync problem
+        if not self.head_page_bar_is_enable[0]:
+            self.draw.rectangle((0, 0, 24, 8), outline=0, fill=0)
 
     def performance_widget(self):
         try:
@@ -260,7 +263,9 @@ class Oled_window_manager():
         lvl = int(input_val*step)
         self.draw.rectangle((122, 8-lvl, 125, 8), outline=1, fill=1)
 
-        self.display_show()
+        # cleanup area if state is false after draw - needed because multithreading sync problem
+        if not self.head_page_bar_is_enable[0]:
+            self.draw.rectangle((100, 0, 126, 9), outline=0, fill=0)
 
     # system message box
     def oled_sys_message(self, text=None):
