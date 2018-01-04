@@ -127,6 +127,34 @@ else
     fi
 fi
 
+if [ ! -e "${REPOROOT}/gpio/Adafruit_Python_SSD1306" ]
+then
+    message "Install Adafruit_Python_SSD1306"
+    pushd gpio
+
+    message "Clone git repository: git clone https://github.com/adafruit/Adafruit_Python_SSD1306.git"
+    git clone https://github.com/adafruit/Adafruit_Python_SSD1306.git
+    if [ "$?" != 0 ]
+    then
+        message "git clone - failed"
+    else
+        message "Installation: cd Adafruit_Python_SSD1306 && sudo python setup.py install"
+        cd Adafruit_Python_SSD1306
+        sudo python setup.py install
+        if [ "$?" != 0 ]
+        then
+            message "sudo python setup.py install - failed"
+        fi
+        cd -
+    fi
+
+    popd
+else
+    message "Adafruit_Python_SSD1306 already installed"
+fi
+
 # install tools apps
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/install_apps.bash
+
+

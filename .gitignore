@@ -4,3 +4,4 @@ raspbian_img/*.img
 cache/*
 cache/.*
 config/*
+gpio/Adafruit_Python_SSD1306/
