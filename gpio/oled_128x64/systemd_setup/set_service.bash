@@ -39,6 +39,10 @@ then
     sudo cp /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service /lib/systemd/system/oled_gui_core.service
     check_exitcode "$?"
 
+    message "START SERICE: sudo systemctl start oled_gui_core.service"
+    sudo systemctl start oled_gui_core.service
+    check_exitcode "$?"
+
     message "ENABLE SERICE: sudo systemctl enable oled_gui_core.service"
     sudo systemctl enable oled_gui_core.service
     check_exitcode "$?"
