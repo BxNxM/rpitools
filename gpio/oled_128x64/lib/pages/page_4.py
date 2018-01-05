@@ -11,7 +11,7 @@ def page_setup(display):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(10)
 
-def page(display):
+def page(display, ok_button):
     x = 0
     y =14
 

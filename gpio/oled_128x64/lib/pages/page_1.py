@@ -17,7 +17,7 @@ def page_setup(display):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(3)
 
-def page(display):
+def page(display, ok_button):
     #time.sleep(3)
 
     cmd = "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%dGB %s\", $3,$2,$5}'"

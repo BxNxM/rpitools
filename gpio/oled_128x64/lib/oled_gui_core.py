@@ -64,6 +64,19 @@ class Oled_window_manager():
         self.head_page_bar_is_enable = [True, True]
         self.redraw = True
         self.display_refresh_time_sec = 1
+        self.ok_button_event = False
+
+    def ok_button_event_getter(self):
+        try:
+            if self.ok_button_event:
+                self.ok_button_event = False
+                return_value = True
+            else:
+                return_value = False
+        except:
+            self.ok_button_event = False
+            return_value = False
+        return return_value
 
     def display_refresh_time_setter(self, time):
         if isinstance(time, int):
@@ -87,7 +100,7 @@ class Oled_window_manager():
             if self.actual_page_index < 0:
                 self.actual_page_index = pages_pcs-1
         elif cmd == "ok" or cmd == "OK":
-            self.oled_sys_message(text="     OK     ")
+            self.ok_button_event = True
         else:
             oledlog.logger.error("virtual_button cmd not found: " + str(cmd))
 
@@ -343,8 +356,12 @@ class Oled_window_manager():
             self.stored_files_number = len(fileslist)
             for actual_file in fileslist:
                 module_is_imported = False
-                first_part, second_part = actual_file.split("_")
-                second_part, third_part = second_part.split(".")
+                try:
+                    first_part, second_part = actual_file.split("_")
+                    second_part, third_part = second_part.split(".")
+                except:
+                    first_part = None
+                    third_part = None
                 if third_part == "py" and first_part == "page":
                     try:
                         page_index = int(second_part)
@@ -396,10 +413,12 @@ class Oled_window_manager():
                     # if page changed clean page
                     self.clever_screen_clean()
                     # run page
-                    is_show = page[2].page(self)
+                    ok_button = self.ok_button_event_getter()
+                    is_show = page[2].page(self, ok_button)
                 except Exception as e:
                     oledlog.logger.warn("run page exception" + str(e))
                     self.oled_sys_message("run page exception" + str(e))
+                    is_show = False
                 if is_show:
                     # Display image.
                     #self.display_show()

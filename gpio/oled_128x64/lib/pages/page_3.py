@@ -10,7 +10,7 @@ def page_setup(display):
     display.head_page_bar_switch(False, False)
     display.display_refresh_time_setter(1)
 
-def page(display):
+def page(display, ok_button):
 
     padding = 4
     shape_width = 20
