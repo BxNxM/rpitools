@@ -85,7 +85,7 @@ class OledButtonHandler():
             return None
             mylogger.logger.info("CTRL-C exit")
 
-    def __button_event_get(self, channel, edge="down"):
+    def __button_event_get(self, channel, edge="up"):
         is_pressed = False
         if edge == "down":
             try:
