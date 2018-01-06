@@ -8,6 +8,7 @@ except RuntimeError:
 
 import os
 import time
+import threading
 
 class OledButtonHandler():
 
@@ -22,6 +23,55 @@ class OledButtonHandler():
         GPIO.setup(right_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(ok_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
+        ####################
+        self.threads = []
+        self.last_event_cmd = None
+        self.button_thrd_timing = 0.1
+
+        self.button_threads_init()
+
+    def button_threads_init(self):
+        self.threads.append(threading.Thread(target=self.left_button_thrd))
+        self.threads.append(threading.Thread(target=self.ok_button_thrd))
+        self.threads.append(threading.Thread(target=self.right_button_thrd))
+        # write more threads here...
+        for thd in self.threads:
+            thd.daemon = True                                   # with this set, can stop therad
+            thd.start()
+            time.sleep(0.1)
+        # sleep a little while manage_pages_thread read contents
+        time.sleep(0.5)
+
+    def left_button_thrd(self):
+        while True:
+            channel = self.channels_dict["LEFT"]
+            if self.__button_event_get(channel, edge="up"):
+                self.last_event_cmd = "LEFT"
+            time.sleep(self.button_thrd_timing)
+
+    def ok_button_thrd(self):
+        while True:
+            channel = self.channels_dict["OK"]
+            if self.__button_event_get(channel, edge="up"):
+                self.last_event_cmd = "OK"
+            time.sleep(self.button_thrd_timing)
+
+    def right_button_thrd(self):
+        while True:
+            channel = self.channels_dict["RIGHT"]
+            if self.__button_event_get(channel, edge="up"):
+                self.last_event_cmd = "RIGHT"
+            time.sleep(self.button_thrd_timing)
+
+    def get_button_evenet(self, in_loop=True):
+        while in_loop:
+            if self.last_event_cmd is not None:
+                print("Button was pressed: " + str(self.last_event_cmd))
+                return_value = self.last_event_cmd
+                self.last_event_cmd = None
+                return return_value
+            time.sleep(0.08)
+
     def simple_input_read(self, channel):
         try:
             while True:
@@ -35,31 +85,41 @@ class OledButtonHandler():
             return None
             mylogger.logger.info("CTRL-C exit")
 
-    def button_event_get(self, channel):
+    def __button_event_get(self, channel, edge="down"):
         is_pressed = False
-        try:
-            state = self.simple_input_read(channel)
-            while state:
+        if edge == "down":
+            try:
                 state = self.simple_input_read(channel)
-                time.sleep(0.08)
-                if not state:
-                    is_pressed = True
-                    mylogger.logger.info("Button was pressed")
-                if state is None:
-                    break
-            return is_pressed
-        except KeyboardInterrupt:
-            return False
-            mylogger.logger.info("CTRL-C exit")
+                while state:
+                    state = self.simple_input_read(channel)
+                    time.sleep(0.08)
+                    if not state:
+                        is_pressed = True
+                        mylogger.logger.info("Button was pressed")
+                    if state is None:
+                        break
+                return is_pressed
+            except KeyboardInterrupt:
+                return False
+                mylogger.logger.info("CTRL-C exit")
+        if edge == "up":
+            try:
+                state = self.simple_input_read(channel)
+                while not state:
+                    state = self.simple_input_read(channel)
+                    time.sleep(0.1)
+                    if state:
+                        is_pressed = True
+                        mylogger.logger.info("Button was pressed")
+                    if state is None:
+                        break
+                return is_pressed
+            except KeyboardInterrupt:
+                return False
+                mylogger.logger.info("CTRL-C exit")
 
     def oled_read_all_function_buttons(self, in_loop=True):
-        while in_loop:
-            for cmd, pin in self.channels_dict.items():
-                value = self.button_event_get(pin)
-                if value:
-                    print("Button was pressed: " + str(cmd))
-                    return cmd
-                time.sleep(0.08)
+        return self.get_button_evenet(in_loop=True)
 
     def __del__(self):
         try:
@@ -78,7 +138,6 @@ if __name__ == "__main__":
     oled_buttons = OledButtonHandler(left_pin=26, right_pin=5, ok_pin=6)
     #oled_buttons.simple_input_read(37)                                         #GPIO.BOARD)
     oled_buttons.oled_read_all_function_buttons()
-
 
 
 
