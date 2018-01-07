@@ -268,10 +268,10 @@ class Oled_window_manager():
         except Exception as e:
             oledlog.logger.error("wifi_quality: " + str(e))
 
-        self.draw.rectangle((100, 0, 105, 9), outline=1, fill=0)
-        self.draw.rectangle((107, 0, 112, 9), outline=1, fill=0)
-        self.draw.rectangle((114, 0, 119, 9), outline=1, fill=0)
-        self.draw.rectangle((121, 0, 126, 9), outline=1, fill=0)
+        self.draw.rectangle((100, 0, 105, 8), outline=1, fill=0)
+        self.draw.rectangle((107, 0, 112, 8), outline=1, fill=0)
+        self.draw.rectangle((114, 0, 119, 8), outline=1, fill=0)
+        self.draw.rectangle((121, 0, 126, 8), outline=1, fill=0)
 
         max_val = 100
         step = 7 / float(max_val)
