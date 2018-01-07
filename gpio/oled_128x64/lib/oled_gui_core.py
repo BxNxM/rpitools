@@ -505,10 +505,10 @@ class Oled_window_manager():
                     oledlog.logger.warn("run page destructor" + str(err))
 
     # clean page area depends on page and head bar status
-    def clever_screen_clean(self, clean_full=False):
+    def clever_screen_clean(self, clean_full=False, force_clean=False):
         head_bar_height = 9
         page_bar_height = 5
-        if self.page_is_changed():
+        if self.page_is_changed() or force_clean:
             if self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:
                 self.draw.rectangle((0,head_bar_height,self.disp.width, self.disp.height-page_bar_height), outline=0, fill=0)
                 oledlog.logger.info("Clean screen without head - page bar")
