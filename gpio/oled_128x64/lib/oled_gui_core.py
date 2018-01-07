@@ -57,6 +57,7 @@ class Oled_window_manager():
         self.page_list = []                                     # page list tuples: page name, page index, page instance
         self.actual_page_index = 0                              # actual page index
         self.last_page_index = self.actual_page_index           # last page index -> check is page changed
+        self.actual_page_setup_executed = False
         self.stored_files_number = 0                            # stores file pieces in pages folder
         self.display_is_avaible = True
         self.threads = []
@@ -398,6 +399,13 @@ class Oled_window_manager():
                 oledlog.logger.info("already inited: " + str(page))
         oledlog.logger.info("Full loaded parsed pages: " + str(self.page_list))
 
+    def actual_page_setup(self, page):
+        if self.page_is_changed(simple_detect=True):
+            self.actual_page_setup_executed = False
+        if not self.actual_page_setup_executed:
+            page.page_setup(self)
+            self.actual_page_setup_executed = True
+
     # Run selected page
     def run_page(self):
         for index, page in enumerate(self.page_list):
@@ -409,7 +417,8 @@ class Oled_window_manager():
                         self.sys_message_cleanup = False
                         self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
                     # run page setup function
-                    page[2].page_setup(self)
+                    #page[2].page_setup(self)
+                    self.actual_page_setup(page[2])
                     # if page changed clean page
                     self.clever_screen_clean()
                     # run page
@@ -438,11 +447,12 @@ class Oled_window_manager():
                 print("\n\n=> SLEEP AFTER PAGE REFRESH !!! BREAK !!!\n\n")
                 break
 
-    def page_is_changed(self):
+    def page_is_changed(self, simple_detect=False):
         state = False
         if self.last_page_index != self.actual_page_index:
-            self.run_page_x_destructor(self.last_page_index)
-            self.last_page_index = self.actual_page_index
+            if not simple_detect:
+                self.run_page_x_destructor(self.last_page_index)
+                self.last_page_index = self.actual_page_index
             state = True
         return state
 
