@@ -2,6 +2,9 @@ import logging
 import os
 mypath = os.path.dirname(os.path.abspath(__file__))
 
+#loglvl = logging.DEBUG
+loglvl = logging.WARNING
+
 class LogHandler():
 
     def __init__(self, name, folder="logs"):
@@ -26,11 +29,12 @@ class LogHandler():
             os.makedirs(folder)
 
     def create_logger(self):
+        global loglvl
         # create logger
         self.logger = logging.getLogger(self.name)
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(loglvl)
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', \
-                            filename=os.path.join(mypath, self.folder, self.name) + ".log", level=logging.DEBUG)
+                            filename=os.path.join(mypath, self.folder, self.name) + ".log", level=loglvl)
 
     def console_handler(self):
         # create console handler and set level to debug
