@@ -55,66 +55,23 @@ class Oled_window_manager():
         #self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
 
         self.page_list = []                                     # page list tuples: page name, page index, page instance
+
+        # indicator variables for managing elements
         self.actual_page_index = 0                              # actual page index
         self.last_page_index = self.actual_page_index           # last page index -> check is page changed
-        self.actual_page_setup_executed = False
+        self.actual_page_setup_executed = False                 # actual page setup is run indicator
         self.stored_files_number = 0                            # stores file pieces in pages folder
-        self.display_is_avaible = True
-        self.threads = []
-        self.sys_message_cleanup = False
-        self.head_page_bar_is_enable = [True, True]
-        self.redraw = True
-        self.display_refresh_time_sec = 1
-        self.ok_button_event = False
+        self.display_is_avaible = True                          # display busy indicator
+        self.threads = []                                       # threads list
+        self.sys_message_cleanup = False                        # system msg indicator
+        self.head_page_bar_is_enable = [True, True]             # head, page bar status
+        self.redraw = True                                      # redraw page request status for display_show_thread
+        self.display_refresh_time_sec = 1                       # actual page default refresh time - set with -> display_refresh_time_setter
+        self.ok_button_event = False                            # ok button event status holder
 
-    def ok_button_event_getter(self):
-        try:
-            if self.ok_button_event:
-                self.ok_button_event = False
-                return_value = True
-            else:
-                return_value = False
-        except:
-            self.ok_button_event = False
-            return_value = False
-        return return_value
-
-    def display_refresh_time_setter(self, time):
-        if isinstance(time, int):
-            self.display_refresh_time_sec = time
-
-    def head_page_bar_switch(self, head_bar, page_bar):
-        if isinstance(head_bar, bool) and isinstance(page_bar, bool):
-            self.head_page_bar_is_enable = [ head_bar, page_bar ]
-
-    def virtual_button(self, cmd):
-        pages_pcs = len(self.page_list)
-        #print("all page: " + str(pages_pcs))
-        if cmd == "right" or cmd == "RIGHT":
-            oledlog.logger.info("=> Button: right pressed")
-            self.actual_page_index +=1
-            if self.actual_page_index >= pages_pcs:
-                self.actual_page_index = 0
-        elif cmd == "left" or cmd == "LEFT":
-            oledlog.logger.info("=> Button: left pressed")
-            self.actual_page_index -=1
-            if self.actual_page_index < 0:
-                self.actual_page_index = pages_pcs-1
-        elif cmd == "ok" or cmd == "OK":
-            self.ok_button_event = True
-        else:
-            oledlog.logger.error("virtual_button cmd not found: " + str(cmd))
-
-    # show contents on display if device is not busy
-    def display_show(self):
-        if self.display_is_avaible:
-            self.display_is_avaible = False
-            self.disp_buffer = self.disp._buffer
-            oledlog.logger.info("self.image draw over i2c: " + str(self.image))
-            self.disp.image(self.image)
-            self.disp.display()
-            self.display_is_avaible = True
-
+    #############################################################################
+    #                                   THREADS                                 #
+    #############################################################################
     # init and start threads
     def __init_threads(self):
         self.threads.append(threading.Thread(target=self.draw_header_bar_thread))
@@ -170,12 +127,60 @@ class Oled_window_manager():
                 self.__load_pages()
             sleep(thread_refresh_dynamic_pages)
 
+    # button handler thread
     def button_handler_thread(self):
         prctl.set_name("thread_button")
         while True:
             status = ButtonHandler.oled_buttons.oled_read_all_function_buttons()
             self.virtual_button(status)
 
+    #############################################################################
+    #                             GETTER - SETTER                               #
+    #############################################################################
+    def ok_button_event_getter(self):
+        try:
+            if self.ok_button_event:
+                self.ok_button_event = False
+                return_value = True
+            else:
+                return_value = False
+        except:
+            self.ok_button_event = False
+            return_value = False
+        return return_value
+
+    def display_refresh_time_setter(self, time):
+        if isinstance(time, int):
+            self.display_refresh_time_sec = time
+
+    def head_page_bar_switch(self, head_bar, page_bar):
+        if isinstance(head_bar, bool) and isinstance(page_bar, bool):
+            self.head_page_bar_is_enable = [ head_bar, page_bar ]
+
+    #############################################################################
+    #                   VIRTUAL BUTTONS - RIGHT - LEFT - OK*                    #
+    #############################################################################
+    def virtual_button(self, cmd):
+        pages_pcs = len(self.page_list)
+        #print("all page: " + str(pages_pcs))
+        if cmd == "right" or cmd == "RIGHT":
+            oledlog.logger.info("=> Button: right pressed")
+            self.actual_page_index +=1
+            if self.actual_page_index >= pages_pcs:
+                self.actual_page_index = 0
+        elif cmd == "left" or cmd == "LEFT":
+            oledlog.logger.info("=> Button: left pressed")
+            self.actual_page_index -=1
+            if self.actual_page_index < 0:
+                self.actual_page_index = pages_pcs-1
+        elif cmd == "ok" or cmd == "OK":
+            self.ok_button_event = True
+        else:
+            oledlog.logger.error("virtual_button cmd not found: " + str(cmd))
+
+    #############################################################################
+    #                           PAGE and HEADER BAR                             #
+    #############################################################################
     # page bar
     def draw_page_bar(self, all_page_int, actaul_page_int):
         if self.head_page_bar_is_enable[1]:
@@ -213,6 +218,9 @@ class Oled_window_manager():
             # Display image.
             self.redraw = True
 
+    #############################################################################
+    #                      OFFICIAL WIDGETS - HEADER BAR                        #
+    #############################################################################
     # wifi indicator
     def wifi_quality(self):
         try:
@@ -243,6 +251,7 @@ class Oled_window_manager():
         if not self.head_page_bar_is_enable[0]:
             self.draw.rectangle((0, 0, 24, 8), outline=0, fill=0)
 
+    # performance indicator bar
     def performance_widget(self):
         try:
             CPU, MemUsage, temp, DiskUsage = oled_gui_widgets.performance_widget()
@@ -281,6 +290,9 @@ class Oled_window_manager():
         if not self.head_page_bar_is_enable[0]:
             self.draw.rectangle((100, 0, 126, 9), outline=0, fill=0)
 
+    #############################################################################
+    #                              OFFICIAL WIDGET(S)                             #
+    #############################################################################
     # system message box
     def oled_sys_message(self, text=None):
         # main frame
@@ -312,43 +324,9 @@ class Oled_window_manager():
         else:
             self.draw.rectangle((10, 8, self.disp.width-10, self.disp.height-7), outline=0, fill=0)
 
-    def __draw_time_text(self, text):
-        text = str(text)
-        # Write two lines of text.
-        w, h = self.font.getsize(text)
-        x_text_pos = int((self.disp.width - w)/2)
-        # clean text space
-        self.draw.rectangle((x_text_pos, 0, x_text_pos+w, 0+h), outline=0, fill=0)
-        # draw text
-        self.draw.text((x_text_pos, 0), text,  font=self.font, fill=255)
-
-    def draw_text(self, text, x, y):
-        text = str(text)
-        # Write two lines of text.
-        w, h = self.font.getsize(text)
-        # clean text space
-        self.draw.rectangle((x, y, x+w, y+h), outline=0, fill=0)
-        # draw text
-        self.draw.text((x, y), text,  font=self.font, fill=255)
-        # Display image.
-        #self.display_show()
-        return w, h
-
-    # executor main loop
-    def run(self):
-        self.__init_threads()
-        try:
-            while True:
-                self.__executor()
-        except KeyboardInterrupt as e:
-            oledlog.logger.info("Exiting " + str(e))
-
-    # Main block for running gui from pages and some extra stuff
-    def __executor(self):
-            # write here you want to run in main loop permanently
-            self.run_page()
-            sleep(main_page_refresh_min_delay)
-
+    #############################################################################
+    #                            IMPORT AND LOAD PAGES                          #
+    #############################################################################
     # read pages from file
     def __read_pages(self):
         reload_is_necesarry = False
@@ -399,6 +377,54 @@ class Oled_window_manager():
                 oledlog.logger.info("already inited: " + str(page))
         oledlog.logger.info("Full loaded parsed pages: " + str(self.page_list))
 
+    #############################################################################
+    #                            MAIN FUNCTIONALITIES                           #
+    #############################################################################
+    # show contents on display if device is not busy
+    def display_show(self):
+        if self.display_is_avaible:
+            self.display_is_avaible = False
+            self.disp_buffer = self.disp._buffer
+            oledlog.logger.info("self.image draw over i2c: " + str(self.image))
+            self.disp.image(self.image)
+            self.disp.display()
+            self.display_is_avaible = True
+
+    # header bar - time show
+    def __draw_time_text(self, text):
+        text = str(text)
+        # Write two lines of text.
+        w, h = self.font.getsize(text)
+        x_text_pos = int((self.disp.width - w)/2)
+        # clean text space
+        self.draw.rectangle((x_text_pos, 0, x_text_pos+w, 0+h), outline=0, fill=0)
+        # draw text
+        self.draw.text((x_text_pos, 0), text,  font=self.font, fill=255)
+
+    # text method - cleam area automaticly before draw text
+    def draw_text(self, text, x, y):
+        text = str(text)
+        # Write two lines of text.
+        w, h = self.font.getsize(text)
+        # clean text space
+        self.draw.rectangle((x, y, x+w, y+h), outline=0, fill=0)
+        # draw text
+        self.draw.text((x, y), text,  font=self.font, fill=255)
+        # Display image.
+        #self.display_show()
+        return w, h
+
+    # main loop - run actual page
+    def run(self):
+        self.__init_threads()
+        try:
+            while True:
+                self.run_actual_page()
+                sleep(main_page_refresh_min_delay)
+        except KeyboardInterrupt as e:
+            oledlog.logger.info("Exiting " + str(e))
+
+    # run page setup - when actual page is activated
     def actual_page_setup(self, page):
         if self.page_is_changed(simple_detect=True):
             self.actual_page_setup_executed = False
@@ -407,7 +433,7 @@ class Oled_window_manager():
             self.actual_page_setup_executed = True
 
     # Run selected page
-    def run_page(self):
+    def run_actual_page(self):
         for index, page in enumerate(self.page_list):
             if int(page[1]) == self.actual_page_index:
                 oledlog.logger.info("Call page: " + str(page))
@@ -435,6 +461,7 @@ class Oled_window_manager():
                 # clever wait, if button press happen, break sleep
                 self.run_page_wait(int(page[1]))
 
+    # page smart delay/sleep
     def run_page_wait(self, page_weight_index_buff):
         # clever wait between refresh page - if change page evenet happen break wait
         wait = 0
@@ -447,6 +474,7 @@ class Oled_window_manager():
                 print("\n\n=> SLEEP AFTER PAGE REFRESH !!! BREAK !!!\n\n")
                 break
 
+    # detect page is changed
     def page_is_changed(self, simple_detect=False):
         state = False
         if self.last_page_index != self.actual_page_index:
@@ -456,6 +484,7 @@ class Oled_window_manager():
             state = True
         return state
 
+    # if page gets inactive - run page destructor
     def run_page_x_destructor(self, last_page_index_to_clean):
         for index, page in enumerate(self.page_list):
             if int(page[1]) == last_page_index_to_clean:
@@ -465,6 +494,7 @@ class Oled_window_manager():
                 except Exception as err:
                     oledlog.logger.warn("run page destructor" + str(err))
 
+    # clean page area depends on page and head bar status
     def clever_screen_clean(self, clean_full=False):
         head_bar_height = 9
         page_bar_height = 5
