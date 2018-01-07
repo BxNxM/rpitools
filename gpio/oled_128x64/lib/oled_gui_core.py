@@ -29,13 +29,20 @@ from datetime import datetime
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
-thread_refresh_header_bar = 1.01                # header bar refresh time (sec)
-thread_refresh_page_bar = 1.02                  # page bar refresh time (sec)
-thread_refresh_dynamic_pages = 3                # rescan page folder time (sec)
-thread_refresh_display_show_thread = 0.3        # display show thread refresh time (sec)
-main_page_refresh_min_delay = 0.03              # default page refresh time (sec)
-oled_sys_message_wait_sec = 3                   # system message min show on display (sec)
+performance_setup_dict = {"LOW": 1, "MEDIUM": 0.5, "HIGH": 0.2}
+performance = performance_setup_dict["HIGH"]                    # ---> set performance here
 
+# timing base
+thread_refresh_header_bar = 1.01 * performance                # header bar refresh time (sec)
+thread_refresh_page_bar = 1.02 * performance                  # page bar refresh time (sec)
+thread_refresh_dynamic_pages = 3 * performance                # rescan page folder time (sec)
+thread_refresh_display_show_thread = 0.3 * performance        # display show thread refresh time (sec)
+main_page_refresh_min_delay = 0.03 * performance              # default page refresh time (sec)
+oled_sys_message_wait_sec = 3                                 # system message min show on display (sec)
+
+#############################################################################
+#                               OLED CLASS                                  #
+#############################################################################
 class Oled_window_manager():
 
     # class constructor
