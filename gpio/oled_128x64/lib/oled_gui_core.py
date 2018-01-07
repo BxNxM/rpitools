@@ -26,16 +26,19 @@ import prctl
 
 from datetime import datetime
 
-# timing
-thread_refresh_header_bar = 1.01
-thread_refresh_page_bar = 1.02
-thread_refresh_dynamic_pages = 3
-thread_refresh_display_show_thread = 0.3
-main_page_refresh_min_delay = 0.03
-oled_sys_message_wait_sec = 3
+#############################################################################
+#                             THREAD TIMING                                 #
+#############################################################################
+thread_refresh_header_bar = 1.01                # header bar refresh time (sec)
+thread_refresh_page_bar = 1.02                  # page bar refresh time (sec)
+thread_refresh_dynamic_pages = 3                # rescan page folder time (sec)
+thread_refresh_display_show_thread = 0.3        # display show thread refresh time (sec)
+main_page_refresh_min_delay = 0.03              # default page refresh time (sec)
+oled_sys_message_wait_sec = 3                   # system message min show on display (sec)
 
 class Oled_window_manager():
 
+    # class constructor
     def __init__(self, RST_pin=None, i2c_addr=0x3C):
         # instantiate display from adafruit
         self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST_pin, i2c_address=i2c_addr)
@@ -426,7 +429,7 @@ class Oled_window_manager():
 
     # run page setup - when actual page is activated
     def actual_page_setup(self, page):
-        if self.page_is_changed(simple_detect=True):
+        if self.page_is_changed(reset_status=False):
             self.actual_page_setup_executed = False
         if not self.actual_page_setup_executed:
             page.page_setup(self)
@@ -475,10 +478,10 @@ class Oled_window_manager():
                 break
 
     # detect page is changed
-    def page_is_changed(self, simple_detect=False):
+    def page_is_changed(self, reset_status=True):
         state = False
         if self.last_page_index != self.actual_page_index:
-            if not simple_detect:
+            if reset_status:
                 self.run_page_x_destructor(self.last_page_index)
                 self.last_page_index = self.actual_page_index
             state = True
@@ -511,6 +514,7 @@ class Oled_window_manager():
             self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
             oledlog.logger.info("Clean full page")
 
+    # class destructor
     def __del__(self):
         self.clever_screen_clean(clean_full=True)
         self.disp.clear()
