@@ -406,9 +406,11 @@ class Oled_window_manager():
         if img_mode == "store" and image is not None and self.image_strored is None:
             self.image_strored = self.image
             self.image = image
+            self.draw = ImageDraw.Draw(self.image)
         elif img_mode == "restore" and image is None:
             if self.image_strored is not None:
                 self.image = self.image_strored
+                self.draw = ImageDraw.Draw(self.image)
                 self.image_strored = None
 
     # header bar - time show
