@@ -65,6 +65,7 @@ class Oled_window_manager():
         #self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
 
         self.page_list = []                                     # page list tuples: page name, page index, page instance
+        self.image_strored = None                               # image buffer for restore screen after image draw
 
         # indicator variables for managing elements
         self.actual_page_index = 0                              # actual page index
@@ -208,7 +209,6 @@ class Oled_window_manager():
                 if x_pos / one_bar_width == actaul_page_int:
                     self.draw.rectangle((x_pos, top_pos, right_pos, self.disp.height-1), outline=255, fill=1)
             # Display image.
-            # self.display_show()
             self.redraw = True
 
     # header bar
@@ -248,10 +248,10 @@ class Oled_window_manager():
             # if wifi is not avaible
             if strenght is None or strenght ==  -1:
                 self.draw.rectangle((3, 3, 21, 5), outline=1, fill=1)
-                self.display_show()
+                self.redraw = True
                 sleep(0.2)
                 self.draw.rectangle((3, 3, 21, 5), outline=0, fill=0)
-                self.display_show()
+                self.redraw = True
                 sleep(0.2)
             # if wifi is avaible
             elif strenght >= i+1:
@@ -328,7 +328,7 @@ class Oled_window_manager():
                 else:
                     self.draw_text(text, 14, 12+h)
                 self.sys_message_cleanup = True
-                self.display_show()
+                self.redraw = True
                 sleep(1)
                 time_wait-=1
         else:
@@ -395,10 +395,21 @@ class Oled_window_manager():
         if self.display_is_avaible:
             self.display_is_avaible = False
             self.disp_buffer = self.disp._buffer
-            oledlog.logger.info("self.image draw over i2c: " + str(self.image))
+            oledlog.logger.info("\n\nself.image draw over i2c: " + str(self.image) + "\n\n")
+            print("\n\nself.image draw over i2c: " + str(self.image) + "\n\n")
             self.disp.image(self.image)
             self.disp.display()
             self.display_is_avaible = True
+
+    # draw ppm image
+    def draw_image(self, image=None, img_mode="store"):
+        if img_mode == "store" and image is not None:
+            self.image_strored = self.image
+            self.image = image
+        elif img_mode == "restore" and image is None:
+            if self.image_strored is not None:
+                self.image = self.image_strored
+                self.image_strored = None
 
     # header bar - time show
     def __draw_time_text(self, text):
@@ -421,7 +432,6 @@ class Oled_window_manager():
         # draw text
         self.draw.text((x, y), text,  font=self.font, fill=255)
         # Display image.
-        #self.display_show()
         return w, h
 
     # main loop - run actual page
@@ -466,7 +476,6 @@ class Oled_window_manager():
                     is_show = False
                 if is_show:
                     # Display image.
-                    #self.display_show()
                     self.redraw = True
                 # clever wait, if button press happen, break sleep
                 self.run_page_wait(int(page[1]))
@@ -482,6 +491,7 @@ class Oled_window_manager():
             print("{} actual <-> {} buffer".format(self.actual_page_index, page_weight_index_buff))
             if page_weight_index_buff != self.actual_page_index:
                 print("\n\n=> SLEEP AFTER PAGE REFRESH !!! BREAK !!!\n\n")
+                self.head_page_bar_switch(False, False)                                 # dummy
                 break
 
     # detect page is changed
@@ -498,6 +508,7 @@ class Oled_window_manager():
     def run_page_x_destructor(self, last_page_index_to_clean):
         for index, page in enumerate(self.page_list):
             if int(page[1]) == last_page_index_to_clean:
+                self.draw_image(img_mode="restore")
                 # page destructor
                 try:
                     page[2].page_destructor(self)
