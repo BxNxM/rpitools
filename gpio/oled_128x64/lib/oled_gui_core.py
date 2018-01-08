@@ -403,7 +403,7 @@ class Oled_window_manager():
 
     # draw ppm image
     def draw_image(self, image=None, img_mode="store"):
-        if img_mode == "store" and image is not None:
+        if img_mode == "store" and image is not None and self.image_strored is None:
             self.image_strored = self.image
             self.image = image
         elif img_mode == "restore" and image is None:
