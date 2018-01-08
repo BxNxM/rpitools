@@ -65,7 +65,7 @@ class Oled_window_manager():
         #self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
 
         self.page_list = []                                     # page list tuples: page name, page index, page instance
-        self.image_strored = None                               # image buffer for restore screen after image draw
+        self.image_strored = self.image                         # image buffer for restore screen after image draw
 
         # indicator variables for managing elements
         self.actual_page_index = 0                              # actual page index
@@ -402,16 +402,23 @@ class Oled_window_manager():
             self.display_is_avaible = True
 
     # draw ppm image
-    def draw_image(self, image=None, img_mode="store"):
-        if img_mode == "store" and image is not None and self.image_strored is None:
-            self.image_strored = self.image
-            self.image = image
+    def draw_image(self, image_path=None, img_mode="store"):
+        if img_mode == "store" and image_path is not None: # and self.image_strored is None:
+            # conevrt image
+            image = Image.open(image_path)
+            image_r = image.resize((128,64), Image.BICUBIC)
+            image_bw = image_r.convert("1")
+            # store previous image
+            #self.image_strored = self.image
+            # activate new loaded image
+            self.image = image_bw
             self.draw = ImageDraw.Draw(self.image)
-        elif img_mode == "restore" and image is None:
+        elif img_mode == "restore" and image_path is None:
             if self.image_strored is not None:
+                # retore normal image
                 self.image = self.image_strored
                 self.draw = ImageDraw.Draw(self.image)
-                self.image_strored = None
+                #self.image_strored = None
 
     # header bar - time show
     def __draw_time_text(self, text):

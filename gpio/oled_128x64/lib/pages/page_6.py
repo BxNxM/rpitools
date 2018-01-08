@@ -2,9 +2,9 @@ import subprocess
 import time
 
 #################################################################################
-#                              PAGE 1 - performance monitor                     #
+#                            PAGE 6 - software shutdown button                  #
 #                              ----------------------------                     #
-#                                 * TEMP, * CPU freq                            #
+#                                                                               #
 #################################################################################
 
 def page_setup(display):
