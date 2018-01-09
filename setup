@@ -32,6 +32,10 @@ fi
 # set display environment (for PIXEL startx)
 export DISPLAY=:0
 
+# restore existing backup
+output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash restore; popd)
+echo -e "$output"
+
 # set vimrc
 if [ -f ~/.vimrc ]
 then
@@ -157,4 +161,6 @@ fi
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/install_apps.bash
 
-
+# backup modification configs
+output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
+echo -e "$output"
