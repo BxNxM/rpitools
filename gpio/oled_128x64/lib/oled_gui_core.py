@@ -62,7 +62,7 @@ class Oled_window_manager():
         self.font = ImageFont.load_default()
 
         # Draw a black filled box to clear the image.
-        #self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+        self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
 
         self.page_list = []                                     # page list tuples: page name, page index, page instance
         self.image_strored = self.image                         # image buffer for restore screen after image draw

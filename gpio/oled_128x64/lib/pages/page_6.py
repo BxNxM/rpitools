@@ -22,11 +22,20 @@ def page(display, ok_button):
     if ok_button:
         w, h = display.draw_text("shutting down...", x+35, y)
         display.display_show()
+        y+=h
+
+        # clean display
+        display.head_page_bar_switch(False, False)
+        time.sleep(1)
+        display.draw.rectangle((0,0,display.disp.width, display.disp.height), outline=0, fill=0)
+        display.disp.clear()
+        display.display_show()
+        time.sleep(1.5)
+
         cmd = "sudo shutdown now"
         output = subprocess.check_output(cmd, shell = True)
-        y+=h
         w, h = display.draw_text(str(output), x+35, y)
-
+        display.display_show()
     return False
 
 def page_destructor(display):
