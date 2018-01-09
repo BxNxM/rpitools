@@ -27,6 +27,7 @@ class OledButtonHandler():
         self.threads = []
         self.last_event_cmd = None
         self.button_thrd_timing = 0.1
+        self.virtual_button_file_watch_thrd_timing = 0.2
 
         self.button_threads_init()
 
@@ -34,6 +35,7 @@ class OledButtonHandler():
         self.threads.append(threading.Thread(target=self.left_button_thrd))
         self.threads.append(threading.Thread(target=self.ok_button_thrd))
         self.threads.append(threading.Thread(target=self.right_button_thrd))
+        self.threads.append(threading.Thread(target=self.virtual_button_file_watch_thrd))
         # write more threads here...
         for thd in self.threads:
             thd.daemon = True                                   # with this set, can stop therad
@@ -62,6 +64,19 @@ class OledButtonHandler():
             if self.__button_event_get(channel, edge="up"):
                 self.last_event_cmd = "RIGHT"
             time.sleep(self.button_thrd_timing)
+
+    def virtual_button_file_watch_thrd(self):
+        myfolder = os.path.dirname(os.path.abspath(__file__))
+        virtual_button_file_pipe = os.path.join(myfolder, ".virtual_button_file")
+        while True:
+            if os.path.exists(virtual_button_file_pipe):
+                with open(virtual_button_file_pipe, 'r') as f:
+                    cmd = f.read().rstrip()
+                if cmd == "RIGHT" or cmd == "LEFT" or cmd == "OK":
+                    self.last_event_cmd = cmd
+                    time.sleep(0.5)
+                    open(virtual_button_file_pipe, 'w').close()
+            time.sleep(self.virtual_button_file_watch_thrd_timing)
 
     def get_button_evenet(self, in_loop=True):
         while in_loop:

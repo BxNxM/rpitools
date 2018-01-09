@@ -11,13 +11,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--oled", help="Oled service ON or OFF")
 parser.add_argument("-sh", "--show",  action='store_true', help="show service status")
 parser.add_argument("-r", "--restart",  action='store_true', help="restart oled service")
+parser.add_argument("-b", "--button", help="LEFT / OK / RIGHT")
 
 args = parser.parse_args()
 oled = args.oled
 show = args.show
 restart = args.restart
+button = args.button
 
 oled_core_script = "oled_gui_core.py"
+oled_virtual_buttons_file = os.path.join(myfolder, "../lib/.virtual_button_file")
 
 def process_is_run(process_name):
     ps = subprocess.Popen("ps aux | grep -v grep | grep " + str(process_name), shell=True, stdout=subprocess.PIPE)
@@ -51,6 +54,14 @@ def stop():
         else:
             print("SUCCESS")
 
+def buttons(button):
+    if button == "RIGHT" or button == "LEFT" or button == "OK":
+        with open(oled_virtual_buttons_file, 'w') as f:
+            f.write()
+        print("Button is set: " + str(button))
+    else:
+        print("Not valid argunet: " + str(button))
+
 if oled is not None:
     # TODO start oled service if not running
     if oled == "ON" or oled == "on":
@@ -73,3 +84,10 @@ if show:
     status = process_is_run(oled_core_script)
     print("Oled service is run: " + str(status))
 
+if button is not None:
+    if button == "RIGHT" or button == "LEFT" or button == "OK":
+        with open(oled_virtual_buttons_file, 'w') as f:
+            f.write(button)
+            print("Button is set: " + str(button))
+    else:
+        print("Button is invalid: " + str(button))
