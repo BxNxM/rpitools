@@ -21,6 +21,7 @@ def page(display, ok_button):
     y += h
 
     if ok_button:
+        display.draw.rectangle((70,  30, 127, 50), outline=0, fill=0)
         r_value = random.randint(0, 100)
         g_value = random.randint(0, 100)
         b_value = random.randint(0, 100)
@@ -32,11 +33,10 @@ def page(display, ok_button):
         w, h = display.draw_text("    b: " + str(b_value) + " ", x, y)
 
         cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON -l ON -r {} -g {} -b {}".format(r_value, g_value, b_value)
-        #cmd_aliad = "rgbinterface  -r {} -g {} -b {}".format(r_value, g_value, b_value)
-        subprocess.call(cmd_aliad, shell=True)
+        subprocess.Popen(cmd_aliad, shell=True)
 
     return False
 
 def page_destructor(display):
     cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
-    subprocess.call(cmd_aliad, shell=True)
+    subprocess.Popen(cmd_aliad, shell=True)

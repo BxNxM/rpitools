@@ -20,7 +20,7 @@ def page(display, ok_button):
     x = 0
     y = 15
     # Write two lines of text.
-    w, h = display.draw_text("GETS OLED TO STANDBY?", x, y)
+    w, h = display.draw_text("OLED STANDBY?", x, y)
     y+=h + 2
     w, h = display.draw_text("Press OK", x+35, y)
     y+=h + 2
