@@ -1,41 +1,42 @@
 import subprocess
+import random
 
 #################################################################################
-#                                 PAGE 3 - shapes demo                          #
+#                                 PAGE 4 - rgb led demo                         #
 #                              ----------------------------                     #
-#                           oval, rectangle, triengle, lines                    #
+#                                                                               #
 #################################################################################
 
 def page_setup(display):
-    display.head_page_bar_switch(False, False)
-    display.display_refresh_time_setter(1)
+    display.head_page_bar_switch(True, True)
+    display.display_refresh_time_setter(0.3)
 
 def page(display, ok_button):
+    x = 0
+    y =14
 
-    padding = 4
-    shape_width = 20
-    top = padding + 8
-    bottom = display.disp.height-padding - 8
-    # Move left to right keeping track of the current x position for drawing shapes.
-    x = padding
-    # Draw an ellipse.
-    display.draw.ellipse((x, top , x+shape_width, bottom), outline=255, fill=0)
-    x += shape_width+padding
-    # Draw a rectangle.
-    display.draw.rectangle((x, top, x+shape_width, bottom), outline=255, fill=0)
-    x += shape_width+padding
-    # Draw a triangle.
-    display.draw.polygon([(x, bottom), (x+shape_width/2, top), (x+shape_width, bottom)], outline=255, fill=0)
-    x += shape_width+padding
-    # Draw an X.
-    display.draw.line((x, bottom, x+shape_width, top), fill=255)
-    display.draw.line((x, top, x+shape_width, bottom), fill=255)
-    x += shape_width+padding
+    w, h = display.draw_text("LED:", x, y)
+    display.draw.rectangle((70,  30, 127, 50), outline=255, fill=0)
+    display.draw_text("Press OK", x+76, y*3 - 8)
+    y += h
 
-    #display.virtual_button("right")
-    #display.oled_sys_message("test message, hello bello, asd, ad, asd, asd")
+    if ok_button:
+        r_value = random.randint(0, 100)
+        g_value = random.randint(0, 100)
+        b_value = random.randint(0, 100)
 
-    return True
+        w, h = display.draw_text("    r: " + str(r_value) + " ", x, y)
+        y += h
+        w, h = display.draw_text("    g: " + str(g_value) + " ", x, y)
+        y += h
+        w, h = display.draw_text("    b: " + str(b_value) + " ", x, y)
+
+        cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON -l ON -r {} -g {} -b {}".format(r_value, g_value, b_value)
+        #cmd_aliad = "rgbinterface  -r {} -g {} -b {}".format(r_value, g_value, b_value)
+        subprocess.call(cmd_aliad, shell=True)
+
+    return False
 
 def page_destructor(display):
-    pass
+    cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
+    subprocess.call(cmd_aliad, shell=True)

@@ -1,42 +1,35 @@
 import subprocess
+import time
+from PIL import Image
 import random
 
 #################################################################################
-#                                 PAGE 4 - rgb led demo                         #
+#                                  PAGE 7 - images view                         #
 #                              ----------------------------                     #
 #                                                                               #
 #################################################################################
+pics_index = 0
+stored_index = -1
 
 def page_setup(display):
+    global pics_index, stored_index
+    stored_index = -1
+    pics_index = 0
     display.head_page_bar_switch(True, True)
-    display.display_refresh_time_setter(0.3)
+    display.display_refresh_time_setter(1)
 
 def page(display, ok_button):
-    x = 0
-    y =14
-
-    w, h = display.draw_text("LED:", x, y)
-    display.draw.rectangle((70,  30, 127, 50), outline=255, fill=0)
-    display.draw_text("Press OK", x+76, y*3 - 8)
-    y += h
-
+    global pics_index, stored_index
+    image_list = [ 'pages/images/rpi.png', 'pages/images/happycat_oled_64.ppm']
     if ok_button:
-        r_value = random.randint(0, 100)
-        g_value = random.randint(0, 100)
-        b_value = random.randint(0, 100)
+        pics_index += 1
+        if pics_index >= len(image_list):
+            pics_index = 0
 
-        w, h = display.draw_text("    r: " + str(r_value) + " ", x, y)
-        y += h
-        w, h = display.draw_text("    g: " + str(g_value) + " ", x, y)
-        y += h
-        w, h = display.draw_text("    b: " + str(b_value) + " ", x, y)
-
-        cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON -l ON -r {} -g {} -b {}".format(r_value, g_value, b_value)
-        #cmd_aliad = "rgbinterface  -r {} -g {} -b {}".format(r_value, g_value, b_value)
-        subprocess.call(cmd_aliad, shell=True)
-
-    return False
+    if stored_index != pics_index:
+        stored_index = pics_index
+        display.draw_image(image_list[pics_index])
+    return True
 
 def page_destructor(display):
-    cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
-    subprocess.call(cmd_aliad, shell=True)
+    pass
