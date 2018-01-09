@@ -18,8 +18,11 @@ except Exception as e:
 #                               *weather *temp *wind *rain                      #
 #################################################################################
 attention = True
+page_icon_name = None
 
 def page_setup(display):
+    global page_icon_name
+    page_icon_name = None
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(90)
 
@@ -52,19 +55,23 @@ def page_destructor(display):
     pass
 
 def draw_weather_state(display, state):
-    x =100
-    y = 25
-    size = 20
+    global page_icon_name
+    if page_icon_name != state:
+        page_icon_name = state
 
-    if state.lower() == "sunny":
-        image_path = 'pages/images/sunny.png'
-        display.draw_image(image_path)
-    if "cloudy" in state.lower() or state.lower() == "overcast":
-        image_path = 'pages/images/cloudy.png'
-        display.draw_image(image_path)
-    if "rain" in state.lower() or "drizzle" in state.lower():
-        image_path = 'pages/images/rain.png'
-        display.draw_image(image_path)
-    if "partly cloudy" in state.lower():
-        image_path = 'pages/images/partly_cloudy.png'
-        display.draw_image(image_path)
+        x =100
+        y = 25
+        size = 20
+
+        if state.lower() == "sunny":
+            image_path = 'pages/images/sunny.png'
+            display.draw_image(image_path)
+        if "cloudy" in state.lower() or state.lower() == "overcast":
+            image_path = 'pages/images/cloudy.png'
+            display.draw_image(image_path)
+        if "rain" in state.lower() or "drizzle" in state.lower():
+            image_path = 'pages/images/rain.png'
+            display.draw_image(image_path)
+        if "partly cloudy" in state.lower():
+            image_path = 'pages/images/partly_cloudy.png'
+            display.draw_image(image_path)
