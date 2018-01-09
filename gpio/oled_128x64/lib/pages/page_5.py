@@ -66,7 +66,7 @@ def draw_weather_state(display, state):
         y = 25
         size = 20
 
-        if state.lower() == "sunny":
+        if state.lower() == "sunny" or state.lower() == "clear":
             image_path = 'pages/images/sunny.png'
             display.draw_image(image_path)
         if "cloudy" in state.lower() or state.lower() == "overcast":
