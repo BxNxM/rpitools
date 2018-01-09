@@ -31,7 +31,10 @@ def page(display, ok_button):
 
     weather_dict = oled_gui_widgets.get_weather_info()
     draw_weather_state(display, state=str(weather_dict["weather"]))
-    #draw_weather_state(display, state="Light drizzle")
+    #draw_weather_state(display, state="cloudy")
+    #draw_weather_state(display, state="sunny")
+    #draw_weather_state(display, state="rain")
+    #draw_weather_state(display, state="partly cloudy")
 
     x = 0
     y = 14
