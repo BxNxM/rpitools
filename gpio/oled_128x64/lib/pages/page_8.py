@@ -35,7 +35,17 @@ def page(display, ok_button):
     display.draw_text("wind:  " + str(weather_dict["wind"]), x, y)
     y+=h
     display.draw_text("rain:  " + str(weather_dict["rain"]), x, y)
+
+    draw_weather_state(display, state=str(weather_dict["weather"]))
     return False
 
 def page_destructor(display):
     pass
+
+def draw_weather_state(display, state):
+    x =100
+    y = 25
+    size = 20
+
+    if state.lower() == "sunny":
+        display.draw.ellipse((x, y, x+size, y+size), outline=255, fill=0)

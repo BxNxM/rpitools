@@ -79,6 +79,19 @@ class Oled_window_manager():
         self.redraw = True                                      # redraw page request status for display_show_thread
         self.display_refresh_time_sec = 1                       # actual page default refresh time - set with -> display_refresh_time_setter
         self.ok_button_event = False                            # ok button event status holder
+        self.read_default_page_index()
+
+    # read default index from file
+    def read_default_page_index(self):
+        default_index_config = ".defaultindex.dat"
+        if os.path.exists(default_index_config):
+            with open(default_index_config, "r") as f:
+                index = f.read()
+            try:
+                self.actual_page_index = int(index)
+            except Exception as e:
+                oledlog.logger.warn("default index read: " + str(e))
+                self.actual_page_index = 0
 
     #############################################################################
     #                                   THREADS                                 #
