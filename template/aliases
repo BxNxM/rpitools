@@ -12,6 +12,7 @@ alias myprocstat='/home/$USER/rpitools/tools/cpmonitor/cprocess_monitor.bash'
 alias cleanuplogs='pushd /home/$USER/rpitools/tools/ && ./clear_logs.sh && popd'
 alias omxplayer_gui='/home/pi/rpitools/tools/omxplayer_gui/omx_gui.py'
 alias startxbg='startx &'
+alias weather_wttr='curl wttr.in/Budapest'
 
 
 if [ ! -z $REPOROOT ]

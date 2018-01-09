@@ -5,6 +5,7 @@ user = subprocess.check_output("echo $USER", shell = True).split()[0]
 page_files_path = "/home/" + user + "/rpitools/tools/"
 sys.path.append(page_files_path)
 import wifi_info
+import re
 
 def wifi_quality():
     try:
@@ -58,8 +59,45 @@ def performance_widget():
 
     return CPU, MemUsage, temp, DiskUsage
 
+def get_weather_info():
+    location = "Budapest"
+    cmd = "curl wttr.in/Budapest"
+    # get weather with command line command
+    weather = subprocess.check_output(cmd, shell = True)
+    # remove ascii colors
+    ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+    weather = ansi_escape.sub('', weather)
+    # split lines
+    weather = weather.split("\n")
+    # return relevant part
+    for index, line in enumerate(weather):
+        if index != 0:
+            if index == 4:      # wind
+                weather[index] = line[23:len(line)]
+            elif index == 5:    #altitude
+                weather[index] = line[17:len(line)]
+            else:               # other values
+                weather[index] = line[15:len(line)]
+
+    output_dict = {"location": weather[0],\
+                   "weather": weather[2],\
+                   "temp": weather[3],\
+                   "wind": weather[4],
+                   "altitude": weather[5],\
+                   "rain": weather[6]\
+                  }
+    return output_dict
+
+def print_weather_dict():
+    o = get_weather_info()
+    print("-"*40)
+    for key, value in o.items():
+        print("{} : {}".format(key, value))
+    print("-"*40)
+
 if __name__ == "__main__":
     print("WIFI signal quality: " + str(wifi_quality()))
     cpu, mem, temp, disk = performance_widget()
     print("cpu: {}\nmem: {}\ntemp: {}\ndisk: {}".format(cpu, mem, temp, disk))
     print("SSID: {}".format(wifi_get_ssid()))
+    print_weather_dict()
