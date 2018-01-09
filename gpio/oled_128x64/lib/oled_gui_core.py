@@ -543,12 +543,22 @@ class Oled_window_manager():
         page_bar_height = 5
         if self.page_is_changed() or force_clean:
             if self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:
+                # page and header bar are ON
                 self.draw.rectangle((0,head_bar_height,self.disp.width, self.disp.height-page_bar_height), outline=0, fill=0)
                 oledlog.logger.info("Clean screen without head - page bar")
             elif not self.head_page_bar_is_enable[0] and not self.head_page_bar_is_enable[1]:
+                # page and header bar are OFF
                 clean_full = True
+            elif not self.head_page_bar_is_enable[0] and self.head_page_bar_is_enable[1]:
+                # head bar OFF, page bar ON
+                self.draw.rectangle((0,0,self.disp.width, self.disp.height-page_bar_height), outline=0, fill=0)
+                oledlog.logger.info("Clean screen without page bar")
+            elif self.head_page_bar_is_enable[0] and not self.head_page_bar_is_enable[1]:
+                # head bar ON, page bar OFF
+                self.draw.rectangle((0,head_bar_height,self.disp.width, self.disp.height), outline=0, fill=0)
+                oledlog.logger.info("Clean screen without head bar")
             else:
-                oledlog.logger.info("TODO: Make smart clean smarter...")
+                oledlog.logger.info("clever_screen_clean impassibrueeeee")
 
         if clean_full:
             self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
