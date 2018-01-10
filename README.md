@@ -161,5 +161,19 @@ ls -lath /home/$USER/rpitools/gpio/oled_128x64/lib/pages
 ![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/weather_page.jpg?raw=true)
 ![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_perf.jpg?raw=true)
 
+## performance with default setting (medium)
+RaspberryPi Zero W - get service CPU usage (average)
+
+```
+while true; do cpu=$(ps aux | grep -v grep | grep "oled_gui_core" | awk '{print $3}') && echo -ne "oledfw: $cpu %\r"; done
+```
+
+On MEDIUM performance set:
+
+```
+CPU LOAD: 25 % - 35 %
+CPU if oled in STANDBY: 2.3 %
+```
+
 ## GIT
 ***push repo:*** git push -u origin master

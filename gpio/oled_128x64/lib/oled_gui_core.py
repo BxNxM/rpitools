@@ -232,6 +232,8 @@ class Oled_window_manager():
     def draw_header_bar(self):
         if self.head_page_bar_is_enable[0]:
             self.header_bar_widget_counter += 1
+            if self.header_bar_widget_counter > self.heder_page_widget_call_counter_max:
+                self.header_bar_widget_counter = 0
 
             # time / date
             date = datetime.now().strftime('%Y-%m-%d')
@@ -246,9 +248,6 @@ class Oled_window_manager():
             # performance
             if self.header_bar_widget_counter == 3 or page_is_changed:
                 self.performance_widget()
-
-            if self.header_bar_widget_counter > self.heder_page_widget_call_counter_max:
-                self.header_bar_widget_counter = 0
 
             # Display image.
             self.redraw = True
