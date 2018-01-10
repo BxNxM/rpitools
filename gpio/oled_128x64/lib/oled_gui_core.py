@@ -29,7 +29,7 @@ from datetime import datetime
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
-performance_setup_dict = {"ULTRALOW": 1.5, "LOW": 1, "MEDIUM": 0.5, "HIGH": 0.2}
+performance_setup_dict = {"ULTRALOW": 1.4, "LOW": 0.8, "MEDIUM": 0.4, "HIGH": 0.2}
 performance = performance_setup_dict["MEDIUM"]                    # ---> set performance here
 
 # timing base
