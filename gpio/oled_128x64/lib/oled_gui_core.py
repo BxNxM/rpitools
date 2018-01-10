@@ -81,6 +81,10 @@ class Oled_window_manager():
         self.ok_button_event = False                            # ok button event status holder
         self.read_default_page_index()
 
+        # header bar shcedule widhets counters
+        self.heder_page_widget_call_counter_max = 4
+        self.header_bar_widget_counter = 0
+
     # read default index from file
     def read_default_page_index(self):
         default_index_config = ".defaultindex.dat"
@@ -227,16 +231,24 @@ class Oled_window_manager():
     # header bar
     def draw_header_bar(self):
         if self.head_page_bar_is_enable[0]:
+            self.header_bar_widget_counter += 1
+
             # time / date
             date = datetime.now().strftime('%Y-%m-%d')
             time = datetime.now().strftime('%H:%M:%S')
             self.__draw_time_text(time)
 
+            page_is_changed = self.page_is_changed(reset_status=False)
             # wifi
-            self.wifi_quality()
+            if self.header_bar_widget_counter == 2 or page_is_changed:
+                self.wifi_quality()
 
             # performance
-            self.performance_widget()
+            if self.header_bar_widget_counter == 3 or page_is_changed:
+                self.performance_widget()
+
+            if self.header_bar_widget_counter > self.heder_page_widget_call_counter_max:
+                self.header_bar_widget_counter = 0
 
             # Display image.
             self.redraw = True
