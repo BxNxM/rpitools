@@ -153,8 +153,9 @@ ls -lath /home/$USER/rpitools/gpio/oled_128x64/lib/pages
 * draw text
 * draw shapes: ellipse, rectangle, line, poligon
 * draw image
-* automatic functions: header bar (optional), page bar (optional), button handling 
+* automatic functions: header bar (optional), page bar (optional), button handling
 * automatic button handling (physical and virtual over oledinterface)
+* page control, load, run in loop, unload, next, previus etc...
 
 ![page_welcome](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_pi.jpg?raw=true)
 ![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/weather_page.jpg?raw=true)
