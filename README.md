@@ -8,37 +8,37 @@
 ***Deploy and setup raspbain image on MacOS/Linux***
 
 * clone rpi repo from github
-* 
+
 ```
 git clone https://github.com/BxNxM/rpitools.git
 ```
 
 * go to rpitools/prepare_sd
-* 
+
 ```
 cd rpitools/prepare_sd
 ```
 
 * Copy raspbian image to the rpitools/prepare\_sd/raspbian\_img folder
-* 
+
 ```
 cp ~/Downloads/*raspbian*.img raspbian_img/
 ```
 
 * run the sd card imager and follow the instructions
-* 
+
 ```
 ./raspbian_imager.bash
 ```
 
 * configure raspbian image on sd card (ssh, wifi, usb-eth, video ram) - follow the instructions
-* 
+
 ```
 ./boot_config.bash
 ```
 
 * set your wifi ssid and password on the wpa_supplicant.conf file
-* 
+ 
 ```
 -> manually (wifi) setup /Volumes/boot/wpa_supplicant.conf file.
 ```
@@ -46,7 +46,7 @@ cp ~/Downloads/*raspbian*.img raspbian_img/
 * ***FINALLY: unmount SD card, put it in the rpi zero w***
 
 * After raspberry booted up - copy rpitools (from your computer) to the raspberrypi
-* 
+
 ```
 copy rpitools:
 (if needed: ssh-keygen -R raspberrypi.local)
@@ -55,7 +55,7 @@ rm -f raspbian_img/*.img && scp -r ../../rpitools/ pi@raspberrypi.local:~/
 (default pwd: raspberry)
 ```
 * SSH to the pi
-* 
+
 ```
 ssh pi@raspberrypi.local
 (default pwd: raspberry)
@@ -63,26 +63,26 @@ ssh pi@raspberrypi.local
 ***Configuration on  YOUR PI with rpitools***
 
 * Source rpitools - install / setup / configure
-* 
+
 ```
 cd rpitools/
 source setup
 ```
 
 * if you use raspbain lite, and you want a GUI
-* 
+
 ```
 ./install_PIXEL.bash
 ```
 
 * if you want remote desktop access
-* 
+
 ```
 ./install_vnc.bash
 ```
 
 * Finally some manual setups with rpi-tools (don't forget)
-* 
+
 ```
 set default login console/desktop
 location
@@ -157,7 +157,7 @@ ls -lath /home/$USER/rpitools/gpio/oled_128x64/lib/pages
 * automatic button handling (physical and virtual over oledinterface)
 
 ![page_welcome](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_pi.jpg?raw=true)
-![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_weather.jpg?raw=true)
+![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/weather_page.jpg?raw=true)
 ![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_perf.jpg?raw=true)
 
 ## GIT
