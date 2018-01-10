@@ -32,6 +32,9 @@ def page(display, ok_button):
 
     ssid = oled_gui_widgets.wifi_get_ssid()
 
+    cmd = 'cat /proc/sys/kernel/hostname'
+    hostname = subprocess.check_output(cmd, shell = True)
+
     x = 0
     y = 14
     # Write two lines of text.
@@ -40,6 +43,8 @@ def page(display, ok_button):
     display.draw_text("CPU:  " + str(freqMhz) + " MHz ", x, y)
     y+=h
     display.draw_text("SSID: " + str(ssid), x, y)
+    y+=h
+    display.draw_text("HOSTn.: " + str(hostname), x, y)
 
     return False
 

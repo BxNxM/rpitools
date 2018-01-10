@@ -29,8 +29,8 @@ from datetime import datetime
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
-performance_setup_dict = {"LOW": 1, "MEDIUM": 0.5, "HIGH": 0.2}
-performance = performance_setup_dict["HIGH"]                    # ---> set performance here
+performance_setup_dict = {"ULTRALOW": 1.5, "LOW": 1, "MEDIUM": 0.5, "HIGH": 0.2}
+performance = performance_setup_dict["MEDIUM"]                    # ---> set performance here
 
 # timing base
 thread_refresh_header_bar = 0.9 * performance                # header bar refresh time (sec)
