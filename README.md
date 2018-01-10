@@ -1,4 +1,4 @@
-![logo](https://avatars3.githubusercontent.com/u/23359174?s=400&u=6f5652546ee24d94d71dfb482342c6f21f1b10e2&v=4)
+![logo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/logo.png?raw=true)
 
 # =========================
 # ======= RPITOOLS ========
