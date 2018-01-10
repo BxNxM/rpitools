@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-o", "--oled", help="Oled service ON or OFF")
 parser.add_argument("-sh", "--show",  action='store_true', help="show service status")
 parser.add_argument("-r", "--restart",  action='store_true', help="restart oled service")
-parser.add_argument("-b", "--button", help="LEFT / OK / RIGHT")
+parser.add_argument("-b", "--button", help="LEFT / OK / RIGHT / standbyFalse / standbyTrue")
 
 args = parser.parse_args()
 oled = args.oled
@@ -85,7 +85,7 @@ if show:
     print("Oled service is run: " + str(status))
 
 if button is not None:
-    if button == "RIGHT" or button == "LEFT" or button == "OK":
+    if button == "RIGHT" or button == "LEFT" or button == "OK" or button == "standbyFalse" or button == "standbyTrue":
         with open(oled_virtual_buttons_file, 'w') as f:
             f.write(button)
             print("Button is set: " + str(button))

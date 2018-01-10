@@ -6,17 +6,16 @@ import time
 #                              ----------------------------                     #
 #                                                                               #
 #################################################################################
-oled_state = True
-
+state = False
 
 def page_setup(display):
-    global oled_state
-    oled_state = True
+    global state
+    state = False
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
 def page(display, ok_button):
-    global oled_state
+    global state
     x = 0
     y = 15
     # Write two lines of text.
@@ -24,25 +23,13 @@ def page(display, ok_button):
     y+=h + 2
     w, h = display.draw_text("Press OK", x+35, y)
     y+=h + 2
-    if ok_button and oled_state:
-        oled_state = False
-        w, h = display.draw_text("going standby", x+35, y)
-        display.display_show()
-        y+=h
 
-        # clean display
-        display.head_page_bar_switch(False, False)
-        time.sleep(2)
-        display.draw.rectangle((0,0,display.disp.width, display.disp.height), outline=0, fill=0)
-        display.disp.clear()
-        display.display_show()
-        time.sleep(1.5)
-
-    elif ok_button and not oled_state:
-        oled_state = True
-        display.head_page_bar_switch(True, True)
-        w, h = display.draw_text("oled is ready", x+35, y)
-        display.display_show()
+    if ok_button and state is False:
+        state = True
+        display.standby_switch(mode=True)
+    elif ok_button and state is True:
+        state = False
+        display.standby_switch(mode=False)
 
     return False
 

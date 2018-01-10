@@ -76,10 +76,12 @@ class Oled_window_manager():
         self.threads = []                                       # threads list
         self.sys_message_cleanup = False                        # system msg indicator
         self.head_page_bar_is_enable = [True, True]             # head, page bar status
+        self.head_page_bar_is_enable_backup = self.head_page_bar_is_enable
         self.redraw = True                                      # redraw page request status for display_show_thread
         self.display_refresh_time_sec = 1                       # actual page default refresh time - set with -> display_refresh_time_setter
         self.ok_button_event = False                            # ok button event status holder
         self.read_default_page_index()
+        self.standby = False                                    # standby mode indicator
 
         # header bar shcedule widhets counters
         self.heder_page_widget_call_counter_max = 4
@@ -192,17 +194,28 @@ class Oled_window_manager():
         pages_pcs = len(self.page_list)
         #print("all page: " + str(pages_pcs))
         if cmd == "right" or cmd == "RIGHT":
+            self.standby = False                                        # wake up if button was pressed
             oledlog.logger.info("=> Button: right pressed")
             self.actual_page_index +=1
             if self.actual_page_index >= pages_pcs:
                 self.actual_page_index = 0
         elif cmd == "left" or cmd == "LEFT":
+            self.standby = False                                        # wake up if button was pressed
             oledlog.logger.info("=> Button: left pressed")
             self.actual_page_index -=1
             if self.actual_page_index < 0:
                 self.actual_page_index = pages_pcs-1
         elif cmd == "ok" or cmd == "OK":
-            self.ok_button_event = True
+            self.standby = False
+            if self.standby:
+                self.ok_button_event = False
+            else:
+                self.ok_button_event = True
+        elif cmd == "standbyTrue" or cmd == "standbyFalse":
+            if cmd == "standbyTrue":
+                self.standby_switch(mode=True)
+            else:
+                self.standby_switch(mode=False)
         else:
             oledlog.logger.error("virtual_button cmd not found: " + str(cmd))
 
@@ -328,15 +341,18 @@ class Oled_window_manager():
     #                              OFFICIAL WIDGET(S)                             #
     #############################################################################
     # system message box
-    def oled_sys_message(self, text=None):
+    def oled_sys_message(self, text=None, time=None):
         # main frame
-        global oled_sys_message_wait_sec
-        time_wait = oled_sys_message_wait_sec
+        if time is None:
+            global oled_sys_message_wait_sec
+            time_wait = oled_sys_message_wait_sec
+        if time is not None:
+            time_wait = time
         while time_wait > 0:
-            self.draw.rectangle((10, 8, self.disp.width-10, self.disp.height-7), outline=255, fill=0)
+            self.draw.rectangle((10, 12, self.disp.width-10, self.disp.height-7), outline=255, fill=0)
             header_text = "SYS MESS - {} s".format(time_wait)
             w, h = self.font.getsize(header_text)
-            self.draw_text(header_text, (self.disp.width - w)/2, 9)
+            self.draw_text(header_text, (self.disp.width - w)/2, 13)
             if text is not None:
                 if len(text) >= 18:
                     text1 = text[0:17]
@@ -346,11 +362,11 @@ class Oled_window_manager():
                     else:
                         text2 = text[17:len(text)]
                         text3 = ""
-                    self.draw_text(text1, 14, 12+h)
-                    self.draw_text(text2, 14, 12+h+h)
-                    self.draw_text(text3, 14, 12+h+h+h)
+                    self.draw_text(text1, 14, 16+h)
+                    self.draw_text(text2, 14, 16+h+h)
+                    self.draw_text(text3, 14, 16+h+h+h)
                 else:
-                    self.draw_text(text, 14, 12+h)
+                    self.draw_text(text, 14, 16+h)
                 self.sys_message_cleanup = True
                 self.redraw = True
                 sleep(1)
@@ -414,6 +430,29 @@ class Oled_window_manager():
     #############################################################################
     #                            MAIN FUNCTIONALITIES                           #
     #############################################################################
+    def standby_switch(self, mode=None):
+        if mode is not None:
+            if mode is True:
+                self.oled_sys_message("go to standby", time=1)
+                self.standby = True
+                # buffer page setup for wake up
+                self.head_page_bar_is_enable_backup = self.head_page_bar_is_enable
+                self.head_page_bar_switch(False, False)
+                # clean display
+                sleep(2)
+                self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+                self.disp.clear()
+                self.display_show()
+                sleep(1.5)
+            if mode is False:
+                # TODO restore page settings!
+                self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
+                self.disp.clear()
+                self.oled_sys_message("oled is ready", time=1)
+                sleep(1)
+                self.head_page_bar_switch(self.head_page_bar_is_enable_backup[0], self.head_page_bar_is_enable_backup[1])
+                self.standby = False
+
     # show contents on display if device is not busy
     def display_show(self):
         if self.display_is_avaible:
@@ -472,16 +511,17 @@ class Oled_window_manager():
         self.__init_threads()
         try:
             while True:
-                self.run_actual_page()
+                if not self.standby:
+                    self.run_actual_page()
                 sleep(main_page_refresh_min_delay)
         except KeyboardInterrupt as e:
             oledlog.logger.info("Exiting " + str(e))
 
     # run page setup - when actual page is activated
-    def actual_page_setup(self, page):
+    def actual_page_setup(self, page, force=False):
         if self.page_is_changed(reset_status=False):
             self.actual_page_setup_executed = False
-        if not self.actual_page_setup_executed:
+        if not self.actual_page_setup_executed or force:
             page.page_setup(self)
             self.actual_page_setup_executed = True
 

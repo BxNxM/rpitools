@@ -72,7 +72,7 @@ class OledButtonHandler():
             if os.path.exists(virtual_button_file_pipe):
                 with open(virtual_button_file_pipe, 'r') as f:
                     cmd = f.read().rstrip()
-                if cmd == "RIGHT" or cmd == "LEFT" or cmd == "OK":
+                if cmd == "RIGHT" or cmd == "LEFT" or cmd == "OK" or cmd == "standbyTrue" or cmd == "standbyFalse":
                     self.last_event_cmd = cmd
                     time.sleep(0.5)
                     open(virtual_button_file_pipe, 'w').close()
