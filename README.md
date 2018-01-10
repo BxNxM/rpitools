@@ -92,7 +92,7 @@ set local name
 ```
 
 # ==== OLED FRAMEWORK ===
-![oled]()
+![oled](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/oled.jpg?raw=true)
 
 SUPPORTED OLED TYPE: 128x64 i2c SSD1306 Driver IC
 
@@ -156,8 +156,9 @@ ls -lath /home/$USER/rpitools/gpio/oled_128x64/lib/pages
 * automatic functions: header bar (optional), page bar (optional), button handling 
 * automatic button handling (physical and virtual over oledinterface)
 
-![page_welcome]()
-
+![page_welcome](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_pi.jpg?raw=true)
+![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_weather.jpg?raw=true)
+![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_perf.jpg?raw=true)
 
 ## GIT
 ***push repo:*** git push -u origin master
