@@ -34,7 +34,7 @@ performance = performance_setup_dict["MEDIUM"]                    # ---> set per
 
 # timing base
 thread_refresh_header_bar = 0.9 * performance                # header bar refresh time (sec)
-thread_refresh_page_bar = 0.9 * performance                  # page bar refresh time (sec)
+thread_refresh_page_bar = 0.7 * performance                  # page bar refresh time (sec)
 thread_refresh_dynamic_pages = 4 * performance                # rescan page folder time (sec)
 thread_refresh_display_show_thread = 0.5 * performance        # display show thread refresh time (sec)
 main_page_refresh_min_delay = 0.03 * performance              # default page refresh time (sec)
@@ -240,7 +240,7 @@ class Oled_window_manager():
 
             page_is_changed = self.page_is_changed(reset_status=False)
             # wifi
-            if self.header_bar_widget_counter == 2 or page_is_changed:
+            if self.header_bar_widget_counter == 1 or self.header_bar_widget_counter == 4 or page_is_changed:
                 self.wifi_quality()
 
             # performance
