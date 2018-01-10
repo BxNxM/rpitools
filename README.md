@@ -1,9 +1,9 @@
 # rpitools
 git push -u origin master
 
-###############################################################
-######################## HOW TO USE ###########################
-###############################################################
+########################################
+############## HOW TO USE ##############
+########################################
 ON macOS/Linux:
 ---------------
 git clone https://github.com/BxNxM/rpitools.git
@@ -13,9 +13,9 @@ cp ~/Downloads/*raspbian*.img raspbian_img/
 ./boot_config.bash
 -> manually (wifi) setup /Volumes/boot/wpa_supplicant.conf file.
 
-===============================================================
+=========================================
 unmount SD card, tut it in to the rpi zero w
-===============================================================
+=========================================
 
 copy rpitools:
 (ssh-keygen -R raspberrypi.local)
