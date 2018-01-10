@@ -61,7 +61,7 @@ def performance_widget():
 
 def get_weather_info():
     location = "Budapest"
-    cmd = "curl wttr.in/Budapest"
+    cmd = "curl wttr.in/?0/?T/?m/?M/" + location
     # get weather with command line command
     weather = subprocess.check_output(cmd, shell = True)
     if weather != "Not so fast! Number of queries per day is limited to 1000":
@@ -73,19 +73,21 @@ def get_weather_info():
         # return relevant part
         for index, line in enumerate(weather):
             if index != 0:
-                if index == 4:      # wind
-                    weather[index] = line[23:len(line)].rstrip()
-                elif index == 5:    #altitude
-                    weather[index] = line[17:len(line)].rstrip()
+                if index == 5:      # wind
+                    weather[index] = line[21:len(line)].rstrip().lstrip()
+                elif index == 6:    #altitude
+                    weather[index] = line[16:len(line)].rstrip().lstrip()
+                elif index == 1:    #location
+                    weather[index] = line[17:len(line)].rstrip().lstrip()
                 else:               # other values
-                    weather[index] = line[15:len(line)].rstrip()
+                    weather[index] = line[15:len(line)].rstrip().lstrip()
 
-        output_dict = {"location": weather[0],\
-                       "weather": weather[2],\
-                       "temp": weather[3],\
-                       "wind": weather[4],
-                       "altitude": weather[5],\
-                       "rain": weather[6]\
+        output_dict = {"location": weather[1],\
+                       "weather": weather[3],\
+                       "temp": weather[4],\
+                       "wind": weather[5],
+                       "altitude": weather[6],\
+                       "rain": weather[7]\
                        }
     else:
         output_dict = {"location": "None",\
