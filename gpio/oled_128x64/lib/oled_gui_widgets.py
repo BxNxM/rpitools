@@ -72,15 +72,10 @@ def get_weather_info():
         weather = weather.split("\n")
         # return relevant part
         for index, line in enumerate(weather):
+            converted_text = weather_line_convert(line)
+            line = converted_text.rstrip().lstrip()
             if index != 0:
-                if index == 5:      # wind
-                    weather[index] = line[21:len(line)].rstrip().lstrip()
-                elif index == 6:    #altitude
-                    weather[index] = line[16:len(line)].rstrip().lstrip()
-                elif index == 1:    #location
-                    weather[index] = line[17:len(line)].rstrip().lstrip()
-                else:               # other values
-                    weather[index] = line[15:len(line)].rstrip().lstrip()
+                weather[index] = line
 
         output_dict = {"location": weather[1],\
                        "weather": weather[3],\
@@ -98,6 +93,15 @@ def get_weather_info():
                        "rain": "None"\
                        }
     return output_dict
+
+def weather_line_convert(line):
+    buffered_output = ""
+    for index, char in enumerate(line):
+        if char.isalpha() or char.isdigit():
+            for index in range(index, len(line)):
+                buffered_output+=line[index]
+            break
+    return buffered_output
 
 def print_weather_dict():
     o = get_weather_info()
