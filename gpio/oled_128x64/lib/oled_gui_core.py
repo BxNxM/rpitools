@@ -206,9 +206,9 @@ class Oled_window_manager():
             if self.actual_page_index < 0:
                 self.actual_page_index = pages_pcs-1
         elif cmd == "ok" or cmd == "OK":
-            self.standby = False
             if self.standby:
                 self.ok_button_event = False
+                self.standby_switch(False)                              # wake up for standby
             else:
                 self.ok_button_event = True
         elif cmd == "standbyTrue" or cmd == "standbyFalse":
@@ -513,7 +513,7 @@ class Oled_window_manager():
             while True:
                 if not self.standby:
                     self.run_actual_page()
-                sleep(main_page_refresh_min_delay)
+                    sleep(main_page_refresh_min_delay)
         except KeyboardInterrupt as e:
             oledlog.logger.info("Exiting " + str(e))
 
