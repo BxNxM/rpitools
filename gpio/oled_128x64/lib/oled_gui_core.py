@@ -462,7 +462,7 @@ class Oled_window_manager():
                 self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
                 self.disp.clear()
                 # wake up message
-                self.oled_sys_message("oled is ready", time=2)
+                # self.oled_sys_message("oled is ready", time=2)
                 sleep(1)
                 # load actual page settings
                 self.head_page_bar_switch(self.head_page_bar_is_enable_backup[0], self.head_page_bar_is_enable_backup[1])

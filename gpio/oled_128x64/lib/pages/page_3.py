@@ -21,10 +21,11 @@ def page(display, ok_button):
     y += h
 
     if ok_button:
+        min_value = 30
         display.draw.rectangle((70,  30, 127, 50), outline=0, fill=0)
-        r_value = random.randint(0, 100)
-        g_value = random.randint(0, 100)
-        b_value = random.randint(0, 100)
+        r_value = random.randint(min_value, 100)
+        g_value = random.randint(min_value, 100)
+        b_value = random.randint(min_value, 100)
 
         w, h = display.draw_text("    r: " + str(r_value) + " ", x, y)
         y += h
