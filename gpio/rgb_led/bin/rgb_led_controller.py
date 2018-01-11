@@ -8,6 +8,7 @@ import LedHandler
 import ConfigHandler
 import LogHandler
 mylogger = LogHandler.LogHandler("rgb_led_controller")
+import time
 
 def rgb_config_manager():
     # set config handler
@@ -30,9 +31,12 @@ def rgb_config_manager():
             rgb_dict = rgb.config_watcher()
             mylogger.logger.info("config watcher dict: {}".format(rgb_dict))
             if rgb_dict is not None:
-                red.set_dc_with_gradient(rgb_dict["RED"])
-                green.set_dc_with_gradient(rgb_dict["GREEN"])
-                blue.set_dc_with_gradient(rgb_dict["BLUE"])
+                #red.set_dc_with_gradient(rgb_dict["RED"])
+                #green.set_dc_with_gradient(rgb_dict["GREEN"])
+                #blue.set_dc_with_gradient(rgb_dict["BLUE"])
+                red.led_dc_controller(rgb_dict["RED"])
+                green.led_dc_controller(rgb_dict["GREEN"])
+                blue.led_dc_controller(rgb_dict["BLUE"])
                 mylogger.logger.info("RGB dict: R{} G{} B{}".format(rgb_dict["RED"], rgb_dict["GREEN"], rgb_dict["BLUE"]))
                 # start led
                 if rgb_dict["LED"] != "ON" and led_state != rgb_dict["LED"]:
