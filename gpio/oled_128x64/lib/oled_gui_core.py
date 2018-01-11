@@ -65,7 +65,7 @@ class Oled_window_manager():
         self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
 
         self.page_list = []                                     # page list tuples: page name, page index, page instance
-        self.image_strored = self.image                         # image buffer for restore screen after image draw
+        self.image_strored = self.image                         # image buffer for restore screen after image draw on any page
 
         # indicator variables for managing elements
         self.actual_page_index = 0                              # actual page index
@@ -134,19 +134,21 @@ class Oled_window_manager():
     def draw_page_bar_thread(self):
         prctl.set_name("thread_pagebar")
         while True:
-            if len(self.page_list) == 0:
-                self.draw_page_bar(1, self.actual_page_index)
-            else:
-                self.draw_page_bar(len(self.page_list), self.actual_page_index)
-            # sleep in therad
-            sleep(thread_refresh_page_bar)
+            if not self.standby:
+                if len(self.page_list) == 0:
+                    self.draw_page_bar(1, self.actual_page_index)
+                else:
+                    self.draw_page_bar(len(self.page_list), self.actual_page_index)
+                # sleep in therad
+                sleep(thread_refresh_page_bar)
 
     # header bar thread
     def draw_header_bar_thread(self):
         prctl.set_name("thread_headerbar")
         while True:
-            self.draw_header_bar()
-            sleep(thread_refresh_header_bar)
+            if not self.standby:
+                self.draw_header_bar()
+                sleep(thread_refresh_header_bar)
 
     # read pages and reload if necessarry
     def manage_pages_thread(self):
@@ -348,6 +350,12 @@ class Oled_window_manager():
             time_wait = oled_sys_message_wait_sec
         if time is not None:
             time_wait = time
+
+        # make system msg screen - and store original page
+        original_image_obj = self.image
+        self.image = Image.new('1', (self.disp.width, self.disp.height))
+        self.draw = ImageDraw.Draw(self.image)
+
         while time_wait > 0:
             self.draw.rectangle((10, 12, self.disp.width-10, self.disp.height-7), outline=255, fill=0)
             header_text = "SYS MESS - {} s".format(time_wait)
@@ -373,6 +381,11 @@ class Oled_window_manager():
                 time_wait-=1
         else:
             self.draw.rectangle((10, 8, self.disp.width-10, self.disp.height-7), outline=0, fill=0)
+
+        # restore original page
+        self.image = original_image_obj
+        self.draw = ImageDraw.Draw(self.image)
+
 
     #############################################################################
     #                            IMPORT AND LOAD PAGES                          #
@@ -432,8 +445,8 @@ class Oled_window_manager():
     #############################################################################
     def standby_switch(self, mode=None):
         if mode is not None:
-            if mode is True:
-                self.oled_sys_message("go to standby", time=1)
+            if mode is True and self.standby is False:
+                self.oled_sys_message("go to standby", time=2)
                 self.standby = True
                 # buffer page setup for wake up
                 self.head_page_bar_is_enable_backup = self.head_page_bar_is_enable
@@ -444,12 +457,14 @@ class Oled_window_manager():
                 self.disp.clear()
                 self.display_show()
                 sleep(1.5)
-            if mode is False:
+            if mode is False and self.standby is True:
                 # TODO restore page settings!
                 self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
                 self.disp.clear()
-                self.oled_sys_message("oled is ready", time=1)
+                # wake up message
+                self.oled_sys_message("oled is ready", time=2)
                 sleep(1)
+                # load actual page settings
                 self.head_page_bar_switch(self.head_page_bar_is_enable_backup[0], self.head_page_bar_is_enable_backup[1])
                 self.standby = False
 
