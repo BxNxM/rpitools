@@ -351,6 +351,10 @@ class Oled_window_manager():
         if time is not None:
             time_wait = time
 
+        # store standy state and set it True to ignore head - page bar and main loop
+        standby_stored_state =  self.standby
+        self.standby = True
+
         # make system msg screen - and store original page
         original_image_obj = self.image
         self.image = Image.new('1', (self.disp.width, self.disp.height))
@@ -386,6 +390,8 @@ class Oled_window_manager():
         self.image = original_image_obj
         self.draw = ImageDraw.Draw(self.image)
 
+        # restore self.standby state to original
+        self.standby = standby_stored_state
 
     #############################################################################
     #                            IMPORT AND LOAD PAGES                          #
@@ -446,7 +452,7 @@ class Oled_window_manager():
     def standby_switch(self, mode=None):
         if mode is not None:
             if mode is True and self.standby is False:
-                self.oled_sys_message("go to standby", time=2)
+                self.oled_sys_message("go to standby", time=1)
                 self.standby = True
                 # buffer page setup for wake up
                 self.head_page_bar_is_enable_backup = self.head_page_bar_is_enable
