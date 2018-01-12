@@ -81,9 +81,12 @@ source setup
 ./install_vnc.bash
 ```
 
-* Finally some manual setups with rpi-tools (don't forget)
+* Finally some manual setups with raspi-config (don't forget)
 
 ```
+sudo raspi-config
+
+and set:
 set default login console/desktop
 location
 expand file system
