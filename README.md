@@ -1,4 +1,4 @@
-![logo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/logo.png?raw=true)
+![logo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/rpitools_logic.png?raw=true)
 
 # =========================
 # ======= RPITOOLS ========
