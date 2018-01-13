@@ -2,6 +2,7 @@ import subprocess
 import time
 import os
 import sys
+import time
 try:
     myfolder = os.path.dirname(os.path.abspath(__file__))
     widget_module_path = os.path.dirname(myfolder)
@@ -17,6 +18,7 @@ except Exception as e:
 #                              ----------------------------                     #
 #                               *weather *temp *wind *rain                      #
 #################################################################################
+images_path = "pages/images/weather_images/"
 attention = True
 page_icon_name = None
 
@@ -29,12 +31,11 @@ def page_setup(display):
 def page(display, ok_button):
     global attention
 
+    # image demo
+    #test_images(display)
+
     weather_dict = oled_gui_widgets.get_weather_info()
     draw_weather_state(display, state=str(weather_dict["weather"]))
-    #draw_weather_state(display, state="cloudy")
-    #draw_weather_state(display, state="sunny")
-    #draw_weather_state(display, state="rain")
-    #draw_weather_state(display, state="partly cloudy")
 
     x = 0
     y = 14
@@ -67,14 +68,53 @@ def draw_weather_state(display, state):
         size = 20
 
         if state.lower() == "sunny" or state.lower() == "clear":
-            image_path = 'pages/images/sunny.png'
+            image_path = os.path.join(images_path, "sunny.png")
             display.draw_image(image_path)
         if "cloudy" in state.lower() or state.lower() == "overcast":
-            image_path = 'pages/images/cloudy.png'
+            image_path = os.path.join(images_path, "cloudy.png")
             display.draw_image(image_path)
         if "rain" in state.lower() or "drizzle" in state.lower():
-            image_path = 'pages/images/rain.png'
+            image_path = os.path.join(images_path, "rain.png")
             display.draw_image(image_path)
         if "partly cloudy" in state.lower():
-            image_path = 'pages/images/partly_cloudy.png'
+            image_path = os.path.join(images_path, "partly_cloudy.png")
             display.draw_image(image_path)
+        if "mist" in state.lower():
+            image_path = os.path.join(images_path, "mist.png")
+            display.draw_image(image_path)
+        if "snow" in state.lower():
+            image_path = os.path.join(images_path, "snow.png")
+            display.draw_image(image_path)
+        if "snow" in state.lower() and "rain" in state.lower():
+            image_path = os.path.join(images_path, "snow-rain.png")
+            display.draw_image(image_path)
+        if "storm" in state.lower():
+            image_path = os.path.join(images_path, "storm.png")
+            display.draw_image(image_path)
+
+
+def test_images(display):
+    draw_weather_state(display, state="sunny")
+    display.display_show()
+    time.sleep(2)
+    draw_weather_state(display, state="cloudy")
+    display.display_show()
+    time.sleep(2)
+    draw_weather_state(display, state="rain")
+    display.display_show()
+    time.sleep(2)
+    draw_weather_state(display, state="partly cloudy")
+    display.display_show()
+    time.sleep(2)
+    draw_weather_state(display, state="mist")
+    display.display_show()
+    time.sleep(2)
+    draw_weather_state(display, state="snow")
+    display.display_show()
+    time.sleep(2)
+    draw_weather_state(display, state="snow rain")
+    display.display_show()
+    time.sleep(2)
+    draw_weather_state(display, state="storm")
+    display.display_show()
+    time.sleep(2)
