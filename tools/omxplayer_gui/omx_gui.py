@@ -7,17 +7,21 @@ import subprocess
 import sys
 import argparse
 
-videos_path = "/home/pi/Videos/"
+user = os.environ['USER']
+videos_path = "/home/" + str(user) + "/Videos/"
+louncher_creator_path = "/home/" + str(user) + "/rpitools/tools/omxplayer_gui/create_louncher.bash"
 
 # argparser for manual start
 parser = argparse.ArgumentParser()
 parser.add_argument("-g", "--gui",  action='store_true', help="run omcplayer with easygui")
 parser.add_argument("-c", "--console",  action='store_true', help="run omxplayer with console")
+parser.add_argument("-cl", "--create_louncher",  action='store_true', help="create graphic louncher to the desktop")
 args = parser.parse_args()
 force_gui = args.gui
 force_console = args.console
+create_louncher = args.create_louncher
 is_manual_settings = False
-if (force_gui or force_console) and not (force_gui is True and force_console is True):
+if (force_gui or force_console) and not (force_gui is True and force_console is True) or create_louncher:
     is_manual_settings = True
 
 # easygui function
@@ -132,6 +136,9 @@ if __name__ == "__main__":
             main_w_gui()
         if force_console:
             main_w_console()
+        if create_louncher:
+            output = subprocess.check_output(louncher_creator_path, shell = True)
+            print(output.decode("utf-8"))
     else:
         print("Run autodetect mode")
         # X is running, DISPLAY ENV is set
