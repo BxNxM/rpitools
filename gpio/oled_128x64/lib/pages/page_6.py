@@ -26,11 +26,9 @@ def page(display, ok_button):
     y+=h + 2
 
     if display.standby is False and not is_first_load:
-        state = False
         display.draw_text("oled is ready...", x+35, y)
-        display.standby_switch(mode=False)
+        #display.standby_switch(mode=False)
     if ok_button and display.standby is False:
-        state = True
         display.draw_text("going standby...", x+35, y)
         display.display_show()
         time.sleep(1)
