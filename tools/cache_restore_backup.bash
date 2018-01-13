@@ -28,6 +28,12 @@ then
         then
             mkdir "$backup_path"
         fi
+        # backup cache and adafruit library
+        # adafruit lib
+        echo -e "\tbackup: ${REPOROOT}/gpio/Adafruit_Python_SSD1306 -> $backup_path"
+        sudo cp -r "${REPOROOT}/gpio/Adafruit_Python_SSD1306" "$backup_path"
+        # cache
+        echo -e "\tbackup: ${REPOROOT}/cache -> $backup_path"
         cp -r "${REPOROOT}/cache" "$backup_path"
         if [ "$?" -eq 0 ]
         then
@@ -41,6 +47,12 @@ then
         echo -e "Restore backup"
         if [ -e "${backup_path}/cache" ]
         then
+            # restore cache and Adafruit library
+            # adafruit lib
+            echo -e "\trestore: ${backup_path}/cache/Adafruit_Python_SSD1306 -> ${REPOROOT}/gpio/"
+            sudo cp -r "${backup_path}/Adafruit_Python_SSD1306" "${REPOROOT}/gpio/"
+            # cache
+            echo -e "\trestore: ${backup_path}/cache -> ${REPOROOT}"
             cp -r "${backup_path}/cache" "${REPOROOT}"
             if [ "$?" -eq 0 ]
             then
