@@ -8,19 +8,22 @@ import subprocess
 import time
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-o", "--oled", help="Oled service ON or OFF")
+parser.add_argument("-ol", "--oled", help="Oled service ON or OFF")
 parser.add_argument("-sh", "--show",  action='store_true', help="show service status")
-parser.add_argument("-r", "--restart",  action='store_true', help="restart oled service")
-parser.add_argument("-b", "--button", help="LEFT / OK / RIGHT / standbyFalse / standbyTrue")
+parser.add_argument("-re", "--restart",  action='store_true', help="restart oled service")
+parser.add_argument("-bu", "--button", help="LEFT / OK / RIGHT / standbyFalse / standbyTrue")
+parser.add_argument("-ss", "--set_service", action='store_true', help="set systemd service - boot start...")
 
 args = parser.parse_args()
 oled = args.oled
 show = args.show
 restart = args.restart
 button = args.button
+set_service = args.set_service
 
 oled_core_script = "oled_gui_core.py"
 oled_virtual_buttons_file = os.path.join(myfolder, "../lib/.virtual_button_file")
+set_service_script = os.path.join(myfolder, "../systemd_setup/set_service.bash")
 
 def process_is_run(process_name):
     ps = subprocess.Popen("ps aux | grep -v grep | grep " + str(process_name), shell=True, stdout=subprocess.PIPE)
@@ -32,62 +35,119 @@ def process_is_run(process_name):
         return False
 
 def start():
-    if process_is_run(oled_core_script):
-        print(str(oled_core_script) + " already run.")
+    # start with systemctl
+    process = subprocess.Popen("sudo systemctl is-enabled oled_gui_core", stdout=subprocess.PIPE, shell=True)
+    returncode = process.wait()
+    output = str(process.stdout.read())
+    print("sudo systemctl is-enabled oled_gui_core -> exitcode:{}, stdout:{}".format(returncode, output))
+    if "enabled" in output or "disabled" in output:
+        print("[start with systemctl] sudo systemctl start oled_gui_core")
+        process = subprocess.Popen("sudo systemctl start oled_gui_core", stdout=subprocess.PIPE, shell=True)
+        returncode = process.wait()
+        output = process.stdout.read()
+        print("sudo systemctl start oled_gui_core -> exitcode:{}, stdout:{}".format(returncode, output))
     else:
-        print("Start " + str(oled_core_script))
-        cmd = "nohup " + str(os.path.join(myfolder, "start_oled_service.bash")) + " &"
-        proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
-        while not process_is_run(oled_core_script):
-            print("Wait for start")
+        # start with custom scripts
+        if process_is_run(oled_core_script):
+            print(str(oled_core_script) + " already run.")
         else:
-            print("SUCCESS")
+            print("[start with custom scripts] Start " + str(oled_core_script))
+            cmd = "nohup " + str(os.path.join(myfolder, "start_oled_service.bash")) + " &"
+            proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+            while not process_is_run(oled_core_script):
+                print("Wait for start")
+            else:
+                print("SUCCESS")
 
 def stop():
-    if not process_is_run(oled_core_script):
-        print(str(oled_core_script) + "is not running")
+    # start with systemctl
+    process = subprocess.Popen("sudo systemctl is-enabled oled_gui_core", stdout=subprocess.PIPE, shell=True)
+    returncode = process.wait()
+    output = str(process.stdout.read())
+    print("sudo systemctl is-enabled oled_gui_core -> exitcode:{}, stdout:{}".format(returncode, output))
+    if "enabled" in output or "disabled" in output:
+        print("[start with systemctl] sudo systemctl stop oled_gui_core")
+        process = subprocess.Popen("sudo systemctl stop oled_gui_core", stdout=subprocess.PIPE, shell=True)
+        returncode = process.wait()
+        output = process.stdout.read()
+        print("sudo systemctl stop oled_gui_core -> exitcode:{}, stdout:{}".format(returncode, output))
     else:
-        print("Stop " + str(oled_core_script))
-        proc = subprocess.Popen("nohup " + str(os.path.join(myfolder, "stop_oled_service.bash")) + " &", shell=True, stdout=subprocess.PIPE)
-        while process_is_run(oled_core_script):
-            print("Wait for stop")
+        # start with custom scripts
+        if not process_is_run(oled_core_script):
+            print(str(oled_core_script) + "is not running")
         else:
-            print("SUCCESS")
+            print("[stop with custom scripts] Stop " + str(oled_core_script))
+            proc = subprocess.Popen("nohup " + str(os.path.join(myfolder, "stop_oled_service.bash")) + " &", shell=True, stdout=subprocess.PIPE)
+            while process_is_run(oled_core_script):
+                print("Wait for stop")
+            else:
+                print("SUCCESS")
 
-def buttons(button):
-    if button == "RIGHT" or button == "LEFT" or button == "OK":
+def set_buttons(button):
+    command = None
+    if button.upper() == "RIGHT" or button.upper() == "LEFT" or button.upper() == "OK":
+        command = button.upper()
+    elif button.lower() == "standbyfalse":
+        command = "standbyFalse"
+    elif button.lower() == "standbytrue":
+        command = "standbyTrue"
+
+    if command is not None:
         with open(oled_virtual_buttons_file, 'w') as f:
-            f.write()
-        print("Button is set: " + str(button))
+            f.write(command)
+            print("Button is set: " + str(command))
     else:
-        print("Not valid argunet: " + str(button))
+        print("Button is invalid: " + str(command))
 
+def restart_oled_gui_core():
+    # restart with systemctl
+    process = subprocess.Popen("sudo systemctl is-active oled_gui_core", stdout=subprocess.PIPE, shell=True)
+    returncode = process.wait()
+    output = str(process.stdout.read())
+    print("sudo systemctl is-active oled_gui_core -> exitcode:{}, stdout:{}".format(returncode, output))
+    if "active" in output or "inactive" in output:
+        print("[restart with systemctl] sudo systemctl restart oled_gui_core")
+        process = subprocess.Popen("sudo systemctl restart oled_gui_core", stdout=subprocess.PIPE, shell=True)
+        returncode = process.wait()
+        output = process.stdout.read()
+        print("sudo systemctl restart oled_gui_core -> exitcode:{}, stdout:{}".format(returncode, output))
+    else:
+        # restart with custom scripts
+        print("[restart with custom scripts] Restart oled service")
+        stop()
+        while process_is_run(oled_core_script):
+            print("Waiting for stop process")
+        start()
+        print("process is start: " + str(process_is_run(oled_core_script)))
+
+def set_service_up_systemd():
+    print("Set systemd oled_gui_core service - boot up lounch and so on...")
+    output = subprocess.check_output(set_service_script)
+    print(str(output.decode("utf-8")))
+
+################################## CHECK ARGS #######################################
+# oled on/off
 if oled is not None:
-    # TODO start oled service if not running
     if oled == "ON" or oled == "on":
         start()
     elif oled == "OFF" or oled == "off":
-        # TODO kill oled service
         stop()
     else:
         print("Unknown argument: " + str(oled))
 
+# oled restart
 if restart:
-    print("Restart oled service")
-    stop()
-    while process_is_run(oled_core_script):
-        print("Waiting for stop process")
-    start()
-    print("process is start: " + str(process_is_run(oled_core_script)))
+    restart_oled_gui_core()
 
+# oled status show
 if show:
     status = process_is_run(oled_core_script)
     print("Oled service is run: " + str(status))
 
+# oled virtual button
 if button is not None:
-    if button == "RIGHT" or button == "LEFT" or button == "OK" or button == "standbyFalse" or button == "standbyTrue":
-        with open(oled_virtual_buttons_file, 'w') as f:
-            f.write(button)
-            print("Button is set: " + str(button))
-    else:
-        print("Button is invalid: " + str(button))
+    set_buttons(button)
+
+# set systemd service
+if set_service:
+    set_service_up_systemd()
