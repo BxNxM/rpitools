@@ -84,7 +84,7 @@ class Oled_window_manager():
         self.standby = False                                    # standby mode indicator
 
         # header bar shcedule widhets counters
-        self.heder_page_widget_call_counter_max = 4
+        self.heder_page_widget_call_counter_max = 3
         self.header_bar_widget_counter = 0
 
     # read default index from file
@@ -246,7 +246,6 @@ class Oled_window_manager():
     # header bar
     def draw_header_bar(self):
         if self.head_page_bar_is_enable[0]:
-            self.header_bar_widget_counter += 1
             if self.header_bar_widget_counter > self.heder_page_widget_call_counter_max:
                 self.header_bar_widget_counter = 0
 
@@ -257,15 +256,17 @@ class Oled_window_manager():
 
             page_is_changed = self.page_is_changed(reset_status=False)
             # wifi
-            if self.header_bar_widget_counter == 1 or self.header_bar_widget_counter == 4 or page_is_changed:
+            if self.header_bar_widget_counter == 1 or page_is_changed:
                 self.wifi_quality()
 
             # performance
-            if self.header_bar_widget_counter == 3 or page_is_changed:
+            if self.header_bar_widget_counter == 0 or self.header_bar_widget_counter == 2 or page_is_changed:
                 self.performance_widget()
 
             # Display image.
             self.redraw = True
+
+            self.header_bar_widget_counter += 1
 
     #############################################################################
     #                      OFFICIAL WIDGETS - HEADER BAR                        #
