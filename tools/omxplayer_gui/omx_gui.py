@@ -24,7 +24,12 @@ if (force_gui or force_console) and not (force_gui is True and force_console is 
 def run_gui(choices):
     msg ="Which movie do you want to play?\nTo exit press cancel."
     title = "OMXPLAYER EASYGUI INTERFACE"
-    choice = easygui.choicebox(msg, title, choices)
+    try:
+        choice = easygui.choicebox(msg, title, choices)
+    except KeyboardInterrupt:
+        print("Goodbye")
+        choice = None
+        sys.exit(0)
     return choice
 
 # console function
@@ -75,13 +80,17 @@ def play_selected_movie(movies_dict, selected, is_easygui=True):
     selected_movie = movies_dict[selected]
     #use with esaygui
     if is_easygui:
-        if easygui.ccbox("Play " + str(selected_movie) + " ?", "Movie to play"):
-            cmd = "/usr/bin/omxplayer -o hdmi " + str(selected_movie)
-            print(cmd)
-            output = subprocess.check_output(cmd, shell = True)
-            print(output)
-        else:
-            main_w_gui()
+        try:
+            if easygui.ccbox("Play " + str(selected_movie) + " ?", "Movie to play"):
+                cmd = "/usr/bin/omxplayer -o hdmi " + str(selected_movie)
+                print(cmd)
+                output = subprocess.check_output(cmd, shell = True)
+                print(output)
+            else:
+                main_w_gui()
+        except KeyboardInterrupt:
+            print("Goodbye")
+            sys.exit(0)
     else:
         # use with console
         if str(input("Play " + str(selected_movie) + " ?\nMovie to play[Y/N] ")).lower() == "y":

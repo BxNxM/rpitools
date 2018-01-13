@@ -29,8 +29,14 @@ if [ "$OS" != "GNU/Linux" ]
     exit 1
 fi
 
-# set display environment (for PIXEL startx)
-export DISPLAY=:0
+# set DISPLAY=:0 if xinit is run
+xinitrx_is_run=$(ps aux | grep "[x]initrc")
+if [ "$xinitrx_is_run" != "" ]
+then
+    # set display environment (for PIXEL startx)
+    message "Set DISPLAY env - gui is run"
+    export DISPLAY=:0
+fi
 
 # restore existing backup
 output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash restore; popd)
