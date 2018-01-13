@@ -565,8 +565,8 @@ class Oled_window_manager():
                     ok_button = self.ok_button_event_getter()
                     is_show = page[2].page(self, ok_button)
                 except Exception as e:
-                    oledlog.logger.warn("run page exception" + str(e))
-                    self.oled_sys_message("run page exception" + str(e))
+                    oledlog.logger.warn(str(page[0]) + " - run page exception" + str(e))                  # warning msg to log file
+                    self.oled_sys_message("run page exception" + str(e))                # warning msg to screen
                     is_show = False
                 if is_show:
                     # Display image.
