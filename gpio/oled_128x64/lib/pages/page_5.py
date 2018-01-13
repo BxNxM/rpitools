@@ -34,7 +34,10 @@ def page(display, ok_button):
     # image demo
     #test_images(display)
 
-    weather_dict = oled_gui_widgets.get_weather_info()
+    try:
+        weather_dict = oled_gui_widgets.get_weather_info()
+    except Exception as e:
+        raise Exception(str(e))
     draw_weather_state(display, state=str(weather_dict["weather"]))
 
     x = 0

@@ -64,7 +64,11 @@ def get_weather_info():
     cmd = "curl wttr.in/?0/?T/?m/?M/" + location
     # get weather with command line command
     weather = subprocess.check_output(cmd, shell = True)
-    if weather != "Not so fast! Number of queries per day is limited to 1000":
+    if "ERROR" in weather:
+        err_mess = weather
+    else:
+        err_mess = ""
+    if weather != "Not so fast! Number of queries per day is limited to 1000" and "ERROR" not in weather:
         # remove ascii colors
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
         weather = ansi_escape.sub('', weather)
@@ -85,12 +89,12 @@ def get_weather_info():
                        "rain": weather[7]\
                        }
     else:
-        output_dict = {"location": "None",\
-                       "weather": "None",\
-                       "temp": "None",\
-                       "wind": "None",
-                       "altitude": "None",\
-                       "rain": "None"\
+        output_dict = {"location": "None"+str(err_mess),\
+                       "weather": "None"+str(err_mess),\
+                       "temp": "None"+str(err_mess),\
+                       "wind": "None"+str(err_mess),
+                       "altitude": "None"+str(err_mess),\
+                       "rain": "None"+str(err_mess)\
                        }
     return output_dict
 
@@ -115,4 +119,6 @@ if __name__ == "__main__":
     cpu, mem, temp, disk = performance_widget()
     print("cpu: {}\nmem: {}\ntemp: {}\ndisk: {}".format(cpu, mem, temp, disk))
     print("SSID: {}".format(wifi_get_ssid()))
+
+    print("weather get info")
     print_weather_dict()
