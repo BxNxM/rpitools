@@ -14,7 +14,6 @@ alias omxplayer_gui='/home/pi/rpitools/tools/omxplayer_gui/omx_gui.py'
 alias startxbg='startx &'
 alias weather_wttr='curl wttr.in/Budapest'
 alias update_rpitools='sudo systemctl stop oled_gui_core && cd /home/$USER/ && sudo rm -rf /home/$USER/rpitools && git clone https://github.com/BxNxM/rpitools.git && cd rpitools/ && source setup'
-alias restart_oled='sudo systemctl restart oled_gui_core'
 
 if [ ! -z $REPOROOT ]
 then
