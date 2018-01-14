@@ -117,6 +117,15 @@ sudo raspi-config
 ```
 -> interfacing options - > i2c
 
+***WIRING***
+
+* OLED
+
+![oled i2c](https://github.com/BxNxM/rpitools/blob/master/gpio/oled_128x64/oledWiring.png?raw=true)
+
+* (OLED) BUTTONS
+
+![oled buttons](https://github.com/BxNxM/rpitools/blob/master/gpio/oled_128x64/oled_buttons.png?raw=true)
 ***OLED BOOTUP LOUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
 
 ```
@@ -184,7 +193,7 @@ ls -lath /home/$USER/rpitools/gpio/oled_128x64/lib/pages
 ![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/weather_page.jpg?raw=true)
 ![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_perf.jpg?raw=true)
 
-## performance with default setting (medium)
+## performance with default settings (medium)
 RaspberryPi Zero W - get service CPU usage (average)
 
 ```
@@ -235,7 +244,10 @@ omxplayer_gui -h
           __/ |                                                                    
          |___/                                                                     
 ```
-To controll connected (/rpitools/gpio/rgb_led/Wiring.png) rgb leds.
+To controll connected rgb leds.
+
+***WIRING***
+![rgb wiring](https://github.com/BxNxM/rpitools/blob/master/gpio/rgb_led/Wiring.png?raw=true)
 
 * start rgb service - it controlls the leds - and process requests
 
