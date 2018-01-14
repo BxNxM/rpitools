@@ -51,7 +51,7 @@ def page(display, ok_button):
     # Write two lines of text.
     w, h = display.draw_text(str(weather_dict["weather"]), x, y)
     y+=h
-    display.draw_text("temp: " + str(weather_dict["temp"][0:3]) + " 'C", x, y)
+    display.draw_text("temp: " + str(weather_dict["temp"][0:-4]) + "'C", x, y)
     y+=h
     display.draw_text("wind: " + str(weather_dict["wind"]), x, y)
     y+=h

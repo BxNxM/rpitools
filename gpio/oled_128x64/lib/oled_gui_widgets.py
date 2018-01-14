@@ -102,6 +102,8 @@ def weather_line_convert(line):
     buffered_output = ""
     for index, char in enumerate(line):
         if char.isalpha() or char.isdigit():
+            if line[index-1] == "-":
+                buffered_output+="-"                    # correct negative numbers sign
             for index in range(index, len(line)):
                 buffered_output+=line[index]
             break
