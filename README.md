@@ -306,12 +306,33 @@ rgbinterface -h
 
 # Usefull links for basics
 * RaspberryPi gpio usage:
+
 ```
  https://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
 ```
+
 * GPIO pinout
+
 ```
 https://pinout.xyz/pinout/pin1_3v3_power
+```
+
+* Download raspbian image (my project use the light version)
+
+```
+https://www.raspberrypi.org/downloads/raspbian/
+```
+
+* Raspbain image installation - maunal - Windows / Mac / Linux
+
+```
+https://www.raspberrypi.org/documentation/installation/installing-images/
+```
+
+* My favourite raspberry pi order site (not sponsored)
+
+```
+https://thepihut.com/products/raspberry-pi-zero-essential-kit
 ```
 
 ## GIT
