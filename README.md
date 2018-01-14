@@ -198,5 +198,90 @@ CPU LOAD: 25 % - 35 %
 CPU if oled in STANDBY: 2.3 %
 ```
 
+# omxplayer_gui
+```
+                                     _                               
+                                    | |                              
+   ___    _ __ ___   __  __  _ __   | |   __ _   _   _    ___   _ __ 
+  / _ \  | '_ ` _ \  \ \/ / | '_ \  | |  / _` | | | | |  / _ \ | '__|
+ | (_) | | | | | | |  >  <  | |_) | | | | (_| | | |_| | |  __/ | |   
+  \___/  |_| |_| |_| /_/\_\ | .__/  |_|  \__,_|  \__, |  \___| |_|   
+                            | |                   __/ |                        
+``` 
+
+***use hardware optimalized video player for 720p and 180p videos***
+
+```
+run in command line:
+omxplayer_gui
+```
+It makes a graphic user interface for this special video player, it lists videos from /home/$USER/Videos folder. If your system has graphic environment it runs easygui graphic interface, if you have a headless server (just with command line) it makes a command line interface for it automaticly, of course you have maual options too. YES omxplayer NOT NEED A GRAPHIC ENVIRONMENT so it is realy cool optimaized :D 
+The video output is the dedicated hdmi connector.
+
+```
+for more information use:
+omxplayer_gui -h
+
+```
+
+# RGB interface
+```
+                 _       _           _                    __                       
+                | |     (_)         | |                  / _|                      
+  _ __    __ _  | |__    _   _ __   | |_    ___   _ __  | |_    __ _    ___    ___ 
+ | '__|  / _` | | '_ \  | | | '_ \  | __|  / _ \ | '__| |  _|  / _` |  / __|  / _ \
+ | |    | (_| | | |_) | | | | | | | | |_  |  __/ | |    | |   | (_| | | (__  |  __/
+ |_|     \__, | |_.__/  |_| |_| |_|  \__|  \___| |_|    |_|    \__,_|  \___|  \___|
+          __/ |                                                                    
+         |___/                                                                     
+```
+To controll connected (/rpitools/gpio/rgb_led/Wiring.png) rgb leds.
+
+* start rgb service - it controlls the leds - and process requests
+
+```
+rgbinterface -s ON
+```
+
+* turn on the leds
+
+```
+rgbinterface -l ON
+```
+
+* set colors
+
+```
+rgbinterface -r 0 -g 0 -b 0
+rgbinterface -r 100 -g 100 -b 100
+
+# color ranges: 0-100, min. step 1
+```
+
+* turn off the leds
+
+```
+rgbinterface -l OFF
+```
+
+* turn off the service
+
+```
+rgbinterface -s OFF
+```
+You don't have to turn off the service, it can runs in the background, so you can send data for it over rgbinterface and it makes the magic ;)
+
+* show rgb leds service status
+
+```
+rgbinterface -sh
+```
+
+* interface help for informations
+
+```
+rgbinterface -h
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
