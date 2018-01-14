@@ -248,6 +248,7 @@ To controll connected rgb leds.
 
 ***WIRING***
 ![rgb wiring](https://github.com/BxNxM/rpitools/blob/master/gpio/rgb_led/Wiring.png?raw=true)
+= > 4th wire to the ground!
 
 * start rgb service - it controlls the leds - and process requests
 
