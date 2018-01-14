@@ -104,7 +104,15 @@ screen resolution
 set local name
 ```
 
-# ==== OLED FRAMEWORK ===
+# OLED FRAMEWORK
+```
+   ____    _        ______   _____  
+  / __ \  | |      |  ____| |  __ \ 
+ | |  | | | |      | |__    | |  | |
+ | |  | | | |      |  __|   | |  | |
+ | |__| | | |____  | |____  | |__| |
+  \____/  |______| |______| |_____/  framework
+```
 ![oled](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/oled.jpg?raw=true)
 
 SUPPORTED OLED TYPE: 128x64 i2c SSD1306 Driver IC
@@ -294,6 +302,16 @@ rgbinterface -sh
 
 ```
 rgbinterface -h
+```
+
+# Usefull links for basics
+* RaspberryPi gpio usage:
+```
+ https://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
+```
+* GPIO pinout
+```
+https://pinout.xyz/pinout/pin1_3v3_power
 ```
 
 ## GIT
