@@ -7,4 +7,5 @@ omxplayer
 shellcheck
 git
 epiphany-browser
+scrot
 xdotool
