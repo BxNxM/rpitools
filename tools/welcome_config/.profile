@@ -35,7 +35,7 @@ then
 
     ip=$(hostname -I)
     echo -e "${wColor}########################################################${NC}"
-    echo -e "WELCOME ${wColor}${USER}${NC}! YOU ARE CONNECTED FROM ${wColor}${ip}${NC} IP ADDRESS"
+    echo -e "WELCOME ${wColor}${USER}${NC}! PI IP ADDRESS ${wColor}${ip}${NC}"
     echo -e "TODAY: ${wColor}$(date)${NC}"
     echo -e "$(cal)"
     echo -e "${wColor}HOME DISK:${NC} $(du -sh ~/)"
