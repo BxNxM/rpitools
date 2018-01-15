@@ -163,6 +163,10 @@ else
     message "Adafruit_Python_SSD1306 already installed"
 fi
 
+# set welcome comsole settings
+welcome_screen_settings_output=$(${REPOROOT}/tools/welcome_config/set_welcome_screen.bash)
+message "$welcome_screen_settings_output"
+
 # install tools apps
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/install_apps.bash
@@ -171,5 +175,3 @@ message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
 echo -e "$output"
 
-welcome_screen_settings_output=$(${REPOROOT}/tools/welcome_config/set_welcome_screen.bash)
-message "$welcome_screen_settings_output"
