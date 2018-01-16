@@ -39,6 +39,7 @@ thread_refresh_dynamic_pages = 4 * performance                # rescan page fold
 thread_refresh_display_show_thread = 0.5 * performance        # display show thread refresh time (sec)
 main_page_refresh_min_delay = 0.03 * performance              # default page refresh time (sec)
 oled_sys_message_wait_sec = 3                                 # system message min show on display (sec)
+oled_standby_period = 1
 
 #############################################################################
 #                               OLED CLASS                                  #
@@ -141,6 +142,8 @@ class Oled_window_manager():
                     self.draw_page_bar(len(self.page_list), self.actual_page_index)
                 # sleep in therad
                 sleep(thread_refresh_page_bar)
+            else:
+                sleep(oled_standby_period)
 
     # header bar thread
     def draw_header_bar_thread(self):
@@ -149,6 +152,8 @@ class Oled_window_manager():
             if not self.standby:
                 self.draw_header_bar()
                 sleep(thread_refresh_header_bar)
+            else:
+                sleep(oled_standby_period)
 
     # read pages and reload if necessarry
     def manage_pages_thread(self):
@@ -536,6 +541,8 @@ class Oled_window_manager():
                 if not self.standby:
                     self.run_actual_page()
                     sleep(main_page_refresh_min_delay)
+                else:
+                    sleep(oled_standby_period)
         except KeyboardInterrupt as e:
             oledlog.logger.info("Exiting " + str(e))
 
