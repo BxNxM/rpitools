@@ -594,6 +594,7 @@ class Oled_window_manager():
         state = False
         if self.last_page_index != self.actual_page_index:
             if reset_status:
+                self.ok_button_event = False                                    # clean page ok button event for the next page
                 self.run_page_x_destructor(self.last_page_index)
                 self.last_page_index = self.actual_page_index
             state = True
