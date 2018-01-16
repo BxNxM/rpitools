@@ -16,12 +16,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-g", "--gui",  action='store_true', help="run omcplayer with easygui")
 parser.add_argument("-c", "--console",  action='store_true', help="run omxplayer with console")
 parser.add_argument("-cl", "--create_louncher",  action='store_true', help="create graphic louncher to the desktop")
+parser.add_argument("-ko", "--kill_omxplayer",  action='store_true', help="kill omxplayer playing")
 args = parser.parse_args()
 force_gui = args.gui
 force_console = args.console
 create_louncher = args.create_louncher
+iskill_omxplayer = args.kill_omxplayer
 is_manual_settings = False
-if (force_gui or force_console) and not (force_gui is True and force_console is True) or create_louncher:
+if (force_gui or force_console) and not (force_gui is True and force_console is True) or create_louncher or iskill_omxplayer:
     is_manual_settings = True
 
 # easygui function
@@ -128,6 +130,19 @@ def main_w_console():
     # run movie
     play_selected_movie(movies_dict, output, is_easygui=False)
 
+def kill_omxplayer():
+    cmd = "ps aux | grep -v grep | grep 'omxplayer.bin -o hdmi' | awk '{print $2}'"
+    output = subprocess.check_output(cmd, shell = True)
+    output_string = output.decode("utf-8")
+    pids = output_string.split("\n")
+    #print(pids)
+    for pid in pids:
+        if pid != "":
+            cmd = "kill " + str(pid)
+            print("STOPPING OMXPLAYER: " + str(cmd))
+            output = subprocess.check_output(cmd, shell = True)
+            print(output)
+
 # main block
 if __name__ == "__main__":
     if is_manual_settings:
@@ -139,6 +154,8 @@ if __name__ == "__main__":
         if create_louncher:
             output = subprocess.check_output(louncher_creator_path, shell = True)
             print(output.decode("utf-8"))
+        if iskill_omxplayer:
+            kill_omxplayer()
     else:
         print("Run autodetect mode")
         # X is running, DISPLAY ENV is set
