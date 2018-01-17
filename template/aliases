@@ -1,3 +1,4 @@
+export LC_ALL=C                 # fix: setlocale: No such file or directory
 alias llt='ls -lath'
 alias ll='ls -lah'
 alias temp='/opt/vc/bin/vcgencmd measure_temp'
