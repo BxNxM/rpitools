@@ -4,6 +4,16 @@
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# set DISPLAY=:0 if xinit is run
+xinitrx_is_run=$(ps aux | grep "[x]initrc")
+if [ "$xinitrx_is_run" != "" ]
+then
+    # set display environment (for PIXEL startx)
+    message "Set DISPLAY env - gui is run"
+    export DISPLAY=:0
+fi
+
+# check conky config
 if [ ! -e ~/.conkyrc ]
 then
     echo -e "Copy conly configuration: ${MYDIR}/.conkyrc -> ~/.conkyrc"
@@ -13,7 +23,9 @@ else
 fi
 
 
-is_run=$(ps aux | grep -v grep | grep "conky")
+is_run=$(ps aux | grep -v grep | grep -v "conky.bash" | grep "conky")
+echo -e "->|${is_run}|<-"
+
 if [ "$is_run" == "" ]
 then
     echo -e "Run conky"
