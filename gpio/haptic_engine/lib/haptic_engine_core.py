@@ -121,5 +121,5 @@ def HapticEngine_DEMO():
     hapt.SNOOZE()
 
 if __name__ == "__main__":
-    OutputChannelDriver_DEMO()
+    #OutputChannelDriver_DEMO()
     HapticEngine_DEMO()
