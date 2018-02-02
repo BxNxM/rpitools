@@ -121,6 +121,15 @@ then
     ln -s /boot/config.txt $REPOROOT/config/config.txt
 fi
 
+#link /var/log log file
+if [  -e "$REPOROOT/config/log" ]
+then
+    message "$REPOROOT/config/log is already linked"
+ else
+    message "Linking: ln -s /var/log $REPOROOT/config/log"
+    ln -s /var/log $REPOROOT/config/log
+fi
+
 # update once (first run ever) before install apps
 is_installed_file_indicator="$REPOROOT/cache/.first_boot_update_update_installed"
 if [ -e "$is_installed_file_indicator" ]
