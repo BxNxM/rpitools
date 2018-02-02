@@ -43,6 +43,7 @@ then
     echo -e "${wColor}AVAIBLE SERVICES AND TOOLS:${NC}"
     echo -e "oledinterface -h"
     echo -e "rgbinterface -h"
+    echo -e "hapticengingeinterface -h"
     echo -e "omxplayer_gui -h"
     echo -e ""
     echo -e "for more info use: ->| ${wColor}alias${NC} |<- command"
