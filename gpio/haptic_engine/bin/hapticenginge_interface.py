@@ -9,6 +9,7 @@ sys.path.append(lib_path)
 import haptic_engine_core
 import subprocess
 import time
+import threading
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-u", "--up", action='store_true', help="HapticEngine UP signel")
@@ -25,18 +26,32 @@ soft = args.soft
 tap = args.tap
 doubletap = args.doubletap
 snooze = args.snooze
+hapt = None
 
-hapt = haptic_engine_core.HapticEngine()
+def init_haptic_engine_object():
+    global hapt
+    hapt = haptic_engine_core.HapticEngine()
 
-if up:
-    hapt.UP()
-if down:
-    hapt.DOWN()
-if soft:
-    hapt.SOFT()
-if tap:
-    hapt.TAP()
-if doubletap:
-    hapt.DoubleTAP()
-if snooze:
-    hapt.SNOOZE()
+def run_interface(option=None):
+    if up or option == "up":
+        th = threading.Thread(target=hapt.UP())
+        th.start()
+    if down or option == "down":
+        th = threading.Thread(target=hapt.DOWN())
+        th.start()
+    if soft or option == "soft":
+        th = threading.Thread(target=hapt.SOFT())
+        th.start()
+    if tap or option == "tap":
+        th = threading.Thread(target=hapt.TAP())
+        th.start()
+    if doubletap or option == "doubletap":
+        th = threading.Thread(target=hapt.DoubleTAP())
+        th.start()
+    if snooze or option == "snooze":
+        th = threading.Thread(target=hapt.SNOOZE())
+        th.start()
+
+init_haptic_engine_object()
+if __name__ == "__main__":
+    run_interface()

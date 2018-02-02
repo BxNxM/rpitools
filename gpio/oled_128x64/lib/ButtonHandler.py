@@ -10,12 +10,23 @@ import os
 import time
 import threading
 
+# IMPORT HAPTIC ENGINE INTERFACE
+try:
+    import sys
+    myfolder = os.path.dirname(os.path.abspath(__file__))
+    haptic_eng_bin_path = os.path.join(myfolder, "../../haptic_engine/bin/")
+    sys.path.append(haptic_eng_bin_path)
+    import hapticenginge_interface as hei
+except Exception as e:
+    print("Haptic engine import failed: " + str(e))
+
 class OledButtonHandler():
 
-    def __init__(self, left_pin, right_pin, ok_pin):
+    def __init__(self, left_pin, right_pin, ok_pin, haptic=True):
         self.channels_dict = {"LEFT": left_pin,\
                               "RIGHT": right_pin,\
                                "OK": ok_pin}
+        self.haptic = haptic
         # set gpio channels
         #GPIO.setmode(GPIO.BOARD)
         GPIO.setmode(GPIO.BCM)
@@ -84,6 +95,11 @@ class OledButtonHandler():
                 print("Button was pressed: " + str(self.last_event_cmd))
                 return_value = self.last_event_cmd
                 self.last_event_cmd = None
+                try:
+                    if self.haptic:
+                        hei.run_interface(option="tap")
+                except Exception as e:
+                    print("Haptic engine call failed: " + str(e))
                 return return_value
             time.sleep(0.08)
 

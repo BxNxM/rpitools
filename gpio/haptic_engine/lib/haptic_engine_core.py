@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-#GPIO USAGE: §https://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
-#GPIO PINOUT: https://www.raspberrypi-spy.co.uk/2012/06/simple-guide-to-the-rpi-gpio-header-and-pins/
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
@@ -11,12 +9,14 @@ import time
 
 class OutputChannelDriver():
 
-    def __init__(self, channel=11):
+    def __init__(self, channel=17, mode="BCM"):
         self.channel = channel
 
         # SET GPIO MODE
-        GPIO.setmode(GPIO.BOARD)
-        #GPIO.setmode(GPIO.BCM)
+        if mode == "BOARD":             # BOARD: 11
+            GPIO.setmode(GPIO.BOARD)
+        if mode == "BCM":
+            GPIO.setmode(GPIO.BCM)
 
         # GET GPIO MODE
         mode = GPIO.getmode()
@@ -50,31 +50,41 @@ class OutputChannelDriver():
                 self.soft_pwm(end, hold_time)
 
     def __del__(self):
-        GPIO.cleanup(self.channel)
+        try:
+            GPIO.cleanup(self.channel)
+        except Exception as e:
+            print("Channel clean failed: " + str(e))
 
 class HapticEngine(OutputChannelDriver):
 
-    def __init__(self, channel=11, speed=18):
-        super().__init__(channel)
-        self.speed = 1 / speed
+    def __init__(self, channel=17, speed=18):
+        try:
+            super().__init__(channel)                           # python3 super init
+        except:
+            OutputChannelDriver.__init__(self, channel)         # python2 super init
+        self.speed = 1.0 / speed
+        self.max_val = 100
+
+    def set_power(self, max_val):
+        self.max_val = max_val
 
     def UP(self):
-        self.gradient(5, 100, hold_time=self.speed, step=15)
+        self.gradient(5, self.max_val, hold_time=self.speed, step=int(self.max_val/6))
         self.set_state(True, time_sec=0.05)
         self.set_state(False)
 
     def DOWN(self):
         self.set_state(True, time_sec=0.05)
-        self.gradient(100, 5, hold_time=self.speed, step=15)
+        self.gradient(self.max_val, 5, hold_time=self.speed, step=int(self.max_val/6))
         self.set_state(False)
 
     def SOFT(self):
-        self.gradient(5, 100, hold_time=self.speed, step=30)
-        self.gradient(100, 5, hold_time=self.speed, step=30)
+        self.gradient(5, self.max_val, hold_time=self.speed, step=int(self.max_val/3))
+        self.gradient(self.max_val, 5, hold_time=self.speed, step=int(self.max_val/3))
         self.set_state(False)
 
     def TAP(self):
-        self.gradient(90, 100, hold_time=self.speed, step=10)
+        self.gradient(self.max_val-10, self.max_val, hold_time=self.speed, step=int(self.max_val/10))
         self.set_state(False)
 
     def DoubleTAP(self):
@@ -83,7 +93,7 @@ class HapticEngine(OutputChannelDriver):
         self.TAP()
 
     def SNOOZE(self):
-        self.gradient(0, 100, hold_time=self.speed*5, step=5)
+        self.gradient(0, self.max_val, hold_time=self.speed*5, step=int(self.max_val/20))
         self.set_state(False)
 
 def OutputChannelDriver_DEMO():
