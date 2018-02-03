@@ -17,6 +17,7 @@ try:
     haptic_eng_bin_path = os.path.join(myfolder, "../../haptic_engine/bin/")
     sys.path.append(haptic_eng_bin_path)
     import hapticenginge_interface as hei
+    hei.hapt.set_channel_clean(False)                                # not clean haptic engine channel under button uses it!
 except Exception as e:
     print("Haptic engine import failed: " + str(e))
 
@@ -158,6 +159,7 @@ class OledButtonHandler():
             GPIO.cleanup(self.channels_dict["LEFT"])
             GPIO.cleanup(self.channels_dict["RIGHT"])
             GPIO.cleanup(self.channels_dict["OK"])
+            hei.hapt.set_channel_clean(True)                         # set channel clean to True after button finished to use it
         except Exception as e:
             print(e)
 

@@ -4,13 +4,19 @@ try:
 except RuntimeError:
     print("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
 
+import os
 import time
-
+myfolder = os.path.dirname(os.path.abspath(__file__))
 
 class OutputChannelDriver():
 
     def __init__(self, channel=17, mode="BCM"):
         self.channel = channel
+        self.cleanup_indicator_file_path = os.path.join(myfolder, ".is_running")
+        if not os.path.exists(self.cleanup_indicator_file_path):
+            with open(self.cleanup_indicator_file_path, 'w') as f:
+                f.write("True")
+        self.clean_channel_state = self.clean_channel()
 
         # SET GPIO MODE
         if mode == "BOARD":             # BOARD: 11
@@ -24,6 +30,25 @@ class OutputChannelDriver():
 
         # GPIO OUTPUT EXAMPLE
         GPIO.setup(self.channel, GPIO.OUT)
+
+    # channel clean indicator for multiple usage path in both time - clean is nut needed every time
+    def set_channel_clean(self, option):
+        if str(option) == "True" or str(option) == "False":
+            with open(self.cleanup_indicator_file_path, 'w') as f:
+                f.write(str(option))
+            self.clean_channel_state = self.clean_channel()
+
+    # get channel clean status
+    def clean_channel(self):
+        with open(self.cleanup_indicator_file_path, 'r') as f:
+            option = f.read()
+        if "True" in str(option) and "False" not in str(option):
+            return True
+        elif "False" in str(option) and "True" not in str(option):
+            return False
+        else:                                                           # value in file is not consistant!
+            self.set_channel_clean(False)
+            return False
 
     def set_state(self, state, time_sec=None):
         GPIO.output(self.channel, state)
@@ -51,7 +76,8 @@ class OutputChannelDriver():
 
     def __del__(self):
         try:
-            GPIO.cleanup(self.channel)
+            if self.clean_channel_state:
+                GPIO.cleanup(self.channel)
         except Exception as e:
             print("Channel clean failed: " + str(e))
 
