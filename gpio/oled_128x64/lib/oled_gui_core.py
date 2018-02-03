@@ -26,6 +26,8 @@ import prctl
 
 from datetime import datetime
 
+import JoystickHandler
+
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
@@ -83,6 +85,7 @@ class Oled_window_manager():
         self.ok_button_event = False                            # ok button event status holder
         self.read_default_page_index()
         self.standby = False                                    # standby mode indicator
+        self.joystick_event = None                              # joystick buttons event - UP - DOWN - CENTER - RIGHT - LEFT
 
         # header bar shcedule widhets counters
         self.heder_page_widget_call_counter_max = 3
@@ -110,6 +113,7 @@ class Oled_window_manager():
         self.threads.append(threading.Thread(target=self.manage_pages_thread))
         self.threads.append(threading.Thread(target=self.button_handler_thread))
         self.threads.append(threading.Thread(target=self.display_show_thread))
+        self.threads.append(threading.Thread(target=self.joystick_handler_thread))
         # write more threads here...
         for thd in self.threads:
             thd.daemon = True                                   # with this set, can stop therad
@@ -171,6 +175,12 @@ class Oled_window_manager():
             status = ButtonHandler.oled_buttons.oled_read_all_function_buttons()
             self.virtual_button(status)
 
+    # joystick handler thread
+    def joystick_handler_thread(self):
+        prctl.set_name("joystick_buttons")
+        while True:
+            status = JoystickHandler.joystick.joystick_wait_for_event()
+            self.joystick_event = status
     #############################################################################
     #                             GETTER - SETTER                               #
     #############################################################################
@@ -185,6 +195,11 @@ class Oled_window_manager():
             self.ok_button_event = False
             return_value = False
         return return_value
+
+    def joystick_event_getter(self):
+        status = self.joystick_event
+        self.joystick_event = None
+        return status
 
     def display_refresh_time_setter(self, time):
         if isinstance(time, int):
@@ -571,7 +586,8 @@ class Oled_window_manager():
                     self.clever_screen_clean()
                     # run page
                     ok_button = self.ok_button_event_getter()
-                    is_show = page[2].page(self, ok_button)
+                    joystick = self.joystick_event_getter()
+                    is_show = page[2].page(self, ok_button, joystick)
                 except Exception as e:
                     oledlog.logger.warn(str(page[0]) + " - run page exception" + str(e))                  # warning msg to log file
                     self.oled_sys_message("run page exception" + str(e))                # warning msg to screen

@@ -11,7 +11,7 @@ def page_setup(display):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button):
+def page(display, ok_button, joystick):
     x = 0
     y = 15
     # Write two lines of text.

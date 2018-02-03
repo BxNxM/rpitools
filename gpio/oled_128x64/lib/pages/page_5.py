@@ -28,7 +28,7 @@ def page_setup(display):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(90)
 
-def page(display, ok_button):
+def page(display, ok_button, joystick):
     global attention
 
     # image demo

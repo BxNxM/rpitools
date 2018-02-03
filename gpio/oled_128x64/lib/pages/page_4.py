@@ -18,7 +18,7 @@ def page_setup(display):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button):
+def page(display, ok_button, joystick):
     global pics_index, stored_index
     image_list = [ 'pages/images/rpi.png', 'pages/images/katica_draw.png', 'pages/images/linux.png', 'pages/images/happycat_oled_64.ppm']
     if ok_button:
