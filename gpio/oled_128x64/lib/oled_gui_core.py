@@ -177,7 +177,7 @@ class Oled_window_manager():
 
     # joystick handler thread
     def joystick_handler_thread(self):
-        prctl.set_name("joystick_buttons")
+        prctl.set_name("thread_joystick")
         while True:
             status = JoystickHandler.joystick.joystick_wait_for_event()
             self.joystick_event = status
