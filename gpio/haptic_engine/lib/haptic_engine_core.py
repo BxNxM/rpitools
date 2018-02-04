@@ -89,7 +89,7 @@ class HapticEngine(OutputChannelDriver):
         except:
             OutputChannelDriver.__init__(self, channel)         # python2 super init
         self.speed = 1.0 / speed
-        self.max_val = 100
+        self.max_val = 70
 
     def set_power(self, max_val):
         self.max_val = max_val

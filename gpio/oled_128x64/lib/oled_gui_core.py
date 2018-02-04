@@ -497,6 +497,7 @@ class Oled_window_manager():
 
     # show contents on display if device is not busy
     def display_show(self):
+        is_success = False
         if self.display_is_avaible:
             self.display_is_avaible = False
             self.disp_buffer = self.disp._buffer
@@ -505,6 +506,8 @@ class Oled_window_manager():
             self.disp.image(self.image)
             self.disp.display()
             self.display_is_avaible = True
+            is_success = True
+        return is_success
 
     # draw ppm image
     def draw_image(self, image_path=None, img_mode="store"):
