@@ -64,6 +64,52 @@ class JoystickElement_button(JoystickElementsBase):
         self.draw_button()
         self.display.display_show()
 
+class JoystickElement_value_bar(JoystickElement_button):
+
+    def __init__(self, display, x, y, w=26, h=13, valmax=100, valmin=0, title=None, init_state=False):
+        self.title = title
+        self.actual_value = 0
+        self.valmax = valmax
+        self.valmin = valmin
+        h = 64-y-10
+        try:
+            super().__init__(display, x, y, w, h, init_state)
+        except:
+            JoystickElement_button.__init__(self, display, x, y, w, h, init_state)
+
+    def draw_button(self):
+        self.set_activate_indicator()
+        self.display.draw.rectangle((self.x, self.y, self.x + self.width, self.y + self.height), outline=255, fill=0)
+        self.draw_title(self.title)
+        self.draw_val()
+
+    def draw_title(self, title):
+        if title is not None:
+            text_x = self.x
+            text_y = self.y - 11
+            w, h = self.display.draw_text(title, text_x, text_y)
+
+    def draw_val(self):
+        value = self.actual_value
+        if value is not None:
+            text_x = self.x + 2
+            text_y = self.y + ((self.width / 2) - 4)
+            w, h = self.display.draw_text(value, text_x, text_y)
+
+    def set_value(self, delta=None, direct=None):
+        if delta is not None and type(delta) is int:
+            self.actual_value += delta
+            if self.actual_value > self.valmax:
+                self.actual_value = self.valmax
+            if self.actual_value < self.valmin:
+                self.actual_value = self.valmin
+        elif direct is not None and type(direct) is int:
+            self.actual_value = direct
+        self.draw_button()
+
+    def get_value(self):
+        return self.actual_value
+
 class JoystickElementManager():
 
     def __init__(self):
@@ -152,3 +198,24 @@ def test_JoystickElementManager(display, joystick, mode=None):
             print("name: " + str(change[0]) + " value: " + str(change[1]))
             print("#"*100)
 
+manag2 = None
+def test_JoystickElementManager2(display, joystick, mode=None):
+    global manag2
+    if mode == "init":
+        je_button = JoystickElement_value_bar(display, x=20, y=20, title="A")
+        je_button.set_value(delta=42)
+        je_button2 = JoystickElement_value_bar(display, x=50, y=20, title="B")
+        je_button3 = JoystickElement_value_bar(display, x=80, y=20, title="C")
+
+        manag2 = JoystickElementManager()
+        manag2.add_element(je_button, "valuebar1")
+        manag2.add_element(je_button2, "valuebar2")
+        manag2.add_element(je_button3, "valuebar3")
+        time.sleep(1)
+
+    if mode == "run":
+        change = manag2.run_elements(joystick)
+        if change[1] is not None:
+            print("#"*100)
+            print("name: " + str(change[0]) + " value: " + str(change[1]))
+            print("#"*100)
