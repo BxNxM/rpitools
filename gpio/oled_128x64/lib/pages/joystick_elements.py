@@ -64,6 +64,12 @@ class JoystickElement_button(JoystickElementsBase):
         self.draw_button()
         self.display.display_show()
 
+    def set_value(self, delta=None, direct=None):
+        pass
+
+    def get_value(self):
+        pass
+
 class JoystickElement_value_bar(JoystickElement_button):
 
     def __init__(self, display, x, y, w=26, h=13, valmax=100, valmin=0, title=None, init_state=False):
@@ -151,7 +157,14 @@ class JoystickElementManager():
                 is_changed = True
                 new_state = not self.element_list[self.active_element_index].get_state()
                 self.element_list[self.active_element_index].set_state(new_state)
-
+            elif joystick == "UP":
+                is_changed = True
+                self.element_list[self.active_element_index].set_value(delta=1)
+            elif joystick == "DOWN":
+                is_changed = True
+                self.element_list[self.active_element_index].set_value(delta=-1)
+            else:
+                print("Invalid patameter - joystick: " + str(joystick))
         # draw elements
         if self.is_first_run:
             self.is_first_run = False
@@ -161,9 +174,12 @@ class JoystickElementManager():
 
         # return
         if is_changed:
-            return self.title_list[self.active_element_index], self.element_list[self.active_element_index].get_state()
+            uid = self.title_list[self.active_element_index]
+            state = self.element_list[self.active_element_index].get_state()
+            value = self.element_list[self.active_element_index].get_value()
+            return uid, state, value
         else:
-            return None, None
+            return None, None, None
 
 def test_JoystickElement_button(display):
     je_button = JoystickElement_button(display, x=20, y=20)
@@ -215,7 +231,7 @@ def test_JoystickElementManager2(display, joystick, mode=None):
 
     if mode == "run":
         change = manag2.run_elements(joystick)
-        if change[1] is not None:
+        if change[0] is not None:
             print("#"*100)
-            print("name: " + str(change[0]) + " value: " + str(change[1]))
+            print("uid: " + str(change[0]) + " state: " + str(change[1]) + " value: " + str(change[2]))
             print("#"*100)
