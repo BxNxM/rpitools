@@ -7,11 +7,11 @@ import random
 #                                                                               #
 #################################################################################
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(0.3)
 
-def page(display, ok_button, joystick):
+def page(display, ok_button, joystick, joystick_elements):
     x = 0
     y =14
 
@@ -38,6 +38,6 @@ def page(display, ok_button, joystick):
 
     return False
 
-def page_destructor(display):
+def page_destructor(display, joystick_elements):
     cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
     subprocess.Popen(cmd_aliad, shell=True)

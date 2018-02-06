@@ -7,11 +7,11 @@ import time
 #                                                                               #
 #################################################################################
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(0.15)
 
-def page(display, ok_button, joystick):
+def page(display, ok_button, joystick, joystick_elements):
     center = "cyrcle"
 
     x = 70
@@ -49,5 +49,5 @@ def page(display, ok_button, joystick):
 
     return False
 
-def page_destructor(display):
+def page_destructor(display, joystick_elements):
     pass

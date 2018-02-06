@@ -28,6 +28,8 @@ from datetime import datetime
 
 import JoystickHandler
 
+import joystick_elements
+
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
@@ -569,7 +571,7 @@ class Oled_window_manager():
         if self.page_is_changed(reset_status=False):
             self.actual_page_setup_executed = False
         if not self.actual_page_setup_executed or force:
-            page.page_setup(self)
+            page.page_setup(self, joystick_elements)
             self.actual_page_setup_executed = True
 
     # Run selected page
@@ -590,7 +592,7 @@ class Oled_window_manager():
                     # run page
                     ok_button = self.ok_button_event_getter()
                     joystick = self.joystick_event_getter()
-                    is_show = page[2].page(self, ok_button, joystick)
+                    is_show = page[2].page(self, ok_button, joystick, joystick_elements)
                 except Exception as e:
                     oledlog.logger.warn(str(page[0]) + " - run page exception" + str(e))                  # warning msg to log file
                     self.oled_sys_message("run page exception" + str(e))                # warning msg to screen
@@ -633,7 +635,7 @@ class Oled_window_manager():
                 self.draw_image(img_mode="restore")
                 # page destructor
                 try:
-                    page[2].page_destructor(self)
+                    page[2].page_destructor(self, joystick_elements)
                 except Exception as err:
                     oledlog.logger.warn("run page destructor" + str(err))
 

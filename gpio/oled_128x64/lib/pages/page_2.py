@@ -10,13 +10,13 @@ import time
 set_counter = 50
 counter = set_counter
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     global counter
     counter = set_counter
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(0.5)
 
-def page(display, ok_button, joystick):
+def page(display, ok_button, joystick, joystick_elements):
     global counter
     counter-=1
 
@@ -49,5 +49,5 @@ def page(display, ok_button, joystick):
 
     return True
 
-def page_destructor(display):
+def page_destructor(display, joystick_elements):
     pass

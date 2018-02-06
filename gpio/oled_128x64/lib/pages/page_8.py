@@ -7,11 +7,11 @@ import time
 #                                                                               #
 #################################################################################
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button, joystick):
+def page(display, ok_button, joystick, joystick_elements):
     x = 0
     y = 15
     # Write two lines of text.
@@ -38,5 +38,5 @@ def page(display, ok_button, joystick):
         display.display_show()
     return False
 
-def page_destructor(display):
+def page_destructor(display, joystick_elements):
     pass

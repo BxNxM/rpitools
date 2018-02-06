@@ -8,13 +8,13 @@ import time
 #################################################################################
 is_first_load = True
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     global is_first_load
     is_first_load = True
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button, joystick):
+def page(display, ok_button, joystick, joystick_elements):
     global is_first_load
 
     x = 0
@@ -38,5 +38,5 @@ def page(display, ok_button, joystick):
 
     return False
 
-def page_destructor(display):
+def page_destructor(display, joystick_elements):
     pass

@@ -22,13 +22,13 @@ images_path = "pages/images/weather_images/"
 attention = True
 page_icon_name = None
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     global page_icon_name
     page_icon_name = None
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(90)
 
-def page(display, ok_button, joystick):
+def page(display, ok_button, joystick, joystick_elements):
     global attention
 
     # image demo
@@ -58,7 +58,7 @@ def page(display, ok_button, joystick):
     display.draw_text("rain: " + str(weather_dict["rain"]), x, y)
     return False
 
-def page_destructor(display):
+def page_destructor(display, joystick_elements):
     pass
 
 def draw_weather_state(display, state):
