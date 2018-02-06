@@ -21,11 +21,12 @@ class JoystickElementsBase():
 
 class JoystickElement_button(JoystickElementsBase):
 
-    def __init__(self, display, x, y=25, w=25, h=13, init_state=False):
+    def __init__(self, display, x, y=25, w=25, h=13, title=None, init_state=False):
         try:
             super().__init__(x, y, w, h)
         except:
             JoystickElementsBase.__init__(self, x, y, w, h)
+        self.title = title
         self.display = display
         self.button_state = init_state
         self.draw_button()
@@ -33,6 +34,7 @@ class JoystickElement_button(JoystickElementsBase):
     def draw_button(self):
         self.set_activate_indicator()
         self.display.draw.rectangle((self.x, self.y, self.x + self.width, self.y + self.height), outline=255, fill=0)
+        self.draw_title(self.title)
 
         text_x = self.x+2+2
         text_y = self.y+1
@@ -66,6 +68,12 @@ class JoystickElement_button(JoystickElementsBase):
         self.draw_button()
         self.display.display_show()
 
+    def draw_title(self, title):
+        if title is not None:
+            text_x = self.x
+            text_y = self.y - 13
+            w, h = self.display.draw_text(title, text_x, text_y)
+
     def set_value(self, delta=None, direct=None):
         pass
 
@@ -76,14 +84,13 @@ class JoystickElement_value_bar(JoystickElement_button):
 
     def __init__(self, display, x, y=25, w=25, h=13, valmax=100, valmin=0, step=1, title=None, init_state=False):
         h = 64-y-10
-        self.title = title
         self.actual_value = 0
         self.valmax = valmax
         self.valmin = valmin
         try:
-            super().__init__(display, x, y, w, h, init_state)
+            super().__init__(display, x, y, w, h, title,  init_state)
         except:
-            JoystickElement_button.__init__(self, display, x, y, w, h, init_state)
+            JoystickElement_button.__init__(self, display, x, y, w, h, title, init_state)
         self.valstep = step
         self.pixel_step = float(h) / (self.valmax - self.valmin)
 
@@ -100,12 +107,6 @@ class JoystickElement_value_bar(JoystickElement_button):
             self.display.draw.rectangle((self.x, y, self.x + self.width, self.y + self.height), outline=255, fill=1)
         except Exception as e:
             print(str(e))
-
-    def draw_title(self, title):
-        if title is not None:
-            text_x = self.x
-            text_y = self.y - 13
-            w, h = self.display.draw_text(title, text_x, text_y)
 
     def draw_val(self):
         if self.button_state:
@@ -264,7 +265,7 @@ def test_JoystickElementManager3(display, joystick, mode=None):
         je_button = JoystickElement_value_bar(display, x=20, valmax=100, valmin=0, title="A")
         je_button.set_value(delta=42)
         je_button2 = JoystickElement_value_bar(display, x=50, step=5, valmax=40, valmin=0, title="B")
-        je_button3 = JoystickElement_button(display, x=80)
+        je_button3 = JoystickElement_button(display, x=80, title="C")
 
         manag3 = JoystickElementManager()
         manag3.add_element(je_button, "valuebar1")
