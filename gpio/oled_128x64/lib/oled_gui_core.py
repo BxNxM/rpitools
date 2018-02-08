@@ -30,6 +30,12 @@ import JoystickHandler
 
 import joystick_elements
 
+try:
+    import hapticenginge_interface as hei
+    hei.hapt.set_channel_clean(False)                       # not clean haptic engine channel under button uses it!
+    hei.run_interface(option="doubletap")
+except Exception as e:
+    print("haptic engine import: " + str(e))
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
