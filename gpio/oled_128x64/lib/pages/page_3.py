@@ -11,7 +11,7 @@ def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(0.3)
 
-def page(display, ok_button, joystick, joystick_elements):
+def page(display, joystick, joystick_elements):
     x = 0
     y =14
 
@@ -20,7 +20,7 @@ def page(display, ok_button, joystick, joystick_elements):
     display.draw_text("Press OK", x+76, y*3 - 8)
     y += h
 
-    if ok_button:
+    if joystick == "CENTER":
         min_value = 30
         display.draw.rectangle((70,  30, 127, 50), outline=0, fill=0)
         r_value = random.randint(min_value, 100)

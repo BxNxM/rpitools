@@ -7,12 +7,12 @@ import time
 #                                 * TEMP, * CPU freq                            #
 #################################################################################
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(10)
 
-def page(display, ok_button, joystick):
+def page(display, joystick, joystick_elements):
     return False
 
-def page_destructor(display):
+def page_destructor(displayi, joystick_elements):
     pass

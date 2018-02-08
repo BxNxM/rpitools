@@ -2,7 +2,7 @@ import subprocess
 import time
 
 #################################################################################
-#                            PAGE 7 - system shutdown button                    #
+#                            PAGE 8 - system restart button                  #
 #                              ----------------------------                     #
 #                                                                               #
 #################################################################################
@@ -11,16 +11,16 @@ def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button, joystick, joystick_elements):
+def page(display, joystick, joystick_elements):
     x = 0
     y = 15
     # Write two lines of text.
-    w, h = display.draw_text("SHUTDOWN PI?", x, y)
+    w, h = display.draw_text("RESTART PI?", x, y)
     y+=h + 2
     w, h = display.draw_text("Press OK", x+35, y)
     y+=h + 2
-    if ok_button:
-        w, h = display.draw_text("shutting down...", x+35, y)
+    if joystick == "CENTER":
+        w, h = display.draw_text("restarting down...", x+35, y)
         display.display_show()
         y+=h
 
@@ -32,7 +32,7 @@ def page(display, ok_button, joystick, joystick_elements):
         display.display_show()
         time.sleep(1.5)
 
-        cmd = "sudo shutdown now"
+        cmd = "sudo reboot -f"
         output = subprocess.check_output(cmd, shell = True)
         w, h = display.draw_text(str(output), x+35, y)
         display.display_show()

@@ -16,7 +16,7 @@ def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(0.5)
 
-def page(display, ok_button, joystick, joystick_elements):
+def page(display, joystick, joystick_elements):
     global counter
     counter-=1
 

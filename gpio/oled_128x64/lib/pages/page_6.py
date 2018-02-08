@@ -2,40 +2,40 @@ import subprocess
 import time
 
 #################################################################################
-#                                    PAGE 9 - screen off                        #
+#                            PAGE 7 - system shutdown button                    #
 #                              ----------------------------                     #
 #                                                                               #
 #################################################################################
-is_first_load = True
 
 def page_setup(display, joystick_elements):
-    global is_first_load
-    is_first_load = True
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button, joystick, joystick_elements):
-    global is_first_load
-
+def page(display, joystick, joystick_elements):
     x = 0
     y = 15
     # Write two lines of text.
-    w, h = display.draw_text("OLED STANDBY?", x, y)
+    w, h = display.draw_text("SHUTDOWN PI?", x, y)
     y+=h + 2
     w, h = display.draw_text("Press OK", x+35, y)
     y+=h + 2
-
-    if display.standby is False and not is_first_load:
-        display.draw_text("oled is ready...", x+35, y)
-        #display.standby_switch(mode=False)
-    if ok_button and display.standby is False:
-        display.draw_text("going standby...", x+35, y)
+    if joystick == "CENTER":
+        w, h = display.draw_text("shutting down...", x+35, y)
         display.display_show()
-        time.sleep(1)
-        y+=h + 2
-        display.standby_switch(mode=True)
-        is_first_load = not is_first_load
+        y+=h
 
+        # clean display
+        display.head_page_bar_switch(False, False)
+        time.sleep(1)
+        display.draw.rectangle((0,0,display.disp.width, display.disp.height), outline=0, fill=0)
+        display.disp.clear()
+        display.display_show()
+        time.sleep(1.5)
+
+        cmd = "sudo shutdown now"
+        output = subprocess.check_output(cmd, shell = True)
+        w, h = display.draw_text(str(output), x+35, y)
+        display.display_show()
     return False
 
 def page_destructor(display, joystick_elements):

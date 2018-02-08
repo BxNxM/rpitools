@@ -18,10 +18,10 @@ def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button, joystick, joystick_elements):
+def page(display, joystick, joystick_elements):
     global pics_index, stored_index
     image_list = [ 'pages/images/rpi.png', 'pages/images/katica_draw.png', 'pages/images/linux.png', 'pages/images/happycat_oled_64.ppm']
-    if ok_button:
+    if joystick == "CENTER":
         pics_index += 1
         if pics_index >= len(image_list):
             pics_index = 0

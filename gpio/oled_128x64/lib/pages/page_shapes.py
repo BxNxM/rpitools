@@ -6,11 +6,11 @@ import subprocess
 #                           oval, rectangle, triengle, lines                    #
 #################################################################################
 
-def page_setup(display):
+def page_setup(display, joystick_elements):
     display.head_page_bar_switch(False, False)
     display.display_refresh_time_setter(1)
 
-def page(display, ok_button, joystick):
+def page(display, joystick, joystick_elements):
 
     padding = 4
     shape_width = 20
@@ -37,5 +37,5 @@ def page(display, ok_button, joystick):
 
     return True
 
-def page_destructor(display):
+def page_destructor(display, joystick_elements):
     pass

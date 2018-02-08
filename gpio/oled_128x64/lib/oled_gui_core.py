@@ -235,6 +235,7 @@ class Oled_window_manager():
                 self.standby_switch(False)                              # wake up for standby
             else:
                 self.ok_button_event = True
+                self.standby_switch(True)                              # wake up for standby
         elif cmd == "standbyTrue" or cmd == "standbyFalse":
             if cmd == "standbyTrue":
                 self.standby_switch(mode=True)
@@ -590,9 +591,8 @@ class Oled_window_manager():
                     # if page changed clean page
                     self.clever_screen_clean()
                     # run page
-                    ok_button = self.ok_button_event_getter()
                     joystick = self.joystick_event_getter()
-                    is_show = page[2].page(self, ok_button, joystick, joystick_elements)
+                    is_show = page[2].page(self, joystick, joystick_elements)
                 except Exception as e:
                     oledlog.logger.warn(str(page[0]) + " - run page exception" + str(e))                  # warning msg to log file
                     self.oled_sys_message("run page exception" + str(e))                # warning msg to screen
@@ -623,6 +623,7 @@ class Oled_window_manager():
         if self.last_page_index != self.actual_page_index:
             if reset_status:
                 self.ok_button_event = False                                    # clean page ok button event for the next page
+                self.joystick_event = None                                      # reset joystick event if page is changed
                 self.run_page_x_destructor(self.last_page_index)
                 self.last_page_index = self.actual_page_index
             state = True
