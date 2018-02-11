@@ -132,10 +132,10 @@ class JoystickElement_value_bar(JoystickElement_button):
 
 class JoystickElementManager():
 
-    def __init__(self):
+    def __init__(self, default_index=0):
         self.element_list = []
         self.title_list = []
-        self.active_element_index = 0
+        self.active_element_index = default_index
         self.is_first_run = True
 
     def add_element(self, element, title=None):
