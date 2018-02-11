@@ -1,123 +1,53 @@
 import subprocess
 import time
-import os
-import sys
-import time
-try:
-    myfolder = os.path.dirname(os.path.abspath(__file__))
-    widget_module_path = os.path.dirname(myfolder)
-    sys.path.append(widget_module_path)
-    import oled_gui_widgets
-except Exception as e:
-    print("!"*100)
-    print(e)
-    print("!"*100)
 
 #################################################################################
-#                                 PAGE 8 - WEATHER PAGE                         #
+#                                    PAGE 9 - joystick                          #
 #                              ----------------------------                     #
-#                               *weather *temp *wind *rain                      #
+#                                                                               #
 #################################################################################
-images_path = "pages/images/weather_images/"
-attention = True
-page_icon_name = None
 
 def page_setup(display, joystick_elements):
-    global page_icon_name
-    page_icon_name = None
     display.head_page_bar_switch(True, True)
-    display.display_refresh_time_setter(90)
+    display.display_refresh_time_setter(0.15)
 
 def page(display, joystick, joystick_elements):
-    global attention
+    center = "cyrcle"
 
-    # image demo
-    #test_images(display)
-
-    try:
-        weather_dict = oled_gui_widgets.get_weather_info()
-    except Exception as e:
-        raise Exception(str(e))
-    draw_weather_state(display, state=str(weather_dict["weather"]))
-
-    x = 0
-    y = 14
-    if "None" in weather_dict.values() and attention:
-        w, h = display.draw_text("WEATHER: curl wttr.in/location", x, y)
-        y += h
-        w, h = display.draw_text("Maximum call reached!", x, y)
-        return False
-
+    x = 70
+    y = 28
     # Write two lines of text.
-    w, h = display.draw_text(str(weather_dict["weather"]), x, y)
-    y+=h
-    display.draw_text("temp: " + str(weather_dict["temp"][0:-4]) + "'C", x, y)
-    y+=h
-    display.draw_text("wind: " + str(weather_dict["wind"]), x, y)
-    y+=h
-    display.draw_text("rain: " + str(weather_dict["rain"]), x, y)
+    if joystick is not None:
+        w, h = display.draw_text(str(joystick), x, y)
+    else:
+        w, h = display.draw_text("         ", x, y)
+
+    display.draw.polygon([(22, 21), (30, 9), (38, 21)], outline=255, fill=0)            # up
+    if str(joystick) == "UP":
+        display.draw.polygon([(22, 21), (30, 9), (38, 21)], outline=255, fill=1)        # up - filled
+
+    display.draw.polygon([(5, 30), (18, 23), (18, 38)], outline=255, fill=0)            # left
+    if str(joystick) == "LEFT":
+        display.draw.polygon([(5, 30), (18, 23), (18, 38)], outline=255, fill=1)        # left - filled
+
+    display.draw.polygon([(55, 30), (42, 23), (42, 38)], outline=255, fill=0)           # right
+    if str(joystick) == "RIGHT":
+        display.draw.polygon([(55, 30), (42, 23), (42, 38)], outline=255, fill=1)       # right - filled
+
+    display.draw.polygon([(30, 55), (38, 42), (22, 42)], outline=255, fill=0)           # down
+    if str(joystick) == "DOWN":
+        display.draw.polygon([(30, 55), (38, 42), (22, 42)], outline=255, fill=1)       # down
+
+    if center == "cyrcle":
+        display.draw.ellipse((22, 24 , 38, 38), outline=255, fill=0)                    # center
+        if str(joystick) == "CENTER":
+            display.draw.ellipse((22, 24 , 38, 38), outline=255, fill=1)                # center - filled
+    if center == "rectangle":
+        display.draw.rectangle((22, 24,38,38), outline=255, fill=0)                     # center
+        if str(joystick) == "CENTER":
+            display.draw.rectangle((22, 24,38,38), outline=255, fill=1)                 # center - filled
+
     return False
 
 def page_destructor(display, joystick_elements):
     pass
-
-def draw_weather_state(display, state):
-    global page_icon_name
-    if page_icon_name != state:
-        page_icon_name = state
-
-        x =100
-        y = 25
-        size = 20
-
-        if state.lower() == "sunny" or state.lower() == "clear":
-            image_path = os.path.join(images_path, "sunny.png")
-            display.draw_image(image_path)
-        if "cloudy" in state.lower() or state.lower() == "overcast":
-            image_path = os.path.join(images_path, "cloudy.png")
-            display.draw_image(image_path)
-        if "rain" in state.lower() or "drizzle" in state.lower():
-            image_path = os.path.join(images_path, "rain.png")
-            display.draw_image(image_path)
-        if "partly cloudy" in state.lower():
-            image_path = os.path.join(images_path, "partly_cloudy.png")
-            display.draw_image(image_path)
-        if "mist" in state.lower():
-            image_path = os.path.join(images_path, "mist.png")
-            display.draw_image(image_path)
-        if "snow" in state.lower():
-            image_path = os.path.join(images_path, "snow.png")
-            display.draw_image(image_path)
-        if "snow" in state.lower() and "rain" in state.lower():
-            image_path = os.path.join(images_path, "snow-rain.png")
-            display.draw_image(image_path)
-        if "storm" in state.lower():
-            image_path = os.path.join(images_path, "storm.png")
-            display.draw_image(image_path)
-
-
-def test_images(display):
-    draw_weather_state(display, state="sunny")
-    display.display_show()
-    time.sleep(2)
-    draw_weather_state(display, state="cloudy")
-    display.display_show()
-    time.sleep(2)
-    draw_weather_state(display, state="rain")
-    display.display_show()
-    time.sleep(2)
-    draw_weather_state(display, state="partly cloudy")
-    display.display_show()
-    time.sleep(2)
-    draw_weather_state(display, state="mist")
-    display.display_show()
-    time.sleep(2)
-    draw_weather_state(display, state="snow")
-    display.display_show()
-    time.sleep(2)
-    draw_weather_state(display, state="snow rain")
-    display.display_show()
-    time.sleep(2)
-    draw_weather_state(display, state="storm")
-    display.display_show()
-    time.sleep(2)
