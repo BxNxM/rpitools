@@ -9,7 +9,7 @@ import time
 
 def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
-    display.display_refresh_time_setter(0.15)
+    display.display_refresh_time_setter(0.2)
 
 def page(display, joystick, joystick_elements):
     center = "cyrcle"

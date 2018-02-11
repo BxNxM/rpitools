@@ -13,7 +13,7 @@ def page_setup(display, joystick_elements):
     display.display_refresh_time_setter(0)
     rgb_manage_function(joystick_elements, display, joystick=None, mode="init")
     cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON"
-    subprocess.Popen(cmd_aliad, shell=True)
+    run_command(cmd_aliad, display)
 
 def page(display, joystick, joystick_elements):
     uid, state, value = rgb_manage_function(joystick_elements, display, joystick, mode="run")
@@ -24,23 +24,35 @@ def page(display, joystick, joystick_elements):
             if state:
                 button = "ON"
             cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -l {}".format(button)
-            subprocess.Popen(cmd_aliad, shell=True)
+            run_command(cmd_aliad, display)
 
         if uid == "red":
             cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -r {}".format(value)
-            subprocess.Popen(cmd_aliad, shell=True)
+            run_command(cmd_aliad, display)
         if uid == "green":
             cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -g {}".format(value)
-            subprocess.Popen(cmd_aliad, shell=True)
+            run_command(cmd_aliad, display)
         if uid == "blue":
             cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -b {}".format(value)
-            subprocess.Popen(cmd_aliad, shell=True)
+            run_command(cmd_aliad, display)
     return True
 
-def page_destructor(displayi, joystick_elements):
-    rgb_manage_function(joystick_elements, display, joystick, mode="del")
+def page_destructor(display, joystick_elements):
     cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
-    subprocess.Popen(cmd_aliad, shell=True)
+    run_command(cmd_aliad, display)
+    rgb_manage_function(joystick_elements, display, joystick, mode="del")
+
+#################################################################################
+#execute command and wait for the execution + load indication
+def run_command(cmd, display=None):
+    x = 95
+    y = 45
+    if display is not None:
+        w, h = display.draw_text("load", x, y)
+    p = subprocess.Popen(cmd, shell=True)
+    p.communicate()
+    if display is not None:
+        w, h = display.draw_text("    ", x, y)
 
 #################################################################################
 def rgb_manage_function(joystick_elements, display, joystick, mode=None):

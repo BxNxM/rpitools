@@ -83,13 +83,13 @@ class OutputChannelDriver():
 
 class HapticEngine(OutputChannelDriver):
 
-    def __init__(self, channel=17, speed=18):
+    def __init__(self, channel=17, speed=18, maxval=60):
         try:
             super().__init__(channel)                           # python3 super init
         except:
             OutputChannelDriver.__init__(self, channel)         # python2 super init
         self.speed = 1.0 / speed
-        self.max_val = 70
+        self.max_val = maxval
 
     def set_power(self, max_val):
         self.max_val = max_val
