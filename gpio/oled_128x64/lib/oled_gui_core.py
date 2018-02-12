@@ -576,7 +576,7 @@ class Oled_window_manager():
         except KeyboardInterrupt as e:
             oledlog.logger.info("Exiting " + str(e))
 
-    def smart_wait_between_button_press(self, wait_sec=0.3):
+    def smart_wait_between_button_press(self, wait_sec=0.2):
         buffered_index = self.actual_page_index
         wait_sec_buffered = wait_sec
         while wait_sec > 0:
