@@ -94,6 +94,7 @@ class Oled_window_manager():
         self.read_default_page_index()
         self.standby = False                                    # standby mode indicator
         self.joystick_event = None                              # joystick buttons event - UP - DOWN - CENTER - RIGHT - LEFT
+        self.page_setup_wakeup_reload_status = self.set_get_page_setup_wakeup_reload(state=False)
 
         # header bar shcedule widhets counters
         self.heder_page_widget_call_counter_max = 3
@@ -216,6 +217,11 @@ class Oled_window_manager():
     def head_page_bar_switch(self, head_bar, page_bar):
         if isinstance(head_bar, bool) and isinstance(page_bar, bool):
             self.head_page_bar_is_enable = [ head_bar, page_bar ]
+
+    def set_get_page_setup_wakeup_reload(self, state=None):
+        if state is not None and type(state) is bool:
+            self.page_setup_wakeup_reload_status = state
+        return self.page_setup_wakeup_reload_status
 
     #############################################################################
     #                   VIRTUAL BUTTONS - RIGHT - LEFT - STANDBY*                    #
@@ -503,6 +509,7 @@ class Oled_window_manager():
                 # load actual page settings
                 self.head_page_bar_switch(self.head_page_bar_is_enable_backup[0], self.head_page_bar_is_enable_backup[1])
                 self.standby = False
+                self.set_get_page_setup_wakeup_reload(state=True)
 
     # show contents on display if device is not busy
     def display_show(self, force=False):
@@ -590,6 +597,9 @@ class Oled_window_manager():
 
     # run page setup - when actual page is activated
     def actual_page_setup(self, page, force=False):
+        if self.set_get_page_setup_wakeup_reload():
+            force = True
+            self.set_get_page_setup_wakeup_reload(state=False)
         if self.page_is_changed(reset_status=False):
             self.actual_page_setup_executed = False
         if not self.actual_page_setup_executed or force:
