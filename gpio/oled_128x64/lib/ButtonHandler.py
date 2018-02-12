@@ -23,17 +23,17 @@ except Exception as e:
 
 class OledButtonHandler():
 
-    def __init__(self, left_pin, right_pin, ok_pin, haptic=True):
+    def __init__(self, left_pin, right_pin, standby_pin, haptic=True):
         self.channels_dict = {"LEFT": left_pin,\
                               "RIGHT": right_pin,\
-                               "OK": ok_pin}
+                              "STANDBY": standby_pin}
         self.haptic = haptic
         # set gpio channels
         #GPIO.setmode(GPIO.BOARD)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(left_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.setup(right_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(ok_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(standby_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         ####################
         self.threads = []
@@ -45,7 +45,7 @@ class OledButtonHandler():
 
     def button_threads_init(self):
         self.threads.append(threading.Thread(target=self.left_button_thrd))
-        self.threads.append(threading.Thread(target=self.ok_button_thrd))
+        self.threads.append(threading.Thread(target=self.standby_button_thrd))
         self.threads.append(threading.Thread(target=self.right_button_thrd))
         self.threads.append(threading.Thread(target=self.virtual_button_file_watch_thrd))
         # write more threads here...
@@ -63,11 +63,11 @@ class OledButtonHandler():
                 self.last_event_cmd = "LEFT"
             time.sleep(self.button_thrd_timing)
 
-    def ok_button_thrd(self):
+    def standby_button_thrd(self):
         while True:
-            channel = self.channels_dict["OK"]
+            channel = self.channels_dict["STANDBY"]
             if self.__button_event_get(channel, edge="up"):
-                self.last_event_cmd = "OK"
+                self.last_event_cmd = "STANDBY"
             time.sleep(self.button_thrd_timing)
 
     def right_button_thrd(self):
@@ -84,7 +84,7 @@ class OledButtonHandler():
             if os.path.exists(virtual_button_file_pipe):
                 with open(virtual_button_file_pipe, 'r') as f:
                     cmd = f.read().rstrip()
-                if cmd == "RIGHT" or cmd == "LEFT" or cmd == "OK" or cmd == "standbyTrue" or cmd == "standbyFalse":
+                if cmd == "RIGHT" or cmd == "LEFT" or cmd == "STANDBY" or cmd == "standbyTrue" or cmd == "standbyFalse":
                     self.last_event_cmd = cmd
                     time.sleep(0.5)
                     open(virtual_button_file_pipe, 'w').close()
@@ -158,17 +158,17 @@ class OledButtonHandler():
             print('kill object: cleanup')
             GPIO.cleanup(self.channels_dict["LEFT"])
             GPIO.cleanup(self.channels_dict["RIGHT"])
-            GPIO.cleanup(self.channels_dict["OK"])
+            GPIO.cleanup(self.channels_dict["STANDBY"])
             hei.hapt.set_channel_clean(True)                         # set channel clean to True after button finished to use it
         except Exception as e:
             print(e)
 
 if "ButtonHandler" in __name__:
-    oled_buttons = OledButtonHandler(left_pin=26, right_pin=5, ok_pin=6)
+    oled_buttons = OledButtonHandler(left_pin=26, right_pin=5, standby_pin=6)
 
 if __name__ == "__main__":
-    #oled_buttons = OledButtonHandler(left_pin=37, right_pin=29, ok_pin=31)     #GPIO.BOARD)
-    oled_buttons = OledButtonHandler(left_pin=26, right_pin=5, ok_pin=6)
+    #oled_buttons = OledButtonHandler(left_pin=37, right_pin=29, standby_pin=31)     #GPIO.BOARD)
+    oled_buttons = OledButtonHandler(left_pin=26, right_pin=5, standby_pin=6)
     #oled_buttons.simple_input_read(37)                                         #GPIO.BOARD)
     oled_buttons.oled_read_all_function_buttons()
 

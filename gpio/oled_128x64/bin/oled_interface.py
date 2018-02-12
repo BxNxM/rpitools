@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-ol", "--oled", help="Oled service ON or OFF")
 parser.add_argument("-sh", "--show",  action='store_true', help="show service status")
 parser.add_argument("-re", "--restart",  action='store_true', help="restart oled service")
-parser.add_argument("-bu", "--button", help="LEFT / OK / RIGHT / standbyFalse / standbyTrue")
+parser.add_argument("-bu", "--button", help="LEFT / STANDBY / RIGHT / standbyFalse / standbyTrue")
 parser.add_argument("-ss", "--set_service", action='store_true', help="set systemd service - boot start...")
 
 args = parser.parse_args()
@@ -85,7 +85,7 @@ def stop():
 
 def set_buttons(button):
     command = None
-    if button.upper() == "RIGHT" or button.upper() == "LEFT" or button.upper() == "OK":
+    if button.upper() == "RIGHT" or button.upper() == "LEFT" or button.upper() == "STANDBY":
         command = button.upper()
     elif button.lower() == "standbyfalse":
         command = "standbyFalse"

@@ -90,7 +90,7 @@ class Oled_window_manager():
         self.head_page_bar_is_enable_backup = self.head_page_bar_is_enable
         self.redraw = True                                      # redraw page request status for display_show_thread
         self.display_refresh_time_sec = 1                       # actual page default refresh time - set with -> display_refresh_time_setter
-        self.ok_button_event = False                            # ok button event status holder
+        self.standby_button_event = False                            # standby button event status holder
         self.read_default_page_index()
         self.standby = False                                    # standby mode indicator
         self.joystick_event = None                              # joystick buttons event - UP - DOWN - CENTER - RIGHT - LEFT
@@ -192,15 +192,15 @@ class Oled_window_manager():
     #############################################################################
     #                             GETTER - SETTER                               #
     #############################################################################
-    def ok_button_event_getter(self):
+    def standby_button_event_getter(self):
         try:
-            if self.ok_button_event:
-                self.ok_button_event = False
+            if self.standby_button_event:
+                self.standby_button_event = False
                 return_value = True
             else:
                 return_value = False
         except:
-            self.ok_button_event = False
+            self.standby_button_event = False
             return_value = False
         return return_value
 
@@ -218,7 +218,7 @@ class Oled_window_manager():
             self.head_page_bar_is_enable = [ head_bar, page_bar ]
 
     #############################################################################
-    #                   VIRTUAL BUTTONS - RIGHT - LEFT - OK*                    #
+    #                   VIRTUAL BUTTONS - RIGHT - LEFT - STANDBY*                    #
     #############################################################################
     def virtual_button(self, cmd):
         pages_pcs = len(self.page_list)
@@ -235,12 +235,12 @@ class Oled_window_manager():
             self.actual_page_index -=1
             if self.actual_page_index < 0:
                 self.actual_page_index = pages_pcs-1
-        elif cmd == "ok" or cmd == "OK":
+        elif cmd == "standby" or cmd == "STANDBY":
             if self.standby:
-                self.ok_button_event = False
+                self.standby_button_event = False
                 self.standby_switch(False)                              # wake up for standby
             else:
-                self.ok_button_event = True
+                self.standby_button_event = True
                 self.standby_switch(True)                              # wake up for standby
         elif cmd == "standbyTrue" or cmd == "standbyFalse":
             if cmd == "standbyTrue":
@@ -628,7 +628,7 @@ class Oled_window_manager():
         state = False
         if self.last_page_index != self.actual_page_index:
             if reset_status:
-                self.ok_button_event = False                                    # clean page ok button event for the next page
+                self.standby_button_event = False                                    # clean page standby button event for the next page
                 self.joystick_event = None                                      # reset joystick event if page is changed
                 self.run_page_x_destructor(self.last_page_index)
                 self.last_page_index = self.actual_page_index
