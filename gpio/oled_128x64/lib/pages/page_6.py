@@ -12,8 +12,8 @@ def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(0)
     rgb_manage_function(joystick_elements, display, joystick=None, mode="init")
-    cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON"
-    run_command(cmd_aliad, display)
+    cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON"
+    run_command(cmd_alias, display)
 
 def page(display, joystick, joystick_elements):
     uid, state, value = rgb_manage_function(joystick_elements, display, joystick, mode="run")
@@ -23,34 +23,35 @@ def page(display, joystick, joystick_elements):
             button = "OFF"
             if state:
                 button = "ON"
-            cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -l {}".format(button)
-            run_command(cmd_aliad, display)
+            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -l {}".format(button)
+            run_command(cmd_alias, display)
 
         if uid == "red":
-            cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -r {}".format(value)
-            run_command(cmd_aliad, display)
+            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -r {}".format(value)
+            run_command(cmd_alias, display)
         if uid == "green":
-            cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -g {}".format(value)
-            run_command(cmd_aliad, display)
+            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -g {}".format(value)
+            run_command(cmd_alias, display)
         if uid == "blue":
-            cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -b {}".format(value)
-            run_command(cmd_aliad, display)
+            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -b {}".format(value)
+            run_command(cmd_alias, display)
     return True
 
 def page_destructor(display, joystick_elements):
-    cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
-    run_command(cmd_aliad, display)
+    cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
+    run_command(cmd_alias, display, wait_for_done=False)
     rgb_manage_function(joystick_elements, display, joystick, mode="del")
 
 #################################################################################
 #execute command and wait for the execution + load indication
-def run_command(cmd, display=None):
+def run_command(cmd, display=None, wait_for_done=True):
     x = 95
     y = 45
     if display is not None:
         w, h = display.draw_text("load", x, y)
     p = subprocess.Popen(cmd, shell=True)
-    p.communicate()
+    if wait_for_done:
+        p.communicate()
     if display is not None:
         w, h = display.draw_text("    ", x, y)
 
@@ -66,22 +67,22 @@ def rgb_manage_function(joystick_elements, display, joystick, mode=None):
         je_red = joystick_elements.JoystickElement_value_bar(display, x=5, step=10, valmax=100, valmin=0, title="R")
         je_red.set_value(delta=default_value)
         # set led state:
-        cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -r {}".format(default_value)
-        subprocess.Popen(cmd_aliad, shell=True)
+        cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -r {}".format(default_value)
+        subprocess.Popen(cmd_alias, shell=True)
 
         # init value elemet for green color
         je_green = joystick_elements.JoystickElement_value_bar(display, x=35, step=10, valmax=100, valmin=0, title="G")
         je_green.set_value(delta=30)
         # set led state:
-        cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -g {}".format(default_value)
-        subprocess.Popen(cmd_aliad, shell=True)
+        cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -g {}".format(default_value)
+        subprocess.Popen(cmd_alias, shell=True)
 
         # init value elemet for green color
         je_blue = joystick_elements.JoystickElement_value_bar(display, x=65, step=10, valmax=100, valmin=0, title="B")
         je_blue.set_value(delta=30)
         # set led state:
-        cmd_aliad = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -b {}".format(default_value)
-        subprocess.Popen(cmd_aliad, shell=True)
+        cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -b {}".format(default_value)
+        subprocess.Popen(cmd_alias, shell=True)
 
         # rgb on - off
         je_rgb_button = joystick_elements.JoystickElement_button(display, x=95, title="RGB")
