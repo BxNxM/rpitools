@@ -505,7 +505,7 @@ class Oled_window_manager():
                 self.standby = False
 
     # show contents on display if device is not busy
-    def display_show(self):
+    def display_show(self, force=False):
         is_success = False
         if self.display_is_avaible:
             self.display_is_avaible = False
@@ -516,6 +516,9 @@ class Oled_window_manager():
             self.disp.display()
             self.display_is_avaible = True
             is_success = True
+        if force and not is_success:
+            print("\t\tshow display retry!!!!!")
+            return self.display_show()
         return is_success
 
     # draw ppm image
@@ -573,6 +576,18 @@ class Oled_window_manager():
         except KeyboardInterrupt as e:
             oledlog.logger.info("Exiting " + str(e))
 
+    def smart_wait_between_button_press(self, wait_sec=0.3):
+        buffered_index = self.actual_page_index
+        wait_sec_buffered = wait_sec
+        while wait_sec > 0:
+            wait_sec -= wait_sec_buffered / 5
+            sleep(wait_sec_buffered / 5)
+            print("\n=====> page wait <====\n")
+            if self.actual_page_index != buffered_index:
+                buffered_index = self.actual_page_index
+                wait_sec = wait_sec_buffered
+                print("\n******> new press <****\n")
+
     # run page setup - when actual page is activated
     def actual_page_setup(self, page, force=False):
         if self.page_is_changed(reset_status=False):
@@ -605,7 +620,8 @@ class Oled_window_manager():
                     is_show = False
                 if is_show:
                     # Display image.
-                    self.redraw = True
+                    #self.redraw = True
+                    self.display_show(force=True)
                 # clever wait, if button press happen, break sleep
                 self.run_page_wait(int(page[1]))
 
@@ -627,6 +643,7 @@ class Oled_window_manager():
     def page_is_changed(self, reset_status=True):
         state = False
         if self.last_page_index != self.actual_page_index:
+            self.smart_wait_between_button_press()
             if reset_status:
                 self.standby_button_event = False                                    # clean page standby button event for the next page
                 self.joystick_event = None                                      # reset joystick event if page is changed
@@ -672,6 +689,7 @@ class Oled_window_manager():
         if clean_full:
             self.draw.rectangle((0,0,self.disp.width, self.disp.height), outline=0, fill=0)
             oledlog.logger.info("Clean full page")
+        self.display_show(force=True)
 
     # class destructor
     def __del__(self):
@@ -681,8 +699,12 @@ class Oled_window_manager():
 
 def run():
     display = Oled_window_manager()
-    display.run()
-    display.__del__()
+    try:
+        display.run()
+    except Exception as e:
+        print("oled main loop manager exception: " + str(e))
+    finally:
+        display.__del__()
 
 if __name__ == "__main__":
     run()
