@@ -31,7 +31,7 @@ class JoystickElement_button(JoystickElementsBase):
         self.button_state = init_state
         self.draw_button()
 
-    def draw_button(self):
+    def draw_button(self, state_on_text="ON ", state_off_text="OFF"):
         self.set_activate_indicator()
         self.display.draw.rectangle((self.x, self.y, self.x + self.width, self.y + self.height), outline=255, fill=0)
         self.draw_title(self.title)
@@ -40,10 +40,10 @@ class JoystickElement_button(JoystickElementsBase):
         text_y = self.y+1
         if self.button_state:
             print("Button is ON")
-            w, h = self.display.draw_text("ON ", text_x, text_y)
+            w, h = self.display.draw_text(str(state_on_text), text_x, text_y)
         else:
             print("Button is OFF")
-            w, h = self.display.draw_text("OFF", text_x, text_y)
+            w, h = self.display.draw_text(state_off_text, text_x, text_y)
 
     def set_activate_indicator(self):
         if self.is_active:
@@ -79,6 +79,14 @@ class JoystickElement_button(JoystickElementsBase):
 
     def get_value(self):
         return None
+
+class JoystickElement_text_list(JoystickElementsBase):
+
+    def __init__(self, display, x, y=25, w=25, h=13):
+        try:
+            super().__init__(x, y, w, h)
+        except:
+            JoystickElementsBase.__init__(self, x, y, w, h)
 
 class JoystickElement_value_bar(JoystickElement_button):
 
