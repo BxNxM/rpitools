@@ -47,7 +47,7 @@ def edit_fstab(label_uuid_matrix, fstab_path="/etc/fstab"):
     for label_uuid in label_uuid_matrix:
         uuid = label_uuid[1]
         label = label_uuid[0]
-        cmd = "UUID={} /mnt/{} auto defaults,auto,umask=000,users,rw,uid=pi,gid=pi 0 0".format(uuid, label)
+        cmd = "UUID={} /media/{} auto defaults,auto,umask=000,users,rw,uid=pi,gid=pi 0 0".format(uuid, label)
         cmd_lines.append(cmd)
 
     for cmd_ in cmd_lines:
@@ -68,31 +68,31 @@ def edit_fstab(label_uuid_matrix, fstab_path="/etc/fstab"):
             print("line exists: {}".format(cmd_))
 
         # create mount point
-        if not os.path.isdir("/mnt/"+str(label)):
-            print("Create /mnt/" + str(label))
-            os.makedirs("/mnt/"+str(label))
-            print("chmod 0765 /mnt/"+str(label))
-            os.chmod("/mnt/"+str(label), 0765)
+        if not os.path.isdir("/media/"+str(label)):
+            print("Create /media/" + str(label))
+            os.makedirs("/media/"+str(label))
+            print("chmod 0765 /media/"+str(label))
+            os.chmod("/media/"+str(label), 0765)
             print("chmod " + str(USER))
-            LocalMachine.run_command("chown " + USER + " /mnt/"+str(label))
+            LocalMachine.run_command("chown " + USER + " /media/"+str(label))
         else:
-            print("/mnt/" + str(label) + " already exists")
+            print("/media/" + str(label) + " already exists")
 
 def mount_all_devices():
-    #grep -qs '/mnt/BNM' /proc/mounts
-    mnt_dirs = []
-    for dirname, dirnames, filenames in os.walk('/mnt/'):
-        mnt_dirs = dirnames
+    #grep -qs '/media/BNM' /proc/mounts
+    media_dirs = []
+    for dirname, dirnames, filenames in os.walk('/media/'):
+        media_dirs = dirnames
         break
 
-    for actualdir in mnt_dirs:
-        is_mounted_cmd = "grep -qs '/mnt/{}' /proc/mounts".format(actualdir)
+    for actualdir in media_dirs:
+        is_mounted_cmd = "grep -qs '/media/{}' /proc/mounts".format(actualdir)
         exitcode, stdout, stderr = LocalMachine.run_command(is_mounted_cmd)
         if exitcode == 0:
-            print("/mnt/{} is already mounted".format(actualdir))
+            print("/media/{} is already mounted".format(actualdir))
         elif exitcode == 1:
-            print("/mnt/{} mount".format(actualdir))
-            mount_cmd = "mount /mnt/" + str(actualdir)
+            print("/media/{} mount".format(actualdir))
+            mount_cmd = "mount /media/" + str(actualdir)
             exitcode, stdout, stderr = LocalMachine.run_command(mount_cmd)
             if exitcode == 0:
                 print("Successfully mounted")
