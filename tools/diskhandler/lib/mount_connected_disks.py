@@ -1,3 +1,6 @@
+#!/usr/bin/python
+
+#http://www.bobjectsinc.com/tinycomputers/raspbian-automatically-mount-usb-drives/
 import LocalMachine
 import os
 import getpass
