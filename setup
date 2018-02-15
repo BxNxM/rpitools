@@ -146,6 +146,8 @@ then
  else
     message "Linking: ln -s /etc/transmission-daemon/settings.json $REPOROOT/config/trasmission_settings"
     ln -s /etc/transmission-daemon/settings.json $REPOROOT/config/trasmission_settings
+    message "usermod debian-transmission to $USER"
+    sudo usermod -a -G $USER debian-transmission
     message "Before manual configuration turn off transmission service with systemctl"
     sudo systemctl stop transmission-daemon
     sudo systemctl disable transmission-daemon
