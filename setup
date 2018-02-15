@@ -130,6 +130,27 @@ then
     ln -s /var/log $REPOROOT/config/log
 fi
 
+#link /etc/fstab log file
+if [  -e "$REPOROOT/config/fstab" ]
+then
+    message "$REPOROOT/config/fstab is already linked"
+ else
+    message "Linking: ln -s /etc/fstab $REPOROOT/config/fstab"
+    ln -s /etc/fstab $REPOROOT/config/fstab
+fi
+
+#link /etc/transmission-daemon/settings.json log file
+if [  -e "$REPOROOT/config/trasmission_settings" ]
+then
+    message "$REPOROOT/config/trasmission_settings is already linked"
+ else
+    message "Linking: ln -s /etc/transmission-daemon/settings.json $REPOROOT/config/trasmission_settings"
+    ln -s /etc/transmission-daemon/settings.json $REPOROOT/config/trasmission_settings
+    message "Before manual configuration turn off transmission service with systemctl"
+    sudo systemctl stop transmission-daemon
+    sudo systemctl disable transmission-daemon
+fi
+
 # update once (first run ever) before install apps
 is_installed_file_indicator="$REPOROOT/cache/.first_boot_update_update_installed"
 if [ -e "$is_installed_file_indicator" ]
