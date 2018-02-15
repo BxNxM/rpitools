@@ -1,6 +1,6 @@
 
 function elapsed_time() {
-    local rpitools_log_path="cache/rpitools.log"
+    local rpitools_log_path="../cache/rpitools.log"
 
     option="$1"                 #start - stop
 
