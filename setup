@@ -150,7 +150,7 @@ then
     sudo usermod -a -G $USER debian-transmission
     message "Before manual configuration turn off transmission service with systemctl"
     sudo systemctl stop transmission-daemon
-    sudo systemctl disable transmission-daemon
+    #sudo systemctl disable transmission-daemon
 fi
 
 # update once (first run ever) before install apps
