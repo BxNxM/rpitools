@@ -3,8 +3,12 @@
 #http://www.bobjectsinc.com/tinycomputers/raspbian-automatically-mount-usb-drives/
 import LocalMachine
 import os
+import sys
 import getpass
 USER = "pi"
+
+def error_msg(text):
+    print("[ !!! ] " + str(text))
 
 def list_connected_devices():
     cmd = "ls /dev/sda*"
@@ -18,8 +22,9 @@ def list_connected_devices():
             if line[0] != "/dev/sda":
                 devices.append(line[0])
     else:
-        print("Command: {} return with error code: {}".format(cmd, exitcode))
-        print("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+        error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+        error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+        sys.exit(1)
     return devices
 
 def get_label_uuid(devices):
@@ -36,8 +41,8 @@ def get_label_uuid(devices):
                 uuid = uuid[1:-1]
                 label_uuid_matrix.append([label, uuid])
         else:
-            print("Command: {} return with error code: {}".format(cmd, exitcode))
-            print("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+            error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+            error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
     return label_uuid_matrix
 
 def edit_fstab(label_uuid_matrix, fstab_path="/etc/fstab"):
@@ -62,8 +67,8 @@ def edit_fstab(label_uuid_matrix, fstab_path="/etc/fstab"):
             if exitcode == 0:
                 print("{} added succesfully!".format(cmd_))
             else:
-                print("Command: {} return with error code: {}".format(cmd, exitcode))
-                print("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+                error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+                error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
         else:
             print("line exists: {}".format(cmd_))
 
@@ -97,13 +102,13 @@ def mount_all_devices():
             if exitcode == 0:
                 print("Successfully mounted")
             else:
-                print("Mount failed!")
-                print("Command: {} return with error code: {}".format(cmd, exitcode))
-                print("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+                error_msg("Mount failed!")
+                error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+                error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
         else:
-            print("Unexpected error!")
-            print("Command: {} return with error code: {}".format(cmd, exitcode))
-            print("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+            error_msg("Unexpected error!")
+            error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+            error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
 
 if __name__ == "__main__":
     print("Search devices...")
