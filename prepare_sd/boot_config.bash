@@ -93,7 +93,7 @@ function set_boot_config() {
     if [ "$is_added" != "" ]
     then
         message "Set $config_path file - add new line #dtparam=spi=on [ for oled ]"
-        echo -e "\n# SPI enabled\n#dtparam=spi=on" >> "$config_path"
+        echo -e "\n# SPI enabled\ndtparam=spi=on" >> "$config_path"
     else
         message "In $config_path , gpu_mem is already set"
     fi
