@@ -45,7 +45,7 @@ def get_label_uuid(devices):
             error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
     return label_uuid_matrix
 
-def edit_fstab(label_uuid_matrix, fstab_path="/etc/fstab"):
+def edit_fstab_create_mount_points(label_uuid_matrix, fstab_path="/etc/fstab"):
     global USER
 
     cmd_lines= []
@@ -53,24 +53,44 @@ def edit_fstab(label_uuid_matrix, fstab_path="/etc/fstab"):
         uuid = label_uuid[1]
         label = label_uuid[0]
         cmd = "UUID={} /media/{} auto defaults,auto,umask=000,users,rw,uid=pi,gid=pi 0 0".format(uuid, label)
-        cmd_lines.append(cmd)
+        cmd_lines.append([cmd, uuid, label])
 
     for cmd_ in cmd_lines:
-        check_cmd = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_)
-        exitcode, stdout, stderr = LocalMachine.run_command(check_cmd)
-        if exitcode != 0 and stdout == "":
-            print("line not exists: {}".format(cmd_))
-            print("ADD TO " + str(fstab_path))
-            # edit fstab file
-            add_cmd = "sudo echo '{}' >> {}".format(cmd_, fstab_path)
-            exitcode, stdout, stderr = LocalMachine.run_command(add_cmd)
-            if exitcode == 0:
-                print("{} added succesfully!".format(cmd_))
+        # check device is already added to the system, and make override protection
+        enable = False
+        uuid_is_exists = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_[1])
+        print(uuid_is_exists)
+        label_is_exists = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_[2])
+        exitcode, stdout, stderr = LocalMachine.run_command(uuid_is_exists)
+        if exitcode != 0 and stderr == "" and stdout == "":
+            print("\tnew device unique id {}".format(cmd_[1]))
+            exitcode, stdout, stderr = LocalMachine.run_command(label_is_exists)
+            if exitcode != 0 and stderr == "" and stdout == "":
+                print("\tnew device name {}".format(cmd_[2]))
+                enable = True
             else:
-                error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
-                error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+                print("\tdevice name is already exists in fstab {} !!!".format(cmd_[2]))
         else:
-            print("line exists: {}".format(cmd_))
+            print("\tdevice unique id is already exists in fstab {} !!!".format(cmd_[1]))
+
+
+        if enable:
+            print("+++> ADDING NEW DEVICE IS ENABLE")
+            check_cmd = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_[0])
+            exitcode, stdout, stderr = LocalMachine.run_command(check_cmd)
+            if exitcode != 0 and stdout == "":
+                print("line not exists: {}".format(cmd_[0]))
+                print("ADD TO " + str(fstab_path))
+                # edit fstab file
+                add_cmd = "sudo echo '{}' >> {}".format(cmd_[0], fstab_path)
+                exitcode, stdout, stderr = LocalMachine.run_command(add_cmd)
+                if exitcode == 0:
+                    print("{} added succesfully!".format(cmd_[0]))
+                else:
+                    error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+                    error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+            else:
+                print("line exists: {}".format(cmd_[0]))
 
         # create mount point
         if not os.path.isdir("/media/"+str(label)):
@@ -84,7 +104,6 @@ def edit_fstab(label_uuid_matrix, fstab_path="/etc/fstab"):
             print("/media/" + str(label) + " already exists")
 
 def mount_all_devices():
-    #grep -qs '/media/BNM' /proc/mounts
     media_dirs = []
     for dirname, dirnames, filenames in os.walk('/media/'):
         media_dirs = dirnames
@@ -110,6 +129,24 @@ def mount_all_devices():
             error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
             error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
 
+def set_get_device_name(device, name=None):
+    if os.path.exists(device):
+        if name is None:
+            exitcode, stdout, stderr = LocalMachine.run_command("sudo e2label " + str(device))                      #device=/dev/sda1
+            if exitcode == 0 and stderr == "" and stdout != "":
+                print("Device {} name: {}".format(device, stdout))
+                return stdout
+            else:
+                print("exitcode:{}\nstdout:{}\nstderr:{}".format(exitcode, stdout, stderr))
+        else:
+            exitcode, stdout, stderr = LocalMachine.run_command("sudo e2label " + str(device) + " " + str(name))
+            if exitcode == 0 and stderr == "":
+                set_get_device_name(device)
+            else:
+                print("exitcode:{}\nstdout:{}\nstderr:{}".format(exitcode, stdout, stderr))
+    else:
+        error_msg("Device is not found " + str(device))
+
 if __name__ == "__main__":
     print("Search devices...")
     textm = list_connected_devices()
@@ -117,6 +154,8 @@ if __name__ == "__main__":
     label_uuid_m = get_label_uuid(textm)
     print(label_uuid_m)
     print("Edit fstab file and create mount points...")
-    edit_fstab(label_uuid_m)
+    edit_fstab_create_mount_points(label_uuid_m)
     print("Mount all devices...")
     mount_all_devices()
+
+
