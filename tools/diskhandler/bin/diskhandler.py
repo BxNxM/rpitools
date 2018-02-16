@@ -10,6 +10,7 @@ import mount_connected_disks
 import subprocess
 import time
 import threading
+import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-sge", "--search_get_edit", action='store_true', help="Search devices (/dev/sda*), get label and uuid, set fstab file")
@@ -28,3 +29,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+    time.sleep(1)
+    sys.exit(0)
