@@ -147,7 +147,8 @@ def set_get_device_name(device, name=None):
     else:
         error_msg("Device is not found " + str(device))
 
-if __name__ == "__main__":
+
+def do_search_get_edit():
     print("Search devices...")
     textm = list_connected_devices()
     print("Get label and uuid...")
@@ -155,7 +156,12 @@ if __name__ == "__main__":
     print(label_uuid_m)
     print("Edit fstab file and create mount points...")
     edit_fstab_create_mount_points(label_uuid_m)
+
+def mount():
     print("Mount all devices...")
     mount_all_devices()
 
+if __name__ == "__main__":
+    do_search_get_edit()
+    mount()
 
