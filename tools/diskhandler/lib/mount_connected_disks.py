@@ -120,7 +120,14 @@ def mount_all_devices():
             mount_cmd = "mount /media/" + str(actualdir)
             exitcode, stdout, stderr = LocalMachine.run_command(mount_cmd)
             if exitcode == 0:
-                print("Successfully mounted")
+                is_mounted_cmd = "grep -qs '/media/{}' /proc/mounts".format(actualdir)
+                exitcode, stdout, stderr = LocalMachine.run_command(is_mounted_cmd)
+                if exitcode == 0:
+                    print("Successfully mounted")
+                elif exitcode == 1:
+                    print("Fail to mount - may device is not found")
+                else:
+                    error_msg("EXITCODE: {}\nSTDOUT: {}\nSTDERR:{}".format(exitcode, stdout, stderr))
             else:
                 error_msg("Mount failed!")
                 error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
