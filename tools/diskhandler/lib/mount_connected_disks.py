@@ -11,7 +11,7 @@ def error_msg(text):
     print("[ !!! ] " + str(text))
 
 def list_connected_devices():
-    cmd = "ls /dev/sda*"
+    cmd = "ls /dev/sd*"
     textmatrix = ""
     devices = []
 
@@ -19,7 +19,8 @@ def list_connected_devices():
     if exitcode == 0:
         textmatrix = LocalMachine.text_to_matrix_converter(stdout)
         for line in textmatrix:
-            if line[0] != "/dev/sda":
+            digit = line[0][-1]                                         # check if didgit is the last character ex. /dev/sda1
+            if digit.isdigit():
                 devices.append(line[0])
     else:
         error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
