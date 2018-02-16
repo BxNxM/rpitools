@@ -54,15 +54,15 @@ def edit_fstab_create_mount_points(label_uuid_matrix, fstab_path="/etc/fstab"):
         uuid = label_uuid[1]
         label = label_uuid[0]
         #cmd = "UUID={} /media/{} auto defaults,auto,umask=000,users,rw,uid=pi,gid=pi 0 0".format(uuid, label)                  # wait disk in boot time
-        cmd  ="UUID={} /media/{} auto defaults,auto,noatime,nofail,umask=000,users,rw,uid=pi,gid=pi 0 0".format(uuid, label)    # no wait for disk
+        cmd  ="UUID={} /media/{} auto defaults,auto,noatime,nofail,umask=000,users,rw,uid={},gid={} 0 0".format(uuid, label, USER, USER)    # no wait for disk
         cmd_lines.append([cmd, uuid, label])
 
     for cmd_ in cmd_lines:
         # check device is already added to the system, and make override protection
         enable = False
-        uuid_is_exists = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_[1])
+        uuid_is_exists = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_[1] + " ")
         print(uuid_is_exists)
-        label_is_exists = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_[2])
+        label_is_exists = "cat {} | grep -v grep | grep '{}'".format(fstab_path, cmd_[2] + " ")
         exitcode, stdout, stderr = LocalMachine.run_command(uuid_is_exists)
         if exitcode != 0 and stderr == "" and stdout == "":
             print("\tnew device unique id {}".format(cmd_[1]))
@@ -131,11 +131,11 @@ def mount_all_devices():
                     error_msg("EXITCODE: {}\nSTDOUT: {}\nSTDERR:{}".format(exitcode, stdout, stderr))
             else:
                 error_msg("Mount failed!")
-                error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+                error_msg("Command: {} return with error code: {}".format(mount_cmd, exitcode))
                 error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
         else:
             error_msg("Unexpected error!")
-            error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
+            error_msg("Command: {} return with error code: {}".format(is_mounted_cmd, exitcode))
             error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
 
 def set_get_device_name(device, name=None):
