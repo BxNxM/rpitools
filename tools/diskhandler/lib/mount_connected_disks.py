@@ -53,8 +53,7 @@ def edit_fstab_create_mount_points(label_uuid_matrix, fstab_path="/etc/fstab"):
     for label_uuid in label_uuid_matrix:
         uuid = label_uuid[1]
         label = label_uuid[0]
-        #cmd = "UUID={} /media/{} auto defaults,auto,umask=000,users,rw,uid=pi,gid=pi 0 0".format(uuid, label)                  # wait disk in boot time
-        cmd  ="UUID={} /media/{} auto defaults,auto,noatime,nofail,umask=000,users,rw,uid={},gid={} 0 0".format(uuid, label, USER, USER)    # no wait for disk
+        cmd = "UUID={} /media/{} auto defaults,auto,noatime,nofail,users,rw, 0 1".format(uuid, label)          # ext4 mount - done
         cmd_lines.append([cmd, uuid, label])
 
     for cmd_ in cmd_lines:
