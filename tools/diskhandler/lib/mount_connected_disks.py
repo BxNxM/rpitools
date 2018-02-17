@@ -95,6 +95,7 @@ def edit_fstab_create_mount_points(label_uuid_matrix, fstab_path="/etc/fstab"):
                 print("line exists: {}".format(cmd_[0]))
 
         # create mount point
+        label = cmd_[2]
         if not os.path.isdir("/media/"+str(label)):
             print("Create /media/" + str(label))
             os.makedirs("/media/"+str(label))
