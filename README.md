@@ -347,5 +347,11 @@ https://www.raspberrypi.org/forums/viewtopic.php?t=38429
 http://www.circuitbasics.com/useful-raspberry-pi-commands/
 ```
 
+* Backup / Restore SDCard
+
+```
+https://thepihut.com/blogs/raspberry-pi-tutorials/17789160-backing-up-and-restoring-your-raspberry-pis-sd-card
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
