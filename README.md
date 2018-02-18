@@ -304,7 +304,7 @@ rgbinterface -sh
 rgbinterface -h
 ```
 
-# Usefull links for basics
+# Useful links for basics
 * RaspberryPi gpio usage:
 
 ```
@@ -341,7 +341,7 @@ https://thepihut.com/products/raspberry-pi-zero-essential-kit
 https://www.raspberrypi.org/forums/viewtopic.php?t=38429
 ```
 
-* Usefull - command line - commands collection
+* Useful - command line - commands collection
 
 ```
 http://www.circuitbasics.com/useful-raspberry-pi-commands/
