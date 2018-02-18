@@ -351,6 +351,7 @@ http://www.circuitbasics.com/useful-raspberry-pi-commands/
 
 ```
 https://thepihut.com/blogs/raspberry-pi-tutorials/17789160-backing-up-and-restoring-your-raspberry-pis-sd-card
+http://bobbyromeo.com/technology/backup-clone-raspberry-pi-sd-card/
 ```
 
 ## GIT
