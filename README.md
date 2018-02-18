@@ -335,5 +335,17 @@ https://www.raspberrypi.org/documentation/installation/installing-images/
 https://thepihut.com/products/raspberry-pi-zero-essential-kit
 ```
 
+* Format disks
+
+```
+https://www.raspberrypi.org/forums/viewtopic.php?t=38429
+```
+
+* Usefull - command line - commands collection
+
+```
+http://www.circuitbasics.com/useful-raspberry-pi-commands/
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
