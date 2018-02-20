@@ -8,7 +8,8 @@ import sys
 import argparse
 
 user = os.environ['USER']
-videos_path = "/home/" + str(user) + "/Videos/"
+videos_path_default = "/home/" + str(user) + "/Videos/"
+videos_path_remote = "/home/" + str(user) + "/pi_server/SharedMovies"
 louncher_creator_path = "/home/" + str(user) + "/rpitools/tools/omxplayer_gui/create_louncher.bash"
 
 # argparser for manual start
@@ -66,10 +67,13 @@ def run_console(choices):
 def list_movies():
     videos_path_dict = {}
     global videos_path
-    for root, dirs, files in os.walk(videos_path):
-        #print(root)
-        #print(dirs)
-        #print(files)
+    for root, dirs, files in os.walk(videos_path_default):
+        for actual_file in files:
+            if (".mkv" in actual_file or ".avi" in actual_file) and "simple" not in actual_file:
+                path = os.path.join(root, actual_file)
+                videos_path_dict[actual_file] = path
+                print("Movie found: " + str(path))
+    for root, dirs, files in os.walk(videos_path_remote):
         for actual_file in files:
             if (".mkv" in actual_file or ".avi" in actual_file) and "simple" not in actual_file:
                 path = os.path.join(root, actual_file)
