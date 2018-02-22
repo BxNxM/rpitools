@@ -1,4 +1,5 @@
 import time
+import Adafruit_GPIO.SPI as SPI
 import Adafruit_SSD1306
 
 from PIL import Image
@@ -57,9 +58,15 @@ oled_standby_period = 1
 class Oled_window_manager():
 
     # class constructor
-    def __init__(self, RST_pin=None, i2c_addr=0x3C):
+    def __init__(self, RST_pin=None, i2c_addr=0x3C, connection_mode="i2c", DC_pin=None, SPI_PORT=0, SPI_DEVICE=0):
         # instantiate display from adafruit
-        self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST_pin, i2c_address=i2c_addr)
+        if connection_mode == "i2c":
+            self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST_pin, i2c_address=i2c_addr)
+        elif connection_mode == "spi":
+            self.disp = Adafruit_SSD1306.SSD1306_128_64(rst=RST_pin, dc=DC_pin, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE, max_speed_hz=8000000))
+        else:
+           oledlog.logger.error("oled connection mode is not exists: " + str(connection_mode))
+
         self.disp.begin()
         # Clear display.
         self.disp.clear()
