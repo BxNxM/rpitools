@@ -153,6 +153,15 @@ then
     #sudo systemctl disable transmission-daemon
 fi
 
+#link /etc/logrotate.conf log file
+if [  -e "$REPOROOT/config/logrotate.conf" ]
+then
+    message "$REPOROOT/config/logrotate.conf is already linked"
+ else
+    message "Linking: ln -s /etc/logrotate.conf $REPOROOT/config/logrotate.conf"
+    ln -s /etc/logrotate.conf $REPOROOT/config/logrotate.conf
+fi
+
 # update once (first run ever) before install apps
 is_installed_file_indicator="$REPOROOT/cache/.first_boot_update_update_installed"
 if [ -e "$is_installed_file_indicator" ]
