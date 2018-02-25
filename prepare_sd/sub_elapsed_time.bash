@@ -1,6 +1,15 @@
-
 function elapsed_time() {
     local rpitools_log_path="../cache/rpitools.log"
+    if [ ! -e "$rpitools_log_path" ]
+    then
+        if [ ! -z "$REPOROOT" ]
+        then
+            rpitools_log_path="${REPOROOT}/cache/rpitools.log"
+        else
+            echo -e "logfile: ../cache/rpitools.log or REPOROOT is not exists!"
+            exit 1
+        fi
+    fi
 
     option="$1"                 #start - stop
 

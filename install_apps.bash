@@ -56,6 +56,7 @@ function install_apps_secure() {
         output=$(command -v "$app")
         if [ -z "$output" ]
         then
+            echo -e "Install app: $app"
             echo "Y" | sudo apt install "$app"
             message "$app install ...DONE"
             was_installation=1
@@ -77,6 +78,7 @@ function install_pymodule_secure() {
         output=$(cat $installed_python_module | grep  "$app")
         if [ -z "$output" ]
         then
+            echo -e "Install python module: $app"
             echo "Y" | sudo apt install "$app"
             echo -e "$app" >> "$installed_python_module"
             message "$app install python module ...DONE"
