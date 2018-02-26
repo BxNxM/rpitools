@@ -18,6 +18,7 @@ alias startconky='/home/$USER/rpitools/tools/set_conky/conky.bash'
 alias weather_wttr='curl wttr.in/Budapest'
 alias update_rpitools='sudo systemctl stop oled_gui_core && cd /home/$USER/ && sudo rm -rf /home/$USER/rpitools && git clone https://github.com/BxNxM/rpitools.git && cd rpitools/ && source setup'
 alias mysshfs='/home/$USER/rpitools/tools/sshfs.bash'
+alias confighandler='/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py'
 
 if [ ! -z $REPOROOT ]
 then

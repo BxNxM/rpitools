@@ -3,11 +3,13 @@
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #------------------------------------------ CONFIG ----------------------------------------------------#
-# WRITE USER HERE - SET THESE BEFORE USE
-user="YOUR-REMOTE-USERNAME"
-default_host="DEFAULT-HOST-LOCALHOST"
-default_port="DEFAULT-PORT-LOCALPORT"
-external_port="EXTERNAL-PORT"
+# WRITE USER HERE
+confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
+
+user="$($confighandler -s SSHFS -o user)"
+default_host="$($confighandler -s SSHFS -o default_host)"
+default_port="$($confighandler -s SSHFS -o default_port)"
+external_port="$($confighandler -s SSHFS -o external_port)"
 
 #-----------------------------------------------#
 serverPATH="/home/${user}"                      # remote server path
