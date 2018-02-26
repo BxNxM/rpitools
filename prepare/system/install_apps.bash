@@ -38,6 +38,7 @@ fi
 # start install stuff
 applist=${REPOROOT}/template/programs.dat
 pymodulelist=${REPOROOT}/template/python_moduls.dat
+pymodulelist_pip=${REPOROOT}/template/python_moduls_pip.dat
 installed_python_module=${REPOROOT}/cache/installed_pymodules.dat
 
 function fileReader {
@@ -94,17 +95,50 @@ function install_pymodule_secure() {
     fi
 }
 
+function install_pymodule_pip_secure() {
+    local app="$1"
+    if [ ! -f "$installed_python_module" ]
+    then
+        echo -e "" > "$installed_python_module"
+    fi
+
+    if [ ! -z "$app" ]
+    then
+        output=$(cat $installed_python_module | grep  "$app")
+        if [ -z "$output" ]
+        then
+            echo -e "Install python module with pip and pip3: $app"
+            echo "Y" | pip3 install "$app"
+            echo "Y" | pip install "$app"
+            echo -e "$app" >> "$installed_python_module"
+            message "$app install python module with pip...DONE"
+            was_installation=1
+        else
+           message "$app python module (with pip) is already installed"
+        fi
+    fi
+}
+
 function main() {
+    # install apps
     fileReader "$applist"
     for current_app in "${lineS[@]}"
     do
         install_apps_secure "$current_app"
     done
 
+    # install python modules
     fileReader "$pymodulelist"
     for current_modul in "${lineS[@]}"
     do
         install_pymodule_secure "$current_modul"
+    done
+
+    # install python modules with pip
+    fileReader "$pymodulelist_pip"
+    for current_modul_pip in "${lineS[@]}"
+    do
+        install_pymodule_pip_secure "$current_modul_pip"
     done
 }
 elapsed_time "start"
