@@ -35,7 +35,12 @@ then
         # cache
         echo -e "\tbackup: ${REPOROOT}/cache -> $backup_path"
         cp -r "${REPOROOT}/cache" "$backup_path"
-        if [ "$?" -eq 0 ]
+        cache_exitcode="$?"
+        # backup config
+        echo -e "\tbackup: ${REPOROOT}/autodeployment/config/rpitools_config.cfg -> $backup_path"
+        cp "${REPOROOT}/autodeployment/config/rpitools_config.cfg" "$backup_path"
+        config_copy_exitcode="$?"
+        if [ "$cache_exitcode" -eq 0 ] && [ "$config_copy_exitcode" -eq 0 ]
         then
             echo -e "Create backup SUCCESS"
         else
@@ -54,7 +59,12 @@ then
             # cache
             echo -e "\trestore: ${backup_path}/cache -> ${REPOROOT}"
             cp -r "${backup_path}/cache" "${REPOROOT}"
-            if [ "$?" -eq 0 ]
+            cache_exitcode="$?"
+            # restore config
+            echo -e "\trestore: ${backup_path}/rpitools_config.cfg -> ${REPOROOT}/autodeployment/config/"
+            cp "${backup_path}/rpitools_config.cfg" "${REPOROOT}/autodeployment/config/"
+            config_copy_exitcode="$?"
+            if [ "$cache_exitcode" -eq 0 ] && [ "$config_copy_exitcode" -eq 0 ]
             then
                 echo -e "Restore backup SUCCESS"
             else
