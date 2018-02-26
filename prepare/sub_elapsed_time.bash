@@ -1,5 +1,5 @@
 function elapsed_time() {
-    local rpitools_log_path="../cache/rpitools.log"
+    local rpitools_log_path="../../cache/rpitools.log"
     if [ ! -e "$rpitools_log_path" ]
     then
         if [ ! -z "$REPOROOT" ]

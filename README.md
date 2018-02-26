@@ -18,13 +18,13 @@
 git clone https://github.com/BxNxM/rpitools.git
 ```
 
-* go to rpitools/prepare_sd to find SD card preparing scripts
+* go to rpitools/prepare\_sd\_card to find SD card preparing scripts
 
 ```
-cd rpitools/prepare_sd
+cd rpitools/prepare_sd_card
 ```
 
-* Copy raspbian image to the rpitools/prepare\_sd/raspbian\_img folder for the installing / deploying process
+* Copy raspbian image to the rpitools/prepare\_sd\_card/raspbian\_img folder for the installing / deploying process
 
 ```
 cp ~/Downloads/*raspbian*.img raspbian_img/
@@ -55,7 +55,7 @@ cp ~/Downloads/*raspbian*.img raspbian_img/
 ```
 copy rpitools:
 (if needed: ssh-keygen -R raspberrypi.local)
-cd rpitools/prepare_sd
+cd rpitools/prepare_sd_card
 rm -f raspbian_img/*.img && scp -r ../../rpitools/ pi@raspberrypi.local:~/
 (default pwd: raspberry)
 ```
@@ -82,13 +82,21 @@ source setup
 * if you use raspbain lite, and you want a GUI
 
 ```
-./install_PIXEL.bash
+./prepare_system/install_PIXEL.bash
 ```
 
 * if you want remote desktop access
 
 ```
-./install_vnc.bash
+./prepare_system/install_vnc.bash
+#link /etc/logrotate.conf log file
+if [  -e "$REPOROOT/config/logrotate.conf" ]
+then
+    message "$REPOROOT/config/logrotate.conf is already linked"
+ else
+    message "Linking: ln -s /etc/logrotate.conf $REPOROOT/config/logrotate.conf"
+    ln -s /etc/logrotate.conf $REPOROOT/config/logrotate.conf
+fi
 ```
 
 * Finally some manual setups with raspi-config (don't forget)

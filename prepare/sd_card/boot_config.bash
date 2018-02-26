@@ -1,12 +1,14 @@
 #!/bin/bash
 
 #source colors
-source colors.bash
-source sub_elapsed_time.bash
+MYPATH_="${BASH_SOURCE[0]}"
+MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${MYDIR_}/../colors.bash
+source ${MYDIR_}/../sub_elapsed_time.bash
 
 # message handler function
 function message() {
-    local rpitools_log_path="../cache/rpitools.log"
+    local rpitools_log_path="${MYDIR_}/../../cache/rpitools.log"
 
     local msg="$1"
     if [ ! -z "$msg" ]

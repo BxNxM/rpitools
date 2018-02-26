@@ -1,8 +1,10 @@
 #!/bin/bash
 
 #source colors
-source prepare_sd/colors.bash
-source prepare_sd/sub_elapsed_time.bash
+MYPATH_="${BASH_SOURCE[0]}"
+MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${MYDIR_}/../colors.bash
+source ${MYDIR_}/../sub_elapsed_time.bash
 was_installation=0
 
 # message handler function
@@ -13,7 +15,10 @@ function message() {
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ appinstall ]${NC} $msg"
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ appinstall ]${NC} $msg" >> "$rpitools_log_path"
+        if [ ! -z "${REPOROOT}" ]
+        then
+            echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ appinstall ]${NC} $msg" >> "$rpitools_log_path"
+        fi
     fi
 }
 
