@@ -1,5 +1,8 @@
 import ConfigParser
 import os
+import sys
+myfolder = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(myfolder, "../config/rpitools_config.cfg")
 
 class SimpleConfig(ConfigParser.ConfigParser):
 
@@ -76,11 +79,14 @@ class SimpleConfig(ConfigParser.ConfigParser):
             cfg_file.close()
             self.__parse_config(reparse=True)
 
-if __name__ == "__main__":
-    cfg = SimpleConfig("test.cfg")
-    print(cfg.get_full())                               # get full dict
-    print(cfg.get("TAG", "value"))                      # get value
-    print(cfg.section_is_exists("TAG"))                 # check tag is exists
-    print(cfg.add("TAG_ASD", "valuex", "ASD"))
-    print(cfg.delconfig("TAG_ASD"))
 
+def init():
+    cfg = SimpleConfig(cfg_path=config_path)
+    return cfg
+
+if "ConfigHandler" in __name__:
+    cfg = init()
+
+if __name__ == "__main__":
+    cfg = init()
+    print(cfg.get_full())
