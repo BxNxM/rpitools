@@ -101,7 +101,9 @@ file_to_link_list=("/etc/wpa_supplicant/wpa_supplicant.conf" \
                    "/var/log" \
                    "/etc/fstab" \
                    "/etc/transmission-daemon/settings.json" \
-                   "/etc/logrotate.conf")
+                   "/etc/logrotate.conf" \
+                   "/etc/hostname" \
+                   "/etc/hosts")
 # linking config files and used folders under config folder
 for file_path in "${file_to_link_list[@]}"
 do
@@ -110,11 +112,16 @@ do
     filename="${filename%.*}"
 
     # make directory extension correction
-    if [ -d "$file_path" ] || [ "$filename" == "fstab" ]
+    if [ -d "$file_path" ]
     then
         extension=""
     else
-        extension=".$extension"
+        if [ "$extension" == "$filename" ]
+        then
+            extension=""
+        else
+            extension=".$extension"
+        fi
     fi
 
     # make links if not exists
