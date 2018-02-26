@@ -32,6 +32,15 @@ else
 fi
 
 elapsed_time "start"
+# Copy raspbain image to temporary image folder
+img_in_downloads_folder=~/Downloads/*raspbain*lite*.img
+if [ -e "$img_in_downloads_folder" ]
+then
+    echo -e "Copy $img_in_downloads_folder image to ${MYDIR_}/raspbian_img/"
+    cp "$img_in_downloads_folder" ${MYDIR_}/raspbian_img/
+fi
+
+# get image and make deployment to SD card
 img_path=$(echo raspbian_img/*.img)
 if [ -e "$img_path" ]
 then
@@ -51,6 +60,8 @@ then
         if [ "$?" -eq 0 ]
         then
             message "SUCCESS"
+            echo -e "Remove temporary image file: $img_path"
+            rm -f "$img_path"
         else
             message "FAILED"
         fi
