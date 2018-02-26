@@ -19,6 +19,7 @@ alias weather_wttr='curl wttr.in/Budapest'
 alias update_rpitools='sudo systemctl stop oled_gui_core && cd /home/$USER/ && sudo rm -rf /home/$USER/rpitools && git clone https://github.com/BxNxM/rpitools.git && cd rpitools/ && source setup'
 alias mysshfs='/home/$USER/rpitools/tools/sshfs.bash'
 alias confighandler='/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py'
+alias cd..='cd ..'
 
 if [ ! -z $REPOROOT ]
 then
