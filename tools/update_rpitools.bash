@@ -14,16 +14,16 @@ function stop_running_processes() {
 }
 
 function update_rpitools() {
-    cd /home/$USER/
+    cd "/home/$USER/"
 
     echo -e "Delete obsolete rpitools"
-    sudo rm -rf /home/$USER/rpitools
+    sudo rm -rf "/home/$USER/rpitools"
 
     echo -e "Clone new rpitools"
     git clone https://github.com/BxNxM/rpitools.git
 
     echo -e "Source up rpitools (restore previous cache and configurations)"
-    cd rpitools/
+    cd "/home/$USER/rpitools"
     source setup
 }
 
