@@ -79,13 +79,9 @@ class SimpleConfig(ConfigParser.ConfigParser):
             cfg_file.close()
             self.__parse_config(reparse=True)
 
-
 def init():
     cfg = SimpleConfig(cfg_path=config_path)
     return cfg
-
-if "ConfigHandler" in __name__:
-    cfg = init()
 
 if __name__ == "__main__":
     cfg = init()
