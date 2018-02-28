@@ -13,11 +13,6 @@ function stop_running_processes() {
     done
 }
 
-function update_rpitools() {
-    cd "/home/$USER/" && sudo rm -rf "/home/$USER/rpitools" && git clone https://github.com/BxNxM/rpitools.git && cd "/home/$USER/rpitools" && source setup
-}
-
 echo -e "STOP PROCESSES"
 stop_running_processes
 echo -e "UPDATE"
-update_rpitools
