@@ -4,6 +4,7 @@
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
+CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
 source ${MYDIR_}/../colors.bash
 source ${MYDIR_}/../sub_elapsed_time.bash
 
@@ -30,6 +31,13 @@ then
 else
     message "This script work on Mac, this OS $OS is not supported!"
     exit 2
+fi
+
+if [ ! -e "$CUSTOM_CONFIG" ]
+then
+    echo -e "Create custom config file - before run this script!"
+    echo -e "cp ${MYDIR_}/../../autodeployment/config/rpitools_config_template.cfg  ${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
+    echo -e "And edit this file!"
 fi
 
 # read sd card boot partition path
