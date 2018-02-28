@@ -9,7 +9,6 @@ function copy_repo_to_rpi_machine() {
     then
         echo -e "COPY: scp "$rpitools_path" pi@raspberrypi.local:/home/pi/"
         echo -e "Default PWD: raspberry"
-        ssh-keygen -R raspberrypi.local
         scp -r "$rpitools_path" pi@raspberrypi.local:/home/pi/
     fi
 }
@@ -26,6 +25,7 @@ function create_set_indicator_file() {
     ssh pi@raspberrypi.local "touch ~/rpitools/cache/.rpi_remote_config_done"
 }
 
+sudo ssh-keygen -R raspberrypi.local
 is_rpi_machine_set=$(ssh pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
 if [ "$is_rpi_machine_set" == 0 ]
 then
