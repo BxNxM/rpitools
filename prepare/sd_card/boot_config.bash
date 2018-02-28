@@ -3,6 +3,7 @@
 #source colors
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
 source ${MYDIR_}/../colors.bash
 source ${MYDIR_}/../sub_elapsed_time.bash
 
@@ -60,22 +61,39 @@ function set_boot_config() {
         exit 2
     fi
 
-    #config.txt add -> dtoverlay=dwc2 <- end of the file
-    is_added=$(grep -rnw "$config_path" -e "dtoverlay=dwc2")
-    if [ "$is_added" == "" ]
+    # SET USB ETHERNET IF TARGET IS RPI_ZERO
+    rpi_module="$($CONFIGAHNDLER -s RPI_MODEL -o model)"
+    if [ "$rpi_module" == "rpi_zero" ]
     then
-        message "Set $config_path file - add new line dtoverlay=dwc2 [ USB ETHERNET ]"
-        echo -e "\n# Enable usb-ethernet\ndtoverlay=dwc2" >> "$config_path"
-    else
-        message "In $config_path , dtoverlay=dwc2 is already set"
+        #config.txt add -> dtoverlay=dwc2 <- end of the file
+        is_added=$(grep -rnw "$config_path" -e "dtoverlay=dwc2")
+        if [ "$is_added" == "" ]
+        then
+            message "Set $config_path file - add new line dtoverlay=dwc2 [ USB ETHERNET ]"
+            echo -e "\n# Enable usb-ethernet\ndtoverlay=dwc2" >> "$config_path"
+        else
+            message "In $config_path , dtoverlay=dwc2 is already set"
+        fi
+
+        #cmdline.txt add -> modules-load=dwc2,g_ether <- after rootwait, before quiet
+        is_added=$(grep -rnw "$cmdline_path" -e "modules-load=dwc2,g_ether")
+        if [ "$is_added" == "" ]
+        then
+            message "Set cmdline.txt after rootwait -> modules-load=dwc2,g_ether <- before quiet [ USB ETHERNET ]"
+            sed "s/rootwait/rootwait modules-load=dwc2,g_ether/g" "$cmdline_path" > "${cmdline_path}_edeted"
+            mv "${cmdline_path}_edeted" "$cmdline_path"
+        else
+            message "$cmdline_path is alredy set."
+        fi
     fi
 
-    #config.txt add -> gpu_mem=128 <- end of the file
+    #config.txt add -> gpu_mem=xyz <- end of the file
     is_added=$(grep -rnw "$config_path" -e "gpu_mem")
     if [ "$is_added" == "" ]
     then
-        message "Set $config_path file - add new line gpu_mem=128 [ for video playing ]"
-        echo -e "\n# Set GPU allocated memory\ngpu_mem=128" >> "$config_path"
+        gpu_mem="$($CONFIGAHNDLER -s RPI_MODEL -o required_gpu_mem)"
+        message "Set $config_path file - add new line gpu_mem=$gpu_mem [ for video playing ]"
+        echo -e "\n# Set GPU allocated memory\ngpu_mem=$gpu_mem" >> "$config_path"
     else
         message "In $config_path , gpu_mem is already set"
     fi
@@ -100,17 +118,6 @@ function set_boot_config() {
         message "In $config_path , gpu_mem is already set"
     fi
 
-    #cmdline.txt add -> modules-load=dwc2,g_ether <- after rootwait, before quiet
-    is_added=$(grep -rnw "$cmdline_path" -e "modules-load=dwc2,g_ether")
-    if [ "$is_added" == "" ]
-    then
-        message "Set cmdline.txt after rootwait -> modules-load=dwc2,g_ether <- before quiet [ USB ETHERNET ]"
-        sed "s/rootwait/rootwait modules-load=dwc2,g_ether/g" "$cmdline_path" > "${cmdline_path}_edeted"
-        mv "${cmdline_path}_edeted" "$cmdline_path"
-    else
-        message "$cmdline_path is alredy set."
-    fi
-
     #touch /Volumes/boot/ssh
     if [ ! -e "$ssh_en_path" ]
     then
@@ -120,23 +127,26 @@ function set_boot_config() {
         message "$ssh_en_path is alredy set."
     fi
 
+    # set wifi access
+    ssid="$($CONFIGAHNDLER -s NETWORK -o ssid)"
+    passwd="$($CONFIGAHNDLER -s NETWORK -o pwd)"
     if [ -e "$wpa_supplicant_path" ]
     then
         message "$wpa_supplicant_path is alredy set."
     else
         message "Set wifi in $wpa_supplicant_path [WIFI & NETWORK]"
+        message "ssid: ${ssid} psk: ${passwd}"
         wpa_conf_templ='country=US\n'
         wpa_conf_templ+='ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n'
         wpa_conf_templ+='update_config=1\n'
         wpa_conf_templ+='\n'
         wpa_conf_templ+='network={\n'
-        wpa_conf_templ+='    ssid="NETWORK-NAME"\n'
-        wpa_conf_templ+='    psk="NETWORK-PASSWORD"\n'
+        wpa_conf_templ+='    ssid='"${ssid}"'\n'
+        wpa_conf_templ+='    psk='"${passwd}"'\n'
         wpa_conf_templ+='}'
         echo -e "$wpa_conf_templ" > "$wpa_supplicant_path"
     fi
-    message "---> Change parameters: NETWORK-NAME and NETWORK-PASSWORD in wpa_supplicant.conf <---"
-    message "Then unmount sd card and put it to the raspberry pi."
+    message "Unmount sd card and put it to the raspberry pi."
 
     message "[!!!] ONLY DO THESE STEP ONCE BEFORE FIRST BOOT [!!!]"
     read -p "Press ENTER, if you read and accept!"
