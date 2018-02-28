@@ -6,16 +6,19 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 lib_path = os.path.join(myfolder, "../lib/")
 sys.path.append(lib_path)
 import ConfigHandler
+import pprint
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--section", help="select section")
 parser.add_argument("-o", "--option", help="select option")
 parser.add_argument("-l", "--list",  action='store_true', help="list config dict")
+parser.add_argument("-lf", "--list_formatted",  action='store_true', help="list config dict - formatted version")
 
 args = parser.parse_args()
 section = args.section
 option = args.option
 listconfig = args.list
+listconfig_formatted = args.list_formatted
 
 cfg = ConfigHandler.init()
 
@@ -24,3 +27,7 @@ if section is not None and option is not None:
 
 if listconfig:
     print(cfg.get_full())
+
+if listconfig_formatted:
+    pp = pprint.PrettyPrinter(depth=3)
+    pp.pprint(cfg.get_full())
