@@ -33,11 +33,15 @@ fi
 
 elapsed_time "start"
 # Copy raspbain image to temporary image folder
-img_in_downloads_folder=~/Downloads/*raspbain*lite*.img
-if [ -e "$img_in_downloads_folder" ]
+img_path=$(echo raspbian_img/*.img)
+if [ ! -e "$img_path" ]
 then
-    echo -e "Copy $img_in_downloads_folder image to ${MYDIR_}/raspbian_img/"
-    cp "$img_in_downloads_folder" ${MYDIR_}/raspbian_img/
+    img_in_downloads_folder="$(find /Users/$USER/Downloads/ -iname "*raspbian*lite*.img")"
+    if [ -e "$img_in_downloads_folder" ]
+    then
+        echo -e "Copy $img_in_downloads_folder image to ${MYDIR_}/raspbian_img/"
+        cp "$img_in_downloads_folder" ${MYDIR_}/raspbian_img/
+    fi
 fi
 
 # get image and make deployment to SD card
