@@ -149,8 +149,8 @@ function set_boot_config() {
         wpa_conf_templ+='update_config=1\n'
         wpa_conf_templ+='\n'
         wpa_conf_templ+='network={\n'
-        wpa_conf_templ+='    ssid='"${ssid}"'\n'
-        wpa_conf_templ+='    psk='"${passwd}"'\n'
+        wpa_conf_templ+='    ssid="'"${ssid}"'"\n'
+        wpa_conf_templ+='    psk="'"${passwd}"'"\n'
         wpa_conf_templ+='}'
         echo -e "$wpa_conf_templ" > "$wpa_supplicant_path"
     fi
