@@ -186,9 +186,16 @@ message "$welcome_screen_settings_output"
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/prepare/system/install_apps.bash
 
-
 # set custom hostname
 . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
+
+# set autodeployment post scripts
+if [ -e "${REPOROOT}/autodeployment/bin/run_post_config_actions.bash" ]
+then
+    . ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash
+else
+    echo -e "Autodeployment post scripts not found: ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash"
+fi
 
 # backup modification configs
 output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
