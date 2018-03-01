@@ -186,7 +186,18 @@ message "$welcome_screen_settings_output"
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/prepare/system/install_apps.bash
 
+
+# set custom hostname
+. ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
+
 # backup modification configs
 output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
 echo -e "$output"
 
+# first run reboot
+if [ ! -e "${REPOROOT}/cache/.first_run_reboot_done" ]
+then
+    echo -e "First run reboot executing..."
+    echo "" > "${REPOROOT}/cache/.first_run_reboot_done"
+    sudo reboot now
+fi
