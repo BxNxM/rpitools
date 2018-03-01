@@ -21,7 +21,7 @@ function set_custom_host() {
         if [ "$is_set" == "" ]
         then
             echo -e "${GREEN}Set custom hostname: $custom_host_name ${NC}"
-            sudo sed -i 's/'"${from}"'/'"${custom_host_name}"'/g' "$where"
+            sudo sed -i 's|'"${from}"'|'"${custom_host_name}"'|g' "$where"
         else
             echo -e "${GREEN}Custom host name $custom_host_name already set in $where ${NC}"
         fi
