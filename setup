@@ -189,12 +189,19 @@ message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 # set custom hostname
 . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
 
-# set autodeployment post scripts
-if [ -e "${REPOROOT}/autodeployment/bin/run_post_config_actions.bash" ]
+
+if [ -e "${REPOROOT}/cache/.first_run_reboot_done" ]
 then
-    . ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash
+    # set autodeployment post scripts
+    if [ -e "${REPOROOT}/autodeployment/bin/run_post_config_actions.bash" ]
+    then
+        message "Run autodeployment scripts."
+        . ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash
+    else
+        message "Autodeployment post scripts not found: ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash"
+    fi
 else
-    echo -e "Autodeployment post scripts not found: ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash"
+    message "AUTODEPLOYMENT: Waiting for initial first reboot! (Run autodeployments scrits after reboot...)"
 fi
 
 # backup modification configs
