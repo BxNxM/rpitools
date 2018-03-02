@@ -33,17 +33,30 @@ else
     exit 2
 fi
 
-if [ ! -e "$CUSTOM_CONFIG" ]
-then
-    echo -e "Create custom config file - before run this script!"
-    echo -e "cp ${MYDIR_}/../../autodeployment/config/rpitools_config_template.cfg  ${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
-    echo -e "And edit this file!"
-fi
+function config_is_avaible() {
+    if [ ! -e "$CUSTOM_CONFIG" ]
+    then
+        echo -e "Create custom config file - before run this script!"
+        echo -e "cp ${MYDIR_}/../../autodeployment/config/rpitools_config_template.cfg  ${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
+        echo -e "And edit this file!"
+    fi
+}
 
-# read sd card boot partition path
-message "Prepare SD card boot partition with enabling: ssh, eth-usb and wifi"
-read -p 'Your mounted boot disk path (on SD card): ' sd_path
-echo -e "DEBUG: $sd_path"
+if [ -e "/Volumes/boot" ]
+then
+    # deault boot drive option
+    message "DESAULT DISK IS AVAIBLE: /Volumes/boot"
+    read -p 'Is it your disk, for configure? (y/n)' default_disk_conf
+    if [ "$default_disk_conf" == "y" ]
+    then
+        sd_path="/Volumes/boot"
+    fi
+else
+    # read sd card boot partition path
+    message "Prepare SD card boot partition with enabling: ssh, eth-usb and wifi"
+    read -p 'Your mounted boot disk path (on SD card): ' sd_path
+    echo -e "DEBUG: $sd_path"
+fi
 
 function set_boot_config() {
 
@@ -111,9 +124,10 @@ function set_boot_config() {
     if [ "$is_added" != "" ]
     then
         message "Set $config_path file - add new line dtparam=i2c_arm=on [ for oled ]"
-        echo -e "\n# I2C enabled\ndtparam=i2c_arm=on" >> "$config_path"
+        #echo -e "\n# I2C enabled\ndtparam=i2c_arm=on" >> "$config_path"
+        change_parameter "#dtparam=i2c_arm=on" "dtparam=i2c_arm=on" "$config_path"
     else
-        message "In $config_path , gpu_mem is already set"
+        message "In $config_path , dtparam=i2c_arm=on is already set"
     fi
 
     #config.txt add -> dtparam=spi=on <- end of the file
@@ -121,9 +135,10 @@ function set_boot_config() {
     if [ "$is_added" != "" ]
     then
         message "Set $config_path file - add new line #dtparam=spi=on [ for oled ]"
-        echo -e "\n# SPI enabled\ndtparam=spi=on" >> "$config_path"
+        #echo -e "\n# SPI enabled\ndtparam=spi=on" >> "$config_path"
+        change_parameter "#dtparam=spi=on" "dtparam=spi=on" "$config_path"
     else
-        message "In $config_path , gpu_mem is already set"
+        message "In $config_path , dtparam=spi=on is already set"
     fi
 
     #touch /Volumes/boot/ssh
@@ -160,7 +175,31 @@ function set_boot_config() {
     read -p "Press ENTER, if you read and accept!"
 }
 
-elapsed_time "start"
-set_boot_config
-elapsed_time "stop"
+function change_parameter() {
+    local from="$1"
+    local to="$2"
+    local where="$3"
+    if [ ! -z "$from" ]
+    then
+        echo -e "cat $where | grep -v grep | grep $from\nis_set: $is_set"
+        is_set="$( cat "$where" | grep -v grep | grep "$from")"
+        echo -e "$is_set"
+        if [ "$is_set" != "" ]
+        then
+            message "sed \"s|${from}|${to}|g\" \"$where\" > \"${where}_edeted\""
+            sed 's|'"${from}"'|'"${to}"'|g' "$where" > "${where}_edeted"
+            mv "${where}_edeted" "$where"
+        else
+            echo -e "${GREEN}Custom parameter $to already set in $where ${NC}"
+        fi
+    fi
+}
 
+
+echo "$(config_is_avaible)"
+if [ "$(config_is_avaible)" == "" ]
+then
+    elapsed_time "start"
+    set_boot_config
+    elapsed_time "stop"
+fi
