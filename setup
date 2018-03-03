@@ -9,6 +9,8 @@ alias clean_cache="rm -f ${REPOROOT}/cache/.*_installed && rm -f ${REPOROOT}/cac
 
 #source colors
 source prepare/colors.bash
+source prepare/sub_elapsed_time.bash
+elapsed_time "start"
 
 # message handler function
 function message() {
@@ -213,6 +215,11 @@ fi
 # backup modification configs
 output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
 echo -e "$output"
+
+# printout full elapsed time
+echo -e "${YELLOW}"
+elapsed_time "stop"
+echo -e "${NC}"
 
 # first run reboot
 if [ ! -e "${REPOROOT}/cache/.first_run_reboot_done" ]

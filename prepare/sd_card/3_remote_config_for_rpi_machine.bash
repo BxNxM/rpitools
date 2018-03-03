@@ -84,6 +84,8 @@ then
         waiting_for_up_again_after_reboot "$hostname"
     fi
 
+    echo -e "ssh-keygen -R $hostname"
+    ssh-keygen -R "$hostname"
     # run until reboot is not happens
     for ((k=0; k<4; k++))
     do

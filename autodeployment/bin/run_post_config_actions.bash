@@ -14,7 +14,7 @@ pixel_install="$($confighandler -s INSTALL_PIXEL -o action)"
 if [ "$pixel_install" == "True" ]
 then
     echo -e "${YELLOW}RUN: PIXEL install ${NC}"
-    . "${MYDIR_}/../../prepare/system/install_PIXEL.bash"
+    . ${MYDIR_}/../../prepare/system/install_PIXEL.bash
 else
     echo -e "${YELLOW}PIXEL install is not requested ${NC}"
 fi
@@ -23,7 +23,7 @@ vnc_install="$($confighandler -s INSTALL_VNC -o action)"
 if [ "$vnc_install" == "True" ]
 then
     echo -e "${YELLOW}RUN: VNC install ${NC}"
-    . "${MYDIR_}/../../prepare/system/install_vnc.bash"
+    . ${MYDIR_}/../../prepare/system/install_vnc.bash
 else
     echo -e "${YELLOW}VNC install is not requested ${NC}"
 fi
@@ -32,7 +32,7 @@ oled_install="$($confighandler -s INSTALL_OLED -o action)"
 if [ "$oled_install" == "True" ]
 then
     echo -e "${YELLOW}RUN: OLED install ${NC}"
-    . "${MYDIR_}/../../gpio/oled_128x64/bin/oled_interface.py -ss"
+    python ${MYDIR_}/../../gpio/oled_128x64/bin/oled_interface.py -ss
 else
     echo -e "${YELLOW}OLED install is not requested ${NC}"
 fi
