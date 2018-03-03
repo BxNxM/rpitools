@@ -33,10 +33,10 @@ function function_demo() {
 
 }
 
-if [ ! -e /lib/systemd/system/oled_gui_core.service ]
+if [ ! -e "/lib/systemd/system/oled_gui_core.service" ]
 then
     message "COPY: /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service -> /lib/systemd/system/oled_gui_core.service"
-    sudo cp /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service /lib/systemd/system/oled_gui_core.service
+    sudo cp "/home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service" "/lib/systemd/system/oled_gui_core.service"
     check_exitcode "$?"
 
     message "START SERICE: sudo systemctl start oled_gui_core.service"
@@ -49,6 +49,6 @@ then
 
     function_demo
 else
-    message "/lib/systemd/system/oled_gui_core.service is already exists:"
+    message "/lib/systemd/system/oled_gui_core.service is already exists"
     function_demo
 fi
