@@ -13,7 +13,7 @@ external_port="$($confighandler -s SSHFS -o external_port)"
 
 #-----------------------------------------------#
 serverPATH="/home/${user}"                      # remote server path
-localPATH=~/pi_server                           # pi server path
+localPATH=~/sshfs_folder                        # pi server path
 ip_file_path=${MYDIR}/.ext_server_ip.dat        # store extarnal ip address
 sshfs_louncher_path=${MYDIR}/sshfs.bash         # actual script full path
 
@@ -153,6 +153,11 @@ read option
 if [ "$option" -eq 0 ]
 then
     echo -e "${RED}\tMOUNT: => $serverPATH -> $localPATH${NC}"
+    if [ ! -d $localPATH ]
+    then
+    	mkdir $localPATH
+    fi
+
     if [ -d $localPATH ]
     then
         # get valid host and port | from file and stdin
@@ -161,9 +166,7 @@ then
         sshfs -p $port -o follow_symlinks $user@$host:$serverPATH $localPATH
         exit 0
     else
-    	echo -e "$localPATH NOT EXIST YET... CREATE..."
-    	mkdir $localPATH
-    	echo -e "CREATED... TRY AGAIN :)"
+    	echo -e "$localPATH NOT EXIST YET"
     fi
 
 elif [ "$option" -eq 1 ]
