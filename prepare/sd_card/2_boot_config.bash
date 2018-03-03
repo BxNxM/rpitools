@@ -123,7 +123,7 @@ function set_boot_config() {
     is_added=$(grep -rnw "$config_path" -e "#dtparam=i2c_arm=on")
     if [ "$is_added" != "" ]
     then
-        message "Set $config_path file - add new line dtparam=i2c_arm=on [ for oled ]"
+        message "Set $config_path file - add new line dtparam=i2c_arm=on [ for i2c ]"
         #echo -e "\n# I2C enabled\ndtparam=i2c_arm=on" >> "$config_path"
         change_parameter "#dtparam=i2c_arm=on" "dtparam=i2c_arm=on" "$config_path"
     else
@@ -135,13 +135,13 @@ function set_boot_config() {
     is_added_=$(grep -rnw "$config_path" -e "#device_tree_param=i2c_arm=on")
     if [ "$is_added_" != "" ]
     then
-        echo -e "Change #device_tree_param=i2c_arm=on -> device_tree_param=i2c_arm=on in $config_path"
+        echo -e "Change #device_tree_param=i2c_arm=on -> device_tree_param=i2c_arm=on in $config_path [ for i2c ]"
         change_parameter "#device_tree_param=i2c_arm=on" "device_tree_param=i2c_arm=on" $config_path
     fi
     if [ "$is_added" == "" ]
     then
-        echo -e "Add device_tree_param=i2c_arm=on to $config_path"
-        echo "#I2C enable\ndevice_tree_param=i2c_arm=on" >> "$config_path"
+        echo -e "Add device_tree_param=i2c_arm=on to $config_path [ for i2c ]"
+        echo -e "\n#I2C enable\ndevice_tree_param=i2c_arm=on" >> "$config_path"
     else
         echo -e "device_tree_param=i2c_arm=on is already set in $config_path"
     fi
@@ -150,8 +150,9 @@ function set_boot_config() {
     is_enable=$(grep -rnw "$cmdline_path" -e "bcm2708.vc_i2c_override=1")
     if [ "$is_enable" == ""  ]
     then
-        echo -e "Add bcm2708.vc_i2c_override=1 to $cmdline_path for enabling i2c"
-        echo "bcm2708.vc_i2c_override=1" >> "$cmdline_path"
+        echo -e "Add bcm2708.vc_i2c_override=1 to $cmdline_path [ for i2c ]"
+        #echo "bcm2708.vc_i2c_override=1" >> "$cmdline_path"
+        change_parameter "quiet" "bcm2708.vc_i2c_override=1 quit" "$cmdline_path"
     else
         echo -e "bcm2708.vc_i2c_override=1 in $cmdline_path is already set."
     fi
@@ -160,7 +161,7 @@ function set_boot_config() {
     is_added=$(grep -rnw "$config_path" -e "#dtparam=spi=on")
     if [ "$is_added" != "" ]
     then
-        message "Set $config_path file - add new line #dtparam=spi=on [ for oled ]"
+        message "Set $config_path file - add new line #dtparam=spi=on [ for i2c ]"
         #echo -e "\n# SPI enabled\ndtparam=spi=on" >> "$config_path"
         change_parameter "#dtparam=spi=on" "dtparam=spi=on" "$config_path"
     else
@@ -196,6 +197,14 @@ function set_boot_config() {
         echo -e "$wpa_conf_templ" > "$wpa_supplicant_path"
     fi
     message "Unmount sd card and put it to the raspberry pi."
+
+    is_added=$(grep -rnw "$cmdline_path" -e "init=/usr/lib/raspi-config/init_resize.sh")
+    if [ "$is_added" == "" ]
+    then
+        message "WARNING: don't forget to resize root partition with raspy-config"
+    else
+        message "Initial partition resize is enable :)"
+    fi
 
     message "[!!!] ONLY DO THESE STEP ONCE BEFORE FIRST BOOT [!!!]"
     read -p "Press ENTER, if you read and accept!"

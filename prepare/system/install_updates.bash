@@ -35,17 +35,20 @@ else
 fi
 
 function update_grade_dits_clean() {
+    message "CMD: sudo apt-get update --fix-missing"
+    echo "Y" | sudo apt-get update --fix-missing
+
     message "CMD: sudo apt update"
-    echo "Y" | sudo apt update
+    echo "Y" | sudo apt-get update
 
     message "CMD: sudo apt upgrade"
-    echo "Y" | sudo apt upgrade
+    echo "Y" | sudo apt-get upgrade
 
     message "CMD: sudo apt dist-upgrade"
-    echo "Y" | sudo apt dist-upgrade
+    echo "Y" | sudo apt-get dist-upgrade
 
     message "CMD: sudo apt clean"
-    echo "Y" | sudo apt clean
+    echo "Y" | sudo apt-get clean
 }
 
 elapsed_time "start"
