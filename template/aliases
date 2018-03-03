@@ -20,6 +20,7 @@ alias update_rpitools='/home/$USER/rpitools/tools/update_rpitools.bash; cd /home
 alias mysshfs='/home/$USER/rpitools/tools/sshfs.bash'
 alias confighandler='/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py'
 alias cd..='cd ..'
+alias i2cdetect='i2cdetect -y 1'
 
 if [ ! -z $REPOROOT ]
 then

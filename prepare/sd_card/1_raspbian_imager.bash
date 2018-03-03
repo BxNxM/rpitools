@@ -45,7 +45,8 @@ then
 fi
 
 # get image and make deployment to SD card
-img_path=$(echo raspbian_img/*.img)
+img_path_="$(echo raspbian_img/*.img)"
+img_path="${MYDIR_}/${img_path_}"
 if [ -e "$img_path" ]
 then
     message "List drives: diskutil list"

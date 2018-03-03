@@ -130,6 +130,32 @@ function set_boot_config() {
         message "In $config_path , dtparam=i2c_arm=on is already set"
     fi
 
+    # Add device_tree_param=i2c_arm=on to $config_path
+    is_added=$(grep -rnw "$config_path" -e "device_tree_param=i2c_arm=on")
+    is_added_=$(grep -rnw "$config_path" -e "#device_tree_param=i2c_arm=on")
+    if [ "$is_added_" != "" ]
+    then
+        echo -e "Change #device_tree_param=i2c_arm=on -> device_tree_param=i2c_arm=on in $config_path"
+        change_parameter "#device_tree_param=i2c_arm=on" "device_tree_param=i2c_arm=on" $config_path
+    fi
+    if [ "$is_added" == "" ]
+    then
+        echo -e "Add device_tree_param=i2c_arm=on to $config_path"
+        echo "#I2C enable\ndevice_tree_param=i2c_arm=on" >> "$config_path"
+    else
+        echo -e "device_tree_param=i2c_arm=on is already set in $config_path"
+    fi
+
+    # set parameter in $cmdline_path for i2c enable
+    is_enable=$(grep -rnw "$cmdline_path" -e "bcm2708.vc_i2c_override=1")
+    if [ "$is_enable" == ""  ]
+    then
+        echo -e "Add bcm2708.vc_i2c_override=1 to $cmdline_path for enabling i2c"
+        echo "bcm2708.vc_i2c_override=1" >> "$cmdline_path"
+    else
+        echo -e "bcm2708.vc_i2c_override=1 in $cmdline_path is already set."
+    fi
+
     #config.txt add -> dtparam=spi=on <- end of the file
     is_added=$(grep -rnw "$config_path" -e "#dtparam=spi=on")
     if [ "$is_added" != "" ]
@@ -194,7 +220,6 @@ function change_parameter() {
         fi
     fi
 }
-
 
 echo "$(config_is_avaible)"
 if [ "$(config_is_avaible)" == "" ]

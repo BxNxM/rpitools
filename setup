@@ -104,7 +104,9 @@ file_to_link_list=("/etc/wpa_supplicant/wpa_supplicant.conf" \
                    "/etc/logrotate.conf" \
                    "/etc/hostname" \
                    "/etc/hosts" \
-                   "/etc/dphys-swapfile")
+                   "/etc/dphys-swapfile" \
+                   "/boot/cmdline.txt"\
+                   "/etc/modules-load.d/raspberrypi.conf")
 # linking config files and used folders under config folder
 for file_path in "${file_to_link_list[@]}"
 do
@@ -182,6 +184,10 @@ fi
 welcome_screen_settings_output=$(${REPOROOT}/tools/welcome_config/set_welcome_screen.bash)
 message "$welcome_screen_settings_output"
 
+# set raspberrypi.conf file for i2c
+message "Set /etc/modules-load.d/raspberrypi.conf for i2c communication"
+. ${REPOROOT}/autodeployment/lib/set_i2c_raspberrypi.conf.bash
+
 # install tools apps
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/prepare/system/install_apps.bash
@@ -189,7 +195,7 @@ message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 # set custom hostname
 . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
 
-
+# run postinstall deplyments after reboot
 if [ -e "${REPOROOT}/cache/.first_run_reboot_done" ]
 then
     # set autodeployment post scripts
