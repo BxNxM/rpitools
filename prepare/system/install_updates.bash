@@ -38,16 +38,16 @@ function update_grade_dits_clean() {
     message "CMD: sudo apt-get update --fix-missing"
     echo "Y" | sudo apt-get update --fix-missing
 
-    message "CMD: sudo apt update"
+    message "CMD: sudo apt-get update"
     echo "Y" | sudo apt-get update
 
-    message "CMD: sudo apt upgrade"
+    message "CMD: sudo apt-get upgrade"
     echo "Y" | sudo apt-get upgrade
 
-    message "CMD: sudo apt dist-upgrade"
+    message "CMD: sudo apt-get dist-upgrade"
     echo "Y" | sudo apt-get dist-upgrade
 
-    message "CMD: sudo apt clean"
+    message "CMD: sudo apt-get clean"
     echo "Y" | sudo apt-get clean
 }
 
