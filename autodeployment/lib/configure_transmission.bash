@@ -58,6 +58,7 @@ then
     then
         echo -e "Create download dir: ${download_path}"
         mkdir -p "${download_path}"
+        sudo chmod 770 "${download_path}"
     else
         echo -e "Downloads dir exists: ${download_path}"
     fi
@@ -67,9 +68,13 @@ then
     then
         echo -e "Create incomplete download dir: ${incomp_download_path}"
         mkdir -p "${incomp_download_path}"
+        sudo chmod 770 "${incomp_download_path}"
     else
         echo -e "Incomplete downloads dir exists: ${incomp_download_path}"
     fi
+
+    # make usermod
+    sudo usermod -a -G pi debian-transmission
 
     echo -e "SET DOWNLOADS FOLDER: $download_path IN: $transmission_conf_path"
     #change_parameter "/var/lib/transmission-daemon/downloads" "$download_path" "$transmission_conf_path"
@@ -88,8 +93,13 @@ then
     change_line "rpc-password" "    \"rpc-password\": \""$passwd"\"," "$transmission_conf_path"
 
     echo "" > "$CACHE_PATH_is_set"
+
+    echo -e "Reload transmission: sudo service transmission-daemon reload"
+    sudo service transmission-daemon reload
 else
+    hostname="$($confighandler -s RPI_MODEL -o custom_hostname)"
     echo -e "Transmission is already set: $CACHE_PATH_is_set is exists"
+    echo -e "Connect: http://${hostname}:9091"
 fi
 
 
