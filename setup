@@ -166,6 +166,7 @@ then
     if [ "$?" != 0 ]
     then
         message "git clone - failed"
+        source /home/$USER/rpitools/setup
     else
         message "Installation: cd Adafruit_Python_SSD1306 && sudo python setup.py install"
         cd Adafruit_Python_SSD1306
@@ -173,6 +174,7 @@ then
         if [ "$?" != 0 ]
         then
             message "sudo python setup.py install - failed"
+            source /home/$USER/rpitools/setup
         fi
         cd -
     fi
