@@ -22,6 +22,7 @@ alias confighandler='/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterf
 alias cd..='cd ..'
 alias i2cdetect='i2cdetect -y 1'
 alias save_repo_confs='/home/$USER/rpitools/tools/cache_restore_backup.bash backup'
+alias diskhandler='/home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py'
 
 if [ ! -z $REPOROOT ]
 then
