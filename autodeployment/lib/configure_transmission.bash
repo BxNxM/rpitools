@@ -100,6 +100,7 @@ else
     hostname="$($confighandler -s RPI_MODEL -o custom_hostname)"
     echo -e "Transmission is already set: $CACHE_PATH_is_set is exists"
     echo -e "Connect: http://${hostname}:9091"
+    echo -e "Connect: http://$(hostname -I):9091"
 fi
 
 
