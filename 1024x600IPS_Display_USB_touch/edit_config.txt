@@ -1,3 +1,4 @@
+#1024 600 Capacitive touch display with usb touch
 hdmi_force_hotplug=1
 max_usb_current=1
 hdmi_group=2

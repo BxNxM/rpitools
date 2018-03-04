@@ -9,7 +9,7 @@ import argparse
 
 user = os.environ['USER']
 videos_path_default = "/home/" + str(user) + "/Videos/"
-videos_path_remote = "/home/" + str(user) + "/sshfs_folder/SharedMovies"
+videos_path_remote = "/home/" + str(user) + "/sshfs_folder/"
 louncher_creator_path = "/home/" + str(user) + "/rpitools/tools/omxplayer_gui/create_louncher.bash"
 
 # argparser for manual start
