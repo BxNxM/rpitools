@@ -23,6 +23,7 @@ alias cd..='cd ..'
 alias i2cdetect='i2cdetect -y 1'
 alias save_repo_confs='/home/$USER/rpitools/tools/cache_restore_backup.bash backup'
 alias diskhandler='sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py'
+alias kodibg='kodi &'
 
 if [ ! -z $REPOROOT ]
 then
