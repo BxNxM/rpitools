@@ -7,9 +7,11 @@ confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py
 
 configure_transmission="${MYDIR_}/../lib/configure_transmission.bash"
 
+# transmission install config executor
 echo -e "${YELLOW}RUN: configure_transmission ${NC}"
 . "$configure_transmission"
 
+# pixel install config executor
 pixel_install="$($confighandler -s INSTALL_PIXEL -o action)"
 if [ "$pixel_install" == "True" ] || [ "$pixel_install" == "true" ]
 then
@@ -19,6 +21,7 @@ else
     echo -e "${YELLOW}PIXEL install is not requested ${NC}"
 fi
 
+# vnc install config executor
 vnc_install="$($confighandler -s INSTALL_VNC -o action)"
 if [ "$vnc_install" == "True" ] || [ "$vnc_install" == "true" ]
 then
@@ -28,6 +31,7 @@ else
     echo -e "${YELLOW}VNC install is not requested ${NC}"
 fi
 
+# oled install config executor
 oled_install="$($confighandler -s INSTALL_OLED -o action)"
 if [ "$oled_install" == "True" ] || [ "$oled_install" == "true" ]
 then
@@ -36,3 +40,6 @@ then
 else
     echo -e "${YELLOW}OLED install is not requested ${NC}"
 fi
+
+# run kodi config settings
+. ${MYDIR_}/../lib/kodi_runner.bash
