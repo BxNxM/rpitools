@@ -155,6 +155,10 @@ else
     fi
 fi
 
+# automaticly mount connected devices -  add to fstab - and mount it
+message "READ - ADD - MOUNT CONNECTED DEVICES"
+sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -sge -m
+
 # install tools apps
 message "Install requested programs from list ${MYDIR}/template/programs.dat:"
 . ${MYDIR}/prepare/system/install_apps.bash
