@@ -21,6 +21,12 @@ args = parser.parse_args()
 sge = args.search_get_edit
 m = args.mount
 
+def pre_check():
+    state, msg = mount_connected_disks.is_any_device_avaible()
+    if not state:
+        print("There are no connected devices: " + str(msg))
+        sys.exit(444)
+
 def main():
     if sge:
         mount_connected_disks.do_search_get_edit()
@@ -28,6 +34,7 @@ def main():
         mount_connected_disks.mount()
 
 if __name__ == "__main__":
+    pre_check()
     main()
     time.sleep(1)
     sys.exit(0)

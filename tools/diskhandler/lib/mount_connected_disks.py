@@ -10,6 +10,18 @@ USER = "pi"
 def error_msg(text):
     print("[ !!! ] " + str(text))
 
+def is_any_device_avaible():
+    cmd = "ls /dev/sd*"
+    textmatrix = ""
+    devices = []
+
+    exitcode, stdout, stderr = LocalMachine.run_command(cmd)
+    msg = "STDOUT: {} STDERR: {}".format(stdout, stderr)
+    if exitcode == 0:
+        return True, msg
+    else:
+        return False, msg
+
 def list_connected_devices():
     cmd = "ls /dev/sd*"
     textmatrix = ""
