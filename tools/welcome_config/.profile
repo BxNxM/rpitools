@@ -38,7 +38,7 @@ then
     echo -e "WELCOME ${wColor}${USER}${NC}! PI IP ADDRESS ${wColor}${ip}${NC}"
     echo -e "TODAY: ${wColor}$(date)${NC}"
     echo -e "$(cal)"
-    echo -e "${wColor}HOME DISK:${NC} $(du -sh ~/)"
+    echo -e "${wColor}HOME DISK:${NC} $(du -sh ./ --exclude=./sshfs_folder)"
     echo -e ""
     echo -e "${wColor}AVAIBLE SERVICES AND TOOLS:${NC}"
     echo -e "Service (rpitools) interfaces:"
