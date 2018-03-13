@@ -1,6 +1,6 @@
+import sys
+sys.path.append("api")
 import LocalMachine
-from Colors import Colors
-import time
 import GeneralElements
 
 def get_cpu_temp():
