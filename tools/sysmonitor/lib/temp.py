@@ -2,6 +2,7 @@ import sys
 sys.path.append("api")
 import LocalMachine
 import GeneralElements
+import ConsoleParameters
 
 def get_cpu_temp():
     data = LocalMachine.run_command_safe("/opt/vc/bin/vcgencmd measure_temp")
@@ -24,5 +25,6 @@ def create_printout(separator="#", char_width=80):
     return text
 
 if __name__ == "__main__":
-    print(create_printout())
+    rowcol = ConsoleParameters.console_rows_columns()
+    print(create_printout(char_width=rowcol[1]))
 
