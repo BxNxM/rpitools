@@ -13,7 +13,7 @@ def create_printout(separator="#", char_width=80):
     text = GeneralElements.header_bar(" CPU USAGE ", char_width, separator)
     cpu_usage = get_cpu_usage()
 
-    text += GeneralElements.indicator_bar(cpu_usage, dim="%", pre_text="CPU", char_width=char_width)
+    text += GeneralElements.indicator_bar(cpu_usage, dim="%", pre_text="CPU", char_width=char_width, col_scale=[0.75, 0.90])
     return text
 
 if __name__ == "__main__":
