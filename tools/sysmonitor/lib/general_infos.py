@@ -37,6 +37,18 @@ def get_mac_addresses():
                     output += "\n"
     return output
 
+def get_dedicated_gpu_mem():
+    # gpu memory size
+    gpu_memory = LocalMachine.run_command_safe("vcgencmd get_mem gpu")
+    gpu_memory = gpu_memory[4:-1]
+    return gpu_memory
+
+def get_swap_memory_size():
+    # sap memory size
+    swap_size = LocalMachine.run_command_safe("cat /etc/dphys-swapfile | grep CONF_SWAPSIZE")
+    swap_size = swap_size[14:]
+    return swap_size
+
 def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" GENERAL ", char_width, separator, color_name=Colors.DARK_GRAY)
     version = get_pi_version()
@@ -47,6 +59,8 @@ def create_printout(separator="|", char_width=80):
     text += " Internal IP address:\t{}\n".format(int_ip)
     text += " External IP address:\t{}\n".format(ext_ip)
     text += " CPU actual frequency:\t{} MHz\n".format(int(cpu_freq)/1000)
+    text += " GPU memory size:\t{} Mb\n".format(get_dedicated_gpu_mem())
+    text += " SWAP memory size:\t{} Mb\n".format(get_swap_memory_size())
     text += " MAC addresses:\n{}\n".format(get_mac_addresses())
     text += " {}\n".format(version)
     return text

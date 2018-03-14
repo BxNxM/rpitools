@@ -14,6 +14,7 @@ import general_infos
 import logged_in_users
 import mem_usage
 import LocalMachine
+import HeaderTimeDateUser
 from Colors import Colors
 
 components_separator="\n"
@@ -66,6 +67,9 @@ def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general):
             output += logged_in_users.main() + components_separator
         if _general or _all:
             output += general_infos.main() + components_separator
+        if output != "":
+            header = HeaderTimeDateUser.main()
+            output = header + "\n" + output
     except KeyboardInterrupt as e:
         is_interrupted = True
         sys.exit(0)
@@ -91,7 +95,7 @@ while True:
         break
     else:
         try:
-            time.sleep(0.2)
+            time.sleep(0.1)
         except KeyboardInterrupt:
             print("Goodbye :)")
             break
