@@ -8,7 +8,11 @@ import ConsoleParameters
 from Colors import Colors
 
 def get_disk_usage():
-    data_tmp = LocalMachine.run_command_safe("df -h / /dev/sd* | grep -v devtmpfs")
+    device_is_connected = LocalMachine.run_command_safe("echo /dev/sd*")
+    if "/dev/sd*" not in device_is_connected:
+        data_tmp = LocalMachine.run_command_safe("df -h / /dev/sd* | grep -v devtmpfs")
+    else:
+        data_tmp = LocalMachine.run_command_safe("df -h /")
     data_list = data_tmp.split("\n")
     data = ""
     for index, line in enumerate(data_list):
