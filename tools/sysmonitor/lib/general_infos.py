@@ -23,6 +23,20 @@ def get_external_ip():
     data = LocalMachine.run_command_safe("curl http://ipecho.net/plain 2>/dev/null")
     return data
 
+def get_mac_addresses():
+    output = ""
+    devices = LocalMachine.run_command_safe("ls /sys/class/net")
+    devices_list = devices.split("\n")
+    for index, device in enumerate(devices_list):
+        if device != "lo":
+            cmd = "ifconfig " + device + " | grep 'ether'"
+            mac = LocalMachine.run_command_safe(cmd)
+            if str(mac) != "" and mac is not None:
+                output += str(mac)
+                if index < len(devices_list) - 1:
+                    output += "\n"
+    return output
+
 def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" GENERAL ", char_width, separator, color_name=Colors.DARK_GRAY)
     version = get_pi_version()
@@ -33,6 +47,7 @@ def create_printout(separator="|", char_width=80):
     text += " Internal IP address:\t{}\n".format(int_ip)
     text += " External IP address:\t{}\n".format(ext_ip)
     text += " CPU actual frequency:\t{} MHz\n".format(int(cpu_freq)/1000)
+    text += " MAC addresses:\n{}\n".format(get_mac_addresses())
     text += " {}\n".format(version)
     return text
 

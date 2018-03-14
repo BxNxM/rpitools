@@ -14,6 +14,7 @@ import general_infos
 import logged_in_users
 import mem_usage
 import LocalMachine
+from Colors import Colors
 
 components_separator="\n"
 is_interrupted = False
@@ -38,6 +39,17 @@ _loggedin = args.loggedin
 _general = args.general
 _loop = args.loop
 
+def logo():
+    text=Colors.RED + '''
+ _____    _____    _____   _                     _       
+|  __ \  |  __ \  |_   _| | |                   | |      
+| |__) | | |__) |   | |   | |_    ___     ___   | |  ___ 
+''' + Colors.YELLOW + '''|  _  /  |  ___/    | |   | __|  / _ \   / _ \  | | / __|
+''' + Colors.GREEN + '''| | \ \  | |       _| |_  | |_  | (_) | | (_) | | | \__ \\
+|_|  \_\ |_|      |_____|  \__|  \___/   \___/  |_| |___/system monitor
+''' + Colors.NC
+    print(text)
+
 def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general):
     global is_interrupted
     output = ""
@@ -61,6 +73,7 @@ def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general):
         return output
 
 # MAIN SCOPE
+logo()
 while True:
     output = main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general)
 
