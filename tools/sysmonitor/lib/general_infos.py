@@ -32,7 +32,7 @@ def get_mac_addresses():
             cmd = "ifconfig " + device + " | grep 'ether'"
             mac = LocalMachine.run_command_safe(cmd)
             if str(mac) != "" and mac is not None:
-                output += str(mac)
+                output += " \t" + device + "\t" + str(mac)[13:]
                 if index < len(devices_list) - 1:
                     output += "\n"
     return output
