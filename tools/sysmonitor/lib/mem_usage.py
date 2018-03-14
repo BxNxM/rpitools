@@ -1,5 +1,7 @@
 import sys
-sys.path.append("api")
+import os
+myfolder = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(myfolder, "api"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
@@ -12,7 +14,7 @@ def get_mem_usage():
     available_percent = '%.1f' % available_percent
     return float(available_percent), mem_total, mem_available, mem_free
 
-def create_printout(separator="#", char_width=80):
+def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" MEM USAGE ", char_width, separator)
     mem_usage_percent, total, available, free = get_mem_usage()
 
@@ -20,6 +22,9 @@ def create_printout(separator="#", char_width=80):
     text += GeneralElements.indicator_bar(mem_usage_percent, dim="%", pre_text="MEM", char_width=char_width)
     return text
 
-if __name__ == "__main__":
+def main():
     rowcol = ConsoleParameters.console_rows_columns()
-    print(create_printout(char_width=rowcol[1]))
+    return create_printout(char_width=rowcol[1])
+
+if __name__ == "__main__":
+    print(main())

@@ -2,7 +2,7 @@ from Colors import Colors
 import time
 
 def header_bar(title, char_width=80, separator="#"):
-    text = " " + separator * ((char_width - len(title))/2) + title + separator * ((char_width - len(title))/2) + "\n"
+    text = " " + separator * int((char_width - len(title))/2) + title + separator * int((char_width - len(title))/2) + "\n"
     return text
 
 def indicator_bar(value, dim="", pre_text="", char_width=80, min_val=0, max_val=100, active_char="#", passive_char="-", col_scale=[0.45, 0.65]):

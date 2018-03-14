@@ -1,5 +1,7 @@
 import sys
-sys.path.append("api")
+import os
+myfolder = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(myfolder, "api"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
@@ -20,7 +22,7 @@ def get_external_ip():
     data = LocalMachine.run_command_safe("curl http://ipecho.net/plain 2>/dev/null")
     return data
 
-def create_printout(separator="#", char_width=80):
+def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" GENERAL ", char_width, separator)
     version = get_pi_version()
     int_ip = get_internal_ip()
@@ -33,7 +35,9 @@ def create_printout(separator="#", char_width=80):
     text += " {}\n".format(version)
     return text
 
-if __name__ == "__main__":
+def main():
     rowcol = ConsoleParameters.console_rows_columns()
-    print(create_printout(char_width=rowcol[1]))
+    return create_printout(char_width=rowcol[1])
 
+if __name__ == "__main__":
+    print(main())

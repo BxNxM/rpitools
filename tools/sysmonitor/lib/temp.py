@@ -1,5 +1,7 @@
 import sys
-sys.path.append("api")
+import os
+myfolder = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(myfolder, "api"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
@@ -15,7 +17,7 @@ def get_gpu_temp():
     data = '%.1f' % data
     return float(data)
 
-def create_printout(separator="#", char_width=80):
+def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" TEMPERATURE ", char_width, separator)
     cpu_temp = get_cpu_temp()
     gpu_temp = get_gpu_temp()
@@ -24,7 +26,10 @@ def create_printout(separator="#", char_width=80):
     text += GeneralElements.indicator_bar(gpu_temp, dim="'C", pre_text="GPU", char_width=char_width)
     return text
 
-if __name__ == "__main__":
+def main():
     rowcol = ConsoleParameters.console_rows_columns()
-    print(create_printout(char_width=rowcol[1]))
+    return create_printout(char_width=rowcol[1])
+
+if __name__ == "__main__":
+    print(main())
 
