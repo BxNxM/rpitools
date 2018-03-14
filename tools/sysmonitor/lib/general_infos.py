@@ -49,6 +49,11 @@ def get_swap_memory_size():
     swap_size = swap_size[14:]
     return swap_size
 
+def get_device_version():
+    # sap memory size
+    dev_version = LocalMachine.run_command_safe("cat /sys/firmware/devicetree/base/model")
+    return dev_version
+
 def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" GENERAL ", char_width, separator, color_name=Colors.DARK_GRAY)
     version = get_pi_version()
@@ -61,6 +66,7 @@ def create_printout(separator="|", char_width=80):
     text += " CPU actual frequency:\t{} MHz\n".format(int(cpu_freq)/1000)
     text += " GPU memory size:\t{} Mb\n".format(get_dedicated_gpu_mem())
     text += " SWAP memory size:\t{} Mb\n".format(get_swap_memory_size())
+    text += " DEVICE version:\t{}\n".format(get_device_version())
     text += " MAC addresses:\n{}\n".format(get_mac_addresses())
     text += " {}\n".format(version)
     return text
