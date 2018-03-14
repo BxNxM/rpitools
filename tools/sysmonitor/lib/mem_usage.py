@@ -5,6 +5,7 @@ sys.path.append(os.path.join(myfolder, "api"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
+from Colors import Colors
 
 def get_mem_usage():
     mem_total = LocalMachine.run_command_safe("sudo cat /proc/meminfo | grep 'MemTotal' | tr -dc '0-9'")
@@ -15,7 +16,7 @@ def get_mem_usage():
     return float(available_percent), mem_total, mem_available, mem_free
 
 def create_printout(separator="|", char_width=80):
-    text = GeneralElements.header_bar(" MEM USAGE ", char_width, separator)
+    text = GeneralElements.header_bar(" MEM USAGE ", char_width, separator, color_name=Colors.LIGHT_CYAN)
     mem_usage_percent, total, available, free = get_mem_usage()
 
     text += " Total: {} Mb Available: {} Mb Free: {} Mb\n".format(int(total)/1024, int(available)/1024, int(free)/1024)

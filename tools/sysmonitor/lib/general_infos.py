@@ -5,6 +5,7 @@ sys.path.append(os.path.join(myfolder, "api"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
+from Colors import Colors
 
 def get_pi_version():
     data = LocalMachine.run_command_safe("sudo uname -a")
@@ -23,7 +24,7 @@ def get_external_ip():
     return data
 
 def create_printout(separator="|", char_width=80):
-    text = GeneralElements.header_bar(" GENERAL ", char_width, separator)
+    text = GeneralElements.header_bar(" GENERAL ", char_width, separator, color_name=Colors.DARK_GRAY)
     version = get_pi_version()
     int_ip = get_internal_ip()
     ext_ip = get_external_ip()

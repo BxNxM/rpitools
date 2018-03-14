@@ -5,6 +5,7 @@ sys.path.append(os.path.join(myfolder, "api"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
+from Colors import Colors
 
 def get_cpu_usage():
     data = LocalMachine.run_command_safe("/home/$USER/rpitools/tools/proc_stat.sh")
@@ -12,7 +13,7 @@ def get_cpu_usage():
     return int(data)
 
 def create_printout(separator="|", char_width=80):
-    text = GeneralElements.header_bar(" CPU USAGE ", char_width, separator)
+    text = GeneralElements.header_bar(" CPU USAGE ", char_width, separator, color_name=Colors.LIGHT_PURPLE)
     cpu_usage = get_cpu_usage()
 
     text += GeneralElements.indicator_bar(cpu_usage, dim="%", pre_text="CPU", char_width=char_width, col_scale=[0.75, 0.90])

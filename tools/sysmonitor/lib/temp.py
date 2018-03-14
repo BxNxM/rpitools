@@ -5,6 +5,7 @@ sys.path.append(os.path.join(myfolder, "api"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
+from Colors import Colors
 
 def get_cpu_temp():
     data = LocalMachine.run_command_safe("/opt/vc/bin/vcgencmd measure_temp")
@@ -18,7 +19,7 @@ def get_gpu_temp():
     return float(data)
 
 def create_printout(separator="|", char_width=80):
-    text = GeneralElements.header_bar(" TEMPERATURE ", char_width, separator)
+    text = GeneralElements.header_bar(" TEMPERATURE ", char_width, separator, color_name=Colors.LIGHT_GRAY)
     cpu_temp = get_cpu_temp()
     gpu_temp = get_gpu_temp()
 
