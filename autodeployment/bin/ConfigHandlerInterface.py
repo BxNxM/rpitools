@@ -13,14 +13,19 @@ parser.add_argument("-s", "--section", help="select section")
 parser.add_argument("-o", "--option", help="select option")
 parser.add_argument("-l", "--list",  action='store_true', help="list config dict")
 parser.add_argument("-lf", "--list_formatted",  action='store_true', help="list config dict - formatted version")
+parser.add_argument("-v", "--validate",  action='store_true', help="validate configuration")
 
 args = parser.parse_args()
 section = args.section
 option = args.option
 listconfig = args.list
 listconfig_formatted = args.list_formatted
+validate = args.validate
 
-cfg = ConfigHandler.init()
+if validate:
+    cfg = ConfigHandler.init(validate_print=True)
+else:
+    cfg = ConfigHandler.init()
 
 if section is not None and option is not None:
     print(cfg.get(section, option))
