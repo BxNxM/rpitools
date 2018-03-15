@@ -45,6 +45,17 @@ fi
 output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash restore; popd)
 echo -e "$output"
 
+# validate custom - user config based on template
+/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py -v
+exit_code="$?"
+if [ "$exit_code" -ne 0 ]
+then
+    echo -e "Set your configuration berfore contionue!"
+    exit 1
+else
+    echo -e "Your configuration is valid :D"
+fi
+
 # set vimrc
 if [ -f ~/.vimrc ]
 then
