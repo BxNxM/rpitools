@@ -3,6 +3,8 @@ import os
 import sys
 myfolder = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(myfolder, "../config/rpitools_config.cfg")
+template_config_path = os.path.join(myfolder, "../config/rpitools_config_template.cfg")
+
 
 class SimpleConfig(ConfigParser.ConfigParser):
 
@@ -79,10 +81,45 @@ class SimpleConfig(ConfigParser.ConfigParser):
             cfg_file.close()
             self.__parse_config(reparse=True)
 
-def init():
+
+def validate_configs_based_on_template_printout(msg, is_active):
+    if is_active:
+        print(msg)
+
+def validate_configs_based_on_template(custom_cfg_obj, cfg_path_path=template_config_path, print_is_active=False):
+    difference_cnt = 0
+    cfg_tmp = SimpleConfig(cfg_path=template_config_path)
+    custom_all_dict = custom_cfg_obj.get_full()
+    template_all_dict = cfg_tmp.get_full()
+
+    validate_configs_based_on_template_printout("VALIDATE CUSTOM (USER) CONFIG FILE: {} WITH {}".format(config_path, template_config_path), is_active=print_is_active)
+    for key, value in template_all_dict.items():
+        # check sections - user (custom) config based on template config
+        if key in custom_all_dict.keys():
+            validate_configs_based_on_template_printout(str(key) + " - section exists - OK", is_active=print_is_active)
+        else:
+            validate_configs_based_on_template_printout(str(key) + " - section not exits - FAIL", is_active=print_is_active)
+            difference_cnt += 1
+        # [weak] check options user (custom) config based on template config
+        for key_in, value_in in value.items():
+            if str(key_in) in str(custom_all_dict):
+                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - OK", is_active=print_is_active)
+            else:
+                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - FAIL", is_active=print_is_active)
+                difference_cnt += 1
+    if difference_cnt == 0:
+        return True
+    else:
+        return False
+
+def init(validate_print=False):
     cfg = SimpleConfig(cfg_path=config_path)
-    return cfg
+    if validate_configs_based_on_template(cfg, print_is_active=validate_print):
+        return cfg
+    else:
+        print("[ WARNING ] - CUSTOM CONFIG FILE IS INVALID! : " + str(config_path))
+        sys.exit(1)
 
 if __name__ == "__main__":
-    cfg = init()
+    cfg = init(validate_print=True)
     print(cfg.get_full())
