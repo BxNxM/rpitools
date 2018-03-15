@@ -42,4 +42,5 @@ else
 fi
 
 # run kodi config settings
+echo -e "${YELLOW}RUN: KODI dektop icon and bootup start if set${NC}"
 . ${MYDIR_}/../lib/kodi_runner.bash
