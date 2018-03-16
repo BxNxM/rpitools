@@ -92,6 +92,10 @@ then
     echo -e "SET PASSWORD TO: $passwd"
     change_line "rpc-password" "    \"rpc-password\": \""$passwd"\"," "$transmission_conf_path"
 
+    echo -e "SET WHITELIST:"
+    "rpc-whitelist": "127.0.0.1",
+    change_line "\"rpc-whitelist\": \"127.0.0.1\"," "    \"rpc-whitelist\": \"127.0.0.1, 10.0.1.*\"," "$transmission_conf_path"
+
     echo "" > "$CACHE_PATH_is_set"
 
     echo -e "Reload transmission: sudo service transmission-daemon reload"
