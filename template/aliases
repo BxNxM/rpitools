@@ -1,6 +1,6 @@
 export LC_ALL=C                 # fix: setlocale: No such file or directory
-alias llt='ls -lath'
-alias ll='ls -lah'
+alias llt='ls -lrth'
+alias ll='ls -lh'
 alias servicelist='systemctl list-unit-files | grep enabled'
 alias disk='df -h'
 alias startvnc='sudo systemctl start vncserver-x11-serviced.service; systemctl status vncserver-x11-serviced.service'
