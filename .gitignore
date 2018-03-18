@@ -1,11 +1,7 @@
-cache/.PIXEL_installed
-cache/.vnc_installed
 raspbian_img/*.img
 cache/*
 cache/.*
 config/*
 gpio/Adafruit_Python_SSD1306/
-*/*.pyc
-*/*/*/*.pyc
-*/*/*/*/*.pyc
+*.pyc
 autodeployment/config/rpitools_config.cfg
