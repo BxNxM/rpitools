@@ -62,13 +62,29 @@ function install_apps_secure() {
         output=$(command -v "$app")
         if [ -z "$output" ]
         then
-            echo -e "Install app: $app"
-            echo "Y" | sudo apt-get install "$app"
-            message "$app install ...DONE"
-            was_installation=1
+            if [ "$app" == "samba" ]
+            then
+                apps_exception "$app"
+            else
+                echo -e "Install app: $app"
+                echo "Y" | sudo apt-get install "$app"
+                message "$app install ...DONE"
+                was_installation=1
+            fi
         else
            message "$app is already installed"
         fi
+    fi
+}
+
+function apps_exception() {
+    local app="$1"
+    if [ "$app" == "samba" ]
+    then
+        echo -e "Install app: samba samba-common-bin"
+        echo "Y" | sudo apt-get install samba samba-common-bin
+        message "samba samba-common-bin install ...DONE"
+        was_installation=1
     fi
 }
 
