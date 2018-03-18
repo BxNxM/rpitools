@@ -22,6 +22,7 @@ alias save_repo_confs='/home/$USER/rpitools/tools/cache_restore_backup.bash back
 alias diskhandler='sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py'
 alias kodibg='kodi &'
 alias sysmonitor='/home/$USER/rpitools/tools/sysmonitor/bin/sysmonitor.py'
+alias remove_app='sudo apt-get autoremove --purge'
 
 if [ ! -z $REPOROOT ]
 then
