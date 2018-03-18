@@ -5,3 +5,7 @@ cache/*
 cache/.*
 config/*
 gpio/Adafruit_Python_SSD1306/
+*/*.pyc
+*/*/*/*.pyc
+*/*/*/*/*.pyc
+autodeployment/config/rpitools_config.cfg
