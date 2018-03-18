@@ -6,10 +6,15 @@ source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 
 configure_transmission="${MYDIR_}/../lib/configure_transmission.bash"
+configure_samba="${MYDIR_}/../lib/configure_samba.bash"
 
 # transmission install config executor
 echo -e "${YELLOW}RUN: configure_transmission ${NC}"
 . "$configure_transmission"
+
+# set samba configuration
+echo -e "${YELLOW}RUN: configure_samba ${NC}"
+. "$configure_samba"
 
 # pixel install config executor
 pixel_install="$($confighandler -s INSTALL_PIXEL -o action)"
