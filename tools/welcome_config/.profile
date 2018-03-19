@@ -34,7 +34,7 @@ then
     fi
 
     ip=$(hostname -I)
-    echo -e "${wColor}########################################################${NC}"
+    echo -e "WELCOME ${wColor}${USER}${NC}! PI IP ADDRESS ${wColor}${ip}${NC}\nConnected from: ${wColor}$(~/rpitools/tools/get_connected_user_address.bash)${NC}"
     echo -e "WELCOME ${wColor}${USER}${NC}! PI IP ADDRESS ${wColor}${ip}${NC}"
     echo -e "TODAY: ${wColor}$(date)${NC}"
     echo -e "$(cal)"

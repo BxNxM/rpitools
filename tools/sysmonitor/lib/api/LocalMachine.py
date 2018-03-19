@@ -12,7 +12,7 @@ def run_command(cmd, wait_for_done=True):
 
 def run_command_safe(cmd, wait_for_done=True):
     exit_code, stdout, stderr = run_command(cmd, wait_for_done)
-    if exit_code == 0 and stderr == "":
+    if exit_code == 0:
         return stdout
     else:
         print("Error under execution - cmd: {}\nexit_code: {}\nstdout: {}\nstderr: {}".format(cmd, exit_code, stdout, stderr))
