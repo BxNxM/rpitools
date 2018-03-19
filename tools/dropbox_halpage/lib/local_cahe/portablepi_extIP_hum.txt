@@ -1,7 +1,0 @@
-============= HALPAGE: portablepi_extIP =============
-=========== Mon Mar 19 21:09:30 UTC 2018 ===========
-EXTERNAL IP ADDRESS: 78.92.251.97
-EXTERNAL PORT NUMBER: 22TRANSMISSION ACCESS: http://78.92.251.97:9091
-HTTP ADDRESS: http://78.92.251.97:8081
-==================================================
-

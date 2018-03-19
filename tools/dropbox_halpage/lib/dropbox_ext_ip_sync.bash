@@ -1,10 +1,18 @@
 #!/bin/bash
 
+debugmsg=false
+if [ "$1" == "-d" ]
+then
+    debugmsg=true
+fi
+
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-dropbox_uploader="/home/$USER/rpitools/tools/Dropbox-Uploader/dropbox_uploader.sh"
+dropbox_uploader="${MYDIR}/Dropbox-Uploader/dropbox_uploader.sh"
 local_cache_folder="${MYDIR}/local_cahe/"
 logfile="${MYDIR}/logs/extiphandler.log"
+
+. ${MYDIR}/clone_n_configure.bash
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 uid_name="$($confighandler -s EXTIPHANDLER -o uid_name)"
@@ -16,12 +24,12 @@ refresh_time="$($confighandler -s EXTIPHANDLER -o refresh_time)"
 
 local_cache_myextaddr="${local_cache_folder}${uid_name}"
 local_cache_myextaddr_hum="${local_cache_folder}${uid_name_hum}"
-debugmsg=true
 
 function debug_msg() {
     local msg="$@"
     if [ "$debugmsg" == "true" ]
     then
+        echo -e "[$(date)]\t $msg"
         echo -e "[$(date)]\t $msg" >> "$logfile"
     fi
 }
