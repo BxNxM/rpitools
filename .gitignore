@@ -5,3 +5,5 @@ config/*
 gpio/Adafruit_Python_SSD1306/
 *.pyc
 autodeployment/config/rpitools_config.cfg
+tools/dropbox_halpage/lib/Dropbox-Uploader/
+tools/dropbox_halpage/lib/local_cahe/*

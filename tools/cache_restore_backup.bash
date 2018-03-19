@@ -32,10 +32,16 @@ then
         # adafruit lib
         echo -e "\tbackup: ${REPOROOT}/gpio/Adafruit_Python_SSD1306 -> $backup_path"
         sudo cp -r "${REPOROOT}/gpio/Adafruit_Python_SSD1306" "$backup_path"
+
+        # Dropbox-Uploader lib
+        echo -e "\tbackup: ${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader -> $backup_path"
+        sudo cp -r "${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader" "$backup_path"
+
         # cache
         echo -e "\tbackup: ${REPOROOT}/cache -> $backup_path"
         cp -r "${REPOROOT}/cache" "$backup_path"
         cache_exitcode="$?"
+
         # backup config
         echo -e "\tbackup: ${REPOROOT}/autodeployment/config/rpitools_config.cfg -> $backup_path"
         cp "${REPOROOT}/autodeployment/config/rpitools_config.cfg" "$backup_path"
@@ -56,10 +62,16 @@ then
             # adafruit lib
             echo -e "\trestore: ${backup_path}/cache/Adafruit_Python_SSD1306 -> ${REPOROOT}/gpio/"
             sudo cp -r "${backup_path}/Adafruit_Python_SSD1306" "${REPOROOT}/gpio/"
+
+            # Dropbox-Uploader lib
+            echo -e "\trestore: ${backup_path}/cache/Dropbox-Uploader -> ${REPOROOT}/tools/dropbox_halpage/lib/"
+            sudo cp -r "${backup_path}/cache/Dropbox-Uploader" "${REPOROOT}/tools/dropbox_halpage/lib/"
+
             # cache
             echo -e "\trestore: ${backup_path}/cache -> ${REPOROOT}"
             cp -r "${backup_path}/cache" "${REPOROOT}"
             cache_exitcode="$?"
+
             # restore config
             echo -e "\trestore: ${backup_path}/rpitools_config.cfg -> ${REPOROOT}/autodeployment/config/"
             cp "${backup_path}/rpitools_config.cfg" "${REPOROOT}/autodeployment/config/"

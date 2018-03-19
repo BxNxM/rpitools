@@ -21,6 +21,7 @@ ssh_port="$($confighandler -s EXTIPHANDLER -o ssh_port)"
 transmission_port="$($confighandler -s EXTIPHANDLER -o transmission_port)"
 http_port="$($confighandler -s EXTIPHANDLER -o http_port)"
 refresh_time="$($confighandler -s EXTIPHANDLER -o refresh_time)"
+action="$($confighandler -s EXTIPHANDLER -o action)"
 
 local_cache_myextaddr="${local_cache_folder}${uid_name}"
 local_cache_myextaddr_hum="${local_cache_folder}${uid_name_hum}"
@@ -30,8 +31,8 @@ function debug_msg() {
     if [ "$debugmsg" == "true" ]
     then
         echo -e "[$(date)]\t $msg"
-        echo -e "[$(date)]\t $msg" >> "$logfile"
     fi
+        echo -e "[$(date)]\t $msg" >> "$logfile"
 }
 
 function GetIp {
@@ -75,30 +76,41 @@ function safe_if_ext_ip_changed() {
 }
 
 function create_file_structure_if_not_exits() {
-    dropbox_folder_content=$("$dropbox_uploader" list)
+    local dropbox_folder_content=$("$dropbox_uploader" list)
+    local halpage_folder="halpage"
+    if [[ "$dropbox_folder_content" != *"$halpage_folder"* ]]
+    then
+        debug_msg "[3] Create $halpage_folder folder"
+        root_folder_create=$("$dropbox_uploader" mkdir $halpage_folder)
+        debug_msg "$root_folder_create"
+    else
+        debug_msg "[3] $halpage_folder folder already exists"
+    fi
+
+    dropbox_folder_content=$("$dropbox_uploader" list "$halpage_folder")
     if [ "$dropbox_folder_content" == *"servers"* ]
     then
         debug_msg "[3] Create servers folder"
-        server_folder_create=$("$dropbox_uploader" mkdir servers)
+        server_folder_create=$("$dropbox_uploader" mkdir ${halpage_folder}/servers)
     else
         debug_msg "[3] Servers folder already exists"
     fi
 }
 
 function upload_myip_file_if_new_ip_found() {
-    local myip_dropbox_is_exits=$("$dropbox_uploader" list servers)
+    local myip_dropbox_is_exits=$("$dropbox_uploader" list halpage/servers)
     if [ "$new_ip_is_found" -eq 1 ] || [[ "$myip_dropbox_is_exits" != *"$uid_name"* ]]
     then
         debug_msg "[4] Upload $uid_name file to dropbox folder servers/$uid_name"
-        upload_new_ip=$("$dropbox_uploader" upload "$local_cache_myextaddr" "servers/$uid_name")
+        upload_new_ip=$("$dropbox_uploader" upload "$local_cache_myextaddr" "halpage/servers/$uid_name")
         debug_msg "$upload_new_ip"
     else
-        debug_msg "[4] IP is not changed server/$uid_name"
+        debug_msg "[4] IP is not changed halpage/server/$uid_name"
     fi
 }
 
 function upload_human_readable_page() {
-    local myip_dropbox_is_exits=$("$dropbox_uploader" list)
+    local myip_dropbox_is_exits=$("$dropbox_uploader" list halpage)
     if [ "$new_ip_is_found" -eq 1 ] || [[ "$myip_dropbox_is_exits" != *"$uid_name_hum"* ]]
     then
         local text=""
@@ -112,18 +124,24 @@ function upload_human_readable_page() {
         echo -e "$text" > "$local_cache_myextaddr_hum"
 
         debug_msg "[5] Upload human readable halpage for: $uid_name_hum"
-        upload_new_ip=$("$dropbox_uploader" upload "$local_cache_myextaddr_hum" "$uid_name_hum")
+        upload_new_ip=$("$dropbox_uploader" upload "$local_cache_myextaddr_hum" "halpage/$uid_name_hum")
         debug_msg "$upload_new_ip"
     else
         debug_msg "[5] IP is not changed server/$uid_name_hum"
     fi
 }
 
-while true
-do
-    safe_if_ext_ip_changed
-    create_file_structure_if_not_exits
-    upload_myip_file_if_new_ip_found
-    upload_human_readable_page
-    sleep "$refresh_time"
-done
+if [ "$action" == "True" ] || [ "$action" == "true" ]
+then
+    echo -e "[ DROPBOX HALPAGE ] service on"
+    while true
+    do
+        safe_if_ext_ip_changed
+        create_file_structure_if_not_exits
+        upload_myip_file_if_new_ip_found
+        upload_human_readable_page
+        sleep "$refresh_time"
+    done
+else
+    echo -e "[ DROPBOX HALPAGE ] service is not activated"
+fi
