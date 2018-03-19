@@ -64,8 +64,8 @@ then
             sudo cp -r "${backup_path}/Adafruit_Python_SSD1306" "${REPOROOT}/gpio/"
 
             # Dropbox-Uploader lib
-            echo -e "\trestore: ${backup_path}/cache/Dropbox-Uploader -> ${REPOROOT}/tools/dropbox_halpage/lib/"
-            sudo cp -r "${backup_path}/cache/Dropbox-Uploader" "${REPOROOT}/tools/dropbox_halpage/lib/"
+            echo -e "\trestore: ${backup_path}/Dropbox-Uploader -> ${REPOROOT}/tools/dropbox_halpage/lib/"
+            sudo cp -r "${backup_path}/Dropbox-Uploader" "${REPOROOT}/tools/dropbox_halpage/lib/"
 
             # cache
             echo -e "\trestore: ${backup_path}/cache -> ${REPOROOT}"
