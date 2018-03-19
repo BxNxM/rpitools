@@ -9,7 +9,7 @@ fi
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 dropbox_uploader="${MYDIR}/Dropbox-Uploader/dropbox_uploader.sh"
-local_cache_folder="${MYDIR}/local_cahe/"
+local_cache_folder="${MYDIR}/local_cache/"
 logfile="${MYDIR}/logs/extiphandler.log"
 
 . ${MYDIR}/clone_n_configure.bash
@@ -59,7 +59,7 @@ function safe_if_ext_ip_changed() {
         # init myip file
         if [ ! -e "$local_cache_myextaddr" ]
         then
-            echo "" > $local_cache_myextaddr
+            echo "" > "$local_cache_myextaddr"
         fi
 
         # save ip if new found
