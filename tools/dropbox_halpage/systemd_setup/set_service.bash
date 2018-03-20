@@ -58,10 +58,8 @@ then
         check_exitcode "$?"
 
         #function_demo
-        (systemctl status dropbox_halpage;)
     else
         message "/lib/systemd/system/dropbox_halpage.service is already exists"
-        (systemctl status dropbox_halpage;)
         #function_demo
     fi
 else
