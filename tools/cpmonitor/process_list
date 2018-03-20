@@ -6,3 +6,4 @@ rgb_demo.py
 oled_gui_core.py
 debian-transmission
 sysmonitor.py
+dropbox_ext_ip_sync.bash
