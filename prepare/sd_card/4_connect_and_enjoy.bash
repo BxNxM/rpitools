@@ -24,7 +24,7 @@ function smart_connect() {
     then
         ssh-keygen -R "${host}"
         echo -e "${host} host is avaible :)"
-        ssh "${user}@${host}"
+        ssh -o StrictHostKeyChecking=no "${user}@${host}"
     else
         echo -e "${host} host is not avaible :("
     fi

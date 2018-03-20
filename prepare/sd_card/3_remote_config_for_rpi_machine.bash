@@ -20,20 +20,20 @@ function copy_repo_to_rpi_machine() {
 function copy_localmachine_ssh_pub_key_to_rpi_machine() {
     ssh_pub_key="$(cat ~/.ssh/id_rsa.pub)"
     echo -e "Copy id_rsa.pub to raspberry known_hosts: $ssh_pub_key"
-    ssh pi@raspberrypi.local "if [ ! -d /home/pi/.ssh ]; then mkdir /home/pi/.ssh; fi"
-    ssh pi@raspberrypi.local "if [ ! -e '/home/pi/.ssh/authorized_keys' ]; then echo $ssh_pub_key > /home/pi/.ssh/authorized_keys; fi"
+    ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ ! -d /home/pi/.ssh ]; then mkdir /home/pi/.ssh; fi"
+    ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ ! -e '/home/pi/.ssh/authorized_keys' ]; then echo $ssh_pub_key > /home/pi/.ssh/authorized_keys; fi"
 }
 
 function execute_source_setup_on_rpi_machine() {
-    ssh pi@raspberrypi.local 'cd rpitools && source setup'
+    ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && source setup'
 }
 
 function execute_source_setup_on_rpi_machine_custom_host() {
-    ssh "${username}@${hostname}" 'cd rpitools && source setup'
+    ssh -o StrictHostKeyChecking=no "${username}@${hostname}" 'cd rpitools && source setup'
 }
 
 function create_set_indicator_file() {
-    ssh "${username}@${hostname}" "touch ~/rpitools/cache/.rpi_remote_config_done"
+    ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "touch ~/rpitools/cache/.rpi_remote_config_done"
 }
 
 function waiting_for_up_again_after_reboot() {
@@ -60,12 +60,12 @@ if [ "$is_avaible_exitcode" -eq 0 ]
 then
     echo -e "ssh-keygen -R raspberrypi.local"
     ssh-keygen -R raspberrypi.local
-    is_rpi_machine_set=$(ssh pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
+    is_rpi_machine_set=$(ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
     custom_hostname_is_active=1
 else
     echo -e "ssh-keygen -R $hostname"
     ssh-keygen -R "$hostname"
-    is_rpi_machine_set=$(ssh "${username}@${hostname}" "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
+    is_rpi_machine_set=$(ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
     custom_hostname_is_active=0
 fi
 
