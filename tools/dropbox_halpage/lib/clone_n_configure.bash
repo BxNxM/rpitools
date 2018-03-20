@@ -10,7 +10,9 @@ APIKEY="$($confighandler -s EXTIPHANDLER -o oauth_access_token)"
 if [ ! -d "$Dropbox_Uploader_path" ]
 then
     echo -e "Clone https://github.com/andreafabrizi/Dropbox-Uploader.git"
+    pushd "${MYDIR}/../lib"
     git clone https://github.com/andreafabrizi/Dropbox-Uploader.git
+    popd
 
     echo -e "ADD permissions +x"
     chmod +x "${MYDIR}/Dropbox-Uploader/dropbox_uploader.sh"

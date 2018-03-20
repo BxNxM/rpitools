@@ -49,3 +49,7 @@ fi
 # run kodi config settings
 echo -e "${YELLOW}RUN: KODI dektop icon and bootup start if set${NC}"
 . ${MYDIR_}/../lib/kodi_runner.bash
+
+# set dropbox halpage service if config requires
+echo -e "${YELLOW}RUN: DROPBOX HALPAGE service setup${NC}"
+. "/home/$USER/rpitools/tools/dropbox_halpage/systemd_setup/set_service.bash"
