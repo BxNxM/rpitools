@@ -57,10 +57,12 @@ then
         sudo systemctl enable dropbox_halpage.service
         check_exitcode "$?"
 
-        function_demo
+        #function_demo
+        (systemctl status dropbox_halpage;)
     else
         message "/lib/systemd/system/dropbox_halpage.service is already exists"
-        function_demo
+        (systemctl status dropbox_halpage;)
+        #function_demo
     fi
 else
     echo -e "dropbox halpage service is not requested"
