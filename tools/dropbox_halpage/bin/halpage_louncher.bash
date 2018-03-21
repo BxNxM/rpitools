@@ -12,7 +12,8 @@ fi
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 is_running="$(ps aux | grep -v grep | grep 'dropbox_ext_ip_sync.bash')"
-if [ "$is_running" == "" ]
+is_running_service="$(systemctl is-active dropbox_halpage)"
+if [ "$is_running" == "" ] && [ "$is_running_service" != "active" ]
 then
     if [ "$lounch_mode" == 0 ]
     then
