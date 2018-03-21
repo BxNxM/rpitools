@@ -94,7 +94,7 @@ then
 
     echo -e "SET WHITELIST:"
     "rpc-whitelist": "127.0.0.1",
-    change_line "\"rpc-whitelist\": \"127.0.0.1\"," "    \"rpc-whitelist\": \"127.0.0.1, 10.0.1.*\"," "$transmission_conf_path"
+    change_line "\"rpc-whitelist\": \"127.0.0.1\"," "    \"rpc-whitelist\": \"127.0.0.1, 10.0.1.*, 192.168.0.*\"," "$transmission_conf_path"
 
     echo "" > "$CACHE_PATH_is_set"
 
