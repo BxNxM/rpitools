@@ -14,21 +14,12 @@ else
 fi
 
 function stop_running_processes() {
-    process_list=("oled_gui_core")
+    process_list=("oled_gui_core" "dropbox_halpage")
     for process in "${process_list[@]}"
     do
+        is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$process")
         is_run=$(ps aux | grep "$process" | grep -v grep)
-        if [ "$is_run" != "" ]
-        then
-            echo -e "sudo systemctl stop $process"
-            sudo systemctl stop "$process"
-        fi
-    done
-    process_list=("dropbox_halpage")
-    for process in "${process_list[@]}"
-    do
-        is_run=$(ps aux | grep "$process" | grep -v grep)
-        if [ "$is_run" != "" ]
+        if [ "$is_run" != "" ] && [ "$is_exists" != "" ]
         then
             echo -e "sudo systemctl stop $process"
             sudo systemctl stop "$process"
@@ -37,21 +28,12 @@ function stop_running_processes() {
 }
 
 function start_running_processes() {
-    process_list=("oled_gui_core")
+    process_list=("oled_gui_core" "dropbox_halpage")
     for process in "${process_list[@]}"
     do
+        is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$process")
         is_run=$(ps aux | grep "$process" | grep -v grep)
-        if [ "$is_run" == "" ]
-        then
-            echo -e "sudo systemctl start $process"
-            sudo systemctl start "$process"
-        fi
-    done
-    process_list=("dropbox_halpage")
-    for process in "${process_list[@]}"
-    do
-        is_run=$(ps aux | grep "$process" | grep -v grep)
-        if [ "$is_run" == "" ]
+        if [ "$is_run" == "" ] && [ "$is_exists" != "" ]
         then
             echo -e "sudo systemctl start $process"
             sudo systemctl start "$process"
