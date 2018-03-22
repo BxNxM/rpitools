@@ -69,7 +69,7 @@ def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general):
             output += general_infos.main() + components_separator
         if output != "":
             header = HeaderTimeDateUser.main()
-            output = header + "\n" + output
+            output = header + "\n" + output.rstrip()
     except KeyboardInterrupt as e:
         is_interrupted = True
         sys.exit(0)

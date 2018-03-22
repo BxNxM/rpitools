@@ -52,7 +52,7 @@ def get_swap_memory_size():
 def get_device_version():
     # sap memory size
     dev_version = LocalMachine.run_command_safe("cat /sys/firmware/devicetree/base/model")
-    return dev_version
+    return dev_version.rstrip()
 
 def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" GENERAL ", char_width, separator, color_name=Colors.DARK_GRAY)
@@ -68,7 +68,7 @@ def create_printout(separator="|", char_width=80):
     text += " SWAP memory size:\t{} Mb\n".format(get_swap_memory_size())
     text += " DEVICE version:\t{}\n".format(get_device_version())
     text += " MAC addresses:\n{}\n".format(get_mac_addresses())
-    text += " {}\n".format(version)
+    text += " {}".format(version)
     return text
 
 def main():
