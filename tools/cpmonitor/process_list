@@ -1,10 +1,9 @@
 rgb_led_controller.py
-start_rgb_w_button_demo.bash
 ButtonHandler.py
 rgb_interface.py
 rgb_demo.py
 oled_gui_core.py
-debian-transmission
+transmission-daemon
 sysmonitor.py
 dropbox_ext_ip_sync.bash
 halpage_louncher.bash
