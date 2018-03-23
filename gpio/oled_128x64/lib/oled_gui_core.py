@@ -12,6 +12,7 @@ import os
 import sys
 import importlib
 import oled_gui_widgets
+myfolder = os.path.dirname(os.path.abspath(__file__))
 
 # import pages source path
 page_files_path = "pages"
@@ -37,6 +38,16 @@ try:
     hei.run_interface(option="doubletap")
 except Exception as e:
     print("haptic engine import: " + str(e))
+
+try:
+    confhandler_path = os.path.join(myfolder,"../../../autodeployment/lib/")
+    sys.path.append(confhandler_path)
+    import ConfigHandler
+    cfg = ConfigHandler.init()
+except Exception as e:
+    oledlog.logger.warn("Import config handler failed: " + str(e))
+    ConfigHandler = None
+
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
@@ -719,7 +730,18 @@ class Oled_window_manager():
         self.disp.display()
 
 def run():
-    display = Oled_window_manager()
+    # set interface/bustype from config - or fallback to default config
+    default_bus_type="i2c"
+    if ConfigHandler is not None:
+        bustype = cfg.get(section="INSTALL_OLED", option="bustype")
+        if bustype != "i2c" and bustype != "spi":
+            oledlog.logger.warn("Bustype/interface/connectionmode not enable: " + str(bustype) + "\nSet default: " + str(default_bus_type))
+            bustype = default_bus_type
+    else:
+        bustype = default_bus_type
+
+    # Run oled display framework
+    display = Oled_window_manager(connection_mode=bustype)
     try:
         display.run()
     except Exception as e:
