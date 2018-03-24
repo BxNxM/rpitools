@@ -57,7 +57,7 @@ then
     if [ ! -e "${download_path}" ]
     then
         echo -e "Create download dir: ${download_path}"
-        mkdir -p "${download_path}"
+        sudo mkdir -p "${download_path}"
         sudo chmod 770 "${download_path}"
     else
         echo -e "Downloads dir exists: ${download_path}"
@@ -67,7 +67,7 @@ then
     if [ ! -e "${incomp_download_path}" ]
     then
         echo -e "Create incomplete download dir: ${incomp_download_path}"
-        mkdir -p "${incomp_download_path}"
+        sudo mkdir -p "${incomp_download_path}"
         sudo chmod 770 "${incomp_download_path}"
     else
         echo -e "Incomplete downloads dir exists: ${incomp_download_path}"
