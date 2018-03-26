@@ -9,129 +9,93 @@
  |_|  \_\ |_|      |_____|    |_|     \____/   \____/  |______| |_____/ 
 ```
 
-## CONFIGURATION ON MAC/LINUX
+## CONFIGURATION ON MAC
 ***Deploy and setup raspbain image***
 
-* clone rpi repository from github - to get the resources (file a "folder")
+* Download raspbain lite:
+
+```
+Browse:
+https://www.raspberrypi.org/downloads/raspbian/
+
+and dowload:
+RASPBIAN STRETCH LITE
+example: https://downloads.raspberrypi.org/raspbian_lite_latest
+```
+
+* clone rpitools repository from github - to get the resources
 
 ```
 git clone https://github.com/BxNxM/rpitools.git
 ```
 
-* go to rpitools/prepare\_sd\_card to find SD card preparing scripts
+* go to rpitools/prepare/sd_card/ to find SD card preparing scripts
 
 ```
-cd rpitools/prepare_sd_card
+cd rpitools/prepare/sd_card/
 ```
 
-* Copy raspbian image to the rpitools/prepare\_sd\_card/raspbian\_img folder for the installing / deploying process
-
-```
-cp ~/Downloads/*raspbian*.img raspbian_img/
-```
-
-* run the sd card imager and follow the instructions - it "burns" the raspbian.img file to the SD card.
-
-```
-./raspbian_imager.bash
-```
-
-* configure raspbian image on SD card (set: ssh, wifi, usb-eth, video ram) - follow the instructions
-
-```
-./boot_config.bash
-```
-
-* set your wifi ssid and password on the wpa_supplicant.conf file
+* Create custom config file from template
  
 ```
--> manually (wifi) setup /Volumes/boot/wpa_supplicant.conf file.
+Jump to the config folder:
+pushd ../../autodeployment/config/
+
+Copy template file:
+cp rpitools_config_template.cfg rpitools_config.cfg
+
+Edit your configuration:
+open rpitools_config.cfg
+
+WRITE YOUR CUSTOM PARAMETERS TO THE "<>" PLACEHOLDERS
+
+EXAMPLE:
+  6 [NETWORK]				; offlineset
+  7 ssid="<>"				; your wifi name
+  8 pwd="<>"				; your wifi password 
+  .
+  .
+  .
+  
+Go back to the deployment scripts:
+popd
 ```
 
-* ***FINALLY: unmount SD card, put it in the rpi zero w***
-
-* After raspberry pi ***BOOTED UP*** - copy rpitools (from your computer) to the raspberrypi
+* Execute deployment scripts:
 
 ```
-copy rpitools:
-(if needed: ssh-keygen -R raspberrypi.local)
-cd rpitools/prepare_sd_card
-rm -f raspbian_img/*.img && scp -r ../../rpitools/ pi@raspberrypi.local:~/
-(default pwd: raspberry)
-```
-## CONFIGURATION ON WINDOWS
-* coming soon...
+./1_raspbian_imager.bash
+###### DESCRIPTION ######
+* It deploys (write) the factory raspbian_lite_latest image to the SD card.
+(It serach your rapbian image from Downloads folder)
+(If it not works copy your image under: rpitools/prepare/sd_card/raspbian_img)
+#########################
 
-# CONFIGURATION ON THE RASPBERRY PI
-
-* COnnect (SSH) to the pi
-
-```
-ssh pi@raspberrypi.local
-(default pwd: raspberry)
-```
-***Configuration on  YOUR PI with rpitools***
-
-* Source rpitools - install / setup / configure
-
-```
-cd rpitools/
-source setup
+./2_boot_config.bash
+###### DESCRIPTION ######
+* It makes an SD configuration, before the fisrt boot:
+wifi, ssh, i2c, spi etc. based on previously set config file (rpitools_config.cfg)
+#########################
 ```
 
-* if you use raspbain lite, and you want a GUI
+* Unmount and disconnect the SD card from your computer. Take it to the pi, and power it up.
+* Wait a little to boot up propely (max. 2-4 min.)
 
 ```
-./prepare_system/install_PIXEL.bash
+./3_remote_config_for_rpi_machine.bash
+###### DESCRIPTION ######
+* It copies all the rpitools repository to the raspberrypi
+* Executes the rpitools/setup configuration sourcing
+*** Based on your configuration (rpitools_config.cfg) it will prepare
+your whole system.
+* It takes 30-80 minutes (many installations and configurations with reboots)
+#########################
+
+./4_connect_and_enjoy.bash
+###### DESCRIPTION ######
+* FInally connect to your pi, and enjoy your NEW, PERSONAL environmat!
+#########################
 ```
-
-* if you want remote desktop access
-
-```
-./prepare_system/install_vnc.bash
-#link /etc/logrotate.conf log file
-if [  -e "$REPOROOT/config/logrotate.conf" ]
-then
-    message "$REPOROOT/config/logrotate.conf is already linked"
- else
-    message "Linking: ln -s /etc/logrotate.conf $REPOROOT/config/logrotate.conf"
-    ln -s /etc/logrotate.conf $REPOROOT/config/logrotate.conf
-fi
-```
-
-* Finally some manual setups with raspi-config (don't forget)
-
-```
-sudo raspi-config
-
-and set:
-set default login console/desktop
-location
-expand file system
-screen resolution
-set local name
-```
-
-# OLED FRAMEWORK
-```
-   ____    _        ______   _____  
-  / __ \  | |      |  ____| |  __ \ 
- | |  | | | |      | |__    | |  | |
- | |  | | | |      |  __|   | |  | |
- | |__| | | |____  | |____  | |__| |
-  \____/  |______| |______| |_____/  framework
-```
-![oled](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/oled.jpg?raw=true)
-
-SUPPORTED OLED TYPE: 128x64 i2c SSD1306 Driver IC
-
-
-####Enable i2c interface with raspi-config
-
-```
-sudo raspi-config
-```
--> interfacing options - > i2c
 
 ***WIRING***
 
@@ -143,21 +107,6 @@ sudo raspi-config
 
 ![oled buttons](https://github.com/BxNxM/rpitools/blob/master/gpio/oled_128x64/oled_buttons.png?raw=true)
 ***OLED BOOTUP LOUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
-
-```
-oledinterface --set_service
-```
-
-* manage oled service over systemd if you want (if you make [1] step):
-
-```
-sudo systemctl status oled_gui_core
-sudo systemctl restart oled_gui_core
-sudo systemctl start oled_gui_core
-sudo systemctl stop oled_gui_core
-```
-
-* or manage oled framework over its own interface ([1] step isn't mandatory)
 
 ```
 for more info:
@@ -223,31 +172,26 @@ CPU LOAD: 25 % - 35 %
 CPU if oled in STANDBY: 2.3 %
 ```
 
-# omxplayer_gui
-```
-                                     _                               
-                                    | |                              
-   ___    _ __ ___   __  __  _ __   | |   __ _   _   _    ___   _ __ 
-  / _ \  | '_ ` _ \  \ \/ / | '_ \  | |  / _` | | | | |  / _ \ | '__|
- | (_) | | | | | | |  >  <  | |_) | | | | (_| | | |_| | |  __/ | |   
-  \___/  |_| |_| |_| /_/\_\ | .__/  |_|  \__,_|  \__, |  \___| |_|   
-                            | |                   __/ |                        
+# BUILT IN KODI
+```                            
+  _  __   ____    _____    _____ 
+ | |/ /  / __ \  |  __ \  |_   _|
+ | ' /  | |  | | | |  | |   | |  
+ |  <   | |  | | | |  | |   | |  
+ | . \  | |__| | | |__| |  _| |_ 
+ |_|\_\  \____/  |_____/  |_____|
+                                           
 ``` 
 
-***use hardware optimalized video player for 720p and 180p videos***
+***use hardware optimalized meda player for 720p and 180p videos***
 
 ```
 run in command line:
-omxplayer_gui
+kodibg
 ```
-It makes a graphic user interface for this special video player, it lists videos from /home/$USER/Videos folder. If your system has graphic environment it runs easygui graphic interface, if you have a headless server (just with command line) it makes a command line interface for it automaticly, of course you have maual options too. YES omxplayer NOT NEED A GRAPHIC ENVIRONMENT so it is realy cool optimaized :D 
-The video output is the dedicated hdmi connector.
+It gives you a full meia player with many options. 
+The video output goes to the dedicated hdmi connector.
 
-```
-for more information use:
-omxplayer_gui -h
-
-```
 
 # RGB interface
 ```
