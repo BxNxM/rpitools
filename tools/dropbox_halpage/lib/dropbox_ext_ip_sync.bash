@@ -66,8 +66,9 @@ function safe_if_ext_ip_changed() {
         is_changed="$(cat $local_cache_myextaddr | grep -v grep | grep $myext_ip)"
         if [ "$is_changed" == "" ]
         then
+            info_ip_port="${myext_ip}\n${ssh_port}"
             debug_msg "[2] Save new ip address: $myext_ip"
-            echo "$myext_ip" > "$local_cache_myextaddr"
+            echo -e "$info_ip_port" > "$local_cache_myextaddr"
             new_ip_is_found=1
         else
             debug_msg "[2]- $myext_ip - up to date"
