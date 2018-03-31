@@ -183,10 +183,10 @@ class JoystickHandler():
             print(e)
 
 if "JoystickHandler" in __name__:
-    joystick = JoystickHandler(up_pin=23, down_pin=16, right_pin=27, left_pin=25, center_pin=24)        # BCM mode
+    joystick = JoystickHandler(up_pin=22, down_pin=16, right_pin=27, left_pin=25, center_pin=24)        # BCM mode
 
 if __name__ == "__main__":
-    joystick = JoystickHandler(up_pin=23, down_pin=16, right_pin=27, left_pin=25, center_pin=24)        # BCM mode
+    joystick = JoystickHandler(up_pin=22, down_pin=16, right_pin=27, left_pin=25, center_pin=24)        # BCM mode
     while True:
         try:
             joystick.joystick_wait_for_event()

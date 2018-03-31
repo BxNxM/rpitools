@@ -171,12 +171,3 @@ if __name__ == "__main__":
     oled_buttons = OledButtonHandler(left_pin=26, right_pin=5, standby_pin=6)
     #oled_buttons.simple_input_read(37)                                         #GPIO.BOARD)
     oled_buttons.oled_read_all_function_buttons()
-
-
-
-
-
-
-
-
-
