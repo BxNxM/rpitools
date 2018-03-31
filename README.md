@@ -99,13 +99,9 @@ your whole system.
 
 ***WIRING***
 
-* OLED
+RPITOOLS SHILED WIRING 1.0
+![page_welcome](https://github.com/BxNxM/rpitools/blob/master/gpio/RPITOOLS_1.0_GPIO_PINOUT.png?raw=true)
 
-![oled i2c](https://github.com/BxNxM/rpitools/blob/master/gpio/oled_128x64/oledWiring.png?raw=true)
-
-* (OLED) BUTTONS
-
-![oled buttons](https://github.com/BxNxM/rpitools/blob/master/gpio/oled_128x64/oled_buttons.png?raw=true)
 ***OLED BOOTUP LOUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
 
 ```
