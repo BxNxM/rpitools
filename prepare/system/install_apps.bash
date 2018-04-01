@@ -102,8 +102,13 @@ function install_pymodule_secure() {
         then
             echo -e "Install python module: $app"
             echo "Y" | sudo apt-get install "$app"
-            echo -e "$app" >> "$installed_python_module"
-            message "$app install python module ...DONE"
+            if [ "$?" == 0 ]
+            then
+                message "$app install python module ...DONE"
+                echo -e "$app" >> "$installed_python_module"
+            else
+                message "$app install python module ...FAILED"
+            fi
             was_installation=1
         else
            message "$app python module is already installed"
@@ -125,9 +130,15 @@ function install_pymodule_pip_secure() {
         then
             echo -e "Install python module with pip and pip3: $app"
             echo "Y" | pip3 install "$app"
+            local exitcode_pip3="$?"
             echo "Y" | pip install "$app"
-            echo -e "$app" >> "$installed_python_module"
-            message "$app install python module with pip...DONE"
+            if [ "$?" == 0 ] || [ "$exitcode_pip3" == 0 ]
+            then
+                message "$app install python module with pip...DONE"
+                echo -e "$app" >> "$installed_python_module"
+            else
+                message "$app install python module with pip...FAIL"
+            fi
             was_installation=1
         else
            message "$app python module (with pip) is already installed"
