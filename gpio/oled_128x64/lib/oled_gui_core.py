@@ -44,9 +44,11 @@ try:
     sys.path.append(confhandler_path)
     import ConfigHandler
     cfg = ConfigHandler.init()
+    default_index_from_cfg = str(cfg.get(section="INSTALL_OLED", option="defaultindex")).rstrip()
 except Exception as e:
     oledlog.logger.warn("Import config handler failed: " + str(e))
     ConfigHandler = None
+    default_index_from_cfg = "-undef-option"
 
 #############################################################################
 #                             THREAD TIMING                                 #
@@ -126,8 +128,20 @@ class Oled_window_manager():
 
     # read default index from file
     def read_default_page_index(self):
+        global default_index_from_cfg
         default_index_config = ".defaultindex.dat"
-        if os.path.exists(default_index_config):
+        index = None
+        # read default index from rpitools_config.cfg
+        if "-undef-option" not in default_index_from_cfg:
+            try:
+                index = int(default_index_from_cfg)
+                with open(default_index_config, "w") as f:
+                    f.write(str(index))
+                self.actual_page_index = int(index)
+            except Exception as e:
+                oledlog.logger.warn("default index read: " + str(e))
+        # read config from official config file
+        if os.path.exists(default_index_config) and index is None:
             with open(default_index_config, "r") as f:
                 index = f.read()
             try:
