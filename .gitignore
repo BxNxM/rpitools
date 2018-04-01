@@ -6,4 +6,7 @@ gpio/Adafruit_Python_SSD1306/
 *.pyc
 autodeployment/config/rpitools_config.cfg
 tools/dropbox_halpage/lib/Dropbox-Uploader/
-tools/dropbox_halpage/lib/local_cahe/*
+tools/dropbox_halpage/lib/local_cache/*
+tools/dropbox_halpage/lib/logs/*
+gpio/haptic_engine/lib/.is_running
+gpio/oled_128x64/lib/logs/*
