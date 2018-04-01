@@ -35,10 +35,6 @@ else
 fi
 
 function update_grade_dits_clean() {
-    # WORKAROUND FOR: E: Unable to locate package <>
-    message "CMD: sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y"
-    echo "Y" | sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y
-
     message "CMD: sudo apt-get update --fix-missing"
     echo "Y" | sudo apt-get update --fix-missing
 
@@ -53,6 +49,10 @@ function update_grade_dits_clean() {
 
     message "CMD: sudo apt-get clean"
     echo "Y" | sudo apt-get clean
+
+    # WORKAROUND FOR: E: Unable to locate package <>
+    message "CMD: sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y"
+    echo "Y" | sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y
 }
 
 elapsed_time "start"
