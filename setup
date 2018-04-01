@@ -213,6 +213,10 @@ message "$welcome_screen_settings_output"
 message "Set /etc/modules-load.d/raspberrypi.conf for i2c communication"
 . ${REPOROOT}/autodeployment/lib/set_i2c_raspberrypi.conf.bash
 
+# set raspberrypi.conf file for spi
+message "Set /etc/modules-load.d/raspberrypi.conf for spi communication"
+. ${REPOROOT}/autodeployment/lib/set_spi_raspberrypi.conf.bash
+
 # set custom hostname
 . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
 
