@@ -54,6 +54,10 @@ function waiting_for_up_again_after_reboot() {
     done
 }
 
+echo -e "###### RPI CONF ######"
+echo -e "Default PWD: raspberry"
+echo -e "######################"
+
 is_avaible_output="$(ping -c 2 raspberrypi.local)"
 is_avaible_exitcode="$?"
 if [ "$is_avaible_exitcode" -eq 0 ]
