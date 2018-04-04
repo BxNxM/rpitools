@@ -8,6 +8,23 @@
  | | \ \  | |       _| |_     | |    | |__| | | |__| | | |____   ____) |
  |_|  \_\ |_|      |_____|    |_|     \____/   \____/  |______| |_____/ 
 ```
+## WHAT IS RPITOOLS?
+* RPITOOLS is an installation and configuration (deployment) system for the raspberry pi (Zero, and 3). It deploys the official raspbain lite operating system and many useful programs, and set the complete system to a tiny playground. 
+* Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional)
+* Sets an optinal GUI (PIXEL) for graphical usage
+* Supports a UNIQUE extension shiled with many periphery.
+* LOST OF FUNCTIONS:
+	* torrent client - transmission (with http client)
+	* network drive - samba (smb)
+	* OLED (128x64) display support on extension shield
+	* extarnal ip deepnet clinet (dropbox - external ip sync)
+	* disks automount
+	* git config
+	* terminal/command line set for easy usage - aliases and so on
+	* vim, xdotool, scrot, python (with many module), etc.
+	* custom ```rpitools/autodeployment/config/rpitools_config.cfg``` user configuration based on ```rpitools/autodeployment/config/rpitools_config_template.cfg```
+	* easy update: ```update_rpitools```
+	* ...
 
 ## CONFIGURATION ON MAC
 ***Deploy and setup raspbain image***
@@ -22,6 +39,7 @@ and dowload:
 RASPBIAN STRETCH LITE
 example: https://downloads.raspberrypi.org/raspbian_lite_latest
 ```
+* open termainl ```CMD+SPACE``` type ```Terminal``` press enter
 
 * clone rpitools repository from github - to get the resources
 
@@ -99,7 +117,7 @@ your whole system.
 
 ***WIRING***
 
-RPITOOLS SHILED WIRING 1.0
+RPITOOLS EXTENSION SHILED WIRING 1.0
 ![page_welcome](https://github.com/BxNxM/rpitools/blob/master/gpio/RPITOOLS_1.0_GPIO_PINOUT.png?raw=true)
 
 ***OLED BOOTUP LOUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
@@ -202,10 +220,6 @@ The video output goes to the dedicated hdmi connector.
 ```
 To controll connected rgb leds.
 
-***WIRING***
-![rgb wiring](https://github.com/BxNxM/rpitools/blob/master/gpio/rgb_led/Wiring.png?raw=true)
-= > 4th wire to the ground!
-
 * start rgb service - it controlls the leds - and process requests
 
 ```
@@ -250,6 +264,28 @@ rgbinterface -sh
 
 ```
 rgbinterface -h
+```
+
+# HAPTIC-ENGINE interface
+```
+  _    _              _____    _______   _____    _____   ______   _   _    _____   _____   _   _   ______ 
+ | |  | |     /\     |  __ \  |__   __| |_   _|  / ____| |  ____| | \ | |  / ____| |_   _| | \ | | |  ____|
+ | |__| |    /  \    | |__) |    | |      | |   | |      | |__    |  \| | | |  __    | |   |  \| | | |__   
+ |  __  |   / /\ \   |  ___/     | |      | |   | |      |  __|   | . ` | | | |_ |   | |   | . ` | |  __|  
+ | |  | |  / ____ \  | |         | |     _| |_  | |____  | |____  | |\  | | |__| |  _| |_  | |\  | | |____ 
+ |_|  |_| /_/    \_\ |_|         |_|    |_____|  \_____| |______| |_| \_|  \_____| |_____| |_| \_| |______|
+                                                                                                           
+                                                                                                           
+hapticengingeinterface -h
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -u, --up          HapticEngine UP signel
+  -d, --down        HapticEngine DOWN signel
+  -s, --soft        HapticEngine SOFT signel
+  -t, --tap         HapticEngine TAP signel
+  -dt, --doubletap  HapticEngine DoubleTAP signel
+  -sn, --snooze     HapticEngine SNOOZE signel
 ```
 
 # Useful links for basics
