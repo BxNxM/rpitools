@@ -8,6 +8,12 @@ confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py
 autorun="$($confighandler -s KODI -o autorun)"
 desktop_icon="$($confighandler -s KODI -o desktop_icon)"
 
+_msg_title="KODI SETUP"
+function _msg_() {
+    local msg="$1"
+    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
+}
+
 function add() {
     local text="$1"
     local where="$2"
@@ -17,7 +23,7 @@ function add() {
         #echo -e "sudo cat $where | grep -v grep | grep \'$text\'\nis_set: $is_set"
         if [ "$is_set" == "" ]
         then
-            echo -e "Set autoload kodi in /home/$USER/.profile"
+            _msg_ "Set autoload kodi in /home/$USER/.profile"
             echo -e "\n${text}" >> "$where"
         else
             #echo -e "text is alreay added: $text"
@@ -25,10 +31,10 @@ function add() {
             #echo -e "IS RUN: $is_run"
             if [ "$is_run" == "" ]
             then
-                echo -e "\t[ |> ] Run KODI"
+                _msg_ "\t[ |> ] Run KODI"
                 kodi &
             else
-                echo -e "\t[ |> ] KODI is already running"
+                _msg_ "\t[ |> ] KODI is already running"
             fi
         fi
     fi
@@ -58,11 +64,11 @@ if [ "$desktop_icon" == "True" ] || [ "$desktop_icon" == "true" ]
 then
     if [ ! -e "$autorun_icon_path" ]
     then
-        echo -e "[ |> ] Create KODI desktop icon"
+        _msg_ "[ |> ] Create KODI desktop icon"
         echo -e "#!/bin/bash\n/usr/bin/kodi &" > "$autorun_icon_path"
         chmod +x "$autorun_icon_path"
     else
-        echo -e "[ |> ] KODI desktop icon is already created."
+        _msg_ "[ |> ] KODI desktop icon is already created."
     fi
 else
     if [ -e "$autorun_icon_path" ]
