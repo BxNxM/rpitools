@@ -1,5 +1,20 @@
 #!/bin/bash
 
+argslen="$#"
+arg="$1"
+
+if [ "$argslen" -eq 1 ]
+then
+    if [ "$arg" -eq 0 ] || [ "$arg" -eq 1 ]
+    then
+        echo -e "QUICK SSHFS OPTION ACTIVATED [0-mount] [1-unmount]"
+        option="$arg"
+    else
+        echo -e "Unknown option: ${option}\n\t0 - mount\n\t1 - unmount"
+        exit 1
+    fi
+fi
+
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #------------------------------------------ CONFIG ----------------------------------------------------#
@@ -146,10 +161,13 @@ function create_config_file(){
 }
 #-------------------------------------------- MAIN ----------------------------------------------------#
 logo
-echo -e "${RED}WRITE OPTION:\n(Press 0) MOUNT TO: $serverPATH -> $localPATH\n(Press 1) UNMOUNT FROM:$localPATH${NC}"
-echo -e "${RED}(PRESS 2) CREATE CONFOG FILE ${ip_file_path} ${NC}"
-echo -n ">"
-read option
+if [ -z "$option" ]
+then
+    echo -e "${RED}WRITE OPTION:\n(Press 0) MOUNT TO: $serverPATH -> $localPATH\n(Press 1) UNMOUNT FROM:$localPATH${NC}"
+    echo -e "${RED}(PRESS 2) CREATE CONFOG FILE ${ip_file_path} ${NC}"
+    echo -n ">"
+    read option
+fi
 
 if [ "$option" -eq 0 ]
 then
