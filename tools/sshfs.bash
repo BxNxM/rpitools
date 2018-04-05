@@ -10,10 +10,11 @@ user="$($confighandler -s SSHFS -o user)"
 default_host="$($confighandler -s SSHFS -o default_host)"
 default_port="$($confighandler -s SSHFS -o default_port)"
 external_port="$($confighandler -s SSHFS -o external_port)"
+mount_folder_path="$($confighandler -s SSHFS -o mount_folder_path)"
 
 #-----------------------------------------------#
 serverPATH="/home/${user}"                      # remote server path
-localPATH=~/sshfs_folder                        # pi server path
+localPATH="$mount_folder_path"                  # pi server path
 ip_file_path=${MYDIR}/.ext_server_ip.dat        # store extarnal ip address
 sshfs_louncher_path=${MYDIR}/sshfs.bash         # actual script full path
 
