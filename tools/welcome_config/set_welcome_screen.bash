@@ -3,24 +3,24 @@
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-config1="welcomeColor.dat"
-config2=".profile"
+wecome_color="welcomeColor.dat"
+profile_path="/home/$USER/.profile"
+welcome_screen_cmd="${MYDIR}/welcome_screen.bash"
+welcome_screen_cmd=${welcome_screen_cmd/$USER/'$USER'}
 
-if [ ! -e "${HOME}/${config1}" ]
+if [ ! -e "${HOME}/${wecome_color}" ]
 then
-    echo -e "COPY COLOR SET: ${MYDIR}/${config1} -> ${HOME}/${config1}"
-    cp "${MYDIR}/${config1}" "${HOME}/${config1}"
-
-    if [ ! -e "${HOME}/${config2}_bckp" ]
-    then
-        echo -e "COPY CUSTOM .profile: ${MYDIR}/${config2} -> ${HOME}/${config2}"
-        echo -e "\tbackup original .profile: ${HOME}/${config2} -> ${HOME}/${config2}_bckp"
-        mv "${HOME}/${config2}" "${HOME}/${config2}_bckp"
-        rm -f "${HOME}/${config2}"
-        cp "${MYDIR}/${config2}" "${HOME}/${config2}"
-    else
-        echo -e ".profile file is alredy set: ${HOME}/${config2}_bckp are exists!"
-    fi
+    echo -e "COPY COLOR SET: ${MYDIR}/${wecome_color} -> ${HOME}/${wecome_color}"
+    cp "${MYDIR}/${wecome_color}" "${HOME}/${wecome_color}"
 else
-    echo -e "Welcome command line screen is already set in .profile"
+    echo -e "COLOR SET ALREADY DONE: ${HOME}/${wecome_color}"
+fi
+
+wecome_screen_is_set="$(cat $profile_path | grep -v grep | grep $welcome_screen_cmd)"
+if [ "$wecome_screen_is_set" == "" ]
+then
+    echo -e "SET WELCOME SCREEN SCRIPT CALL: $welcome_screen_cmd IN $profile_path"
+    echo -e "# welcome screen pintout call\n. $welcome_screen_cmd" >> "$profile_path"
+else
+    echo -e "$profile_path WELCOME COMMAND CALL IS ALREADY SET: $welcome_screen_cmd"
 fi
