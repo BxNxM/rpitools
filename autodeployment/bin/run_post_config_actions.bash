@@ -6,6 +6,7 @@ source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 
 configure_transmission="${MYDIR_}/../lib/configure_transmission.bash"
+set_transmission_whitelist_autoedit="/home/$USER/rpitools/tools/auto_restart_transmission/systemd_setup/set_service.bash"
 configure_samba="${MYDIR_}/../lib/configure_samba.bash"
 
 _msg_title="CONFIG POST ACTIONS"
@@ -17,6 +18,8 @@ function _msg_() {
 # transmission install config executor
 _msg_ "RUN: configure_transmission"
 (. "$configure_transmission")
+_msg_ "RUN: set transmission autorestart edit whitelist"
+(. "$set_transmission_whitelist_autoedit")
 
 # set samba configuration
 _msg_ "RUN: configure_samba"
