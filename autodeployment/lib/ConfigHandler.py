@@ -1,6 +1,7 @@
 import ConfigParser
 import os
 import sys
+from Colors import Colors
 myfolder = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(myfolder, "../config/rpitools_config.cfg")
 template_config_path = os.path.join(myfolder, "../config/rpitools_config_template.cfg")
@@ -96,16 +97,16 @@ def validate_configs_based_on_template(custom_cfg_obj, cfg_path_path=template_co
     for key, value in template_all_dict.items():
         # check sections - user (custom) config based on template config
         if key in custom_all_dict.keys():
-            validate_configs_based_on_template_printout(str(key) + " - section exists - OK", is_active=print_is_active)
+            validate_configs_based_on_template_printout(str(key) + " - section exists - " + Colors.GREEN + "OK" + Colors.NC, is_active=print_is_active)
         else:
-            validate_configs_based_on_template_printout(str(key) + " - section not exits - FAIL", is_active=print_is_active)
+            validate_configs_based_on_template_printout(str(key) + " - section not exits - " + Colors.RED + "FAIL" + Colors.NC, is_active=print_is_active)
             difference_cnt += 1
         # [weak] check options user (custom) config based on template config
         for key_in, value_in in value.items():
             if str(key_in) in str(custom_all_dict):
-                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - OK", is_active=print_is_active)
+                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - " + Colors.GREEN + "OK" + Colors.NC, is_active=print_is_active)
             else:
-                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - FAIL", is_active=print_is_active)
+                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - " + Colors.RED + "FAIL" + Colors.NC, is_active=print_is_active)
                 difference_cnt += 1
     if difference_cnt == 0:
         return True
