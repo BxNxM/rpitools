@@ -99,9 +99,10 @@ then
     INVALID_CONFIG="TRUE"
 else
     echo -e "Your configuration is valid :D"
+    INVALID_CONFIG="FALSE"
 fi
 
-if [ -z "$INVALID_CONFIG" ]
+if [ "$INVALID_CONFIG" == "FALSE" ]
 then
     # set vimrc
     if [ -f ~/.vimrc ]
