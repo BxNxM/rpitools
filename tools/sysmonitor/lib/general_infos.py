@@ -7,6 +7,16 @@ import GeneralElements
 import ConsoleParameters
 from Colors import Colors
 
+def get_rpitools_services():
+    services=["oled_gui_core", "dropbox_halpage", "auto_restart_transmission"]
+    data = Colors.DARK_GRAY + " RPITOOLS SERVICES:\n" + Colors.NC
+    for service in services:
+        is_active = LocalMachine.run_command_safe("systemctl is-active " + str(service))
+        is_enabled = LocalMachine.run_command_safe("systemctl is-enabled " + str(service))
+        data += "\t" + Colors.DARK_GRAY + str(service) + Colors.NC + " active status: " + str(is_active) + "\n"
+        data += "\t" + str(service) + " enabled status: " + str(is_enabled) + "\n"
+    return data
+
 def get_pi_version():
     data = LocalMachine.run_command_safe("sudo uname -a")
     return data
@@ -61,6 +71,7 @@ def create_printout(separator="|", char_width=80):
     ext_ip = get_external_ip()
     cpu_freq = get_cpu_freq()
 
+    text += get_rpitools_services()
     text += " Internal IP address:\t{}\n".format(int_ip)
     text += " External IP address:\t{}\n".format(ext_ip)
     text += " CPU actual frequency:\t{} MHz\n".format(int(cpu_freq)/1000)
