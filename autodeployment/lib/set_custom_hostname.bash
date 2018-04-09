@@ -10,7 +10,7 @@ hosts_path="/etc/hosts"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 custom_host_name="$($confighandler -s RPI_MODEL -o custom_hostname)"
 
-_msg_title="TRANSMISSION SETUP"
+_msg_title="CUSTOM HOSTNAME SETUP"
 function _msg_() {
     local msg="$1"
     echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"

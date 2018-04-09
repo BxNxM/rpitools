@@ -41,25 +41,61 @@ function function_demo() {
 
 if [ "$set_service_conf" == "True" ] || [ "$set_service_conf" == "true" ]
 then
-    echo -e "auto_restart_transmission service is required"
+    echo -e "auto_restart_transmission service is required - turn on"
     if [ ! -e "/lib/systemd/system/auto_restart_transmission.service" ]
     then
         message "COPY: ${MYDIR}/auto_restart_transmission.service -> /lib/systemd/system/auto_restart_transmission.service"
         sudo cp "${MYDIR}/auto_restart_transmission.service" "/lib/systemd/system/auto_restart_transmission.service"
         check_exitcode "$?"
+    else
+        message "/lib/systemd/system/auto_restart_transmission.service is already exists"
+    fi
 
+    if [ "$(systemctl is-active auto_restart_transmission)" == "inactive" ]
+    then
         message "START SERICE: sudo systemctl start auto_restart_transmission.service"
         sudo systemctl start auto_restart_transmission.service
         check_exitcode "$?"
+    else
+        message "ALREADY RUNNING SERICE: auto_restart_transmission.service"
+    fi
 
+    if [ "$(systemctl is-enabled auto_restart_transmission)" == "disabled" ]
+    then
         message "ENABLE SERICE: sudo systemctl enable auto_restart_transmission.service"
         sudo systemctl enable auto_restart_transmission.service
         check_exitcode "$?"
-
-        #function_demo
     else
-        message "/lib/systemd/system/auto_restart_transmission.service is already exists"
-        #function_demo
+        message "ALREADY ENABLED SERICE: auto_restart_transmission.service"
+    fi
+
+elif [ "$set_service_conf" == "False" ] || [ "$set_service_conf" == "false" ]
+then
+    if [ ! -e "/lib/systemd/system/auto_restart_transmission.service" ]
+    then
+        message "COPY: ${MYDIR}/auto_restart_transmission.service -> /lib/systemd/system/auto_restart_transmission.service"
+        sudo cp "${MYDIR}/auto_restart_transmission.service" "/lib/systemd/system/auto_restart_transmission.service"
+        check_exitcode "$?"
+    fi
+
+    echo -e "auto_restart_transmission service is required - turn off"
+
+    if [ "$(systemctl is-active auto_restart_transmission)" == "active" ]
+    then
+        message "STOP SERICE: sudo systemctl stop auto_restart_transmission.service"
+        sudo systemctl stop auto_restart_transmission.service
+        check_exitcode "$?"
+    else
+        message "SERICE NOT RUNNING: auto_restart_transmission.service"
+    fi
+
+    if [ "$(systemctl is-enabled auto_restart_transmission)" == "enabled" ]
+    then
+        message "DISABLE SERICE: sudo systemctl disable auto_restart_transmission.service"
+        sudo systemctl disable auto_restart_transmission.service
+        check_exitcode "$?"
+    else
+        message "SERVICE IS ALREADY DISABLED: auto_restart_transmission.service"
     fi
 else
     echo -e "auto_restart_transmission service is not requested"

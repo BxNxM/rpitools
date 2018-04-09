@@ -143,6 +143,10 @@ then
         upload_human_readable_page
         sleep "$refresh_time"
     done
+elif [ "$action" == "False" ] || [ "$action" == "false" ]
+then
+    echo -e "[ DROPBOX HALPAGE ] service off"
+    echo "" > /dev/null
 else
     echo -e "[ DROPBOX HALPAGE ] service is not activated"
 fi
