@@ -65,3 +65,7 @@ _msg_ "RUN: DROPBOX HALPAGE service setup"
 
 # Configure git
 (. "/home/$USER/rpitools/autodeployment/lib/configure_git.bash")
+
+# Custom logrotate
+_msg_ "RUN: custom logrotate service: log_cleaner.bash or rpitools_logrotate.service"
+(. /home/$USER/rpitools/tools/log_cleaner_service/systemd_setup/set_service.bash)
