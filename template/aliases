@@ -23,6 +23,7 @@ alias diskhandler='sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.p
 alias kodibg='kodi &'
 alias sysmonitor='/home/$USER/rpitools/tools/sysmonitor/bin/sysmonitor.py'
 alias remove_app='sudo apt-get autoremove --purge'
+alias list_services='echo -e "\nENABLED:\n\n$(systemctl list-unit-files | grep enabled)\n\nINACTIVE:\n\n$(systemctl list-unit-files | grep disabled)"'
 
 if [ ! -z $REPOROOT ]
 then
