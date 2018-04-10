@@ -86,6 +86,14 @@ function apps_exception() {
         message "samba samba-common-bin install ...DONE"
         was_installation=1
     fi
+
+    if [ "$app" == "apache2" ]
+    then
+        echo -e "Install app: apache2 -y"
+        echo "Y" | sudo apt-get install apache2 -y
+        message "apache2 -y install ...DONE"
+        was_installation=1
+    fi
 }
 
 function install_pymodule_secure() {
