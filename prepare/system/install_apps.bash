@@ -62,7 +62,7 @@ function install_apps_secure() {
         output=$(command -v "$app")
         if [ -z "$output" ]
         then
-            if [ "$app" == "samba" ]
+            if [ "$app" == "samba" ] || [ "$app" == "apache2" ]
             then
                 apps_exception "$app"
             else
