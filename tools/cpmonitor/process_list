@@ -8,4 +8,4 @@ sysmonitor.py
 dropbox_ext_ip_sync.bash
 halpage_louncher.bash
 restart_transmission_w_ext_users.sh
-rpitools_logrotate.service
+log_cleaner.bash
