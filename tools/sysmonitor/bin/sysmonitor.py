@@ -13,6 +13,7 @@ import disk_usage
 import general_infos
 import logged_in_users
 import mem_usage
+import rpitools_services_list
 import LocalMachine
 import HeaderTimeDateUser
 from Colors import Colors
@@ -29,6 +30,7 @@ parser.add_argument("-m", "--memory",  action='store_true', help="show memory us
 parser.add_argument("-l", "--loggedin",  action='store_true', help="show logged in users")
 parser.add_argument("-g", "--general",  action='store_true', help="show general informations")
 parser.add_argument("-o", "--loop",  action='store_true', help="show informations in loop")
+parser.add_argument("-s", "--services",  action='store_true', help="show rpitools services")
 
 args = parser.parse_args()
 _all = args.all
@@ -39,6 +41,7 @@ _memory = args.memory
 _loggedin = args.loggedin
 _general = args.general
 _loop = args.loop
+_services = args.services
 
 def logo():
     text=Colors.RED + '''
@@ -51,7 +54,7 @@ def logo():
 ''' + Colors.NC
     print(text)
 
-def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general):
+def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services):
     global is_interrupted
     output = ""
     try:
@@ -67,6 +70,8 @@ def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general):
             output += logged_in_users.main() + components_separator
         if _general or _all:
             output += general_infos.main() + components_separator
+        if _services or _all:
+            output += rpitools_services_list.main() + components_separator
         if output != "":
             header = HeaderTimeDateUser.main()
             output = header + "\n" + output.rstrip()
@@ -79,14 +84,14 @@ def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general):
 # MAIN SCOPE
 logo()
 while True:
-    output = main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general)
+    output = main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services)
 
     if output != "":
         print(LocalMachine.run_command_safe("clear"))
         print(output)
     else:
         _all = True
-        output = main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general)
+        output = main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services)
         print(LocalMachine.run_command_safe("clear"))
         print(output)
 
