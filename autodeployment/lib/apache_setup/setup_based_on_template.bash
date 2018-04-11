@@ -1,5 +1,9 @@
 #!/bin/bash
 
+arg_len="$#"
+arg="$1"
+force="False"
+
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CACHE_PATH_is_set="/home/$USER/rpitools/cache/.apache_set_done"
@@ -15,6 +19,15 @@ function _msg_() {
     local msg="$1"
     echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
 }
+
+if [ "$arg_len" -eq 1 ]
+then
+    if [ "$arg" == "-f" ] || [ "$arg" == "-force" ]
+    then
+        _msg_ "FORCE MODE ON - REWRITE actual /car/www/html folder"
+        force="True"
+    fi
+fi
 
 function copy_template_under_apache_html_folder() {
 
@@ -39,7 +52,7 @@ function link_html_folder_to_requested_path() {
 }
 
 link_html_folder_to_requested_path
-if [ ! -e "$CACHE_PATH_is_set" ]
+if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
 then
     copy_template_under_apache_html_folder
     echo -e "$(date)" > "$CACHE_PATH_is_set"
