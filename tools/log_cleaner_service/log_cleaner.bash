@@ -17,6 +17,7 @@ log_file_sizeGB_trigger="$($confighandler -s LOGROTATE -o log_file_sizegb_trigge
 run_period_sec="$($confighandler -s LOGROTATE -o run_period_sec)"
 
 logs_folder="/var/log/"
+logs_folder2="/var/log/"
 find_size_over_Gb="$log_file_sizeGB_trigger"
 sleeptime="$run_period_sec"
 rotate_lines=50
@@ -33,7 +34,8 @@ function debug_msg() {
 }
 
 function logs_to_clean() {
-    filtered_logs="$(sudo find "$logs_folder" -size +${find_size_over_Gb}G)"
+    local log_folder_path="$1"
+    filtered_logs="$(sudo find "$log_folder_path" -size +${find_size_over_Gb}G)"
     filtered_logs=($filtered_logs)
     for log in "${filtered_logs[@]}"
     do
@@ -64,10 +66,12 @@ then
     debug_msg "Run auto log cleaner in loop."
     while true
     do
-        logs_to_clean
+        logs_to_clean "$logs_folder"
+        logs_to_clean "$logs_folder2"
         sleep "$sleeptime"
     done
 else
     debug_msg "Run auto log clenaer once."
-    logs_to_clean
+    logs_to_clean "$logs_folder"
+    logs_to_clean "$logs_folder2"
 fi
