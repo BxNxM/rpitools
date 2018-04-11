@@ -18,11 +18,11 @@ function message() {
 
 function make_backup() {
     local device="$1"
-    local backup_image_path="${MYDIR_}/raspbain_bckp_$(date +"%Y_%m__%d_%H_%M").img.gz"
+    local backup_image_path="${MYDIR_}/raspbian_bckp_$(date +"%Y_%m__%d_%H_%M").img.gz"
 
-    message "CREATE BACKUP: sudo dd bs=4M if=$device | gzip > $backup_image_path"
+    message "CREATE BACKUP: sudo dd bs=4m if=$device | gzip > $backup_image_path"
     message "BE PATIENT, IT WILL TAKE SOME TIME [WARNING] DO NOT REMOVE SD CARD!!!"
-    sudo dd bs=4M if="$device" | gzip > "$backup_image_path"
+    sudo dd bs=4m if="$device" | gzip > "$backup_image_path"
     exit_code="$?"
     if [ "$exit_code" == 0 ]
     then
