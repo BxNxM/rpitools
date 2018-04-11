@@ -69,3 +69,6 @@ _msg_ "RUN: DROPBOX HALPAGE service setup"
 # Custom logrotate
 _msg_ "RUN: custom logrotate service: log_cleaner.bash or rpitools_logrotate.service"
 (. /home/$USER/rpitools/tools/log_cleaner_service/systemd_setup/set_service.bash)
+
+_msg_ "RUN apache basic setup based on rpi_config and rpitools/autodeployment/lib/apache_setup/template"
+(. /home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash)
