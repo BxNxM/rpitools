@@ -20,16 +20,17 @@ function message() {
     fi
 }
 
-if [ -z "$REPOROOT" ]
+OS=$(uname)
+if [ "$OS" == "Darwin" ]
 then
-    OS=$(uname)
-    if [ "$OS" == "GNU/Linux" ]
-    then
-        message "This script work on Mac, this OS $OS is not supported!"
-        exit 1
-    fi
+    message "Use MacOS settings."
+    glob_boot_path="/Volumes/boot"
+elif [ "$OS" == "GNU/Linux" ] || [ "$OS" == "Linux"  ]
+then
+    message "Use Linux settings."
+    glob_boot_path="/media/$USER/boot/"
 else
-    message "This script work on Mac, this OS $OS is not supported!"
+    message "This script work on Mac or Linux, this OS $OS is not supported!"
     exit 2
 fi
 
@@ -42,14 +43,14 @@ function config_is_avaible() {
     fi
 }
 
-if [ -e "/Volumes/boot" ]
+if [ -e "$glob_boot_path" ]
 then
     # deault boot drive option
-    message "DESAULT DISK IS AVAIBLE: /Volumes/boot"
+    message "DESAULT DISK IS AVAIBLE: $glob_boot_path"
     read -p 'Is it your disk, for configure? (y/n)' default_disk_conf
     if [ "$default_disk_conf" == "y" ]
     then
-        sd_path="/Volumes/boot"
+        sd_path="$glob_boot_path"
     fi
 else
     # read sd card boot partition path

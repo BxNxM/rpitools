@@ -18,16 +18,23 @@ function message() {
     fi
 }
 
-if [ -z "$REPOROOT" ]
+OS=$(uname)
+if [ "$OS" == "Darwin" ]
 then
-    OS=$(uname)
-    if [ "$OS" == "GNU/Linux" ]
-    then
-        message "This script work on Mac, this OS $OS is not supported!"
-        exit 1
-    fi
+    message "Use MacOS settings."
+    glob_downloads_folder="/Users/$USER/Downloads/"
+    glob_list_disks="$(diskutil list)"
+    glob_bs_size="1m"
+    glob_conv="sync"
+elif [ "$OS" == "GNU/Linux" ] || [ "$OS" == "Linux"  ]
+then
+    message "Use Linux settings."
+    glob_downloads_folder="/home/$USER/Downloads/"
+    glob_list_disks="$(lsblk)"
+    glob_bs_size="4M"
+    glob_conv="fsync"
 else
-    message "This script work on Mac, this OS $OS is not supported!"
+    message "This script work on Mac or Linux, this OS $OS is not supported!"
     exit 2
 fi
 
@@ -37,7 +44,7 @@ message "Search image..."
 img_path=$(echo raspbian_img/*.img)
 if [ ! -e "$img_path" ]
 then
-    img_in_downloads_folder="$(find /Users/$USER/Downloads/ -iname "*raspbian*lite*.img")"
+    img_in_downloads_folder="$(find $glob_downloads_folder -iname "*raspbian*lite*.img")"
     if [ -e "$img_in_downloads_folder" ]
     then
         echo -e "Copy $img_in_downloads_folder image to ${MYDIR_}/raspbian_img/"
@@ -52,8 +59,8 @@ img_path_="$(echo raspbian_img/*.img)"
 img_path="${MYDIR_}/${img_path_}"
 if [ -e "$img_path" ]
 then
-    message "List drives: diskutil list"
-    diskutil list
+    message "List drives: diskutil list / lsblk"
+    echo -e "$glob_list_disks"
 
     message "Which drive want you use? example: /dev/disk<n>"
     read drive
@@ -62,9 +69,9 @@ then
     then
         message "Unmount drive: diskutil unmountDisk $drive"
         diskutil unmountDisk "$drive"
-        message "Deploy img to drive: sudo dd bs=1m if=$img_path of=$drive conv=sync"
+        message "Deploy img to drive: sudo dd bs=1m if=$img_path of=$drive conv=$glob_conv"
         message "WARNING: please wait patiently!"
-        sudo dd bs=1m if="$img_path"  of="$drive" conv=sync
+        sudo dd bs="$glob_bs_size" if="$img_path"  of="$drive" conv="$glob_conv"
         if [ "$?" -eq 0 ]
         then
             message "SUCCESS"
