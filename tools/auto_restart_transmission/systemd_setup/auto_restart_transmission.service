@@ -5,7 +5,7 @@ After=network.target
 [Service]
 ExecStart=/bin/bash restart_transmission_w_ext_users.sh -loop
 WorkingDirectory=/home/pi/rpitools/tools/auto_restart_transmission/
-StandardOutput=inherit
+StandardOutput=/dev/null
 StandardError=inherit
 Restart=always
 User=pi

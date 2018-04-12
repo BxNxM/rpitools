@@ -5,7 +5,7 @@ After=network.target
 [Service]
 ExecStart=/bin/bash halpage_louncher.bash -s
 WorkingDirectory=/home/pi/rpitools/tools/dropbox_halpage/bin/
-StandardOutput=inherit
+StandardOutput=/dev/null
 StandardError=inherit
 Restart=always
 User=pi
