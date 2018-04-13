@@ -1,11 +1,12 @@
 import ConfigParser
 import os
 import sys
+import getpass
 from Colors import Colors
 myfolder = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(myfolder, "../config/rpitools_config.cfg")
 template_config_path = os.path.join(myfolder, "../config/rpitools_config_template.cfg")
-
+USER = getpass.getuser()
 
 class SimpleConfig(ConfigParser.ConfigParser):
 
@@ -16,6 +17,7 @@ class SimpleConfig(ConfigParser.ConfigParser):
         self.__parse_config()
 
     def __parse_config(self, reparse=False):
+        global USER
         if self.config_dict is None or reparse:
             self.read(self.cfg_path)
             self.config_dict = {}
@@ -24,7 +26,9 @@ class SimpleConfig(ConfigParser.ConfigParser):
                 self.config_dict[section] = {}
                 options_list = self.options(section)
                 for option in options_list:
-                    self.config_dict[section][option] = ConfigParser.ConfigParser.get(self, section, option)
+                    parameter = ConfigParser.ConfigParser.get(self, section, option).replace("$USER", USER)
+                    parameter = parameter.replace("~/", "/home/{}/".format(USER))
+                    self.config_dict[section][option] = parameter
         return self.config_dict
 
     def get(self, section, option, reparse=False):

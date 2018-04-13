@@ -91,7 +91,7 @@ then
     echo -e "ssh-keygen -R $hostname"
     ssh-keygen -R "$hostname"
     # run until reboot is not happens
-    for ((k=0; k<4; k++))
+    for ((k=0; k<3; k++))
     do
         echo -e "\texecute source setup"
         execute_source_setup_on_rpi_machine_custom_host
