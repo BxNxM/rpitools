@@ -34,6 +34,10 @@ then
     echo -e "\tpkill x \t\t-> stop gui"
     echo -e "\tstartvnc\t\t-> start vnc service"
     echo -e "\tkodibg\t\t\t-> start kodi media center"
+    echo -e "Other commands:"
+    echo -e "\tAdd new user for\n\t\
+apache webshared dir:\thtpasswd -cb /home/$USER/.secure/apasswords user_name user_pwd"
+    echo -e "\tAdd new samba user:\tsudo smbpasswd -a samba_user"
     echo -e ""
     echo -e "for more info use: ->| ${wColor}alias${NC} |<- command"
     echo -e "${wColor}########################################################${NC}"
