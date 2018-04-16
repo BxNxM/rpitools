@@ -338,5 +338,11 @@ https://thepihut.com/blogs/raspberry-pi-tutorials/17789160-backing-up-and-restor
 http://bobbyromeo.com/technology/backup-clone-raspberry-pi-sd-card/
 ```
 
+* Password protected apache folder setup
+
+```
+https://www.cyberciti.biz/faq/howto-setup-apache-password-protect-directory-with-htaccess-file/
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
