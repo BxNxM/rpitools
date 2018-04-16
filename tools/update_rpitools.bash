@@ -19,8 +19,8 @@ function config_is_changed_on_HEAD() {
     then
         echo -e "====== [ WARNING ] ======"
         echo -e "rpitools_config_template.cfg changed - MANUAL SETTINGS NEEDED!"
-        echo -e "ARE YOU SURE TO CONTINUE? Y | N"
-        read -n areyousure
+        echo -en "ARE YOU SURE TO CONTINUE? Y | N >"
+        read  areyousure
         if [ "$areyousure" == "n" ] || [ "$areyousure" == "N" ]
         then
             echo -e "Update stopping... OK"
