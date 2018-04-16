@@ -51,8 +51,8 @@ function add_configuration() {
 }
 
 function set_user_and_restart() {
-    _msg_ "Set smbpasswd: sudo smbpasswd -a $samba_user"
-    sudo smbpasswd -a "$samba_user"
+    _msg_ "Set smbpasswd: sudo smbpasswd -an $samba_user"
+    sudo smbpasswd -an "$samba_user"
     _msg_ "Restart samba: sudo /etc/init.d/samba restart"
     sudo /etc/init.d/samba restart
 }
