@@ -14,6 +14,7 @@ template_folder_path="${MYDIR_}/template/"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 html_folder_link_to="$($confighandler -s APACHE -o html_folder_link_to)"
 html_shared_default_user="$($confighandler -s APACHE -o http_user)"
+html_shared_default_user_password="$($confighandler -s APACHE -o http_passwd)"
 html_webshared_folder_name="$($confighandler -s APACHE -o webshared_folder_name)"
 html_shared_folder="${html_folder_path}/${html_webshared_folder_name}"
 
@@ -88,7 +89,7 @@ function set_shared_folder_password_protected() {
     if [ ! -e "/home/$USER/.secure/apasswords" ]
     then
         _msg_ "Create password for user: htpasswd -c /home/$USER/.secure/apasswords $html_shared_default_user"
-        htpasswd -c /home/$USER/.secure/apasswords $html_shared_default_user
+        htpasswd -cb /home/$USER/.secure/apasswords "$html_shared_default_user" "$html_shared_default_user_password"
     else
         _msg_ "/home/$USER/.secure/apasswords already exists"
     fi
