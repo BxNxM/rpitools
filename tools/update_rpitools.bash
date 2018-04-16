@@ -13,6 +13,26 @@ else
     echo -e "[ WARNING ] - option is not given -> start/stop"
 fi
 
+function config_is_changed_on_HEAD() {
+    local is_changed="$(git diff origin/master ~/rpitools/autodeployment/config/rpitools_config_template.cfg)"
+    if [ "$is_changed" != "" ]
+    then
+        echo -e "====== [ WARNING ] ======"
+        echo -e "rpitools_config_template.cfg changed - MANUAL SETTINGS NEEDED!"
+        echo -e "ARE YOU SURE TO CONTINUE? Y | N"
+        read -n areyousure
+        if [ "$areyousure" == "n" ] || [ "$areyousure" == "N" ]
+        then
+            echo -e "Update stopping... OK"
+            exit 3
+        else
+            echo -e "Update continue... OK"
+        fi
+    else
+        echo -e "HEAD rpitools_config_template.cfg not changed - manual interrupt not needed."
+    fi
+}
+
 function stop_running_processes() {
     process_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate")
     for process in "${process_list[@]}"
@@ -41,6 +61,7 @@ function start_running_processes() {
     done
 }
 
+config_is_changed_on_HEAD
 if [ "$option" == "stop" ]
 then
     echo -e "STOP PROCESSES"
@@ -52,4 +73,4 @@ then
     start_running_processes
     echo -e "DONE"
 fi
-
+exit 0
