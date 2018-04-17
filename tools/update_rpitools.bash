@@ -14,7 +14,7 @@ else
 fi
 
 function config_is_changed_on_HEAD() {
-    local is_changed="$(git diff origin/master ~/rpitools/autodeployment/config/rpitools_config_template.cfg)"
+    local is_changed="$(git fetch && git diff origin/master ~/rpitools/autodeployment/config/rpitools_config_template.cfg)"
     if [ "$is_changed" != "" ]
     then
         echo -e "====== [ WARNING ] ======"
