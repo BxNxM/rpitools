@@ -77,8 +77,8 @@ else
     echo "Y" | sudo apt-get install --reinstall libraspberrypi0 libraspberrypi-{bin,dev,doc} raspberrypi-bootloader
     check_exitcode "$?"
 
-    message "install: sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy"
-    echo "Y" | sudo usermod -a -G tty pi && sudo apt-get install xserver-xorg-legacy
+    message "install: sudo usermod -a -G tty $USER && sudo apt-get install xserver-xorg-legacy"
+    echo "Y" | sudo usermod -a -G tty "$USER" && sudo apt-get install xserver-xorg-legacy
     check_exitcode "$?"
 
     root_rights="yes"

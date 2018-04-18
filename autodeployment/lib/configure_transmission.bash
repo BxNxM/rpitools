@@ -63,7 +63,7 @@ then
     if [ ! -e "${download_path}" ]
     then
         _msg_ "Create download dir: ${download_path}"
-        sudo -u pi mkdir -p "${download_path}"
+        sudo -u "$USER" mkdir -p "${download_path}"
         sudo chmod 770 "${download_path}"
         sudo chgrp debian-transmission "${download_path}"
     else
@@ -74,7 +74,7 @@ then
     if [ ! -e "${incomp_download_path}" ]
     then
         _msg_ "Create incomplete download dir: ${incomp_download_path}"
-        sudo -u pi mkdir -p "${incomp_download_path}"
+        sudo -u "$USER" mkdir -p "${incomp_download_path}"
         sudo chmod 770 "${incomp_download_path}"
         sudo chgrp debian-transmission "${incomp_download_path}"
     else
@@ -82,7 +82,7 @@ then
     fi
 
     # make usermod
-    sudo usermod -a -G debian-transmission pi
+    sudo usermod -a -G debian-transmission "$USER"
 
     _msg_ "SET DOWNLOADS FOLDER: $download_path IN: $transmission_conf_path"
     #change_parameter "/var/lib/transmission-daemon/downloads" "$download_path" "$transmission_conf_path"
