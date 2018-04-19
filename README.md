@@ -341,6 +341,7 @@ get your ip address on the pi:
 sysmonitor -g
 ```
 
+![website_1.0](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/website1.0.png?raw=true)
 
 # Useful links for basics
 * RaspberryPi gpio usage:
