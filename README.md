@@ -164,7 +164,7 @@ your whole system.
 
 ![page_welcome](https://github.com/BxNxM/rpitools/blob/master/gpio/RPITOOLS_1.0_GPIO_PINOUT.png?raw=true)
 
-***OLED BOOTUP LOUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
+***OLED BOOTUP LAUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
 
 ```
 for more info:
@@ -181,7 +181,7 @@ oledinterface -b stanbyTrue
 oledinterface -b stanbyFalse
 ```
 
-#### CUSTOMIZE OLED FRAMEWORK AND CRAETE NEW PAGES (OPTIONAL)
+#### CUSTOMIZE OLED FRAMEWORK AND CREATE NEW PAGES (OPTIONAL)
 * set default page 0 < - > page numbers in /home/$USER/rpitools/gpio/oled_128x64/lib/pages/ folder
 
 ```
@@ -241,14 +241,15 @@ CPU if oled in STANDBY: 2.3 %
                                            
 ``` 
 
-***use hardware optimalized meda player for 720p and 180p videos***
+***use hardware optimized media player for 720p and 180p videos***
 
 ```
 run in command line:
 kodibg
 ```
-It gives you a full meia player with many options. 
-The video output goes to the dedicated hdmi connector.
+
+It gives you a full media player with many options. 
+The video output goes to the dedicated HDMI connector.
 
 
 # RGB interface
