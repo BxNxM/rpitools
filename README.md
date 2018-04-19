@@ -8,25 +8,66 @@
  | | \ \  | |       _| |_     | |    | |__| | | |__| | | |____   ____) |
  |_|  \_\ |_|      |_____|    |_|     \____/   \____/  |______| |_____/ 
 ```
-## WHAT IS RPITOOLS?
-* RPITOOLS is an installation and configuration (deployment) system for the raspberry pi (Zero, and 3). It deploys the official raspbain lite operating system and many useful programs, and set the complete system to a tiny playground. 
-* Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional)
+## WHAT IS RPITOOLS [HomeCloud]?
+* RPITOOLS is an installation and configuration (deployment) system for the raspberry pi (Zero, and 3). It deploys the official raspbain lite operating system and many useful programs, and set the complete system to a tiny playground and procreate your HomeCloud. 
+* Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional), website(http)
 * Sets an optinal GUI (PIXEL) for graphical usage
 * Supports a UNIQUE extension shiled with many periphery.
 * LOST OF FUNCTIONS:
-	* torrent client - transmission (with http client)
+	* torrent client - transmission (with http client, port: 9091)
 	* network drive - samba (smb)
 	* OLED (128x64) display support on extension shield
-	* extarnal ip deepnet clinet (dropbox - external ip sync)
-	* disks automount
+	* extarnal ip deepnet clinet access (dropbox - external ip sync)
+	* disks automount, and command line interface
 	* git config
 	* terminal/command line set for easy usage - aliases and so on
-	* vim, xdotool, scrot, python (with many module), etc.
+	* vim, xdotool, scrot, python (with many modules), kodi etc.
 	* custom ```rpitools/autodeployment/config/rpitools_config.cfg``` user configuration based on ```rpitools/autodeployment/config/rpitools_config_template.cfg```
 	* easy update: ```update_rpitools```
-	* ...
+	* custom login help console:
 
-## CONFIGURATION ON MAC
+```
+WELCOME pi! PI IP ADDRESS 10.0.1.7 
+Connected from: fe80::1421:2053:794e:fa25%wlan0
+WELCOME pi! PI IP ADDRESS 10.0.1.7 
+TODAY: Thu Apr 19 19:25:25 UTC 2018
+     April 2018       
+Su Mo Tu We Th Fr Sa  
+ 1  2  3  4  5  6  7  
+ 8  9 10 11 12 13 14  
+15 16 17 18 19 20 21  
+22 23 24 25 26 27 28  
+29 30                 
+                      
+HOME DISK: 41M	./
+
+AVAIBLE SERVICES AND TOOLS:
+Service (rpitools) interfaces:
+	oledinterface -h	-> oled service command line control
+	rgbinterface -h		-> rgb command line control
+	hapticinterface -h	-> vibre motor cmd line control
+	sysmonitor -h		-> system monitoring tool
+	diskhandler -h		-> external disks handling based on fstab
+	confighandler -h	-> config handler based on rpitools_config.cfg
+	mysshfs			-> built in sshfs based on rpitools_config.cfg
+	update_rpitools		-> update your repository
+Manage GUI (X):
+	startxbg		-> start gui in the background
+	pkill x 		-> stop gui
+	startvnc		-> start vnc service
+	kodibg			-> start kodi media center
+Other commands:
+	Add new user for
+	apache webshared dir:	htpasswd -cb /home/pi/.secure/apasswords user_name user_pwd
+	Add new samba user:	sudo smbpasswd -a samba_user
+
+for more info use: ->| alias |<- command
+########################################################
+```
+
+## How to install: 
+####CONFIGURATION ON MAC
+
 ***Deploy and setup raspbain image***
 
 * Download raspbain lite:
@@ -117,7 +158,10 @@ your whole system.
 
 ***WIRING***
 
-RPITOOLS EXTENSION SHILED WIRING 1.0
+######If you have our - offcial shild - just connect it to your raspberrypi.
+
+#####RPITOOLS EXTENSION SHILED WIRING 1.0
+
 ![page_welcome](https://github.com/BxNxM/rpitools/blob/master/gpio/RPITOOLS_1.0_GPIO_PINOUT.png?raw=true)
 
 ***OLED BOOTUP LOUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
@@ -287,6 +331,16 @@ optional arguments:
   -dt, --doubletap  HapticEngine DoubleTAP signel
   -sn, --snooze     HapticEngine SNOOZE signel
 ```
+
+# Your website
+You have a custom website, with protected files web folder - like custom dropbox (cloud) on a private drive at home.
+Get your internal or extarnal ip address and copy-paste it to your browser.
+
+```
+get your ip address on the pi:
+sysmonitor -g
+```
+
 
 # Useful links for basics
 * RaspberryPi gpio usage:
