@@ -13,7 +13,7 @@
 * Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional), website(http)
 * Sets an optinal GUI (PIXEL) for graphical usage
 * Supports a UNIQUE extension shiled with many periphery.
-* LOST OF FUNCTIONS:
+* LIST OF FUNCTIONS:
 	* torrent client - transmission (with http client, port: 9091)
 	* network drive - samba (smb)
 	* OLED (128x64) display support on extension shield
@@ -68,9 +68,9 @@ for more info use: ->| alias |<- command
 ## How to install: 
 ####CONFIGURATION ON MAC
 
-***Deploy and setup raspbain image***
+***Deploy and setup raspbian image***
 
-* Download raspbain lite:
+* Download raspbian lite:
 
 ```
 Browse:
@@ -80,7 +80,7 @@ and dowload:
 RASPBIAN STRETCH LITE
 example: https://downloads.raspberrypi.org/raspbian_lite_latest
 ```
-* open termainl ```CMD+SPACE``` type ```Terminal``` press enter
+* open terminal ```CMD+SPACE``` type ```Terminal``` press enter
 
 * clone rpitools repository from github - to get the resources
 
