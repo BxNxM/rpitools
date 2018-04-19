@@ -345,7 +345,7 @@ sysmonitor -g
 ![website_1.0](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/website1.0.png?raw=true)
 
 # Useful links for basics
-* RaspberryPi gpio usage:
+* RaspberryPi GPIO usage:
 
 ```
  https://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
@@ -363,13 +363,13 @@ https://pinout.xyz/pinout/pin1_3v3_power
 https://www.raspberrypi.org/downloads/raspbian/
 ```
 
-* Raspbain image installation - maunal - Windows / Mac / Linux
+* Raspbain image installation - manual - Windows / Mac / Linux
 
 ```
 https://www.raspberrypi.org/documentation/installation/installing-images/
 ```
 
-* My favourite raspberry pi order site (not sponsored)
+* My favourite raspberry pi order site (not sponsored - yet :P)
 
 ```
 https://thepihut.com/products/raspberry-pi-zero-essential-kit
