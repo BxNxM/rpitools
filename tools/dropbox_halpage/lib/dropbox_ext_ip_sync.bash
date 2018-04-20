@@ -16,7 +16,7 @@ logfile="${MYDIR}/logs/extiphandler.log"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 uid_name="$($confighandler -s EXTIPHANDLER -o uid_name)"
-uid_name_hum="${uid_name}_hum.txt"
+uid_name_hum="${uid_name}_hum.md"
 ssh_port="$($confighandler -s EXTIPHANDLER -o ssh_port)"
 transmission_port="$($confighandler -s EXTIPHANDLER -o transmission_port)"
 http_port="$($confighandler -s EXTIPHANDLER -o http_port)"
@@ -59,14 +59,17 @@ function safe_if_ext_ip_changed() {
         # init myip file
         if [ ! -e "$local_cache_myextaddr" ]
         then
+            init_needed=1
             echo "" > "$local_cache_myextaddr"
+        else
+            init_needed=0
         fi
 
         # save ip if new found
         is_changed="$(cat $local_cache_myextaddr | grep -v grep | grep $myext_ip)"
-        if [ "$is_changed" == "" ]
+        if [[ "$is_changed" == "" ]] || [[ "$init_needed" -eq 1  ]]
         then
-            info_ip_port="${myext_ip}\n${ssh_port}"
+            info_ip_port="${myext_ip} ${ssh_port}"
             debug_msg "[2] Save new ip address: $myext_ip"
             echo -e "$info_ip_port" > "$local_cache_myextaddr"
             new_ip_is_found=1
@@ -110,19 +113,27 @@ function upload_myip_file_if_new_ip_found() {
     fi
 }
 
+function create_human_readabe_md_file() {
+    text="## HALPAGE: $uid_name\n\n"
+    text+="####$(date)\n\n"
+    text+="***EXTERNAL IP ADDRESS:***\n\n"
+    IFS=' ' read -r -a my_ext_ip <<< "$(cat local_cache/prototype_extIP)"
+    text+="\`\`\`${my_ext_ip[0]}\`\`\`\n\n"
+    text+="***EXTERNAL SSH PORT:***\n\n"
+    text+="\`\`\`${ssh_port}\`\`\`\n\n"
+    text+="***TRANSMISSION ACCESS:***\n\n"
+    text+="\`\`\`http://${my_ext_ip[0]}:${transmission_port}\`\`\`)\n\n"
+    text+="***HTTP ADDRESS:***\n\n"
+    text+="\`\`\`http://${my_ext_ip[0]}:${http_port}\`\`\`"
+    echo -e "$text" > "$local_cache_myextaddr_hum"
+}
+
+
 function upload_human_readable_page() {
     local myip_dropbox_is_exits=$("$dropbox_uploader" list halpage)
     if [ "$new_ip_is_found" -eq 1 ] || [[ "$myip_dropbox_is_exits" != *"$uid_name_hum"* ]]
     then
-        local text=""
-        text+="============= HALPAGE: $uid_name =============\n"
-        text+="=========== $(date) ===========\n"
-        text+="EXTERNAL IP ADDRESS: $(cat $local_cache_myextaddr)\n"
-        text+="EXTERNAL PORT NUMBER: ${ssh_port}\n"
-        text+="TRANSMISSION ACCESS: http://$(cat $local_cache_myextaddr):${transmission_port}\n"
-        text+="HTTP ADDRESS: http://$(cat $local_cache_myextaddr):${http_port}\n"
-        text+="==================================================\n"
-        echo -e "$text" > "$local_cache_myextaddr_hum"
+        create_human_readabe_md_file
 
         debug_msg "[5] Upload human readable halpage for: $uid_name_hum"
         upload_new_ip=$("$dropbox_uploader" upload "$local_cache_myextaddr_hum" "halpage/$uid_name_hum")
