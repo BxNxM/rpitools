@@ -25,6 +25,7 @@ alias sysmonitor='/home/$USER/rpitools/tools/sysmonitor/bin/sysmonitor.py'
 alias remove_app='sudo apt-get autoremove --purge'
 alias list_services='echo -e "\nENABLED:\n\n$(systemctl list-unit-files | grep enabled)\n\nINACTIVE:\n\n$(systemctl list-unit-files | grep disabled)"'
 alias halpage='/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash'
+alias copy_my_sshkey_to='/home/$USER/rpitools/tools/copy_my_sshkey_to.bash'
 
 if [ ! -z $REPOROOT ]
 then
