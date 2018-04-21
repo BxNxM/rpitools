@@ -181,7 +181,7 @@ then
     then
         # get valid host and port | from file and stdin
         get_host_and_port
-    	echo "cmd: sshfs -p $port -o follow_symlinks $user@$host:$serverPATH $localPATH"
+    	echo "MOUNT: => cmd: sshfs -p $port -o follow_symlinks $user@$host:$serverPATH $localPATH"
         sshfs -p $port -o follow_symlinks $user@$host:$serverPATH $localPATH
         exit 0
     else
