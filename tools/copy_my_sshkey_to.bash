@@ -50,4 +50,4 @@ function copy_to_the_server() {
 
 check_id_rsa_pub_exists
 get_ssh_key
-copy_to_the_server "server@server.local"
+copy_to_the_server "$server_connection_input"
