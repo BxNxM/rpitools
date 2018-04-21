@@ -122,9 +122,9 @@ function create_human_readabe_md_file() {
     text+="***EXTERNAL SSH PORT:***\n\n"
     text+="\`\`\`${ssh_port}\`\`\`\n\n"
     text+="***TRANSMISSION ACCESS:***\n\n"
-    text+="\`\`\`http://${my_ext_ip[0]}:${transmission_port}\`\`\`\n\n"
+    text+="[http://${my_ext_ip[0]}:${transmission_port}](http://${my_ext_ip[0]}:${transmission_port})\n\n"
     text+="***HTTP ADDRESS:***\n\n"
-    text+="\`\`\`http://${my_ext_ip[0]}:${http_port}\`\`\`"
+    text+="[http://${my_ext_ip[0]}:${http_port}](http://${my_ext_ip[0]}:${http_port})"
     echo -e "$text" > "$local_cache_myextaddr_hum"
 }
 
