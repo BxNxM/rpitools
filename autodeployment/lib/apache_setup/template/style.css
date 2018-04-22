@@ -1,0 +1,93 @@
+/* hotlink styles */
+a:link {
+        color: black;
+        text-decoration: none;
+        }
+
+        /* visited link */
+a:visited {
+        color: black;
+        text-decoration: none;
+        }
+
+        /* mouse over link */
+a:hover {
+            color: rgb(238,227,205);
+            text-decoration: underline;
+        }
+
+        /* selected link */
+a:active {
+            color: rgb(238,227,205);
+            text-decoration: underline;
+        }
+
+/* paragraph styles */
+p.position_main_logo {
+        padding-top: 10%;
+}
+
+p.position_sub_logo {
+        padding-left: 15%;
+}
+
+/* text formats */
+p.normal {
+    font-weight: normal;
+    font-family: arial;
+    font-size: 16;
+    margin-left: 13%;
+    margin-right: 5%;
+    text-align: justify;
+}
+
+p.normal_center {
+    font-weight: normal;
+    font-family: arial;
+    font-size: 16;
+    margin-left: 13%;
+    margin-right: 5%;
+    width: 70%;
+    padding: 0%;
+    text-align: center;
+}
+
+p.underline {
+    font-weight: normal;
+    font-family: arial;
+    font-size: 16;
+    text-decoration: underline;
+    margin-left: 13%;
+    margin-right: 5%;
+    text-align: justify;
+}
+
+p.bold {
+    font-weight: bold;
+    font-family: arial;
+    font-size: 16;
+    margin-left: 13%;
+    margin-right: 5%;
+    text-align: justify;
+}
+
+p.comment {
+    font-weight: normal;
+    font-family: arial;
+    font-size: 12;
+    margin-left: 13%;
+    margin-right: 5%;
+    text-align: justify;
+}
+
+/* table formats - with text style*/
+tr.menu_bar      {
+    font-weight: 900;
+    font-family: arial;
+    font-size: 20;
+        }
+
+/* default body with background */
+body    {
+        background-image: url("./images/rpitools_background.png");
+        }

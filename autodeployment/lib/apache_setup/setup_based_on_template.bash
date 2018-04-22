@@ -17,6 +17,7 @@ html_shared_default_user="$($confighandler -s APACHE -o http_user)"
 html_shared_default_user_password="$($confighandler -s APACHE -o http_passwd)"
 html_webshared_folder_name="$($confighandler -s APACHE -o webshared_folder_name)"
 html_shared_folder="${html_folder_path}/${html_webshared_folder_name}"
+transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
 
 _msg_title="APACHE SETUP"
 function _msg_() {
@@ -111,11 +112,22 @@ function set_shared_folder_password_protected() {
     fi
 }
 
+function link_transmission_downloads_folder() {
+    if [ ! -e "${html_shared_folder}/downloads" ]
+    then
+        _msg_ "LINK: $transmission_downloads_path -> ${html_shared_folder}/downloads"
+        sudo ln -s "$transmission_downloads_path" "${html_shared_folder}/downloads"
+    else
+        _msg_ "LINK: $transmission_downloads_path -> ${html_shared_folder}/downloads already exists"
+    fi
+} 
+
 link_html_folder_to_requested_path
 if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
 then
     copy_template_under_apache_html_folder
     echo -e "$(date)" > "$CACHE_PATH_is_set"
+    link_transmission_downloads_folder
 else
     _msg_ "HTML template copy already done: ${CACHE_PATH_is_set} exists."
 fi
