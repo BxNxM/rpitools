@@ -58,6 +58,34 @@ local_slide( {
         "width" : 253,
         "height" : 252
       },
+      "4AD7D36E1A33F741A4FD2E91AA970DD6" : {
+        "type" : "texture",
+        "index" : 17,
+        "assetRequest" : {
+          "type" : "slide",
+          "state" : "contents",
+          "slide" : "none"
+        },
+        "url" : {
+          "native" : "assets\/0BEFB8CB-4B95-412C-BD4E-8C77429670F0.pdf"
+        },
+        "width" : 224,
+        "height" : 225
+      },
+      "3CB359D0D0E1E6EAE19E62D20D68B863" : {
+        "type" : "texture",
+        "index" : 12,
+        "assetRequest" : {
+          "type" : "slide",
+          "state" : "contents",
+          "slide" : "none"
+        },
+        "url" : {
+          "native" : "assets\/0BEFB8CB-4B95-412C-BD4E-8C77429670F0.pdf"
+        },
+        "width" : 1318,
+        "height" : 308
+      },
       "8452FCE7D0FC2B048A4396274604F888" : {
         "type" : "texture",
         "index" : 3,
@@ -128,6 +156,20 @@ local_slide( {
         "width" : 437,
         "height" : 639
       },
+      "73E6C93C24D0CB8B45C80DB55BB156DA" : {
+        "type" : "texture",
+        "index" : 16,
+        "assetRequest" : {
+          "type" : "slide",
+          "state" : "contents",
+          "slide" : "none"
+        },
+        "url" : {
+          "native" : "assets\/0BEFB8CB-4B95-412C-BD4E-8C77429670F0.pdf"
+        },
+        "width" : 205,
+        "height" : 300
+      },
       "B709FF8F641CCEBBDA11E31ADD0C9C3D" : {
         "type" : "texture",
         "index" : 2,
@@ -141,34 +183,6 @@ local_slide( {
         },
         "width" : 289,
         "height" : 53
-      },
-      "84A5853CDA5CAC6796A3AD0FB13CC9C0" : {
-        "type" : "texture",
-        "index" : 16,
-        "assetRequest" : {
-          "type" : "slide",
-          "state" : "contents",
-          "slide" : "none"
-        },
-        "url" : {
-          "native" : "assets\/0BEFB8CB-4B95-412C-BD4E-8C77429670F0.pdf"
-        },
-        "width" : 205,
-        "height" : 299
-      },
-      "44310B24A2BB21B11E42C781C7E02558" : {
-        "type" : "texture",
-        "index" : 9,
-        "assetRequest" : {
-          "type" : "slide",
-          "state" : "contents",
-          "slide" : "none"
-        },
-        "url" : {
-          "native" : "assets\/0BEFB8CB-4B95-412C-BD4E-8C77429670F0.pdf"
-        },
-        "width" : 235,
-        "height" : 236
       },
       "06F24704C81075A7629FD76D720E4F85" : {
         "type" : "texture",
@@ -184,9 +198,9 @@ local_slide( {
         "width" : 1920,
         "height" : 1080
       },
-      "43E01CA8DCF3A82EAB8B6361104ECD7B" : {
+      "44310B24A2BB21B11E42C781C7E02558" : {
         "type" : "texture",
-        "index" : 12,
+        "index" : 9,
         "assetRequest" : {
           "type" : "slide",
           "state" : "contents",
@@ -195,8 +209,8 @@ local_slide( {
         "url" : {
           "native" : "assets\/0BEFB8CB-4B95-412C-BD4E-8C77429670F0.pdf"
         },
-        "width" : 1318,
-        "height" : 308
+        "width" : 235,
+        "height" : 236
       },
       "2107E69A1C2158427ED999EC92B42532" : {
         "type" : "texture",
@@ -225,6 +239,20 @@ local_slide( {
         },
         "width" : 1920,
         "height" : 1080
+      },
+      "2F00538D47D4EE5882D00AE3A2507BB3" : {
+        "type" : "texture",
+        "index" : 18,
+        "assetRequest" : {
+          "type" : "slide",
+          "state" : "contents",
+          "slide" : "none"
+        },
+        "url" : {
+          "native" : "assets\/0BEFB8CB-4B95-412C-BD4E-8C77429670F0.pdf"
+        },
+        "width" : 196,
+        "height" : 198
       },
       "2CAC026808DA0828364D7EFFBB3F7D83" : {
         "type" : "texture",
@@ -263,7 +291,7 @@ local_slide( {
                 "rotation" : 0,
                 "scale" : 1,
                 "position" : {
-                  "pointX" : 1312.0828857421875,
+                  "pointX" : 1312.0828857421877,
                   "pointY" : 137.69102478027344
                 },
                 "width" : 273,
@@ -319,7 +347,7 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : -215.5828857421875,
+                      "pointX" : -215.58288574218773,
                       "pointY" : 538.80897521972656
                     },
                     "width" : 273,
@@ -352,7 +380,7 @@ local_slide( {
                     "height" : 273,
                     "hidden" : false,
                     "anchorPoint" : {
-                      "pointX" : -0.78968090015453296,
+                      "pointX" : -0.78968090015453385,
                       "pointY" : 1.9736592498891083
                     }
                   },
@@ -526,7 +554,7 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 134.9171142578125,
+                          "pointX" : 134.91711425781227,
                           "pointY" : 135.30897521972656
                         },
                         "width" : 273,
@@ -589,8 +617,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 301.72030639648438,
-                      "pointY" : 137.77970123291016
+                      "pointX" : 301.7203063964846,
+                      "pointY" : 137.77970123291027
                     },
                     "width" : 224,
                     "sublayerTransform" : [
@@ -645,8 +673,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 770.27969360351562,
-                          "pointY" : 514.22029876708984
+                          "pointX" : 770.2796936035154,
+                          "pointY" : 514.22029876708973
                         },
                         "width" : 224,
                         "sublayerTransform" : [
@@ -678,8 +706,8 @@ local_slide( {
                         "height" : 224,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 3.4387486321585521,
-                          "pointY" : 2.2956263337816512
+                          "pointX" : 3.4387486321585508,
+                          "pointY" : 2.2956263337816507
                         }
                       },
                       "layers" : [
@@ -852,8 +880,8 @@ local_slide( {
                             "rotation" : 0,
                             "scale" : 1,
                             "position" : {
-                              "pointX" : 110.27969360351562,
-                              "pointY" : 110.22029876708984
+                              "pointX" : 110.2796936035154,
+                              "pointY" : 110.22029876708973
                             },
                             "width" : 224,
                             "sublayerTransform" : [
@@ -915,8 +943,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 1412.474760055542,
-                          "pointY" : 902.32342910766602
+                          "pointX" : 1412.4747238268872,
+                          "pointY" : 902.32341002241708
                         },
                         "width" : 196,
                         "sublayerTransform" : [
@@ -971,8 +999,8 @@ local_slide( {
                             "rotation" : 0,
                             "scale" : 1,
                             "position" : {
-                              "pointX" : -354.47476005554199,
-                              "pointY" : -263.82342910766602
+                              "pointX" : -354.47472382688716,
+                              "pointY" : -263.82341002241708
                             },
                             "width" : 196,
                             "sublayerTransform" : [
@@ -1004,8 +1032,8 @@ local_slide( {
                             "height" : 197,
                             "hidden" : false,
                             "anchorPoint" : {
-                              "pointX" : -1.8085446941609284,
-                              "pointY" : -1.3392052238967818
+                              "pointX" : -1.8085445093208528,
+                              "pointY" : -1.3392051270173455
                             }
                           },
                           "layers" : [
@@ -1178,8 +1206,8 @@ local_slide( {
                                 "rotation" : 0,
                                 "scale" : 1,
                                 "position" : {
-                                  "pointX" : 96.525239944458008,
-                                  "pointY" : 96.676570892333984
+                                  "pointX" : 96.525276173112843,
+                                  "pointY" : 96.676589977582921
                                 },
                                 "width" : 196,
                                 "sublayerTransform" : [
@@ -1241,8 +1269,8 @@ local_slide( {
                             "rotation" : 0,
                             "scale" : 1,
                             "position" : {
-                              "pointX" : 533.55545043945312,
-                              "pointY" : 382.75390625
+                              "pointX" : 533.55545806884777,
+                              "pointY" : 382.75390625000011
                             },
                             "width" : 235,
                             "sublayerTransform" : [
@@ -1297,8 +1325,8 @@ local_slide( {
                                 "rotation" : 0,
                                 "scale" : 1,
                                 "position" : {
-                                  "pointX" : 543.94454956054688,
-                                  "pointY" : 275.24609375
+                                  "pointX" : 543.94454193115223,
+                                  "pointY" : 275.24609374999989
                                 },
                                 "width" : 235,
                                 "sublayerTransform" : [
@@ -1330,8 +1358,8 @@ local_slide( {
                                 "height" : 236,
                                 "hidden" : false,
                                 "anchorPoint" : {
-                                  "pointX" : 2.3146576577044549,
-                                  "pointY" : 1.1662970074152543
+                                  "pointX" : 2.3146576252389455,
+                                  "pointY" : 1.1662970074152537
                                 }
                               },
                               "layers" : [
@@ -1504,8 +1532,8 @@ local_slide( {
                                     "rotation" : 0,
                                     "scale" : 1,
                                     "position" : {
-                                      "pointX" : 116.44454956054688,
-                                      "pointY" : 116.24609375
+                                      "pointX" : 116.44454193115223,
+                                      "pointY" : 116.24609374999989
                                     },
                                     "width" : 235,
                                     "sublayerTransform" : [
@@ -1567,8 +1595,8 @@ local_slide( {
                                 "rotation" : 0,
                                 "scale" : 1,
                                 "position" : {
-                                  "pointX" : 181.19324493408203,
-                                  "pointY" : 587.02734375
+                                  "pointX" : 181.19324493408192,
+                                  "pointY" : 587.02734374999989
                                 },
                                 "width" : 253,
                                 "sublayerTransform" : [
@@ -1623,8 +1651,8 @@ local_slide( {
                                     "rotation" : 0,
                                     "scale" : 1,
                                     "position" : {
-                                      "pointX" : 905.30675506591797,
-                                      "pointY" : 78.97265625
+                                      "pointX" : 905.30675506591808,
+                                      "pointY" : 78.972656250000114
                                     },
                                     "width" : 253,
                                     "sublayerTransform" : [
@@ -1656,8 +1684,8 @@ local_slide( {
                                     "height" : 252,
                                     "hidden" : false,
                                     "anchorPoint" : {
-                                      "pointX" : 3.5782875694305059,
-                                      "pointY" : 0.31338355654761907
+                                      "pointX" : 3.5782875694305063,
+                                      "pointY" : 0.31338355654761951
                                     }
                                   },
                                   "layers" : [
@@ -1830,8 +1858,8 @@ local_slide( {
                                         "rotation" : 0,
                                         "scale" : 1,
                                         "position" : {
-                                          "pointX" : 124.80675506591797,
-                                          "pointY" : 124.97265625
+                                          "pointX" : 124.80675506591808,
+                                          "pointY" : 124.97265625000011
                                         },
                                         "width" : 253,
                                         "sublayerTransform" : [
@@ -1893,7 +1921,7 @@ local_slide( {
                                     "rotation" : 0,
                                     "scale" : 1,
                                     "position" : {
-                                      "pointX" : 553.53021240234375,
+                                      "pointX" : 553.53020477294911,
                                       "pointY" : 922.897705078125
                                     },
                                     "width" : 283,
@@ -1949,7 +1977,7 @@ local_slide( {
                                         "rotation" : 0,
                                         "scale" : 1,
                                         "position" : {
-                                          "pointX" : 547.96978759765625,
+                                          "pointX" : 547.96979522705089,
                                           "pointY" : -241.397705078125
                                         },
                                         "width" : 283,
@@ -1982,7 +2010,7 @@ local_slide( {
                                         "height" : 283,
                                         "hidden" : false,
                                         "anchorPoint" : {
-                                          "pointX" : 1.9362890021118595,
+                                          "pointX" : 1.9362890290708512,
                                           "pointY" : -0.85299542430432862
                                         }
                                       },
@@ -2156,7 +2184,7 @@ local_slide( {
                                             "rotation" : 0,
                                             "scale" : 1,
                                             "position" : {
-                                              "pointX" : 140.46978759765625,
+                                              "pointX" : 140.46979522705089,
                                               "pointY" : 140.102294921875
                                             },
                                             "width" : 283,
@@ -2219,8 +2247,8 @@ local_slide( {
                                         "rotation" : 0,
                                         "scale" : 1,
                                         "position" : {
-                                          "pointX" : 1609.780517578125,
-                                          "pointY" : 482.45089721679688
+                                          "pointX" : 1609.7804794311523,
+                                          "pointY" : 482.45089054107666
                                         },
                                         "width" : 527,
                                         "sublayerTransform" : [
@@ -2275,8 +2303,8 @@ local_slide( {
                                             "rotation" : 0,
                                             "scale" : 1,
                                             "position" : {
-                                              "pointX" : -386.280517578125,
-                                              "pointY" : 196.04910278320312
+                                              "pointX" : -386.28047943115234,
+                                              "pointY" : 196.04910945892334
                                             },
                                             "width" : 527,
                                             "sublayerTransform" : [
@@ -2308,8 +2336,8 @@ local_slide( {
                                             "height" : 277,
                                             "hidden" : false,
                                             "anchorPoint" : {
-                                              "pointX" : -0.73298010925640422,
-                                              "pointY" : 0.70775849380217737
+                                              "pointX" : -0.73298003687125679,
+                                              "pointY" : 0.70775851790225031
                                             }
                                           },
                                           "layers" : [
@@ -2482,8 +2510,8 @@ local_slide( {
                                                 "rotation" : 0,
                                                 "scale" : 1,
                                                 "position" : {
-                                                  "pointX" : 262.219482421875,
-                                                  "pointY" : 136.54910278320312
+                                                  "pointX" : 262.21952056884766,
+                                                  "pointY" : 136.54910945892334
                                                 },
                                                 "width" : 527,
                                                 "sublayerTransform" : [
@@ -2576,6 +2604,15 @@ local_slide( {
         ],
         "accessibility" : [
           {
+            "text" : "IMG_8457.png",
+            "targetRectangle" : {
+              "y" : 135.10153198242188,
+              "x" : 734.759765625,
+              "width" : 433.59375,
+              "height" : 636.40625
+            }
+          },
+          {
             "text" : "create?",
             "targetRectangle" : {
               "y" : 696.31219625473022,
@@ -2591,15 +2628,6 @@ local_slide( {
               "x" : 451.00800323486328,
               "width" : 277.98400000000004,
               "height" : 67.3756103515625
-            }
-          },
-          {
-            "text" : "IMG_8457.png",
-            "targetRectangle" : {
-              "y" : 135.10153198242188,
-              "x" : 734.759765625,
-              "width" : 433.59375,
-              "height" : 636.40625
             }
           }
         ],
@@ -3466,8 +3494,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 301.72030639648438,
-                      "pointY" : 137.77970123291016
+                      "pointX" : 301.7203063964846,
+                      "pointY" : 137.77970123291027
                     },
                     "width" : 224,
                     "sublayerTransform" : [
@@ -3533,8 +3561,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 110.27969360351562,
-                          "pointY" : 110.22029876708984
+                          "pointX" : 110.2796936035154,
+                          "pointY" : 110.22029876708973
                         },
                         "width" : 224,
                         "sublayerTransform" : [
@@ -3648,7 +3676,7 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 553.53021240234375,
+                      "pointX" : 553.53020477294911,
                       "pointY" : 922.897705078125
                     },
                     "width" : 283,
@@ -3715,7 +3743,7 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 140.46978759765625,
+                          "pointX" : 140.46979522705089,
                           "pointY" : 140.102294921875
                         },
                         "width" : 283,
@@ -3830,8 +3858,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1412.474760055542,
-                      "pointY" : 902.32342910766602
+                      "pointX" : 1412.4747238268872,
+                      "pointY" : 902.32341002241708
                     },
                     "width" : 196,
                     "sublayerTransform" : [
@@ -3897,8 +3925,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 96.525239944458008,
-                          "pointY" : 96.676570892333984
+                          "pointX" : 96.525276173112843,
+                          "pointY" : 96.676589977582921
                         },
                         "width" : 196,
                         "sublayerTransform" : [
@@ -4012,7 +4040,7 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1312.0828857421875,
+                      "pointX" : 1312.0828857421877,
                       "pointY" : 137.69102478027344
                     },
                     "width" : 273,
@@ -4079,7 +4107,7 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 134.9171142578125,
+                          "pointX" : 134.91711425781227,
                           "pointY" : 135.30897521972656
                         },
                         "width" : 273,
@@ -4194,8 +4222,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 181.19324493408203,
-                      "pointY" : 587.02734375
+                      "pointX" : 181.19324493408192,
+                      "pointY" : 587.02734374999989
                     },
                     "width" : 253,
                     "sublayerTransform" : [
@@ -4261,8 +4289,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 124.80675506591797,
-                          "pointY" : 124.97265625
+                          "pointX" : 124.80675506591808,
+                          "pointY" : 124.97265625000011
                         },
                         "width" : 253,
                         "sublayerTransform" : [
@@ -4376,8 +4404,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 533.55545043945312,
-                      "pointY" : 382.75390625
+                      "pointX" : 533.55545806884777,
+                      "pointY" : 382.75390625000011
                     },
                     "width" : 235,
                     "sublayerTransform" : [
@@ -4443,8 +4471,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 116.44454956054688,
-                          "pointY" : 116.24609375
+                          "pointX" : 116.44454193115223,
+                          "pointY" : 116.24609374999989
                         },
                         "width" : 235,
                         "sublayerTransform" : [
@@ -4558,8 +4586,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1609.780517578125,
-                      "pointY" : 482.45089721679688
+                      "pointX" : 1609.7804794311523,
+                      "pointY" : 482.45089054107666
                     },
                     "width" : 527,
                     "sublayerTransform" : [
@@ -4625,8 +4653,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 262.219482421875,
-                          "pointY" : 136.54910278320312
+                          "pointX" : 262.21952056884766,
+                          "pointY" : 136.54910945892334
                         },
                         "width" : 527,
                         "sublayerTransform" : [
@@ -5147,7 +5175,7 @@ local_slide( {
                           "pointY" : 0.42768701330407871
                         }
                       },
-                      "texture" : "43E01CA8DCF3A82EAB8B6361104ECD7B"
+                      "texture" : "3CB359D0D0E1E6EAE19E62D20D68B863"
                     }
                   ]
                 },
@@ -5193,10 +5221,10 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 960.00000068265945,
-                      "pointY" : 368.7984619140625
+                      "pointX" : 960.00000029168291,
+                      "pointY" : 368.79845138526133
                     },
-                    "width" : 1873.7207578960806,
+                    "width" : 1873.7207583748757,
                     "sublayerTransform" : [
                       1,
                       0,
@@ -5290,8 +5318,8 @@ local_slide( {
                               "type" : "MoveToPoint",
                               "points" : [
                                 [
-                                  1.1396217346191406,
-                                  6.7984619140625
+                                  1.1396211042451121,
+                                  6.7984513852613304
                                 ]
                               ]
                             },
@@ -5299,8 +5327,8 @@ local_slide( {
                               "type" : "AddLine",
                               "points" : [
                                 [
-                                  1874.8603796306998,
-                                  6.7984619140625
+                                  1874.8603794791209,
+                                  6.7984513852613304
                                 ]
                               ]
                             }
@@ -5327,7 +5355,7 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 936.8603515625,
+                          "pointX" : 936.86037471585473,
                           "pointY" : 5.5
                         },
                         "width" : 1876,
@@ -5360,8 +5388,8 @@ local_slide( {
                         "height" : 14,
                         "hidden" : true,
                         "anchorPoint" : {
-                          "pointX" : 0.49999998576605498,
-                          "pointY" : 0.4856044224330357
+                          "pointX" : 0.49999999777190823,
+                          "pointY" : 0.48560367037580932
                         }
                       },
                       "texture" : "C4B0856A54B56DE07880846FD3C8A056"
@@ -5410,8 +5438,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1897.3281183137894,
-                      "pointY" : 185.53041578388212
+                      "pointX" : 1897.3281128467374,
+                      "pointY" : 185.53040896286774
                     },
                     "width" : 204.87198829650879,
                     "sublayerTransform" : [
@@ -5498,7 +5526,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.47822499999999996,
-                        "textBaseline" : -1.0845666170120243,
+                        "textBaseline" : -1.0845667875373839,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -5522,7 +5550,7 @@ local_slide( {
                         "rotation" : 1.5707963267948966,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 102.43599999999991,
+                          "pointX" : 102.43599999999992,
                           "pointY" : 27.588371276855469
                         },
                         "width" : 203,
@@ -5555,8 +5583,8 @@ local_slide( {
                         "height" : 40,
                         "hidden" : true,
                         "anchorPoint" : {
-                          "pointX" : 0.49915332101248749,
-                          "pointY" : 0.43826041545867866
+                          "pointX" : 0.49915329408119685,
+                          "pointY" : 0.43826024493331917
                         }
                       },
                       "texture" : "2EDFB04152602CDF1E36A84E0846B68C"
@@ -5605,8 +5633,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 19.203834147453335,
-                      "pointY" : 646.50036224842074
+                      "pointX" : 19.203835041891949,
+                      "pointY" : 646.50038137561967
                     },
                     "width" : 363.93499374389648,
                     "sublayerTransform" : [
@@ -5693,7 +5721,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.40699999999999997,
-                        "textBaseline" : -2.6158344301264327,
+                        "textBaseline" : -2.6158340231647532,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -5750,8 +5778,8 @@ local_slide( {
                         "height" : 47,
                         "hidden" : true,
                         "anchorPoint" : {
-                          "pointX" : 0.49780065545719632,
-                          "pointY" : 0.37234815069969723
+                          "pointX" : 0.4978006579280212,
+                          "pointY" : 0.37234855766137648
                         }
                       },
                       "texture" : "6E20B053BDDA0D2F4449833F2F4859E4"
@@ -5874,7 +5902,7 @@ local_slide( {
                               "timingFunction" : "EaseInEaseOut",
                               "property" : "transform.scale.y",
                               "to" : {
-                                "scalar" : 0.46791862284820029
+                                "scalar" : 0.46948356807511737
                               }
                             },
                             {
@@ -5890,7 +5918,7 @@ local_slide( {
                               "timingFunction" : "EaseInEaseOut",
                               "property" : "contents",
                               "to" : {
-                                "texture" : "84A5853CDA5CAC6796A3AD0FB13CC9C0"
+                                "texture" : "73E6C93C24D0CB8B45C80DB55BB156DA"
                               }
                             },
                             {
@@ -5908,7 +5936,7 @@ local_slide( {
                               "property" : "transform.translation",
                               "to" : {
                                 "pointX" : -802.02696112743456,
-                                "pointY" : -267.89296538334816
+                                "pointY" : -268.3932801910442
                               }
                             }
                           ],
@@ -6414,8 +6442,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 300.14530181884766,
-                      "pointY" : 136.20469665527344
+                      "pointX" : 300.14530181884788,
+                      "pointY" : 136.20469665527355
                     },
                     "width" : 220.84999084472656,
                     "sublayerTransform" : [
@@ -6444,7 +6472,7 @@ local_slide( {
                     },
                     "opacity" : 1,
                     "edgeAntialiasingMask" : 251658240,
-                    "height" : 220.84999084472656,
+                    "height" : 220.84999084472659,
                     "hidden" : false,
                     "anchorPoint" : {
                       "pointX" : 0.5,
@@ -6520,7 +6548,7 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 110.4249954223633,
+                          "pointX" : 110.42499542236327,
                           "pointY" : 110.42499542236328
                         },
                         "width" : 224,
@@ -6550,14 +6578,14 @@ local_slide( {
                         },
                         "opacity" : 1,
                         "edgeAntialiasingMask" : 0,
-                        "height" : 224,
+                        "height" : 225,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.50064866883414139,
-                          "pointY" : 0.50091382435389931
+                          "pointX" : 0.50064866883414227,
+                          "pointY" : 0.50313198513454904
                         }
                       },
-                      "texture" : "5735BB3E8D0F46F997D6EBB80CA3491E"
+                      "texture" : "4AD7D36E1A33F741A4FD2E91AA970DD6"
                     }
                   ]
                 },
@@ -6603,7 +6631,7 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 552.14530944824219,
+                      "pointX" : 552.14530181884754,
                       "pointY" : 921.51280212402344
                     },
                     "width" : 280.23019409179688,
@@ -6742,7 +6770,7 @@ local_slide( {
                         "height" : 283,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.49874667649555543,
+                          "pointX" : 0.49874664953656378,
                           "pointY" : 0.50004523718736194
                         }
                       },
@@ -6792,8 +6820,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1410.943510055542,
-                      "pointY" : 900.51404744846741
+                      "pointX" : 1410.9434738268872,
+                      "pointY" : 900.51402836321836
                     },
                     "width" : 192.9375,
                     "sublayerTransform" : [
@@ -6822,7 +6850,7 @@ local_slide( {
                     },
                     "opacity" : 1,
                     "edgeAntialiasingMask" : 251658240,
-                    "height" : 193.38123668160279,
+                    "height" : 193.38123668160267,
                     "hidden" : false,
                     "anchorPoint" : {
                       "pointX" : 0.5,
@@ -6928,14 +6956,14 @@ local_slide( {
                         },
                         "opacity" : 1,
                         "edgeAntialiasingMask" : 0,
-                        "height" : 197,
+                        "height" : 198,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.49968831813903908,
-                          "pointY" : 0.50007130684501222
+                          "pointX" : 0.49968813329896339,
+                          "pointY" : 0.50259610284453715
                         }
                       },
-                      "texture" : "EC07C15841CE41D0B042F5348BD16BFA"
+                      "texture" : "2F00538D47D4EE5882D00AE3A2507BB3"
                     }
                   ]
                 },
@@ -6981,7 +7009,7 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1310.5965576171875,
+                      "pointX" : 1310.5965576171877,
                       "pointY" : 136.20469665527344
                     },
                     "width" : 270.02734375,
@@ -7120,7 +7148,7 @@ local_slide( {
                         "height" : 273,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.50035369090544868,
+                          "pointX" : 0.50035369090544957,
                           "pointY" : 0.49891830276656934
                         }
                       },
@@ -7170,8 +7198,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 179.66590118408203,
-                      "pointY" : 586
+                      "pointX" : 179.66590118408192,
+                      "pointY" : 585.99999999999989
                     },
                     "width" : 249.9453125,
                     "sublayerTransform" : [
@@ -7309,8 +7337,8 @@ local_slide( {
                         "height" : 252,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.50065573590546264,
-                          "pointY" : 0.5
+                          "pointX" : 0.5006557359054622,
+                          "pointY" : 0.49999999999999956
                         }
                       },
                       "texture" : "85DA0963BFDFE6E793BAE74A4917759A"
@@ -7359,8 +7387,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 532.44412231445312,
-                      "pointY" : 381.142578125
+                      "pointX" : 532.44412994384777,
+                      "pointY" : 381.14257812500011
                     },
                     "width" : 232.77734375,
                     "sublayerTransform" : [
@@ -7466,7 +7494,7 @@ local_slide( {
                         "scale" : 1,
                         "position" : {
                           "pointX" : 116.388671875,
-                          "pointY" : 116.388671875
+                          "pointY" : 116.38867187500001
                         },
                         "width" : 235,
                         "sublayerTransform" : [
@@ -7498,8 +7526,8 @@ local_slide( {
                         "height" : 236,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.49976222261469416,
-                          "pointY" : 0.50060414459745761
+                          "pointX" : 0.49976225508020328,
+                          "pointY" : 0.50060414459745817
                         }
                       },
                       "texture" : "44310B24A2BB21B11E42C781C7E02558"
@@ -7548,8 +7576,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1608.4446411132812,
-                      "pointY" : 480.95278930664062
+                      "pointX" : 1608.4446029663086,
+                      "pointY" : 480.95278263092041
                     },
                     "width" : 524.3282470703125,
                     "sublayerTransform" : [
@@ -7687,8 +7715,8 @@ local_slide( {
                         "height" : 277,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.49989495467415795,
-                          "pointY" : 0.5016346184355257
+                          "pointX" : 0.49989488228901063,
+                          "pointY" : 0.50163459433545277
                         }
                       },
                       "texture" : "2CAC026808DA0828364D7EFFBB3F7D83"
@@ -7712,6 +7740,24 @@ local_slide( {
         ],
         "accessibility" : [
           {
+            "text" : "IMG_8457.png",
+            "targetRectangle" : {
+              "y" : 135.10153198242188,
+              "x" : 734.759765625,
+              "width" : 433.59375,
+              "height" : 636.40625
+            }
+          },
+          {
+            "text" : "Kodi-logo-Thumbnail-light-transparent.png",
+            "targetRectangle" : {
+              "y" : 781.397705078125,
+              "x" : 412.03020477294911,
+              "width" : 280.23019409179688,
+              "height" : 280.23019409179688
+            }
+          },
+          {
             "text" : "create?",
             "targetRectangle" : {
               "y" : 696.31219625473022,
@@ -7721,12 +7767,12 @@ local_slide( {
             }
           },
           {
-            "text" : "if_Database-Cloud_379336.png",
+            "text" : "avatars-000287725554-094dcj-t500x500.jpg",
             "targetRectangle" : {
-              "y" : 461.02734375,
-              "x" : 54.693244934082031,
-              "width" : 249.9453125,
-              "height" : 249.9453125
+              "y" : 803.82341002241708,
+              "x" : 1314.4747238268872,
+              "width" : 192.9375,
+              "height" : 193.38123668160267
             }
           },
           {
@@ -7739,66 +7785,48 @@ local_slide( {
             }
           },
           {
-            "text" : "Kodi-logo-Thumbnail-light-transparent.png",
-            "targetRectangle" : {
-              "y" : 781.397705078125,
-              "x" : 412.03021240234375,
-              "width" : 280.23019409179688,
-              "height" : 280.23019409179688
-            }
-          },
-          {
-            "text" : "f19f6edc.png",
-            "targetRectangle" : {
-              "y" : 264.75390625,
-              "x" : 416.05545043945312,
-              "width" : 232.77734375,
-              "height" : 232.77734375
-            }
-          },
-          {
-            "text" : "avatars-000287725554-094dcj-t500x500.jpg",
-            "targetRectangle" : {
-              "y" : 803.82342910766602,
-              "x" : 1314.474760055542,
-              "width" : 192.9375,
-              "height" : 193.38123668160279
-            }
-          },
-          {
-            "text" : "pizel.jpg",
-            "targetRectangle" : {
-              "y" : 343.95089721679688,
-              "x" : 1346.280517578125,
-              "width" : 524.3282470703125,
-              "height" : 274.0037841796875
-            }
-          },
-          {
             "text" : "33-512.png",
             "targetRectangle" : {
               "y" : 1.1910247802734375,
-              "x" : 1175.5828857421875,
+              "x" : 1175.5828857421877,
               "width" : 270.02734375,
               "height" : 270.02734375
             }
           },
           {
-            "text" : "IMG_8457.png",
+            "text" : "if_Database-Cloud_379336.png",
             "targetRectangle" : {
-              "y" : 135.10153198242188,
-              "x" : 734.759765625,
-              "width" : 433.59375,
-              "height" : 636.40625
+              "y" : 461.02734374999989,
+              "x" : 54.693244934081918,
+              "width" : 249.9453125,
+              "height" : 249.9453125
+            }
+          },
+          {
+            "text" : "f19f6edc.png",
+            "targetRectangle" : {
+              "y" : 264.75390625000011,
+              "x" : 416.05545806884777,
+              "width" : 232.77734375,
+              "height" : 232.77734375
+            }
+          },
+          {
+            "text" : "pizel.jpg",
+            "targetRectangle" : {
+              "y" : 343.95089054107666,
+              "x" : 1346.2804794311523,
+              "width" : 524.3282470703125,
+              "height" : 274.0037841796875
             }
           },
           {
             "text" : "tag_bash.png",
             "targetRectangle" : {
-              "y" : 25.779701232910156,
-              "x" : 189.72030639648438,
+              "y" : 25.77970123291027,
+              "x" : 189.7203063964846,
               "width" : 220.84999084472656,
-              "height" : 220.84999084472656
+              "height" : 220.84999084472659
             }
           }
         ],
@@ -8666,8 +8694,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 301.72030639648438,
-                      "pointY" : 137.77970123291016
+                      "pointX" : 301.7203063964846,
+                      "pointY" : 137.77970123291027
                     },
                     "width" : 224,
                     "sublayerTransform" : [
@@ -8732,8 +8760,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 110.27969360351562,
-                          "pointY" : 110.22029876708984
+                          "pointX" : 110.2796936035154,
+                          "pointY" : 110.22029876708973
                         },
                         "width" : 224,
                         "sublayerTransform" : [
@@ -8847,7 +8875,7 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 553.53021240234375,
+                      "pointX" : 553.53020477294911,
                       "pointY" : 922.897705078125
                     },
                     "width" : 283,
@@ -8913,7 +8941,7 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 140.46978759765625,
+                          "pointX" : 140.46979522705089,
                           "pointY" : 140.102294921875
                         },
                         "width" : 283,
@@ -9028,8 +9056,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1412.474760055542,
-                      "pointY" : 902.32342910766602
+                      "pointX" : 1412.4747238268872,
+                      "pointY" : 902.32341002241708
                     },
                     "width" : 196,
                     "sublayerTransform" : [
@@ -9094,8 +9122,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 96.525239944458008,
-                          "pointY" : 96.676570892333984
+                          "pointX" : 96.525276173112843,
+                          "pointY" : 96.676589977582921
                         },
                         "width" : 196,
                         "sublayerTransform" : [
@@ -9209,7 +9237,7 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1312.0828857421875,
+                      "pointX" : 1312.0828857421877,
                       "pointY" : 137.69102478027344
                     },
                     "width" : 273,
@@ -9275,7 +9303,7 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 134.9171142578125,
+                          "pointX" : 134.91711425781227,
                           "pointY" : 135.30897521972656
                         },
                         "width" : 273,
@@ -9390,8 +9418,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 181.19324493408203,
-                      "pointY" : 587.02734375
+                      "pointX" : 181.19324493408192,
+                      "pointY" : 587.02734374999989
                     },
                     "width" : 253,
                     "sublayerTransform" : [
@@ -9456,8 +9484,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 124.80675506591797,
-                          "pointY" : 124.97265625
+                          "pointX" : 124.80675506591808,
+                          "pointY" : 124.97265625000011
                         },
                         "width" : 253,
                         "sublayerTransform" : [
@@ -9571,8 +9599,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 533.55545043945312,
-                      "pointY" : 382.75390625
+                      "pointX" : 533.55545806884777,
+                      "pointY" : 382.75390625000011
                     },
                     "width" : 235,
                     "sublayerTransform" : [
@@ -9637,8 +9665,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 116.44454956054688,
-                          "pointY" : 116.24609375
+                          "pointX" : 116.44454193115223,
+                          "pointY" : 116.24609374999989
                         },
                         "width" : 235,
                         "sublayerTransform" : [
@@ -9752,8 +9780,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1609.780517578125,
-                      "pointY" : 482.45089721679688
+                      "pointX" : 1609.7804794311523,
+                      "pointY" : 482.45089054107666
                     },
                     "width" : 527,
                     "sublayerTransform" : [
@@ -9818,8 +9846,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 262.219482421875,
-                          "pointY" : 136.54910278320312
+                          "pointX" : 262.21952056884766,
+                          "pointY" : 136.54910945892334
                         },
                         "width" : 527,
                         "sublayerTransform" : [

@@ -1,12 +1,12 @@
 local_header( {
   "autoplayTransitionDelay" : 5,
   "author" : "",
-  "timestamp" : "2018-56-22 22:4:8",
+  "timestamp" : "2018-46-22 23:4:1",
   "loopSlideshow" : 0,
-  "filename" : "Rpitools",
+  "filename" : "whatIsRpitools",
   "autoplayBuildDelay" : 2,
   "comment" : "",
-  "title" : "Rpitools",
+  "title" : "whatIsRpitools",
   "showMode" : 0,
   "creator" : "Apple Keynote 8.0",
   "slideList" : [
@@ -28,12 +28,13 @@ local_header( {
   "majorVersion" : 1,
   "minorVersion" : 2,
   "fonts" : [
+    "Monaco",
     "Helvetica-Light",
     "HelveticaNeue-Bold",
-    "HelveticaNeue-Medium",
     "HelveticaNeue",
     "HelveticaNeue-BoldItalic",
     "Helvetica",
-    "GillSans"
+    "GillSans",
+    "HelveticaNeue-Medium"
   ]
 } )

@@ -95,8 +95,8 @@ local_slide( {
                 "rotation" : 0,
                 "scale" : 1,
                 "position" : {
-                  "pointX" : 952.08640098571777,
-                  "pointY" : 528.62918424606323
+                  "pointX" : 952.08640102577215,
+                  "pointY" : 528.62918448448181
                 },
                 "width" : 630,
                 "sublayerTransform" : [
@@ -187,7 +187,7 @@ local_slide( {
                   "texturedRectangle" : {
                     "singleTextureOpacity" : 1,
                     "textXHeight" : 0.072463611859838281,
-                    "textBaseline" : 0.97563900266374859,
+                    "textBaseline" : 0.97563900330638631,
                     "isBackgroundTexture" : true,
                     "isVerticalText" : false,
                     "textColor" : [
@@ -244,8 +244,8 @@ local_slide( {
                     "height" : 371,
                     "hidden" : false,
                     "anchorPoint" : {
-                      "pointX" : 0.51111109414630462,
-                      "pointY" : 0.4905660467327766
+                      "pointX" : 0.51111109420988299,
+                      "pointY" : 0.49056604737541426
                     }
                   },
                   "texture" : "02138810B52BA4AD90E0B6757B233695"
@@ -267,10 +267,19 @@ local_slide( {
         ],
         "accessibility" : [
           {
+            "text" : "IMG_8457.png",
+            "targetRectangle" : {
+              "y" : 39.108528137207031,
+              "x" : 36.106826782226562,
+              "width" : 202.25,
+              "height" : 263.4375
+            }
+          },
+          {
             "text" : "DEMO VIDEOS HERE",
             "targetRectangle" : {
-              "y" : 348.75418424606323,
-              "x" : 702.80798931217191,
+              "y" : 348.75418448448181,
+              "x" : 702.80798935222629,
               "width" : 514.38400000000001,
               "height" : 62.49163818359375
             }
@@ -278,17 +287,17 @@ local_slide( {
           {
             "text" : "Transmission site demo",
             "targetRectangle" : {
-              "y" : 476.75418424606323,
-              "x" : 691.6525776386261,
-              "width" : 566.48799999999983,
+              "y" : 476.75418448448181,
+              "x" : 691.65257767868047,
+              "width" : 566.48800000000006,
               "height" : 62.49163818359375
             }
           },
           {
             "text" : "Website demo",
             "targetRectangle" : {
-              "y" : 540.75418424606323,
-              "x" : 691.6525776386261,
+              "y" : 540.75418448448181,
+              "x" : 691.65257767868047,
               "width" : 345.79999999999995,
               "height" : 62.49163818359375
             }
@@ -296,28 +305,19 @@ local_slide( {
           {
             "text" : "SSHFS and SFTP demo",
             "targetRectangle" : {
-              "y" : 604.75418424606323,
-              "x" : 691.6525776386261,
-              "width" : 570.17999999999984,
+              "y" : 604.75418448448181,
+              "x" : 691.65257767868047,
+              "width" : 570.18000000000006,
               "height" : 62.49163818359375
             }
           },
           {
             "text" : "Command line demo",
             "targetRectangle" : {
-              "y" : 668.75418424606323,
-              "x" : 691.6525776386261,
+              "y" : 668.75418448448181,
+              "x" : 691.65257767868047,
               "width" : 498.88799999999992,
               "height" : 62.49163818359375
-            }
-          },
-          {
-            "text" : "IMG_8457.png",
-            "targetRectangle" : {
-              "y" : 39.108528137207031,
-              "x" : 36.106826782226562,
-              "width" : 202.25,
-              "height" : 263.4375
             }
           }
         ],
@@ -629,8 +629,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 952.08640098571777,
-                      "pointY" : 528.62918424606323
+                      "pointX" : 952.08640102577215,
+                      "pointY" : 528.62918448448181
                     },
                     "width" : 630,
                     "sublayerTransform" : [
@@ -678,7 +678,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.072463611859838281,
-                        "textBaseline" : 0.97563900266374859,
+                        "textBaseline" : 0.97563900330638631,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -735,8 +735,8 @@ local_slide( {
                         "height" : 371,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.51111109414630462,
-                          "pointY" : 0.4905660467327766
+                          "pointX" : 0.51111109420988299,
+                          "pointY" : 0.49056604737541426
                         }
                       },
                       "texture" : "02138810B52BA4AD90E0B6757B233695"
@@ -1211,10 +1211,19 @@ local_slide( {
         ],
         "accessibility" : [
           {
+            "text" : "IMG_8457.png",
+            "targetRectangle" : {
+              "y" : 39.108528137207031,
+              "x" : 36.106826782226562,
+              "width" : 202.25,
+              "height" : 263.4375
+            }
+          },
+          {
             "text" : "DEMO VIDEOS HERE",
             "targetRectangle" : {
-              "y" : 348.75418424606323,
-              "x" : 702.80798931217191,
+              "y" : 348.75418448448181,
+              "x" : 702.80798935222629,
               "width" : 514.38400000000001,
               "height" : 62.49163818359375
             }
@@ -1222,17 +1231,17 @@ local_slide( {
           {
             "text" : "Transmission site demo",
             "targetRectangle" : {
-              "y" : 476.75418424606323,
-              "x" : 691.6525776386261,
-              "width" : 566.48799999999983,
+              "y" : 476.75418448448181,
+              "x" : 691.65257767868047,
+              "width" : 566.48800000000006,
               "height" : 62.49163818359375
             }
           },
           {
             "text" : "Website demo",
             "targetRectangle" : {
-              "y" : 540.75418424606323,
-              "x" : 691.6525776386261,
+              "y" : 540.75418448448181,
+              "x" : 691.65257767868047,
               "width" : 345.79999999999995,
               "height" : 62.49163818359375
             }
@@ -1240,28 +1249,19 @@ local_slide( {
           {
             "text" : "SSHFS and SFTP demo",
             "targetRectangle" : {
-              "y" : 604.75418424606323,
-              "x" : 691.6525776386261,
-              "width" : 570.17999999999984,
+              "y" : 604.75418448448181,
+              "x" : 691.65257767868047,
+              "width" : 570.18000000000006,
               "height" : 62.49163818359375
             }
           },
           {
             "text" : "Command line demo",
             "targetRectangle" : {
-              "y" : 668.75418424606323,
-              "x" : 691.6525776386261,
+              "y" : 668.75418448448181,
+              "x" : 691.65257767868047,
               "width" : 498.88799999999992,
               "height" : 62.49163818359375
-            }
-          },
-          {
-            "text" : "IMG_8457.png",
-            "targetRectangle" : {
-              "y" : 39.108528137207031,
-              "x" : 36.106826782226562,
-              "width" : 202.25,
-              "height" : 263.4375
             }
           }
         ],
@@ -1574,8 +1574,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 952.08640098571777,
-                      "pointY" : 528.62918424606323
+                      "pointX" : 952.08640102577215,
+                      "pointY" : 528.62918448448181
                     },
                     "width" : 630,
                     "sublayerTransform" : [
@@ -1622,7 +1622,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.072463611859838281,
-                        "textBaseline" : 0.97563900266374859,
+                        "textBaseline" : 0.97563900330638631,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -1679,8 +1679,8 @@ local_slide( {
                         "height" : 371,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.51111109414630462,
-                          "pointY" : 0.4905660467327766
+                          "pointX" : 0.51111109420988299,
+                          "pointY" : 0.49056604737541426
                         }
                       },
                       "texture" : "02138810B52BA4AD90E0B6757B233695"

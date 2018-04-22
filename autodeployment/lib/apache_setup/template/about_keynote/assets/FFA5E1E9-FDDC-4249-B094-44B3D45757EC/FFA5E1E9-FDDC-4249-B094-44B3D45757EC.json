@@ -14,20 +14,6 @@
       "width" : 143,
       "height" : 158
     },
-    "C31D6B22CC688986BF16B76F51268E7D" : {
-      "type" : "texture",
-      "index" : 2,
-      "assetRequest" : {
-        "type" : "slide",
-        "state" : "contents",
-        "slide" : "none"
-      },
-      "url" : {
-        "native" : "assets\/FFA5E1E9-FDDC-4249-B094-44B3D45757EC.pdf"
-      },
-      "width" : 424,
-      "height" : 340
-    },
     "1E7E22B0616960AB7878778E45A8DA7A" : {
       "type" : "texture",
       "index" : 20,
@@ -55,20 +41,6 @@
       },
       "width" : 407,
       "height" : 157
-    },
-    "43E01CA8DCF3A82EAB8B6361104ECD7B" : {
-      "type" : "texture",
-      "index" : 15,
-      "assetRequest" : {
-        "type" : "slide",
-        "state" : "contents",
-        "slide" : "none"
-      },
-      "url" : {
-        "native" : "assets\/FFA5E1E9-FDDC-4249-B094-44B3D45757EC.pdf"
-      },
-      "width" : 1318,
-      "height" : 308
     },
     "31765A003BF37DB79078A7C71AF3490F" : {
       "type" : "texture",
@@ -112,9 +84,9 @@
       "width" : 40,
       "height" : 203
     },
-    "1217DB35DC8F187C01AE1EF61E341D1F" : {
+    "99A689584A633EEE4A46BC80E29CE03E" : {
       "type" : "texture",
-      "index" : 36,
+      "index" : 0,
       "assetRequest" : {
         "type" : "slide",
         "state" : "contents",
@@ -154,6 +126,20 @@
       "width" : 133,
       "height" : 133
     },
+    "3CB359D0D0E1E6EAE19E62D20D68B863" : {
+      "type" : "texture",
+      "index" : 15,
+      "assetRequest" : {
+        "type" : "slide",
+        "state" : "contents",
+        "slide" : "none"
+      },
+      "url" : {
+        "native" : "assets\/FFA5E1E9-FDDC-4249-B094-44B3D45757EC.pdf"
+      },
+      "width" : 1318,
+      "height" : 308
+    },
     "AEEA8E637FD030AD5D34B61942F0A0FC" : {
       "type" : "texture",
       "index" : 21,
@@ -167,6 +153,20 @@
       },
       "width" : 181,
       "height" : 149
+    },
+    "A05F014737B0D7F04C50A47BF09FA593" : {
+      "type" : "texture",
+      "index" : 2,
+      "assetRequest" : {
+        "type" : "slide",
+        "state" : "contents",
+        "slide" : "none"
+      },
+      "url" : {
+        "native" : "assets\/FFA5E1E9-FDDC-4249-B094-44B3D45757EC.pdf"
+      },
+      "width" : 424,
+      "height" : 340
     },
     "BB55791A911F83B133AB0124BE481B39" : {
       "type" : "texture",
@@ -308,9 +308,9 @@
       "width" : 208,
       "height" : 149
     },
-    "5EE92F9F5601CC9BF8CCC1F4814CBB94" : {
+    "90B215AE9DA181FE7B9B1113D759D0C7" : {
       "type" : "texture",
-      "index" : 0,
+      "index" : 36,
       "assetRequest" : {
         "type" : "slide",
         "state" : "contents",
@@ -781,7 +781,7 @@
                         "pointY" : 0.5
                       }
                     },
-                    "texture" : "1217DB35DC8F187C01AE1EF61E341D1F"
+                    "texture" : "90B215AE9DA181FE7B9B1113D759D0C7"
                   }
                 ]
               }
@@ -802,201 +802,12 @@
       ],
       "accessibility" : [
         {
-          "text" : "WIFI",
-          "targetRectangle" : {
-            "y" : 721.10260009765625,
-            "x" : 996.50395214843752,
-            "width" : 69.06899999999996,
-            "height" : 39.042770385742188
-          }
-        },
-        {
-          "text" : "RaspbianLite.img",
-          "targetRectangle" : {
-            "y" : 593.16510009765625,
-            "x" : 670.92935031127922,
-            "width" : 338.43600000000015,
-            "height" : 49.781707763671875
-          }
-        },
-        {
-          "text" : "2_boot_config.bash",
+          "text" : "1_raspbian_imager.bash",
           "targetRectangle" : {
             "y" : 249.70469665527344,
-            "x" : 701.61515966796878,
-            "width" : 308.02199999999993,
+            "x" : 291.91953271484374,
+            "width" : 380.02800000000002,
             "height" : 39.042770385742188
-          }
-        },
-        {
-          "text" : "logrotate.conf",
-          "targetRectangle" : {
-            "y" : 739.10260009765625,
-            "x" : 273.9888916015625,
-            "width" : 145.53000000000003,
-            "height" : 79.042770385742188
-          }
-        },
-        {
-          "text" : "vim",
-          "targetRectangle" : {
-            "y" : 401.23178100585938,
-            "x" : 105.65059066772461,
-            "width" : 74.980000000000004,
-            "height" : 54.665679931640625
-          }
-        },
-        {
-          "text" : "apache2",
-          "targetRectangle" : {
-            "y" : 401.23178100585938,
-            "x" : 781.82694213867194,
-            "width" : 182.38999999999987,
-            "height" : 54.665679931640625
-          }
-        },
-        {
-          "text" : "On RaspberryPi side",
-          "targetRectangle" : {
-            "y" : 470.6578630828858,
-            "x" : -2.7595340013504135,
-            "width" : 43.926742553710966,
-            "height" : 351.68499999999995
-          }
-        },
-        {
-          "text" : "raspberrypi.conf",
-          "targetRectangle" : {
-            "y" : 739.10260009765625,
-            "x" : 1117.2261962890625,
-            "width" : 146.12400000000002,
-            "height" : 79.042770385742188
-          }
-        },
-        {
-          "text" : "RaspberryPi hardware",
-          "targetRectangle" : {
-            "y" : 915.04010009765625,
-            "x" : 447.20075851440436,
-            "width" : 431.12999999999988,
-            "height" : 49.781707763671875
-          }
-        },
-        {
-          "text" : "\/var\/www\/html\/",
-          "targetRectangle" : {
-            "y" : 482.72927856445312,
-            "x" : 765.21694213867181,
-            "width" : 215.61000000000013,
-            "height" : 36.129791259765625
-          }
-        },
-        {
-          "text" : "33-512.png",
-          "targetRectangle" : {
-            "y" : 693.0902099609375,
-            "x" : 1651.5828857421875,
-            "width" : 130.01953125,
-            "height" : 130.01953125
-          }
-        },
-        {
-          "text" : "GPIO",
-          "targetRectangle" : {
-            "y" : 719.10260009765625,
-            "x" : 1530.3531552734376,
-            "width" : 81.311999999999898,
-            "height" : 39.042770385742188
-          }
-        },
-        {
-          "text" : "SPI",
-          "targetRectangle" : {
-            "y" : 759.10260009765625,
-            "x" : 1544.7246552734375,
-            "width" : 52.56899999999996,
-            "height" : 39.042770385742188
-          }
-        },
-        {
-          "text" : "I2C",
-          "targetRectangle" : {
-            "y" : 799.10260009765625,
-            "x" : 1545.3351552734375,
-            "width" : 51.347999999999956,
-            "height" : 39.042770385742188
-          }
-        },
-        {
-          "text" : "Kodi-logo-Thumbnail-light-transparent.png",
-          "targetRectangle" : {
-            "y" : 608.917236328125,
-            "x" : 1769.35107421875,
-            "width" : 138.02705383300781,
-            "height" : 138.02705383300781
-          }
-        },
-        {
-          "text" : "oled_gui_core",
-          "targetRectangle" : {
-            "y" : 396.23178100585938,
-            "x" : 1311.1632080078125,
-            "width" : 167.64799999999991,
-            "height" : 31.245819091796875
-          }
-        },
-        {
-          "text" : "dropbox_halpage",
-          "targetRectangle" : {
-            "y" : 400.11054386980209,
-            "x" : 1311.1632080078125,
-            "width" : 210.00199999999995,
-            "height" : 61.245819091796875
-          }
-        },
-        {
-          "text" : "auto_restart_transmission",
-          "targetRectangle" : {
-            "y" : 433.9893067337448,
-            "x" : 1311.1632080078125,
-            "width" : 310.18000000000006,
-            "height" : 61.245819091796875
-          }
-        },
-        {
-          "text" : "rpitools_logrotate",
-          "targetRectangle" : {
-            "y" : 467.86806959768751,
-            "x" : 1311.1632080078125,
-            "width" : 210.99000000000001,
-            "height" : 61.245819091796875
-          }
-        },
-        {
-          "text" : "smb.conf",
-          "targetRectangle" : {
-            "y" : 482.72927856445312,
-            "x" : 573.21368408203125,
-            "width" : 129.48000000000002,
-            "height" : 36.129791259765625
-          }
-        },
-        {
-          "text" : "4_connect_and_enjoy.bash",
-          "targetRectangle" : {
-            "y" : 250.70469665527344,
-            "x" : 1470.7169404296876,
-            "width" : 396.76899999999978,
-            "height" : 37.100784301757812
-          }
-        },
-        {
-          "text" : "Raspi-PGB001.png",
-          "targetRectangle" : {
-            "y" : 877.69635200500488,
-            "x" : 1091.9575271606445,
-            "width" : 132.57592916536669,
-            "height" : 124.07226674258709
           }
         },
         {
@@ -1036,6 +847,33 @@
           }
         },
         {
+          "text" : "RaspberryPi hardware",
+          "targetRectangle" : {
+            "y" : 915.04010009765625,
+            "x" : 447.20075851440436,
+            "width" : 431.12999999999988,
+            "height" : 49.781707763671875
+          }
+        },
+        {
+          "text" : "RaspbianLite.img",
+          "targetRectangle" : {
+            "y" : 593.16510009765625,
+            "x" : 670.92935031127922,
+            "width" : 338.43600000000015,
+            "height" : 49.781707763671875
+          }
+        },
+        {
+          "text" : "pizel.jpg",
+          "targetRectangle" : {
+            "y" : 869.41510009765625,
+            "x" : 1653.8070068359375,
+            "width" : 248.80284118652344,
+            "height" : 130.01953125
+          }
+        },
+        {
           "text" : "hosts",
           "targetRectangle" : {
             "y" : 739.10260009765625,
@@ -1054,21 +892,57 @@
           }
         },
         {
-          "text" : "tag_bash.png",
+          "text" : "smb.conf",
           "targetRectangle" : {
-            "y" : 561.03497314453125,
-            "x" : 1673.5203857421875,
-            "width" : 87.049911499023438,
-            "height" : 87.049911499023438
+            "y" : 482.72927856445312,
+            "x" : 573.21368408203125,
+            "width" : 129.48000000000002,
+            "height" : 36.129791259765625
           }
         },
         {
-          "text" : "3_remote_config_for_rpi_machine.bash",
+          "text" : "WIFI",
           "targetRectangle" : {
-            "y" : 229.70469665527344,
-            "x" : 1043.8991845703126,
-            "width" : 397.15499999999975,
+            "y" : 721.10260009765625,
+            "x" : 996.50395214843752,
+            "width" : 69.06899999999996,
+            "height" : 39.042770385742188
+          }
+        },
+        {
+          "text" : "avatars-000287725554-094dcj-t500x500.jpg",
+          "targetRectangle" : {
+            "y" : 471.0235595703125,
+            "x" : 1789.4854736328125,
+            "width" : 97.75830078125,
+            "height" : 97.75830078125
+          }
+        },
+        {
+          "text" : "logrotate.conf",
+          "targetRectangle" : {
+            "y" : 739.10260009765625,
+            "x" : 273.9888916015625,
+            "width" : 145.53000000000003,
             "height" : 79.042770385742188
+          }
+        },
+        {
+          "text" : "On PC side",
+          "targetRectangle" : {
+            "y" : 89.219416618347154,
+            "x" : 1875.3647528886795,
+            "width" : 43.926742553710938,
+            "height" : 192.62199999999996
+          }
+        },
+        {
+          "text" : "Raspi-PGB001.png",
+          "targetRectangle" : {
+            "y" : 877.69635200500488,
+            "x" : 1091.9575271606445,
+            "width" : 132.57592916536669,
+            "height" : 124.07226674258709
           }
         },
         {
@@ -1081,21 +955,12 @@
           }
         },
         {
-          "text" : "transmission",
+          "text" : "IMG_8457.png",
           "targetRectangle" : {
-            "y" : 401.23178100585938,
-            "x" : 268.62530139160157,
-            "width" : 270.98599999999993,
-            "height" : 54.665679931640625
-          }
-        },
-        {
-          "text" : "systemd",
-          "targetRectangle" : {
-            "y" : 739.10260009765625,
-            "x" : 462.4902236328125,
-            "width" : 109.42799999999994,
-            "height" : 79.042770385742188
+            "y" : 37.108528137207031,
+            "x" : 48.106826782226562,
+            "width" : 202.25,
+            "height" : 296.84986743621994
           }
         },
         {
@@ -1126,39 +991,21 @@
           }
         },
         {
+          "text" : "cmdline.txt config.txt",
+          "targetRectangle" : {
+            "y" : 739.10260009765625,
+            "x" : 1301.0567626953125,
+            "width" : 178.46399999999994,
+            "height" : 79.042770385742188
+          }
+        },
+        {
           "text" : "wpa_supplicant.conf",
           "targetRectangle" : {
             "y" : 789.26837158203125,
             "x" : 973.52695214843754,
             "width" : 115.02300000000002,
             "height" : 55.332839965820312
-          }
-        },
-        {
-          "text" : "1_raspbian_imager.bash",
-          "targetRectangle" : {
-            "y" : 249.70469665527344,
-            "x" : 291.91953271484374,
-            "width" : 380.02800000000002,
-            "height" : 39.042770385742188
-          }
-        },
-        {
-          "text" : "samba",
-          "targetRectangle" : {
-            "y" : 401.23178100585938,
-            "x" : 573.21368408203125,
-            "width" : 143.15200000000004,
-            "height" : 54.665679931640625
-          }
-        },
-        {
-          "text" : "avatars-000287725554-094dcj-t500x500.jpg",
-          "targetRectangle" : {
-            "y" : 471.0235595703125,
-            "x" : 1789.4854736328125,
-            "width" : 97.75830078125,
-            "height" : 97.75830078125
           }
         },
         {
@@ -1171,30 +1018,21 @@
           }
         },
         {
-          "text" : "IMG_8457.png",
+          "text" : "Kodi-logo-Thumbnail-light-transparent.png",
           "targetRectangle" : {
-            "y" : 37.108528137207031,
-            "x" : 48.106826782226562,
-            "width" : 202.25,
-            "height" : 296.84986743621994
+            "y" : 608.917236328125,
+            "x" : 1769.35107421875,
+            "width" : 138.02705383300781,
+            "height" : 138.02705383300781
           }
         },
         {
-          "text" : "journald.conf",
+          "text" : "vim",
           "targetRectangle" : {
-            "y" : 760.10260009765625,
-            "x" : 52.015822967529303,
-            "width" : 194.43200000000002,
-            "height" : 38.07177734375
-          }
-        },
-        {
-          "text" : "SD card",
-          "targetRectangle" : {
-            "y" : 915.04010009765625,
-            "x" : 1389.1440966796874,
-            "width" : 155.61000000000013,
-            "height" : 49.781707763671875
+            "y" : 401.23178100585938,
+            "x" : 105.65059066772461,
+            "width" : 74.980000000000004,
+            "height" : 54.665679931640625
           }
         },
         {
@@ -1207,30 +1045,111 @@
           }
         },
         {
-          "text" : "pizel.jpg",
+          "text" : "oled_gui_core",
           "targetRectangle" : {
-            "y" : 869.41510009765625,
-            "x" : 1653.8070068359375,
-            "width" : 248.80284118652344,
-            "height" : 130.01953125
+            "y" : 396.23178100585938,
+            "x" : 1311.1632080078125,
+            "width" : 167.64799999999991,
+            "height" : 31.245819091796875
           }
         },
         {
-          "text" : "cmdline.txt config.txt",
+          "text" : "dropbox_halpage",
           "targetRectangle" : {
-            "y" : 739.10260009765625,
-            "x" : 1301.0567626953125,
-            "width" : 178.46399999999994,
+            "y" : 400.11054386980209,
+            "x" : 1311.1632080078125,
+            "width" : 210.00199999999995,
+            "height" : 61.245819091796875
+          }
+        },
+        {
+          "text" : "auto_restart_transmission",
+          "targetRectangle" : {
+            "y" : 433.9893067337448,
+            "x" : 1311.1632080078125,
+            "width" : 310.18000000000006,
+            "height" : 61.245819091796875
+          }
+        },
+        {
+          "text" : "rpitools_logrotate",
+          "targetRectangle" : {
+            "y" : 467.86806959768751,
+            "x" : 1311.1632080078125,
+            "width" : 210.99000000000001,
+            "height" : 61.245819091796875
+          }
+        },
+        {
+          "text" : "3_remote_config_for_rpi_machine.bash",
+          "targetRectangle" : {
+            "y" : 229.70469665527344,
+            "x" : 1043.8991845703126,
+            "width" : 397.15499999999975,
             "height" : 79.042770385742188
           }
         },
         {
-          "text" : "On PC side",
+          "text" : "journald.conf",
           "targetRectangle" : {
-            "y" : 89.219416618347154,
-            "x" : 1875.3647528886795,
-            "width" : 43.926742553710938,
-            "height" : 192.62199999999996
+            "y" : 760.10260009765625,
+            "x" : 52.015822967529303,
+            "width" : 194.43200000000002,
+            "height" : 38.07177734375
+          }
+        },
+        {
+          "text" : "transmission",
+          "targetRectangle" : {
+            "y" : 401.23178100585938,
+            "x" : 268.62530139160157,
+            "width" : 270.98599999999993,
+            "height" : 54.665679931640625
+          }
+        },
+        {
+          "text" : "2_boot_config.bash",
+          "targetRectangle" : {
+            "y" : 249.70469665527344,
+            "x" : 701.61515966796878,
+            "width" : 308.02199999999993,
+            "height" : 39.042770385742188
+          }
+        },
+        {
+          "text" : "\/var\/www\/html\/",
+          "targetRectangle" : {
+            "y" : 482.72927856445312,
+            "x" : 765.21694213867181,
+            "width" : 215.61000000000013,
+            "height" : 36.129791259765625
+          }
+        },
+        {
+          "text" : "SD card",
+          "targetRectangle" : {
+            "y" : 915.04010009765625,
+            "x" : 1389.1440966796874,
+            "width" : 155.61000000000013,
+            "height" : 49.781707763671875
+          }
+        },
+        {
+          "text" : "On RaspberryPi side",
+          "targetRectangle" : {
+            "y" : 470.6578630828858,
+            "x" : -2.7595340013504135,
+            "width" : 43.926742553710966,
+            "height" : 351.68499999999995
+          }
+        },
+        {
+          "text" : "raspberrypi.conf",
+          "targetRectangle" : {
+            "y" : 739.10260009765625,
+            "x" : 1117.2261962890625,
+            "width" : 146.12400000000002,
+            "height" : 79.042770385742188
           }
         },
         {
@@ -1240,6 +1159,87 @@
             "x" : 86.890590667724609,
             "width" : 112.5,
             "height" : 36.129791259765625
+          }
+        },
+        {
+          "text" : "samba",
+          "targetRectangle" : {
+            "y" : 401.23178100585938,
+            "x" : 573.21368408203125,
+            "width" : 143.15200000000004,
+            "height" : 54.665679931640625
+          }
+        },
+        {
+          "text" : "apache2",
+          "targetRectangle" : {
+            "y" : 401.23178100585938,
+            "x" : 781.82694213867194,
+            "width" : 182.38999999999987,
+            "height" : 54.665679931640625
+          }
+        },
+        {
+          "text" : "tag_bash.png",
+          "targetRectangle" : {
+            "y" : 561.03497314453125,
+            "x" : 1673.5203857421875,
+            "width" : 87.049911499023438,
+            "height" : 87.049911499023438
+          }
+        },
+        {
+          "text" : "33-512.png",
+          "targetRectangle" : {
+            "y" : 693.0902099609375,
+            "x" : 1651.5828857421875,
+            "width" : 130.01953125,
+            "height" : 130.01953125
+          }
+        },
+        {
+          "text" : "systemd",
+          "targetRectangle" : {
+            "y" : 739.10260009765625,
+            "x" : 462.4902236328125,
+            "width" : 109.42799999999994,
+            "height" : 79.042770385742188
+          }
+        },
+        {
+          "text" : "4_connect_and_enjoy.bash",
+          "targetRectangle" : {
+            "y" : 250.70469665527344,
+            "x" : 1470.7169404296876,
+            "width" : 396.76899999999978,
+            "height" : 37.100784301757812
+          }
+        },
+        {
+          "text" : "GPIO",
+          "targetRectangle" : {
+            "y" : 719.10260009765625,
+            "x" : 1530.3531552734376,
+            "width" : 81.311999999999898,
+            "height" : 39.042770385742188
+          }
+        },
+        {
+          "text" : "SPI",
+          "targetRectangle" : {
+            "y" : 759.10260009765625,
+            "x" : 1544.7246552734375,
+            "width" : 52.56899999999996,
+            "height" : 39.042770385742188
+          }
+        },
+        {
+          "text" : "I2C",
+          "targetRectangle" : {
+            "y" : 799.10260009765625,
+            "x" : 1545.3351552734375,
+            "width" : 51.347999999999956,
+            "height" : 39.042770385742188
           }
         }
       ],
@@ -1474,7 +1474,7 @@
                         "pointY" : 0.5
                       }
                     },
-                    "texture" : "5EE92F9F5601CC9BF8CCC1F4814CBB94"
+                    "texture" : "99A689584A633EEE4A46BC80E29CE03E"
                   }
                 ]
               }
@@ -1952,7 +1952,7 @@
                         "pointY" : 0.5
                       }
                     },
-                    "texture" : "C31D6B22CC688986BF16B76F51268E7D"
+                    "texture" : "A05F014737B0D7F04C50A47BF09FA593"
                   }
                 ]
               }
@@ -5001,7 +5001,7 @@
                         "pointY" : 0.5
                       }
                     },
-                    "texture" : "43E01CA8DCF3A82EAB8B6361104ECD7B"
+                    "texture" : "3CB359D0D0E1E6EAE19E62D20D68B863"
                   }
                 ]
               }

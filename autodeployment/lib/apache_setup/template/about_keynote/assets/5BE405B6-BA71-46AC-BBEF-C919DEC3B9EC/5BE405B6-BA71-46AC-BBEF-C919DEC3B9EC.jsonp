@@ -95,8 +95,8 @@ local_slide( {
                 "rotation" : 0,
                 "scale" : 1,
                 "position" : {
-                  "pointX" : 635.41499423980713,
-                  "pointY" : 717.18719625473022
+                  "pointX" : 635.4149954719544,
+                  "pointY" : 717.1871964931488
                 },
                 "width" : 204,
                 "sublayerTransform" : [
@@ -151,8 +151,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 426.58500576019287,
-                      "pointY" : -150.68719625473022
+                      "pointX" : 426.5850045280456,
+                      "pointY" : -150.6871964931488
                     },
                     "width" : 204,
                     "sublayerTransform" : [
@@ -184,8 +184,8 @@ local_slide( {
                     "height" : 53,
                     "hidden" : false,
                     "anchorPoint" : {
-                      "pointX" : 2.0911029694127103,
-                      "pointY" : -2.8431546463156647
+                      "pointX" : 2.0911029633727725,
+                      "pointY" : -2.8431546508141285
                     }
                   },
                   "layers" : [
@@ -239,7 +239,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.54626415094339631,
-                        "textBaseline" : 0.84030326807274014,
+                        "textBaseline" : 0.84030327257120385,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -263,8 +263,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 102.58500576019287,
-                          "pointY" : 42.812803745269775
+                          "pointX" : 102.5850045280456,
+                          "pointY" : 42.812803506851196
                         },
                         "width" : 204,
                         "sublayerTransform" : [
@@ -326,8 +326,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1193.3062673807144,
-                      "pointY" : 717.18719625473022
+                      "pointX" : 1193.3062916994095,
+                      "pointY" : 717.1871964931488
                     },
                     "width" : 38,
                     "sublayerTransform" : [
@@ -382,8 +382,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : -214.30626738071442,
-                          "pointY" : -150.68719625473022
+                          "pointX" : -214.30629169940948,
+                          "pointY" : -150.6871964931488
                         },
                         "width" : 38,
                         "sublayerTransform" : [
@@ -415,8 +415,8 @@ local_slide( {
                         "height" : 53,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : -5.6396386152819584,
-                          "pointY" : -2.8431546463156647
+                          "pointX" : -5.6396392552476184,
+                          "pointY" : -2.8431546508141285
                         }
                       },
                       "layers" : [
@@ -470,7 +470,7 @@ local_slide( {
                           "texturedRectangle" : {
                             "singleTextureOpacity" : 1,
                             "textXHeight" : 0.54626415094339631,
-                            "textBaseline" : 0.85917119260104202,
+                            "textBaseline" : 0.85917119709950573,
                             "isBackgroundTexture" : true,
                             "isVerticalText" : false,
                             "textColor" : [
@@ -494,8 +494,8 @@ local_slide( {
                             "rotation" : 0,
                             "scale" : 1,
                             "position" : {
-                              "pointX" : 21.693732619285583,
-                              "pointY" : 41.812803745269775
+                              "pointX" : 21.693708300590515,
+                              "pointY" : 41.812803506851196
                             },
                             "width" : 38,
                             "sublayerTransform" : [
@@ -566,8 +566,8 @@ local_slide( {
           {
             "text" : "IMG_8457.png",
             "targetRectangle" : {
-              "y" : 135.10153198242188,
-              "x" : 734.759765625,
+              "y" : 135.10153049672982,
+              "x" : 734.75977219990477,
               "width" : 433.59375,
               "height" : 636.40625
             }
@@ -881,8 +881,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 953.259765625,
-                      "pointY" : 454.60153198242188
+                      "pointX" : 953.25977219990477,
+                      "pointY" : 454.60153049672982
                     },
                     "width" : 437,
                     "sublayerTransform" : [
@@ -947,8 +947,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 216.740234375,
-                          "pointY" : 318.39846801757812
+                          "pointX" : 216.74022780009523,
+                          "pointY" : 318.39846950327018
                         },
                         "width" : 437,
                         "sublayerTransform" : [
@@ -1062,8 +1062,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 635.41499423980713,
-                      "pointY" : 717.18719625473022
+                      "pointX" : 635.4149954719544,
+                      "pointY" : 717.1871964931488
                     },
                     "width" : 204,
                     "sublayerTransform" : [
@@ -1111,7 +1111,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.54626415094339631,
-                        "textBaseline" : 0.84030326807274014,
+                        "textBaseline" : 0.84030327257120385,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -1135,8 +1135,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 102.58500576019287,
-                          "pointY" : 42.812803745269775
+                          "pointX" : 102.5850045280456,
+                          "pointY" : 42.812803506851196
                         },
                         "width" : 204,
                         "sublayerTransform" : [
@@ -1250,8 +1250,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1193.3062673807144,
-                      "pointY" : 717.18719625473022
+                      "pointX" : 1193.3062916994095,
+                      "pointY" : 717.1871964931488
                     },
                     "width" : 38,
                     "sublayerTransform" : [
@@ -1299,7 +1299,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.54626415094339631,
-                        "textBaseline" : 0.85917119260104202,
+                        "textBaseline" : 0.85917119709950573,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -1323,8 +1323,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 21.693732619285583,
-                          "pointY" : 41.812803745269775
+                          "pointX" : 21.693708300590515,
+                          "pointY" : 41.812803506851196
                         },
                         "width" : 38,
                         "sublayerTransform" : [
@@ -1677,8 +1677,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 951.556640625,
-                      "pointY" : 453.30465698242188
+                      "pointX" : 951.55664719990477,
+                      "pointY" : 453.30465549672982
                     },
                     "width" : 433.59375,
                     "sublayerTransform" : [
@@ -1784,8 +1784,8 @@ local_slide( {
                               "timingFunction" : "EaseInEaseOut",
                               "property" : "transform.translation",
                               "to" : {
-                                "pointX" : -814.02696112743456,
-                                "pointY" : -282.38257672937902
+                                "pointX" : -814.02695666558657,
+                                "pointY" : -282.38255837453346
                               }
                             }
                           ],
@@ -1818,8 +1818,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 216.79101891245227,
-                          "pointY" : 318.19730589981191
+                          "pointX" : 216.79100393311819,
+                          "pointY" : 318.1972759411438
                         },
                         "width" : 437,
                         "sublayerTransform" : [
@@ -1851,8 +1851,8 @@ local_slide( {
                         "height" : 639,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.5001162117561837,
-                          "pointY" : 0.49968519230396524
+                          "pointX" : 0.50011619252408002,
+                          "pointY" : 0.49968514309526391
                         }
                       },
                       "texture" : "C9941C160549ECB79075A03FDC0B0C14"
@@ -1901,8 +1901,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 636,
-                      "pointY" : 730
+                      "pointX" : 636.00000123214727,
+                      "pointY" : 730.00000023841858
                     },
                     "width" : 205.17001152038574,
                     "sublayerTransform" : [
@@ -1989,7 +1989,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.54626415094339631,
-                        "textBaseline" : 0.84030326807274014,
+                        "textBaseline" : 0.84030327257120385,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -2046,8 +2046,8 @@ local_slide( {
                         "height" : 53,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.4999999717637606,
-                          "pointY" : 0.43396229114172591
+                          "pointX" : 0.4999999778036982,
+                          "pointY" : 0.43396229564018968
                         }
                       },
                       "texture" : "60B2597AEF3C7A51D73114C732DAE7BF"
@@ -2096,8 +2096,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1195.999267578125,
-                      "pointY" : 730
+                      "pointX" : 1195.9992918968201,
+                      "pointY" : 730.00000023841858
                     },
                     "width" : 43.386000394821167,
                     "sublayerTransform" : [
@@ -2184,7 +2184,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.54626415094339631,
-                        "textBaseline" : 0.85917119260104202,
+                        "textBaseline" : 0.85917119709950573,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -2241,8 +2241,8 @@ local_slide( {
                         "height" : 53,
                         "hidden" : false,
                         "anchorPoint" : {
-                          "pointX" : 0.49998072054511578,
-                          "pointY" : 0.45283021567002785
+                          "pointX" : 0.49998136051077546,
+                          "pointY" : 0.45283022016849156
                         }
                       },
                       "texture" : "D8AB40622C9AF737D067DB13528871A4"
@@ -2266,19 +2266,10 @@ local_slide( {
         ],
         "accessibility" : [
           {
-            "text" : "What is",
-            "targetRectangle" : {
-              "y" : 696.31219625473022,
-              "x" : 539.53999423980713,
-              "width" : 192.92000000000007,
-              "height" : 67.3756103515625
-            }
-          },
-          {
             "text" : "IMG_8457.png",
             "targetRectangle" : {
-              "y" : 135.10153198242188,
-              "x" : 734.759765625,
+              "y" : 135.10153049672982,
+              "x" : 734.75977219990477,
               "width" : 433.59375,
               "height" : 636.40625
             }
@@ -2286,9 +2277,18 @@ local_slide( {
           {
             "text" : "?",
             "targetRectangle" : {
-              "y" : 696.31219625473022,
-              "x" : 1180.4312673807144,
+              "y" : 696.3121964931488,
+              "x" : 1180.4312916994095,
               "width" : 31.135999999999967,
+              "height" : 67.3756103515625
+            }
+          },
+          {
+            "text" : "What is",
+            "targetRectangle" : {
+              "y" : 696.3121964931488,
+              "x" : 539.5399954719544,
+              "width" : 192.92000000000007,
               "height" : 67.3756103515625
             }
           }
@@ -2602,8 +2602,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 953.259765625,
-                      "pointY" : 454.60153198242188
+                      "pointX" : 953.25977219990477,
+                      "pointY" : 454.60153049672982
                     },
                     "width" : 437,
                     "sublayerTransform" : [
@@ -2668,8 +2668,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 216.740234375,
-                          "pointY" : 318.39846801757812
+                          "pointX" : 216.74022780009523,
+                          "pointY" : 318.39846950327018
                         },
                         "width" : 437,
                         "sublayerTransform" : [
@@ -2783,8 +2783,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 635.41499423980713,
-                      "pointY" : 717.18719625473022
+                      "pointX" : 635.4149954719544,
+                      "pointY" : 717.1871964931488
                     },
                     "width" : 204,
                     "sublayerTransform" : [
@@ -2831,7 +2831,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.54626415094339631,
-                        "textBaseline" : 0.84030326807274014,
+                        "textBaseline" : 0.84030327257120385,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -2855,8 +2855,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 102.58500576019287,
-                          "pointY" : 42.812803745269775
+                          "pointX" : 102.5850045280456,
+                          "pointY" : 42.812803506851196
                         },
                         "width" : 204,
                         "sublayerTransform" : [
@@ -2970,8 +2970,8 @@ local_slide( {
                     "rotation" : 0,
                     "scale" : 1,
                     "position" : {
-                      "pointX" : 1193.3062673807144,
-                      "pointY" : 717.18719625473022
+                      "pointX" : 1193.3062916994095,
+                      "pointY" : 717.1871964931488
                     },
                     "width" : 38,
                     "sublayerTransform" : [
@@ -3018,7 +3018,7 @@ local_slide( {
                       "texturedRectangle" : {
                         "singleTextureOpacity" : 1,
                         "textXHeight" : 0.54626415094339631,
-                        "textBaseline" : 0.85917119260104202,
+                        "textBaseline" : 0.85917119709950573,
                         "isBackgroundTexture" : true,
                         "isVerticalText" : false,
                         "textColor" : [
@@ -3042,8 +3042,8 @@ local_slide( {
                         "rotation" : 0,
                         "scale" : 1,
                         "position" : {
-                          "pointX" : 21.693732619285583,
-                          "pointY" : 41.812803745269775
+                          "pointX" : 21.693708300590515,
+                          "pointY" : 41.812803506851196
                         },
                         "width" : 38,
                         "sublayerTransform" : [
