@@ -27,6 +27,9 @@ alias list_services='echo -e "\nENABLED:\n\n$(systemctl list-unit-files | grep e
 alias halpage='/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash'
 alias copy_my_sshkey_to='/home/$USER/rpitools/tools/copy_my_sshkey_to.bash'
 
+alias gitlog='git log --all --decorate --oneline --graph'
+alias gitbranch='git branch -av'
+
 if [ ! -z $REPOROOT ]
 then
     alias doc='cat ${REPOROOT}/template/help.dat'
