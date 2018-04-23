@@ -6,6 +6,7 @@ tree
 omxplayer
 shellcheck
 git
+lsof
 epiphany-browser
 scrot
 xdotool
