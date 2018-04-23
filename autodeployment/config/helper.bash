@@ -15,6 +15,7 @@ then
     then
         echo -e "cp $template_config -> $custom_config"
         cp "$template_config" "$custom_config"
+        vim "$custom_config"
     else
         echo -e "See you later ;) - see our git README.md file\nhttps://github.com/BxNxM/rpitools"
     fi
@@ -25,7 +26,7 @@ else
     if [ "$option" == "Y" ] || [ "$option" == "y" ]
     then
         vim "$custom_config"
-    elif [ "$option" == "D" ]
+    elif [ "$option" == "D" ] || [ "$option" == "d" ]
     then
         echo -e "[INFO] change side: ctrl+w+w"
         echo -e "[INFO] exit all: :wqa"
