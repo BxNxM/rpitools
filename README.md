@@ -69,8 +69,9 @@ for more info use: ->| alias |<- command
 * bash
 * vim
 
-## How to install: 
-####CONFIGURATION ON MAC & LINUX
+## How to install:
+ 
+#### CONFIGURATION ON MAC & LINUX
 
 ***Deploy and setup raspbian image***
 
