@@ -64,9 +64,13 @@ Other commands:
 for more info use: ->| alias |<- command
 ########################################################
 ```
+## Dependences on installation side [Linux and macOS]:
+* python
+* bash
+* vim
 
 ## How to install: 
-####CONFIGURATION ON MAC
+####CONFIGURATION ON MAC & LINUX
 
 ***Deploy and setup raspbian image***
 
@@ -80,7 +84,8 @@ and dowload:
 RASPBIAN STRETCH LITE
 example: https://downloads.raspberrypi.org/raspbian_lite_latest
 ```
-* open terminal ```CMD+SPACE``` type ```Terminal``` press enter
+* macOS: open terminal ```CMD+SPACE``` type ```Terminal``` press enter
+* Linux: open ```terminal```
 
 * clone rpitools repository from github - to get the resources
 
@@ -100,11 +105,8 @@ cd rpitools/prepare/sd_card/
 Jump to the config folder:
 pushd ../../autodeployment/config/
 
-Copy template file:
-cp rpitools_config_template.cfg rpitools_config.cfg
-
-Edit your configuration:
-open rpitools_config.cfg
+Helps to create and edit configuration file: rptoos_config.cfg
+./helper.bash
 
 WRITE YOUR CUSTOM PARAMETERS TO THE "<>" PLACEHOLDERS
 

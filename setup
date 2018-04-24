@@ -35,7 +35,7 @@ if [ "$OS" != "GNU/Linux" ]
     run_source=false
 fi
 
-if [ -z "$run_source" ]
+if [ -z "$run_source" ] && [ "$run_source" != "false" ]
 then
     # set DISPLAY=:0 if xinit is run
     xinitrx_is_run=$(ps aux | grep "[x]initrc")
