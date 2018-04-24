@@ -66,8 +66,12 @@ then
     debug_msg "Run auto log cleaner in loop."
     while true
     do
+        # clean logs
         logs_to_clean "$logs_folder"
         logs_to_clean "$logs_folder2"
+        # clean procfs deleted files
+        sudo logrotate -f /etc/logrotate.conf
+        # sleep before run again
         sleep "$sleeptime"
     done
 else
