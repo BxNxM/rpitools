@@ -118,6 +118,10 @@ EXAMPLE:
   .
   .
   .
+  41 [EXTIPHANDLER] 
+  49 OAUTH_ACCESS_TOKEN="<>"
+  Place of "<>" genarate your dropbox API key:
+  https://www.dropbox.com/developers/support -> MyApp -> (login) -> create -> etc 
   
 Go back to the deployment scripts:
 popd
