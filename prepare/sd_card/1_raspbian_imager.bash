@@ -45,6 +45,18 @@ img_path=$(echo raspbian_img/*.img)
 if [ ! -e "$img_path" ]
 then
     img_in_downloads_folder="$(find $glob_downloads_folder -iname "*raspbian*lite*.img")"
+    img_in_downloads_folder_list=($img_in_downloads_folder)
+    if [ "${#img_in_downloads_folder_list[@]}" -gt 1 ]
+    then
+        message "Choose image:"
+        for ((img_index=0; img_index<"${#img_in_downloads_folder_list[@]}"; img_index++))
+        do
+            echo -e "[$img_index] - ${img_in_downloads_folder_list[$img_index]}"
+        done
+        read image_index
+        img_in_downloads_folder="${img_in_downloads_folder_list[$image_index]}"
+    fi
+
     if [ -e "$img_in_downloads_folder" ]
     then
         echo -e "Copy $img_in_downloads_folder image to ${MYDIR_}/raspbian_img/"
