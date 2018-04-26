@@ -53,6 +53,9 @@ function update_grade_dits_clean() {
     # WORKAROUND FOR: E: Unable to locate package <>
     message "CMD: sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y"
     echo "Y" | sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y
+
+    message "CMD: sudo rpi-update"
+    sudo rpi-update
 }
 
 elapsed_time "start"
