@@ -12,6 +12,17 @@ then
     echo -e "Clone https://github.com/andreafabrizi/Dropbox-Uploader.git"
     pushd "${MYDIR}/../lib"
     git clone https://github.com/andreafabrizi/Dropbox-Uploader.git
+    if [ ! -d "${MYDIR}/../lib/Dropbox-Uploader" ]
+    then
+        echo -e "[WARNING] clone Dropbox-Uploader failed - try again"
+        git clone https://github.com/andreafabrizi/Dropbox-Uploader.git
+    fi
+    if [ -d "${MYDIR}/../lib/Dropbox-Uploader" ]
+    then
+        echo -e "SUCCESS"
+    else
+        echo -e "FAILED"
+    fi
     popd
 
     echo -e "ADD permissions +x"
