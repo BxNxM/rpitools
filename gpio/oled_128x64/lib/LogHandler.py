@@ -33,7 +33,7 @@ class LogHandler():
         # create logger
         self.logger = logging.getLogger(self.name)
         self.logger.setLevel(loglvl)
-        logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', \
+        logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s', \
                             filename=os.path.join(mypath, self.folder, self.name) + ".log", level=loglvl)
 
     def console_handler(self):
@@ -43,7 +43,7 @@ class LogHandler():
 
     def formatter_set(self):
         # create formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d- %(message)s')
         # add formatter to ch
         self.ch.setFormatter(formatter)
         # add ch to logger
