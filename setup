@@ -1,5 +1,18 @@
 #!/bin/bash
 
+quick_conf=false
+if [ "$#" -eq 1 ]
+then
+    if [ "$1" == "-qc" ] || [ "$1" == "--quickconf" ]
+    then
+        quick_conf=true
+    else
+        echo -e "Help: For quick rpitools.conf acces use -> source setup -qc\nIt creates two commands for config access."
+    fi
+else
+    echo -e "Too many arguments!"
+fi
+
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export REPOROOT="$MYDIR"
@@ -23,12 +36,19 @@ function message() {
     fi
 }
 
+# Set two quick config access interface:
+alias confhelper='${MYDIR}/autodeployment/config/helper.bash'
+alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
+if [ "$quick_conf" == "true" ]
+then
+    echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h"
+    return 0
+fi
+
 # exit if we are not on raspberyy pi
 if [ "$OS" != "GNU/Linux" ]
  then
     # rpitools configuration access from anywhere
-    alias confhelper='${MYDIR}/autodeployment/config/helper.bash'
-    alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
     message "[INFO] For configuiration use: confhelper OR confighandler"
 
     message "This script works on raspbian properly, this OS $OS is not supported!"
