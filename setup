@@ -1,5 +1,6 @@
 #!/bin/bash
 
+arg_helper_lolcat="$SETUPLOLCAT"
 quick_conf=false
 if [ "$#" -eq 1 ]
 then
@@ -7,7 +8,15 @@ then
     then
         quick_conf=true
     else
-        echo -e "Help: For quick rpitools.conf acces use -> source setup -qc\nIt creates two commands for config access."
+        help_text="Help: For quick rpitools.conf acces use -> source setup -qc\nIt creates two commands for config access."
+        help_text+="\nOr use without parameters for the complete configuration -> source setup"
+        if [ "$arg_helper_lolcat" == "true" ]
+        then
+            echo -e "$help_text" | lolcat
+        else
+            echo -e "$help_text"
+        fi
+        return 0
     fi
 elif [ "$#" -gt 1 ]
 then
@@ -42,7 +51,12 @@ alias confhelper='${MYDIR}/autodeployment/config/helper.bash'
 alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
 if [ "$quick_conf" == "true" ]
 then
-    echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h"
+    if [ "$arg_helper_lolcat" == "true" ]
+    then
+        echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h" | lolcat
+    else
+        echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h"
+    fi
     return 0
 fi
 
