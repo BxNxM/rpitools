@@ -75,7 +75,7 @@ for more info use: ->| alias |<- command
 
 ***Deploy and setup raspbian image***
 
-* Download raspbian lite:
+* Download raspbian lite (debian) image:
 
 ```
 Browse:
@@ -94,6 +94,14 @@ example: https://downloads.raspberrypi.org/raspbian_lite_latest
 git clone https://github.com/BxNxM/rpitools.git
 ```
 
+* go to rpitools/
+
+```
+cd rpitools/
+source setup -qc
+```
+It creates access for the config handler for easy config handling (-gc or --quickconf)
+
 * go to rpitools/prepare/sd_card/ to find SD card preparing scripts
 
 ```
@@ -103,11 +111,11 @@ cd rpitools/prepare/sd_card/
 * Create custom config file from template
  
 ```
-Jump to the config folder:
-pushd ../../autodeployment/config/
+confhelper
+```
+It opens ***rpitools/autodeployment/config/rpitools_config.cfg***
 
-Helps to create and edit configuration file: rptoos_config.cfg
-./helper.bash
+```
 
 WRITE YOUR CUSTOM PARAMETERS TO THE "<>" PLACEHOLDERS
 
@@ -122,10 +130,34 @@ EXAMPLE:
   49 OAUTH_ACCESS_TOKEN="<>"
   Place of "<>" genarate your dropbox API key:
   https://www.dropbox.com/developers/support -> MyApp -> (login) -> create -> etc 
-  
-Go back to the deployment scripts:
-popd
 ```
+confhelper use vim command line text editor. For these some ***help***:
+
+## VIM - command line text editor
+
+ESC MODE
+
+```
+:w			- type & enter - save the actual file
+:q!     	- type & enter - exit without save
+:wq			- type & enter - save and exit
+
+jump end of the line: $
+jump beginning of the line: 0 
+```
+
+INSERT MODE
+
+```
+move the cursor with the arrows [up - down - right - left]
+SHIT + v	- type - select line
+CTRL + v 	- type - select block
+y			- type - copy selected area
+x			- type - cut selected area
+p			- type - paste copied area
+```
+
+## Deployment
 
 * Execute deployment scripts:
 
