@@ -9,7 +9,7 @@ then
     else
         echo -e "Help: For quick rpitools.conf acces use -> source setup -qc\nIt creates two commands for config access."
     fi
-else
+elif [ "$#" -gt 1 ]
     echo -e "Too many arguments!"
 fi
 
