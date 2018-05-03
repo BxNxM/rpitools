@@ -68,6 +68,7 @@ for more info use: ->| alias |<- command
 * python
 * bash
 * vim
+* ssh-keygen 			- for the passwordless login - run if ~/.ssh/id_rsa.pub not exists.
 
 ## How to install:
  
