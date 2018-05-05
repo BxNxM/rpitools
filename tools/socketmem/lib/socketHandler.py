@@ -1,11 +1,12 @@
 import socket
 import sys
 from thread import *
+import time
 
 class SocketServer():
 
     def __init__(self, host='', port=8888):
-        self.silentmode = True
+        self.silentmode = False
         self.host = host
         self.port = port
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -13,14 +14,18 @@ class SocketServer():
         self.bind_socket()
         self.server_core()
 
-    def bind_socket(self):
-        #Bind socket to local host and port
-        try:
-            self.s.bind((self.host, self.port))
-        except socket.error as msg:
-            self.serverside_printout("Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1])
+    def bind_socket(self, retry=20):
+        for cnt in range(0, retry):
+            #Bind socket to local host and port
+            try:
+                self.s.bind((self.host, self.port))
+                self.serverside_printout("Socket bind complete")
+                break
+            except socket.error as msg:
+                self.serverside_printout("Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1])
+                time.sleep(1)
+        if cnt == retry:
             sys.exit()
-        self.serverside_printout("Socket bind complete")
 
         #Start listening on socket
         self.s.listen(10)
@@ -35,7 +40,7 @@ class SocketServer():
             #Receiving from client
             data = conn.recv(1024)
             cmd, reply = self.input_data_handler(data)
-            self.send_all(conn, reply)
+            self.send_all(conn, str(reply) + "\n")
             if cmd == "break":
                 break
         #came out of loop
@@ -62,12 +67,12 @@ class SocketServer():
     def input_data_handler(self, data):
         data = data.rstrip()
         if data == "exit":
-            return "break", "Goodbye :)\n"
+            return "break", "Goodbye :)"
         elif not data:
             return "break", None
         else:
             # TODO: call advanced interpreter here
-            return None, "MSG: " + str(data) + "\n"
+            return None, "MSG: " + str(data)
 
     def serverside_printout(self, text):
         print("[SocketServer] " + str(text))
