@@ -5,8 +5,8 @@ import time
 
 class SocketServer():
 
-    def __init__(self, host='', port=8888):
-        self.silentmode = False
+    def __init__(self, host='', port=8888, silentmode=False):
+        self.silentmode = silentmode
         self.prompt = "> "
         self.host = host
         self.port = port
@@ -49,8 +49,10 @@ class SocketServer():
                 prompt = ""
             #Receiving from client
             data = conn.recv(1024)
-            cmd, reply = self.input_data_handler(data)
+            cmd, reply, silent_text = self.input_data_handler(data)
             self.send_all(conn, str(reply) + "\n" + prompt)
+            if self.silentmode is True:
+                self.send_all(conn, str(silent_text) + "\n", force=True)
             if cmd == "break":
                 break
         #came out of loop
@@ -77,15 +79,15 @@ class SocketServer():
     def input_data_handler(self, data):
         data = data.rstrip()
         if data == "exit":
-            return "break", "Goodbye :)"
+            return "break", "Goodbye :)", ""
         elif not data:
-            return "break", None
+            return "break", None, ""
         else:
             # TODO: call advanced interpreter here
-            return None, "MSG: " + str(data)
+            return None, "MSG: " + str(data), ""
 
     def serverside_printout(self, text):
-        print("[SocketServer] " + str(text))
+        print("[SocketServer] [silent:" + str(self.silentmode) + "] " + str(text))
 
     def __del__(self):
         self.s.close()
