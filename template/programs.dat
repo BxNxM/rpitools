@@ -2,6 +2,7 @@ vim
 mc
 htop
 python3
+telnet
 tree
 omxplayer
 shellcheck
