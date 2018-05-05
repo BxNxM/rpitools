@@ -38,8 +38,22 @@ class dictHandler(socketHandler.SocketServer):
 
             if "-s" in arg_list or "--silent" in arg_list:
                 is_known = True
-                self.silentmode = not self.silentmode
-                self.serverside_printout("Set silent mode: {}".format(self.silentmode) )
+                for index_, arg_ in enumerate(arg_list):
+                    if "-s" in arg_list or "--silent" in arg_list:
+                        try:
+                            if arg_list[index_+1] == "True":
+                                silent_direct_state = True
+                            elif arg_list[index_+1] == "False":
+                                silent_direct_state = False
+                            else:
+                                raise Exception("Not bool [True/False]")
+                            self.silentmode = silent_direct_state
+                            self.serverside_printout("silent mode direct set: {}".format(self.silentmode))
+                            break
+                        except Exception as e:
+                            self.serverside_printout("EXCEPTION: {}".format(e))
+                            self.serverside_printout("silent mode automatic set: {}".format(self.silentmode))
+                            self.silentmode = not self.silentmode
                 if self.silentmode is False:
                     output_text += "Silent mode OFF\n"
 
