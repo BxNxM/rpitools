@@ -9,38 +9,74 @@ sys.path.append(myfolder)
 import LogHandler
 mylogger = LogHandler.LogHandler("confighandler")
 
+try:
+    sys.path.append( os.path.join(myfolder, "../../../tools/socketmem/lib/") )
+    import clientMemDict
+    socketdict = clientMemDict.SocketDictClient()
+except Exception as e:
+    socketdict = None
+    print("Socket client error: " + str(e))
+
+def cmp(a, b):
+    diff = 0
+    for key, value in a.items():
+        if key not in b.keys():
+            diff += 1
+    if diff == 0:
+        for key, value in a.items():
+            if str(value) != str(b[key]):
+                diff += 1
+    return diff
+
 class ConfigHandler():
     def __init__(self, cfg_path):
-        self.cfg_path = cfg_path
-        self.file_last_modified_date = 0
+        self.stored_dict = {}
 
     # EXTERNAL FUNCTIONS - GET VALUE
     def get(self, key):
-        config = self.read_cfg_file()
-        try:
-            value = config[key]
-        except:
-            value = None
+        if socketdict is not None:
+            print("2.0 socket comm")
+            value =  socketdict.get_parameter(namespace="rgb", key=key).decode()
+        else:
+            print("value error")
         return value
 
     # EXTERNAL FUNCTION - GET ALL
     def get_all(self):
-        config = self.read_cfg_file()
+        red = socketdict.get_parameter(namespace="rgb", key="RED").decode()
+        green = socketdict.get_parameter(namespace="rgb", key="GREEN").decode()
+        blue = socketdict.get_parameter(namespace="rgb", key="BLUE").decode()
+        led = socketdict.get_parameter(namespace="rgb", key="LED").decode()
+        service = socketdict.get_parameter(namespace="rgb", key="SERVICE").decode()
+        config = { "RED": red,
+                   "GREEN": green,
+                   "BLUE": blue,
+                   "LED": led,
+                   "SERVICE": service
+                 }
+        self.stored_dict = config
         return config
 
     # EXTERNAL FUNCTION - PUT VALUE
     def put(self, key, value):
-        config = self.read_cfg_file()
-        config[key] = value
-        self.write_cfg_file(config)
+        if socketdict is not None:
+            socketdict.set_parameter(namespace="rgb", key=key, value=value)
 
     # FILE IS MODIFIED CHECK
     def file_is_modified(self):
-        moddate_raw = os.stat(self.cfg_path)[8]           # modification date
-        moddate_hr = time.ctime(moddate_raw)            # human readable mod date
         is_modified = False
-        if moddate_raw != self.file_last_modified_date:
-            self.file_last_modified_date = moddate_raw
+        red = socketdict.get_parameter(namespace="rgb", key="RED").decode()
+        green = socketdict.get_parameter(namespace="rgb", key="GREEN").decode()
+        blue = socketdict.get_parameter(namespace="rgb", key="BLUE").decode()
+        led = socketdict.get_parameter(namespace="rgb", key="LED").decode()
+        service = socketdict.get_parameter(namespace="rgb", key="SERVICE").decode()
+        config = { "RED": red,
+                   "GREEN": green,
+                   "BLUE": blue,
+                   "LED": led,
+                   "SERVICE": service
+                 }
+        if 0 != cmp(config, self.stored_dict):
             is_modified = True
         return is_modified
 
@@ -49,7 +85,7 @@ class ConfigHandler():
         try:
             all_param = None
             while loop:
-                time.sleep(0.4)
+                time.sleep(1)
                 if self.file_is_modified():
                     all_param = self.get_all()
                     #print(all_param)
@@ -65,31 +101,10 @@ class ConfigHandler():
             mylogger.logger.info("Program is existing: Ctrl-C")
 
     def write_cfg_file(self, dictionary, retry=10, delay=0.1):
-        while retry > 0:
-            try:
-                with open(self.cfg_path, 'w') as f:
-                    json.dump(dictionary, f, sort_keys=True, indent=2)
-                    return True
-            except Exception as e:
-                mylogger.logger.info("ConfigHandler.write_cfg_file write json: " + str(e))
-                retry -= 1
-                time.sleep(delay)
-        mylogger.logger.error("write_cfg_file")
-        return False
+        pass
 
     def read_cfg_file(self, retry=10, delay=0.1):
-        while retry > 0:
-            try:
-                with open(self.cfg_path, 'r') as f:
-                    data_dict = json.load(f)
-                    return data_dict
-            except Exception as e:
-                mylogger.logger.info("ConfigHandler.read_cfg_file write json: " + str(e))
-                retry -= 1
-                time.sleep(delay)
-        mylogger.logger.error("[ERROR] read_cfg_file")
-        data_dict = {}
-        return data_dict
+        pass
 
 class RGB_config_handler(ConfigHandler):
     def __init__(self, config_path):
@@ -132,12 +147,12 @@ class RGB_config_handler(ConfigHandler):
 
     def config_watcher(self):
         rgb_dict = super().config_watcher(loop=True)
-        if rgb_dict["RED"] > 100.0: rgb_dict["RED"] = 100.0
-        if rgb_dict["RED"] > 100.0: rgb_dict["RED"] = 100.0
-        if rgb_dict["GREEN"] > 100.0: rgb_dict["GREEN"] = 100.0
-        if rgb_dict["GREEN"] < 0.0: rgb_dict["GREEN"] = 0.0
-        if rgb_dict["BLUE"] < 0.0: rgb_dict["BLUE"] = 0.0
-        if rgb_dict["BLUE"] < 0.0: rgb_dict["BLUE"] = 0.0
+        if int(rgb_dict["RED"]) > 100.0: rgb_dict["RED"] = 100.0
+        if int(rgb_dict["RED"]) > 100.0: rgb_dict["RED"] = 100.0
+        if int(rgb_dict["GREEN"]) > 100.0: rgb_dict["GREEN"] = 100.0
+        if int(rgb_dict["GREEN"]) < 0.0: rgb_dict["GREEN"] = 0.0
+        if int(rgb_dict["BLUE"]) < 0.0: rgb_dict["BLUE"] = 0.0
+        if int(rgb_dict["BLUE"]) < 0.0: rgb_dict["BLUE"] = 0.0
         return rgb_dict
 
 def test_ConfigHandler():

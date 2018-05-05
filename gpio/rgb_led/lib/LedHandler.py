@@ -50,6 +50,7 @@ class LedHandler():
 
     # SET DC WITH DIM EFFECT
     def set_dc_with_gradient(self, dc):
+        dc = int(dc)
         step = 3
         step_delay = 0.02
         mylogger.logger.info('Make gradient: {} to {}'.format(self.dc, dc))

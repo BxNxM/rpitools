@@ -1,5 +1,8 @@
 import sys
 import socket
+import os
+myfolder = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(myfolder)
 
 class SocketDictClient():
 
@@ -11,14 +14,15 @@ class SocketDictClient():
         self.conn.connect(('localhost', 8888))
 
     def run_command(self, cmd, info=False):
+        cmd = str.encode(cmd)
         self.conn.send(cmd)
         data = self.conn.recv(self.bufsize)
         if info:
             msglen = len(data)
-            print "got: %s" % data
-            print "received: %d" % msglen
+            print("got: {}".formt(data))
+            print("received: {}".format(msglen))
         if data == '\0':
-            print 'exiting...'
+            print('exiting...')
             sys.exit(0)
         return data.rstrip()
 
@@ -29,12 +33,12 @@ class SocketDictClient():
 
     def get_parameter(self, namespace, key):
         cmd = "-md -s True -n {} -k {}".format(namespace, key)
-        msg = socketdictclient.run_command(cmd)
+        msg = self.run_command(cmd)
         return msg
 
     def set_parameter(self, namespace, key, value):
         cmd = "-md -s True -n {} -k {} -v {}".format(namespace, key, value)
-        msg = socketdictclient.run_command(cmd)
+        msg = self.run_command(cmd)
         return msg
 
 if __name__ == "__main__":
@@ -43,10 +47,10 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
 
-    print("Get LED status: " + socketdictclient.get_parameter(namespace="rgb", key="LED"))
-    print("Set Led status to ON, success: " + socketdictclient.set_parameter(namespace="rgb", key="LED", value="ON"))
-    print("Get LED status: " + socketdictclient.get_parameter(namespace="rgb", key="LED"))
-    print("Set Led status to OFF, success: " + socketdictclient.set_parameter(namespace="rgb", key="LED", value="OFF"))
+    print("Get LED status: " + str(socketdictclient.get_parameter(namespace="rgb", key="LED")))
+    print("Set Led status to ON, success: " + str(socketdictclient.set_parameter(namespace="rgb", key="LED", value="ON")))
+    print("Get LED status: " + str(socketdictclient.get_parameter(namespace="rgb", key="LED")))
+    print("Set Led status to OFF, success: " + str(socketdictclient.set_parameter(namespace="rgb", key="LED", value="OFF")))
 
 
 

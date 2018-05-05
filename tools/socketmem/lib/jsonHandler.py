@@ -4,6 +4,7 @@ import sys
 import time
 myfolder = os.path.dirname(os.path.abspath(__file__))
 backupfilepath = os.path.join(myfolder, ".dictbackup.json")
+INITED = False
 
 class jsonHandler():
     def __init__(self, cfg_path = backupfilepath):
@@ -104,7 +105,9 @@ def __init__RGB_schema():
         print("\tSchema injection failed RGB")
 
 if "jsonHandler" in __name__:
-    __init__RGB_schema()
+    if INITED is False:
+        __init__RGB_schema()
+        INITED = True
 
 if __name__ == "__main__":
     dict_backup = jsonHandler(backupfilepath)
