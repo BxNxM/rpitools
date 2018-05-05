@@ -19,12 +19,13 @@ class SocketServer():
         for cnt in range(0, retry):
             #Bind socket to local host and port
             try:
+                self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                 self.s.bind((self.host, self.port))
                 self.serverside_printout("Socket bind complete")
                 break
             except socket.error as msg:
                 self.serverside_printout("Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1])
-                time.sleep(1)
+                time.sleep(4)
         if cnt == retry:
             sys.exit()
 

@@ -1,25 +1,24 @@
 import socketHandler
+import jsonHandler
 
 class dictHandler(socketHandler.SocketServer):
 
     def __init__(self, host='', port=8888):
         self.silentmode=False
         self.MEM_DICT = {}
+        self.dict_backup_handler = None
         self.init_MEM_DICT()
         socketHandler.SocketServer.__init__(self, host, port)
 
     def init_MEM_DICT(self):
-        self.serverside_printout("Init MEM_DICT here")
-        self.MEM_DICT = { "namespace1": { "key": "value",
-                                          "UP": "DOWN",
-                                          "test": "result"
-                                        },
-                          "general": { "service": "rpitools",
+        self.dict_backup_handler = jsonHandler.jsonHandler()
+        self.MEM_DICT = self.dict_backup_handler.read_cfg_file()
+        self.MEM_DICT["general"] = { "service": "rpitools",
                                        "born": "around 2018"
-                                     }
-                        }
+                                   }
 
-        print(self.MEM_DICT)
+        self.serverside_printout("Init state: " + str(self.dict_backup_handler.write_cfg_file(self.MEM_DICT)))
+        self.serverside_printout("Full dict: " + str(self.MEM_DICT))
 
     def input_data_handler(self, data):
         cmd, text = socketHandler.SocketServer.input_data_handler(self, data)
@@ -65,10 +64,13 @@ class dictHandler(socketHandler.SocketServer):
 
     def __show_dict(self, data):
         formatteddict = "SHOW DICTIONARY CONTENT:\n"
-        for namespace, appdict in self.MEM_DICT.iteritems():
-            formatteddict += str(namespace) + "\n"
-            for appdict_key, appdict_value in appdict.iteritems():
-                formatteddict += "\t" + str(appdict_key) + " : " + str(appdict_value) + "\n"
+        try:
+            for namespace, appdict in self.MEM_DICT.iteritems():
+                formatteddict += str(namespace) + "\n"
+                for appdict_key, appdict_value in appdict.iteritems():
+                    formatteddict += "\t" + str(appdict_key) + " : " + str(appdict_value) + "\n"
+        except:
+            formatteddict = str(self.MEM_DICT)
         return formatteddict
 
     def __dicthandler(self, data):
@@ -82,7 +84,7 @@ class dictHandler(socketHandler.SocketServer):
             for index, value in enumerate(data_list):
                 if value == "-n" or value == "--namespace":
                     if "-" not in data_list[index+1] and "--" not in data_list[index+1]:
-                        namespace_in = data_list[index+1]
+                            namespace_in = data_list[index+1]
                 if value == "-k" or value == "--key":
                     if "-" not in data_list[index+1] and "--" not in data_list[index+1]:
                         key_in = data_list[index+1]
@@ -99,14 +101,25 @@ class dictHandler(socketHandler.SocketServer):
             namespace_in = "general"
         else:
             output_text += "SELECTED NAMESPACE: " + namespace_in + "\n"
+            if namespace_in not in self.MEM_DICT.keys():
+                self.serverside_printout("Create new namespace: " + str(namespace_in))
+                self.MEM_DICT[namespace_in] = {}
 
         if key_in is not None:
             if value_in is not None:
                 # new value - override
                 try:
-                    output_text += "OVERRIDE VALUE [{}][{}][{}] -> [{}][{}][{}]\n".format(namespace_in, key_in, self.MEM_DICT[namespace_in][key_in],\
+                    try:
+                        value = self.MEM_DICT[namespace_in][key_in]
+                    except:
+                        value=None
+                    output_text += "OVERRIDE VALUE [{}][{}][{}] -> [{}][{}][{}]\n".format(namespace_in, key_in, value,\
                                                                                         namespace_in, key_in, value_in)
                     self.MEM_DICT[namespace_in][key_in] = value_in
+                    if self.dict_backup_handler.write_cfg_file(self.MEM_DICT):
+                        output_text += "\tSUCCESS"
+                    else:
+                        output_text += "\tFAIL"
                 except Exception as e:
                     output_text += "Override value error: " + str(e) + "\n"
             else:
