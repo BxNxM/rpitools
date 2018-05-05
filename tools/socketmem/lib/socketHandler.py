@@ -7,6 +7,7 @@ class SocketServer():
 
     def __init__(self, host='', port=8888):
         self.silentmode = False
+        self.prompt = "> "
         self.host = host
         self.port = port
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -33,14 +34,22 @@ class SocketServer():
 
     #Function for handling connections. This will be used to create threads
     def __clientthread(self, conn):
+        if not self.silentmode:
+            prompt = self.prompt
+        else:
+            prompt = ""
         #Sending message to connected client
-        self.send(conn, '[ThreadClient] Welcome to the server. For exit, type exit.\n') #send only takes string
+        self.send(conn, '[ThreadClient] Welcome in the MEMDICT socket server. For exit, type exit.\nFor more info type: -h\n' + prompt) #send only takes string
         #infinite loop so that function do not terminate and thread do not end.
         while True:
+            if not self.silentmode:
+                prompt = self.prompt
+            else:
+                prompt = ""
             #Receiving from client
             data = conn.recv(1024)
             cmd, reply = self.input_data_handler(data)
-            self.send_all(conn, str(reply) + "\n")
+            self.send_all(conn, str(reply) + "\n" + prompt)
             if cmd == "break":
                 break
         #came out of loop
