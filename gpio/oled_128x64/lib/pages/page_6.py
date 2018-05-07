@@ -1,5 +1,12 @@
 import subprocess
 import time
+import os
+import sys
+
+# import memory dict client
+sys.path.append("/home/pi/rpitools/tools/socketmem/lib/")
+import clientMemDict
+socketdictclient = clientMemDict.SocketDictClient()
 
 #################################################################################
 #                            joystick_elements rgb widget                       #
@@ -23,18 +30,14 @@ def page(display, joystick, joystick_elements):
             button = "OFF"
             if state:
                 button = "ON"
-            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -l {}".format(button)
-            run_command(cmd_alias, display)
+            socketdictclient.run_command("-md -n rgb -k LED -v " + str(button))
 
         if uid == "red":
-            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -r {}".format(value)
-            run_command(cmd_alias, display)
+            socketdictclient.run_command("-md -n rgb -k RED -v " + str(value))
         if uid == "green":
-            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -g {}".format(value)
-            run_command(cmd_alias, display)
+            socketdictclient.run_command("-md -n rgb -k GREEN -v " + str(value))
         if uid == "blue":
-            cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -b {}".format(value)
-            run_command(cmd_alias, display)
+            socketdictclient.run_command("-md -n rgb -k BLUE -v " + str(value))
     return True
 
 def page_destructor(display, joystick_elements):
