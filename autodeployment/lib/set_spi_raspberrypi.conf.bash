@@ -32,5 +32,5 @@ function add_if_not_added() {
 
 sudo chmod 666 "$conf_file_path"
 sudo chmod 666 "$conf_file_path_moduls"
-add_if_not_added "spi-bcm2708" "$conf_file_path"
-add_if_not_added "spi-bcm2708" "$conf_file_path_moduls"
+add_if_not_added "#spi-bcm2708" "$conf_file_path"
+add_if_not_added "#spi-bcm2708" "$conf_file_path_moduls"
