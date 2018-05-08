@@ -1,4 +1,4 @@
-![logo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/rpitools_logic.png?raw=true)
+![logo](https://github.com/BxNxM/rpitools/blob/master/autodeployment/lib/apache_setup/template/images/rpitools_structure.png?raw=true)
 
 ```
   _____    _____    _____   _______    ____     ____    _         _____ 
@@ -438,6 +438,13 @@ http://bobbyromeo.com/technology/backup-clone-raspberry-pi-sd-card/
 
 ```
 https://www.cyberciti.biz/faq/howto-setup-apache-password-protect-directory-with-htaccess-file/
+```
+
+* Other usefull commands in the system
+
+```
+Get Kernel modules load state (spi, i2c)
+systemctl status systemd-modules-load.service
 ```
 
 ## GIT
