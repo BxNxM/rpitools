@@ -34,28 +34,45 @@ else
     fi
 fi
 
+update_retry=0
+function repair_packages() {
+
+    if [[ "$*" == *"E: dpkg was interrupted"* ]]
+    then
+        message "\tREPAIR $update_retry dpkg packages: sudo dpkg --configure -a"
+        sudo dpkg --configure -a
+        update_retry=$((update_retry + 1))
+    fi
+}
+
 function update_grade_dits_clean() {
     message "CMD: sudo apt-get update --fix-missing"
-    echo "Y" | sudo apt-get update --fix-missing
+    output_="$(echo 'Y' | sudo apt-get update --fix-missing 2>&1)"
+    repair_packages "$output_"
 
     message "CMD: sudo apt-get update"
-    echo "Y" | sudo apt-get update
+    output_="$(echo 'Y' | sudo apt-get update 2>&1)"
+    repair_packages "$output_"
 
     message "CMD: sudo apt-get upgrade"
-    echo "Y" | sudo apt-get upgrade
+    output_="$(echo 'Y' | sudo apt-get upgrad 2>&1)"
+    repair_packages "$output_"
 
     message "CMD: sudo apt-get dist-upgrade"
-    echo "Y" | sudo apt-get dist-upgrade
+    output_="$(echo 'Y' | sudo apt-get dist-upgrade 2>&1)"
+    repair_packages "$output_"
 
     message "CMD: sudo apt-get clean"
-    echo "Y" | sudo apt-get clean
+    output_="$(echo 'Y' | sudo apt-get clean 2>&1)"
+    repair_packages "$output_"
 
     # WORKAROUND FOR: E: Unable to locate package <>
     message "CMD: sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y"
-    echo "Y" | sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y
+    output_="$(echo 'Y' | sudo apt-get autoremove && sudo apt-get -f install && sudo apt-get update && sudo apt-get upgrade -y 2>&1)"
+    repair_packages "$output_"
 
-    message "CMD: sudo rpi-update"
-    sudo rpi-update
+    #message "CMD: sudo rpi-update"
+    # sudo rpi-update
 }
 
 elapsed_time "start"

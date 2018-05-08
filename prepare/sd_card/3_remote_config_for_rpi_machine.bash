@@ -8,12 +8,21 @@ username="pi"
 hostname="$($CONFIGAHNDLER -s RPI_MODEL -o custom_hostname).local"
 
 function copy_repo_to_rpi_machine() {
-    rpitools_path="../../../rpitools"
+    local cpwith="rsync"
+    rpitools_path="${MYDIR_}/../../../rpitools"
     if [ -d "$rpitools_path" ]
     then
-        echo -e "COPY: scp "$rpitools_path" pi@raspberrypi.local:/home/pi/"
-        echo -e "Default PWD: raspberry"
-        scp -r "$rpitools_path" pi@raspberrypi.local:/home/pi/
+        if [ "$cpwith" == "scp" ]
+        then
+            echo -e "COPY: scp "$rpitools_path" pi@raspberrypi.local:/home/pi/"
+            echo -e "Default PWD: raspberry"
+            scp -r "$rpitools_path" pi@raspberrypi.local:/home/pi/
+        elif [ "$cpwith" == "rsync" ]
+        then
+            echo -e "COPY: rsync -avz -e  \"ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null\" --progress \"$rpitools_path\" pi@raspberrypi.local:/home/pi"
+            echo -e "Default PWD: raspberry"
+            rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress "$rpitools_path" pi@raspberrypi.local:/home/pi
+        fi
     fi
 }
 
