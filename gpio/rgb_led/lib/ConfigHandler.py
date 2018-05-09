@@ -29,7 +29,7 @@ def cmp(a, b):
     return diff
 
 class ConfigHandler():
-    def __init__(self, cfg_path):
+    def __init__(self):
         self.stored_dict = {}
 
     # EXTERNAL FUNCTIONS - GET VALUE
@@ -107,22 +107,20 @@ class ConfigHandler():
         pass
 
 class RGB_config_handler(ConfigHandler):
-    def __init__(self, config_path):
-        super().__init__(config_path)
-        if not os.path.exists(config_path):
-            # Create json filie
-            mylogger.logger.info("set default config (config file not exists)")
-            self.put("RED", 0)
-            self.put("GREEN", 0)
-            self.put("BLUE", 0)
-            super().put("SERVICE", "ON")
-            super().put("LED", "ON")
+    def __init__(self):
+        try:
+            super().__init__()
+        except:
+            ConfigHandler.__init__(self)
 
     def put(self, color, duty_cycle, secure=True):
         if secure:
             if color == "RED" or color == "GREEN" or color == "BLUE":
                 if duty_cycle < 100.0 or duty_cycle >= 0.0:
-                    super().put(color, duty_cycle)
+                    try:
+                        super().put(color, duty_cycle)
+                    except:
+                        ConfigHandler.put(self, color, duty_cycle)
                 else:
                     mylogger.logger.warning("Duty cycle not in range (0.0-100.0): " + str(duty_cycle))
             else:
@@ -130,23 +128,35 @@ class RGB_config_handler(ConfigHandler):
         else:
             key = color
             value = duty_cycle
-            super().put(key, value)
+            try:
+                super().put(key, value)
+            except:
+                ConfigHandler.put(self, key, value)
 
     def get(self, color, secure=True):
         if secure:
             if color == "RED" or color == "GREEN" or color == "BLUE":
-                dc = super().get(color)
+                try:
+                    dc = super().get(color)
+                except:
+                    dc = ConfigHandler.get(self, color)
             else:
                 mylogger.logger.warning("Color is invalud: " + str(color))
                 dc = None
             return dc
         else:
             key = color
-            dc = super().get(key)
+            try:
+                dc = super().get(key)
+            except:
+                dc = ConfigHandler.get(self, key)
             return dc
 
     def config_watcher(self):
-        rgb_dict = super().config_watcher(loop=True)
+        try:
+            rgb_dict = super().config_watcher(loop=True)
+        except:
+            rgb_dict = ConfigHandler.config_watcher(self, loop=True)
         if int(rgb_dict["RED"]) > 100.0: rgb_dict["RED"] = 100.0
         if int(rgb_dict["RED"]) > 100.0: rgb_dict["RED"] = 100.0
         if int(rgb_dict["GREEN"]) > 100.0: rgb_dict["GREEN"] = 100.0
@@ -180,8 +190,7 @@ def test_ConfigHandler():
             print("Program is existing: Ctrl-C")
 
 if __name__ == "__main__":
-    config_path = str(myfolder) + "/config/rgb_config.json"
-    rgb = RGB_config_handler(config_path)
+    rgb = RGB_config_handler()
 
     # Put values
     print("Put values")

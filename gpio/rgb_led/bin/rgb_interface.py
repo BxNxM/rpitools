@@ -9,8 +9,7 @@ import ConfigHandler
 import subprocess
 import time
 
-config_path = os.path.join(myfolder, "../lib/config/rgb_config.json")
-rgb = ConfigHandler.RGB_config_handler(config_path)
+rgb = ConfigHandler.RGB_config_handler()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--red", help="RED component 0-100")

@@ -12,8 +12,7 @@ import time
 
 def rgb_config_manager():
     # set config handler
-    config_path = os.path.join(myfolder, "../lib/config/rgb_config.json")
-    rgb = ConfigHandler.RGB_config_handler(config_path)
+    rgb = ConfigHandler.RGB_config_handler()
 
     # set pins
     green = LedHandler.LedHandler(channel=12)
