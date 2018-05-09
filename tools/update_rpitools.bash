@@ -34,7 +34,7 @@ function config_is_changed_on_HEAD() {
 }
 
 function stop_running_processes() {
-    process_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate")
+    process_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "memDictCore")
     for process in "${process_list[@]}"
     do
         is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$process")
@@ -48,7 +48,7 @@ function stop_running_processes() {
 }
 
 function start_running_processes() {
-    process_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate")
+    process_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "memDictCore")
     for process in "${process_list[@]}"
     do
         is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$process")
