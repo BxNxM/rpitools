@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 import socket
 import os
@@ -33,6 +35,8 @@ class SocketDictClient():
         while True:
             cmd = raw_input('Enter a command: ')
             print(self.run_command(cmd))
+            if cmd.rstrip() == "exit":
+                sys.exit(0)
 
     def get_parameter(self, namespace, key):
         cmd = "-md -s True -n {} -k {}".format(namespace, key)
@@ -57,11 +61,12 @@ if __name__ == "__main__":
             cmd += " " + str(par)
         print(socketdictclient.run_command(cmd))
 
-    else:
-        print("Get LED status: " + str(socketdictclient.get_parameter(namespace="rgb", key="LED")))
-        print("Set Led status to ON, success: " + str(socketdictclient.set_parameter(namespace="rgb", key="LED", value="ON")))
-        print("Get LED status: " + str(socketdictclient.get_parameter(namespace="rgb", key="LED")))
-        print("Set Led status to OFF, success: " + str(socketdictclient.set_parameter(namespace="rgb", key="LED", value="OFF")))
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "-h" or sys.argv[1] == "--help":
+            print("(1) RUN COMMAND: clientMemDict -md -n xx -k yy -v zz\n\tOR: clientMemDict --memDict --namespace xx --key yy --value zz")
+            print("(2) RUN INTERACTIVE MODE: clientMemDict")
 
+    if len(sys.argv) == 1:
+        socketdictclient.interactive_core()
 
 
