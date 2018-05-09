@@ -53,8 +53,8 @@ except Exception as e:
 #############################################################################
 #                             THREAD TIMING                                 #
 #############################################################################
-performance_setup_dict = {"ULTRALOW": 1.4, "LOW": 0.8, "MEDIUM": 0.4, "HIGH": 0.2}
-performance = performance_setup_dict["MEDIUM"]                    # ---> set performance here
+performance_setup_dict = {"ULTRALOW": 1.6, "LOW": 1.4, "OPTIMUM": 1, "MEDIUM": 0.5, "HIGH": 0.3}
+performance = performance_setup_dict["OPTIMUM"]                    # ---> set performance here
 
 # timing base
 thread_refresh_header_bar = 0.9 * performance                # header bar refresh time (sec)
