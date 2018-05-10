@@ -5,12 +5,12 @@ mylogger = LogHandler.LogHandler("dictSocketHandlerCore")
 
 class dictHandler(socketHandler.SocketServer):
 
-    def __init__(self, host='', port=8888, silentmode=False):
+    def __init__(self, host='', port=8888, silentmode=False, only_internal_mode=True):
         self.silentmode=silentmode
         self.MEM_DICT = {}
         self.dict_backup_handler = None
         self.init_MEM_DICT()
-        socketHandler.SocketServer.__init__(self, host, port, silentmode)
+        socketHandler.SocketServer.__init__(self, host, port, silentmode, only_internal_mode=only_internal_mode)
 
     def init_MEM_DICT(self):
         self.dict_backup_handler = jsonHandler.jsonHandler()
