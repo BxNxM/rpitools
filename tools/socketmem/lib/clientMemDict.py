@@ -5,6 +5,7 @@ import socket
 import os
 myfolder = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(myfolder)
+import ast
 
 print('Number of arguments: ' + str(len(sys.argv)) + ' arguments.')
 print('Argument List: ' + str(sys.argv))
@@ -48,6 +49,12 @@ class SocketDictClient():
         msg = self.run_command(cmd)
         return msg
 
+    def string_to_dict(self, appdict):
+        try:
+            return ast.literal_eval(appdict)
+        except:
+            return None
+
 if __name__ == "__main__":
     try:
         socketdictclient = SocketDictClient()
@@ -68,5 +75,3 @@ if __name__ == "__main__":
 
     if len(sys.argv) == 1:
         socketdictclient.interactive_core()
-
-
