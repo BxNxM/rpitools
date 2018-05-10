@@ -19,8 +19,10 @@ def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
     display.display_refresh_time_setter(0.1)
     rgb_manage_function(joystick_elements, display, joystick=None, mode="init")
-    cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON"
-    run_command(cmd_alias, display)
+
+    if str(subprocess.check_output("ps aux | grep -v grep | grep rgb_led_controller.py", shell = True)) == "":
+        cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON"
+        run_command(cmd_alias, display)
 
 def page(display, joystick, joystick_elements):
     uid, state, value = rgb_manage_function(joystick_elements, display, joystick, mode="run")
@@ -41,9 +43,10 @@ def page(display, joystick, joystick_elements):
     return True
 
 def page_destructor(display, joystick_elements):
-    cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
-    run_command(cmd_alias, display, wait_for_done=False)
-    rgb_manage_function(joystick_elements, display, joystick, mode="del")
+    pass
+    #cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s OFF -l OFF"
+    #run_command(cmd_alias, display, wait_for_done=False)
+    #rgb_manage_function(joystick_elements, display, joystick, mode="del")
 
 #################################################################################
 #execute command and wait for the execution + load indication
@@ -60,35 +63,34 @@ def run_command(cmd, display=None, wait_for_done=True):
 
 #################################################################################
 def rgb_manage_function(joystick_elements, display, joystick, mode=None):
-    global rgb_joystick_elements
+    global rgb_joystick_elements, socketdictclient
 
     # init section
     if mode == "init":
-        default_value = 30
+        rgb_appdict_str = socketdictclient.run_command("-md -n rgb -s True")
+        rgb_appdict_dict = socketdictclient.string_to_dict(rgb_appdict_str)
+        value_R = int(rgb_appdict_dict["RED"])
+        value_G = int(rgb_appdict_dict["GREEN"])
+        value_B = int(rgb_appdict_dict["BLUE"])
+        value_button = rgb_appdict_dict["LED"]
 
         # init value elemet for red color
         je_red = joystick_elements.JoystickElement_value_bar(display, x=5, step=10, valmax=100, valmin=0, title="R")
-        je_red.set_value(delta=default_value)
-        # set led state:
-        cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -r {}".format(default_value)
-        subprocess.Popen(cmd_alias, shell=True)
+        je_red.set_value(direct=value_R)
 
         # init value elemet for green color
         je_green = joystick_elements.JoystickElement_value_bar(display, x=35, step=10, valmax=100, valmin=0, title="G")
-        je_green.set_value(delta=30)
-        # set led state:
-        cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -g {}".format(default_value)
-        subprocess.Popen(cmd_alias, shell=True)
+        je_green.set_value(direct=value_G)
 
         # init value elemet for green color
         je_blue = joystick_elements.JoystickElement_value_bar(display, x=65, step=10, valmax=100, valmin=0, title="B")
-        je_blue.set_value(delta=30)
-        # set led state:
-        cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -b {}".format(default_value)
-        subprocess.Popen(cmd_alias, shell=True)
+        je_blue.set_value(delta=value_B)
 
         # rgb on - off
-        je_rgb_button = joystick_elements.JoystickElement_button(display, x=95, title="RGB")
+        init_state_ = False
+        if value_button == "ON":
+            init_state_ = True
+        je_rgb_button = joystick_elements.JoystickElement_button(display, x=95, title="RGB", init_state=init_state_)
 
         # init button handler - and element manager list with created elements
         rgb_joystick_elements = joystick_elements.JoystickElementManager(default_index=3)
