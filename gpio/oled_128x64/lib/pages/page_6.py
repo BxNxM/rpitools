@@ -20,7 +20,9 @@ def page_setup(display, joystick_elements):
     display.display_refresh_time_setter(0.1)
     rgb_manage_function(joystick_elements, display, joystick=None, mode="init")
 
-    if str(subprocess.check_output("ps aux | grep -v grep | grep rgb_led_controller.py", shell = True)) == "":
+    process = subprocess.Popen("ps aux | grep -v grep | grep rgb_led_controller.py", shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = process.communicate()
+    if str(out) == "":
         cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON"
         run_command(cmd_alias, display)
 
