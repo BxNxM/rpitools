@@ -2,6 +2,8 @@ import socket
 import sys
 from thread import *
 import time
+import LogHandler
+mylogger = LogHandler.LogHandler("dictSocketHandlerCore")
 
 class SocketServer():
 
@@ -10,8 +12,9 @@ class SocketServer():
         self.prompt = "> "
         self.host = host
         self.port = port
+        self.connected_clients=0
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.serverside_printout("Socket created: HOST: {} PORT: {}".format(self.host, self.port))
+        mylogger.logger.warn("[INFO] Socket created: HOST: {} PORT: {}".format(self.host, self.port))
         self.bind_socket()
         self.server_core()
 
@@ -24,7 +27,7 @@ class SocketServer():
                 self.serverside_printout("Socket bind complete")
                 break
             except socket.error as msg:
-                self.serverside_printout("Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1])
+                mylogger.logger.error("Bind failed. Error Code : " + str(msg[0]) + " Message " + msg[1])
                 time.sleep(4)
         if cnt == retry:
             sys.exit()
@@ -71,7 +74,8 @@ class SocketServer():
         while 1:
             #wait to accept a connection - blocking call
             conn, addr = self.s.accept()
-            self.serverside_printout("[NewConnection] Connected with " + addr[0] + ":" + str(addr[1]))
+            mylogger.logger.warn("[INFO] [NewConnection] Connected with " + addr[0] + ":" + str(addr[1]))
+            self.connected_clients += 1
             #start new thread takes 1st argument as a function name to be run, second is the tuple of arguments to the function.
             start_new_thread(self.__clientthread ,(conn,))
         self.s.close()
@@ -79,15 +83,17 @@ class SocketServer():
     def input_data_handler(self, data):
         data = data.rstrip()
         if data == "exit":
+            self.connected_clients -= 1
             return "break", "Goodbye :)", ""
         elif not data:
+            self.connected_clients -= 1
             return "break", None, ""
         else:
             # TODO: call advanced interpreter here
             return None, "MSG: " + str(data), ""
 
     def serverside_printout(self, text):
-        print("[SocketServer] [silent:" + str(self.silentmode) + "] " + str(text))
+        mylogger.logger.info("[SocketServer] [silent:" + str(self.silentmode) + "] " + str(text))
 
     def __del__(self):
         self.s.close()
@@ -96,4 +102,6 @@ if __name__ == "__main__":
     try:
         socketserver = SocketServer()
     except KeyboardInterrupt:
-        pass
+        mylogger.logger.warn("Keyboard interrupt.")
+    except Exception as e:
+        mylogger.logger.error(str(e))

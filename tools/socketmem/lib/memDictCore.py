@@ -1,5 +1,7 @@
 import socketHandler
 import jsonHandler
+import LogHandler
+mylogger = LogHandler.LogHandler("dictSocketHandlerCore")
 
 class dictHandler(socketHandler.SocketServer):
 
@@ -51,8 +53,8 @@ class dictHandler(socketHandler.SocketServer):
                             self.serverside_printout("silent mode direct set: {}".format(self.silentmode))
                             break
                         except Exception as e:
-                            self.serverside_printout("EXCEPTION: {}".format(e))
-                            self.serverside_printout("silent mode automatic set: {}".format(self.silentmode))
+                            mylogger.logger.error("EXCEPTION: {}".format(e))
+                            mylogger.logger.error("silent mode automatic set: {}".format(self.silentmode))
                             self.silentmode = not self.silentmode
                 if self.silentmode is False:
                     output_text += "Silent mode OFF\n"
@@ -69,11 +71,20 @@ class dictHandler(socketHandler.SocketServer):
                 output_text += output_text_
                 self.serverside_printout(output_text)
 
+            if "-st" in arg_list or "--statistic" in arg_list:
+                is_known = True
+                output_text_, silentmode_text = self.__stathandler(data)
+                output_text += output_text_
+                self.serverside_printout(output_text)
+
+
             if "-h" in arg_list or "--help" in arg_list:
                 is_known = True
                 output_text += "\tDETAILS:\n"
                 output_text += "\t-sh [--show]\t-\tshow dictionary ( ram ) content.\n"
                 output_text += "\t-md [--memdict]\t-\tmemory dict handler -n [--namespace] | -k [--key] | -v [--value]\n"
+                output_text += "\t-s [--silent]\t-\tsilent mode.\n"
+                output_text += "\t-st [--statistic]\t-\tshows usage statistic.\n"
                 output_text += "\t-h [--help]\t-\tthis help msg.\n"
 
                 output_text += "\n\tFor exit type: exit\n"
@@ -98,6 +109,14 @@ class dictHandler(socketHandler.SocketServer):
             formatteddict = str(self.MEM_DICT)
         return formatteddict
 
+    def __stathandler(self, data):
+        char_size_byte = 1
+        mem_dict_size_byte = len(str(self.MEM_DICT)) * char_size_byte
+        text = "\tCONNECTED CLIENTS: " + str(self.connected_clients) + "\n"
+        text += "\tMemDict size: {} byte".format(mem_dict_size_byte)
+        output_text = silentmode_text = text
+        return output_text, silentmode_text
+
     def __dicthandler(self, data):
         data = data.rstrip()
         data_list = data.split(" ")
@@ -119,7 +138,7 @@ class dictHandler(socketHandler.SocketServer):
         except:
             output_text += "Missing argument - index out of range"
 
-        print("NAMSEPACEin: {}\nKEYin: {}\nVALUEin: {}\n".format(namespace_in, key_in, value_in))
+        mylogger.logger.info("NAMSEPACEin: {}\nKEYin: {}\nVALUEin: {}\n".format(namespace_in, key_in, value_in))
 
         if namespace_in is None:
             output_text += "SET DEFAULT NAMESPACE [general]\n"
