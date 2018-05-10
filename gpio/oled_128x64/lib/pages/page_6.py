@@ -20,11 +20,11 @@ def page_setup(display, joystick_elements):
     display.display_refresh_time_setter(0.1)
     rgb_manage_function(joystick_elements, display, joystick=None, mode="init")
 
-    process = subprocess.Popen("ps aux | grep -v grep | grep rgb_led_controller.py", shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = process.communicate()
-    if str(out) == "":
+    cmd_alias = "ps aux | grep -v grep | grep rgb_led_controller.py"
+    stdout, stderr = run_command(cmd_alias, display)
+    if str(stdout) == "":
         cmd_alias = "/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py -s ON"
-        run_command(cmd_alias, display)
+        run_command(cmd_alias, display, wait_for_done=False, wait=2)
 
 def page(display, joystick, joystick_elements):
     uid, state, value = rgb_manage_function(joystick_elements, display, joystick, mode="run")
@@ -52,16 +52,19 @@ def page_destructor(display, joystick_elements):
 
 #################################################################################
 #execute command and wait for the execution + load indication
-def run_command(cmd, display=None, wait_for_done=True):
+def run_command(cmd, display=None, wait_for_done=True, wait=0):
     x = 95
     y = 45
+    stdout = stderr = ""
     if display is not None:
         w, h = display.draw_text("load", x, y)
-    p = subprocess.Popen(cmd, shell=True)
+    p = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if wait_for_done:
-        p.communicate()
+        stdout, stderr = p.communicate()
     if display is not None:
         w, h = display.draw_text("    ", x, y)
+    time.sleep(wait)
+    return stdout, stderr
 
 #################################################################################
 def rgb_manage_function(joystick_elements, display, joystick, mode=None):
