@@ -8,7 +8,7 @@ import ConsoleParameters
 from Colors import Colors
 
 def get_rpitools_services(color=Colors.CYAN):
-    services=["oled_gui_core", "dropbox_halpage", "auto_restart_transmission", "rpitools_logrotate", "memDictCore"]
+    services=["oled_gui_core", "dropbox_halpage", "auto_restart_transmission", "rpitools_logrotate", "memDictCore", "rgb_led_controller"]
     data = color + " RPITOOLS SERVICES:\n" + Colors.NC
     for service in services:
         is_active = LocalMachine.run_command("systemctl is-active " + str(service))[1]

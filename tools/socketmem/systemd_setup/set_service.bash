@@ -5,7 +5,7 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-set_service_conf="$($confighandler -s EXTIPHANDLER -o set_service)"
+set_service_conf="True"
 
 function message() {
     local msg="$1"

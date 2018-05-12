@@ -15,6 +15,9 @@ function _msg_() {
     echo -e "${YELLOW}[ $_msg_title ]${NC} - $msg"
 }
 
+_msg_ "RUN: set up service if needed - memDictCore"
+(. "/home/$USER/rpitools/tools/socketmem/systemd_setup/set_service.bash")
+
 # transmission install config executor
 _msg_ "RUN: configure_transmission"
 (. "$configure_transmission")
@@ -73,5 +76,5 @@ _msg_ "RUN: custom logrotate service: log_cleaner.bash or rpitools_logrotate.ser
 _msg_ "RUN apache basic setup based on rpi_config and rpitools/autodeployment/lib/apache_setup/template"
 (. /home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash)
 
-_msg_ "RUN: set up service if needed - memDictCore"
-(. "/home/$USER/rpitools/tools/socketmem/systemd_setup/set_service.bash")
+_msg_ "RUN: set up service if needed - rgb_led_controller"
+(. "/home/$USER/rpitools/gpio/rgb_led/systemd_setup/set_service.bash")

@@ -24,6 +24,7 @@ def rgb_config_manager():
 
     # init service status on config
     rgb.put("SERVICE", "ON", secure=False)
+    rgb.put("LED", "OFF", secure=False)
 
     while True:
         try:
