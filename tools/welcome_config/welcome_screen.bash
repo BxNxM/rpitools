@@ -29,11 +29,18 @@ then
     echo -e "\tconfighandler -h\t-> config handler based on rpitools_config.cfg"
     echo -e "\tmysshfs\t\t\t-> built in sshfs based on rpitools_config.cfg"
     echo -e "\tupdate_rpitools\t\t-> update your repository"
+    echo -e "\tconfhelper\t\t-> interactive config handler for easy modifications."
+
     echo -e "Manage GUI (X):"
     echo -e "\tstartxbg\t\t-> start gui in the background"
     echo -e "\tpkill x \t\t-> stop gui"
     echo -e "\tstartvnc\t\t-> start vnc service"
     echo -e "\tkodibg\t\t\t-> start kodi media center"
+
+    echo -e "Camera (over built in camera connector):"
+    echo -e "\traspistill -o \"img_"'$(date +"%Y-%m-%d_%H-%M-%S")'".jpg\"\t\t-> take an image"
+    echo -e "\traspivid -o \"vid_"'$(date +"%Y-%m-%d_%H-%M-%S")'".h264\" -t 10000\t-> take a video [milliseconds]"
+
     echo -e "Other commands:"
     echo -e "\tAdd new user for\n\t\
 apache webshared dir:\thtpasswd -cb /home/$USER/.secure/apasswords user_name user_pwd"
