@@ -38,8 +38,7 @@ then
     echo -e "\tkodibg\t\t\t-> start kodi media center"
 
     echo -e "Camera (over built in camera connector):"
-    echo -e "\traspistill -o \"img_"'$(date +"%Y-%m-%d_%H-%M-%S")'".jpg\"\t\t-> take an image"
-    echo -e "\traspivid -o \"vid_"'$(date +"%Y-%m-%d_%H-%M-%S")'".h264\" -t 10000\t-> take a video [milliseconds]"
+    echo -e "\tcamera --man\t\t-> get more info ablot camera interface"
 
     echo -e "Other commands:"
     echo -e "\tAdd new user for\n\t\

@@ -28,6 +28,7 @@ alias list_services='echo -e "\nENABLED:\n\n$(systemctl list-unit-files | grep e
 alias halpage='/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash'
 alias copy_my_sshkey_to='/home/$USER/rpitools/tools/copy_my_sshkey_to.bash'
 alias clientMemDict='/home/$USER/rpitools/tools/socketmem/lib/clientMemDict.py'
+alias camera='/home/$USER/rpitools/gpio/camera/bin/camera_interface.bash'
 
 alias gitlog='git log --all --decorate --oneline --graph'
 alias gitbranch='git branch -av'
