@@ -152,14 +152,14 @@ function main() {
     then
         # get required arg values
         echo -e "pics was called with parameters: ->|$(get_arg_value "pics")|<-"
-        takePICS $(get_arg_value "pics")[0]
+        takePICS $(get_arg_value "pics")
     fi
     # check arg was called
     if [ "$(get_arg_status "vid")" -eq 1 ]
     then
         # get required arg values
         echo -e "vid was called with parameters: ->|$(get_arg_value "vid")|<-"
-        takeVID $(get_arg_value "vid")[0] $(get_arg_value "vid")[1]
+        takeVID $(get_arg_value "vid")
     fi
 }
 
@@ -192,7 +192,8 @@ function takeVID() {
         lenght_sec=1
     fi
     local pics_path="vid_$(date +"%Y-%m-%d_%H-%M-%S").h264"
-    #echo -e "CMD: raspivid -o vid_$(date +"%Y-%m-%d_%H-%M-%S").h264 -t "$((lenght_sec*1000))
+    local record_time_millisec="$((lenght_sec*1000))"
+    echo -e "CMD: raspivid -o vid_$(date +"%Y-%m-%d_%H-%M-%S").h264 -t $record_time_millisec"
     raspivid -o "vid_$(date +"%Y-%m-%d_%H-%M-%S").h264" -t $((lenght_sec*1000))
     if [ "$?" == 0 ] && [ -e "${pics_path}" ]
     then
