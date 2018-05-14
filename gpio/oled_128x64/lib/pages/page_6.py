@@ -17,7 +17,7 @@ rgb_joystick_elements = None
 
 def page_setup(display, joystick_elements):
     display.head_page_bar_switch(True, True)
-    display.display_refresh_time_setter(0.1)
+    display.display_refresh_time_setter(0)
     rgb_manage_function(joystick_elements, display, joystick=None, mode="init")
 
     cmd_alias = "ps aux | grep -v grep | grep rgb_led_controller.py"
