@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export LC_ALL=C                 # fix: setlocale: No such file or directory
 alias llt='ls -lrth'
 alias ll='ls -lh'
@@ -13,7 +15,7 @@ alias omxplayer_gui='/home/$USER/rpitools/tools/omxplayer_gui/omx_gui.py'
 alias startxbg='startx &'
 alias startconky='/home/$USER/rpitools/tools/set_conky/conky.bash'
 alias weather_wttr='curl wttr.in/Budapest'
-alias update_rpitools='cd ~/rpitools; /home/$USER/rpitools/tools/update_rpitools.bash stop && cd /home/$USER/ && sudo rm -rf /home/$USER/rpitools && git clone https://github.com/BxNxM/rpitools.git && cd /home/$USER/rpitools && source setup && source template/aliases && /home/$USER/rpitools/tools/update_rpitools.bash start'
+alias update_rpitools='cd ~/rpitools; is_needed=$(git fetch | wc -l); if [ "$is_needed" -eq 0 ]; then echo "rpitools is up-to-date :D"; else /home/$USER/rpitools/tools/update_rpitools.bash stop && cd /home/$USER/ && sudo rm -rf /home/$USER/rpitools && git clone https://github.com/BxNxM/rpitools.git && cd /home/$USER/rpitools && source setup && source template/aliases && /home/$USER/rpitools/tools/update_rpitools.bash start; fi'
 alias mysshfs='/home/$USER/rpitools/tools/sshfs.bash'
 alias confighandler='/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py'
 alias confhelper='/home/$USER/rpitools/autodeployment/config/helper.bash'
