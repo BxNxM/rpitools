@@ -18,6 +18,7 @@ html_shared_default_user_password="$($confighandler -s APACHE -o http_passwd)"
 html_webshared_folder_name="$($confighandler -s APACHE -o webshared_folder_name)"
 html_shared_folder="${html_folder_path}/${html_webshared_folder_name}"
 transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
+apache2_conf_path="/etc/apache2/apache2.conf"
 
 _msg_title="APACHE SETUP"
 function _msg_() {
@@ -29,7 +30,7 @@ if [ "$arg_len" -eq 1 ]
 then
     if [ "$arg" == "-f" ] || [ "$arg" == "-force" ]
     then
-        _msg_ "FORCE MODE ON - REWRITE actual /car/www/html folder"
+        _msg_ "FORCE MODE ON - REWRITE actual /var/www/html folder"
         force="True"
     fi
 fi
@@ -57,10 +58,10 @@ function link_html_folder_to_requested_path() {
 }
 
 function set_shared_folder_password_protected() {
-    is_edited="$(sudo cat /etc/apache2/apache2.conf | grep '<Directory /var/www/html>')"
+    is_edited="$(sudo cat $apache2_conf_path | grep '<Directory /var/www/html>')"
     if [ "$is_edited" == "" ]
     then
-        _msg_ "Configure /etc/apache2/apache2.conf for custom rpitools shaerd folder."
+        _msg_ "Configure $apache2_conf_path for custom rpitools shaerd folder."
         apache2_config='# SHARED FODER FOR RPITOOLS APACHE\n'
         apache2_config+='<Directory /var/www/html>\n'
         apache2_config+='         Options Indexes Includes FollowSymLinks MultiViews\n'
@@ -68,15 +69,15 @@ function set_shared_folder_password_protected() {
         apache2_config+='         Order allow,deny\n'
         apache2_config+='         Allow from all\n'
         apache2_config+='</Directory>\n'
-        sudo chmod go+rw /etc/apache2/apache2.conf
+        sudo chmod go+rw "$apache2_conf_path"
         echo -e "$apache2_config"
-        echo -e "$apache2_config" >> /etc/apache2/apache2.conf
-        sudo chmod g-rw /etc/apache2/apache2.conf
+        echo -e "$apache2_config" >> "$apache2_conf_path"
+        sudo chmod g-rw "$apache2_conf_path"
 
         _msg_ "Reload apache2: sudo /etc/init.d/apache2 force-reload"
         sudo /etc/init.d/apache2 force-reload
     else
-        _msg_ "/etc/apache2/apache2.conf already configured with <Directory /var/www/html>"
+        _msg_ "$apache2_conf_path already configured with <Directory /var/www/html>"
     fi
 
     if [ ! -e "/home/$USER/.secure/" ]
@@ -120,7 +121,38 @@ function link_transmission_downloads_folder() {
     else
         _msg_ "LINK: $transmission_downloads_path -> ${html_shared_folder}/downloads already exists"
     fi
-} 
+}
+
+function set_embedded_transmission_access() {
+    is_edited="$(sudo cat $apache2_conf_path | grep 'ProxyPass /transmission')"
+    if [ "$is_edited" == "" ]
+    then
+        _msg_ "Configure, for proxy redirect (transmission) run command:\na2enmod proxy\na2enmod proxy_http"
+        sudo a2enmod proxy
+        if [ "$?" -ne 0 ]; then echo -e "install failed"; exit 1; fi
+        sudo a2enmod proxy_http
+        if [ "$?" -ne 0 ]; then echo -e "install failed"; exit 1; fi
+
+        _msg_ "Configure $apache2_conf_path for embedded transmission access."
+        apache2_config='# ENABLE APACHE EMBEDDED TRANSMISSION ACCESS\n'
+        apache2_config+='ProxyRequests Off\n'
+        apache2_config+='<Proxy *>\n'
+        apache2_config+='Order Allow,Deny\n'
+        apache2_config+='         Allow from all\n'
+        apache2_config+='</Proxy>\n'
+        apache2_config+='ProxyPass /transmission http://localhost:9091/transmission\n'
+        apache2_config+='ProxyPassReverse /transmission http://localhost:9091/transmission\n'
+        sudo chmod go+rw "$apache2_conf_path"
+        echo -e "$apache2_config"
+        echo -e "$apache2_config" >> "$apache2_conf_path"
+        sudo chmod g-rw "$apache2_conf_path"
+
+        _msg_ "Reload apache2: sudo /etc/init.d/apache2 force-reload"
+        sudo /etc/init.d/apache2 force-reload
+    else
+        _msg_ "$apache2_conf_path already configured ProxyPass /transmission"
+    fi
+}
 
 link_html_folder_to_requested_path
 if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
@@ -132,3 +164,4 @@ else
     _msg_ "HTML template copy already done: ${CACHE_PATH_is_set} exists."
 fi
 set_shared_folder_password_protected
+set_embedded_transmission_access
