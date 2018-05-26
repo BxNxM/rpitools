@@ -89,5 +89,6 @@ tr.menu_bar      {
 
 /* default body with background */
 body    {
-        background-image: url("./images/rpitools_background.png");
+        background-color: rgb(123, 123, 123);
+        background: radial-gradient(rgb(123, 123, 123), rgb(50, 50, 50));
         }
