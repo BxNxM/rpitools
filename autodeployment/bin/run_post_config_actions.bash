@@ -48,15 +48,9 @@ else
     _msg_ "VNC install is not requested"
 fi
 
-# oled install config executor
-oled_install="$($confighandler -s INSTALL_OLED -o action)"
-if [ "$oled_install" == "True" ] || [ "$oled_install" == "true" ]
-then
-    _msg_ "RUN: OLED install"
-    python ${MYDIR_}/../../gpio/oled_128x64/bin/oled_interface.py -ss
-else
-    _msg_ "OLED install is not requested"
-fi
+# set oled gui core service if config requires
+_msg_ "RUN: OLED GUI CORE service setup"
+(. "/home/$USER/rpitools/gpio/oled_128x64/systemd_setup/set_service.bash")
 
 # run kodi config settings
 _msg_ "RUN: KODI dektop icon and bootup start if set"
