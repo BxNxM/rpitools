@@ -42,7 +42,7 @@ function function_demo() {
 
 if [ "$set_service_conf" == "True" ] || [ "$set_service_conf" == "true" ]
 then
-    echo -e "dropbox halpage service is required - turn on"
+    echo -e "oled gui core service is required - turn on"
     if [ ! -e "/lib/systemd/system/oled_gui_core.service" ]
     then
         message "COPY: ${MYDIR}/oled_gui_core.service -> /lib/systemd/system/oled_gui_core.service"
@@ -53,7 +53,7 @@ then
         #function_demo
     fi
 
-    if [ "$(systemctl is-active dropbox_halpage)" == "inactive" ]
+    if [ "$(systemctl is-active oled_gui_core)" == "inactive" ]
     then
         message "START SERICE: sudo systemctl start oled_gui_core.service"
         sudo systemctl start oled_gui_core.service
@@ -62,7 +62,7 @@ then
         message "ALREADY RUNNING SERICE: oled_gui_core.service"
     fi
 
-    if [ "$(systemctl is-enabled dropbox_halpage)" == "disabled" ]
+    if [ "$(systemctl is-enabled oled_gui_core)" == "disabled" ]
     then
         message "ENABLE SERICE: sudo systemctl enable oled_gui_core.service"
         sudo systemctl enable oled_gui_core.service
@@ -85,7 +85,7 @@ then
 
     echo -e "dropbox halpage service is required - turn off"
 
-    if [ "$(systemctl is-active dropbox_halpage)" == "active" ]
+    if [ "$(systemctl is-active oled_gui_core)" == "active" ]
     then
         message "STOP SERICE: sudo systemctl stop oled_gui_core.service"
         sudo systemctl stop oled_gui_core.service
@@ -94,7 +94,7 @@ then
         message "SERICE NOT RUNNING: oled_gui_core.service"
     fi
 
-    if [ "$(systemctl is-enabled dropbox_halpage)" == "enabled" ]
+    if [ "$(systemctl is-enabled oled_gui_core)" == "enabled" ]
     then
         message "DISABLE SERICE: sudo systemctl disable oled_gui_core.service"
         sudo systemctl disable oled_gui_core.service
