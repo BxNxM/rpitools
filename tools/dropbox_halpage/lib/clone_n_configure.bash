@@ -3,12 +3,18 @@
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 Dropbox_Uploader_path="${MYDIR}/Dropbox-Uploader"
+Dropbox_Uploader_runtime_path="${Dropbox_Uploader_path}/dropbox_uploader.sh"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 APIKEY="$($confighandler -s EXTIPHANDLER -o oauth_access_token)"
 
-if [ ! -d "$Dropbox_Uploader_path" ]
+if [[ ! -d "$Dropbox_Uploader_path" ]] || [[ ! -e "$Dropbox_Uploader_runtime_path" ]]
 then
+    if [ -d "$Dropbox_Uploader_path" ]
+    then
+        rm -rf "$Dropbox_Uploader_path"
+    fi
+
     echo -e "Clone https://github.com/andreafabrizi/Dropbox-Uploader.git"
     pushd "${MYDIR}/../lib"
     git clone https://github.com/andreafabrizi/Dropbox-Uploader.git
