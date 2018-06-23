@@ -1,5 +1,12 @@
 #!/bin/bash
 
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+
+confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
+set_service_conf="$($confighandler -s INSTALL_OLED -o action)"
+
 function message() {
     local msg="$1"
     if [ ! -z "$msg" ]
@@ -33,22 +40,68 @@ function function_demo() {
 
 }
 
-if [ ! -e "/lib/systemd/system/oled_gui_core.service" ]
+if [ "$set_service_conf" == "True" ] || [ "$set_service_conf" == "true" ]
 then
-    message "COPY: /home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service -> /lib/systemd/system/oled_gui_core.service"
-    sudo cp "/home/$USER/rpitools/gpio/oled_128x64/systemd_setup/oled_gui_core.service" "/lib/systemd/system/oled_gui_core.service"
-    check_exitcode "$?"
+    echo -e "dropbox halpage service is required - turn on"
+    if [ ! -e "/lib/systemd/system/oled_gui_core.service" ]
+    then
+        message "COPY: ${MYDIR}/oled_gui_core.service -> /lib/systemd/system/oled_gui_core.service"
+        sudo cp "${MYDIR}/oled_gui_core.service" "/lib/systemd/system/oled_gui_core.service"
+        check_exitcode "$?"
+    else
+        message "/lib/systemd/system/oled_gui_core.service is already exists"
+        #function_demo
+    fi
 
-    message "START SERICE: sudo systemctl start oled_gui_core.service"
-    sudo systemctl start oled_gui_core.service
-    check_exitcode "$?"
+    if [ "$(systemctl is-active dropbox_halpage)" == "inactive" ]
+    then
+        message "START SERICE: sudo systemctl start oled_gui_core.service"
+        sudo systemctl start oled_gui_core.service
+        check_exitcode "$?"
+    else
+        message "ALREADY RUNNING SERICE: oled_gui_core.service"
+    fi
 
-    message "ENABLE SERICE: sudo systemctl enable oled_gui_core.service"
-    sudo systemctl enable oled_gui_core.service
-    check_exitcode "$?"
+    if [ "$(systemctl is-enabled dropbox_halpage)" == "disabled" ]
+    then
+        message "ENABLE SERICE: sudo systemctl enable oled_gui_core.service"
+        sudo systemctl enable oled_gui_core.service
+        check_exitcode "$?"
+    else
+        message "SERICE IS ALREADY ENABLED: oled_gui_core.service"
+    fi
 
-    function_demo
+elif [ "$set_service_conf" == "False" ] || [ "$set_service_conf" == "false" ]
+then
+    if [ ! -e "/lib/systemd/system/oled_gui_core.service" ]
+    then
+        message "COPY: ${MYDIR}/oled_gui_core.service -> /lib/systemd/system/oled_gui_core.service"
+        sudo cp "${MYDIR}/oled_gui_core.service" "/lib/systemd/system/oled_gui_core.service"
+        check_exitcode "$?"
+    else
+        message "/lib/systemd/system/oled_gui_core.service is already exists"
+        #function_demo
+    fi
+
+    echo -e "dropbox halpage service is required - turn off"
+
+    if [ "$(systemctl is-active dropbox_halpage)" == "active" ]
+    then
+        message "STOP SERICE: sudo systemctl stop oled_gui_core.service"
+        sudo systemctl stop oled_gui_core.service
+        check_exitcode "$?"
+    else
+        message "SERICE NOT RUNNING: oled_gui_core.service"
+    fi
+
+    if [ "$(systemctl is-enabled dropbox_halpage)" == "enabled" ]
+    then
+        message "DISABLE SERICE: sudo systemctl disable oled_gui_core.service"
+        sudo systemctl disable oled_gui_core.service
+        check_exitcode "$?"
+    else
+        message "SERICE IS ALREADY DISBALED: oled_gui_core.service"
+    fi
 else
-    message "/lib/systemd/system/oled_gui_core.service is already exists"
-    function_demo
+    echo -e "oled gui core (shield handler) service is not requested"
 fi
