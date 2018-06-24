@@ -67,8 +67,8 @@ function configure() {
     change_line "daemon off" "daemon on" "$motion_conf_path"
     change_line "target_dir" "target_dir $motion_target_folder" "$motion_conf_path"
     change_line "v4l2_palette" "v4l2_palette 15" "$motion_conf_path"
-    change_line "width 640" "width 800" "$motion_conf_path"
-    change_line "height 480" "height 400" "$motion_conf_path"
+    change_line "width 320" "width 800" "$motion_conf_path"
+    change_line "height 240" "height 400" "$motion_conf_path"
     change_line "framerate" "framerate 10" "$motion_conf_path"
     change_line "locate_motion_mode off" "locate_motion_mode on" "$motion_conf_path"
 
@@ -105,8 +105,8 @@ then
     if [ ! -f "$initial_config_done_indicator" ]
     then
         install
-        configure
         backup_official_configs
+        configure
         echo -e "$(date)" > "$initial_config_done_indicator"
     else
         _msg_ "Initial install and config done, $initial_config_done_indicator exists."
