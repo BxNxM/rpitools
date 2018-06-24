@@ -86,6 +86,12 @@ function configure() {
     fi
 }
 
+function backup_official_configs() {
+    mkdir -p "${MYDIR}/factory_confs"
+    sudo cp "$motion_conf_path" "${MYDIR}/factory_confs"
+    sudo cp "$motion_conf_path2" "${MYDIR}/factory_confs"
+}
+
 function execute() {
     _msg_ "START MOTION: sudo systemctl start motion"
     sudo service motion start
@@ -100,6 +106,7 @@ then
     then
         install
         configure
+        backup_official_configs
         echo -e "$(date)" > "$initial_config_done_indicator"
     else
         _msg_ "Initial install and config done, $initial_config_done_indicator exists."
