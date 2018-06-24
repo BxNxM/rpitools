@@ -39,4 +39,11 @@ else
         fi
     fi
 fi
+
+echo -e "SAVE CHANGES? [Y] | [N]"
+read option
+if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
+then
+   (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
+fi
 echo -e "Goodbye ;)"

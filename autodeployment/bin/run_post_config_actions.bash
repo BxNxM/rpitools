@@ -72,3 +72,6 @@ _msg_ "RUN apache basic setup based on rpi_config and rpitools/autodeployment/li
 
 _msg_ "RUN: set up service if needed - rgb_led_controller"
 (. "/home/$USER/rpitools/gpio/rgb_led/systemd_setup/set_service.bash")
+
+_msg_ "RUN: motion install and configure"
+(. "/home/$USER/rpitools/autodeployment/lib/motion/install_n_configure.bash")
