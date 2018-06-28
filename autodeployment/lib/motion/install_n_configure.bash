@@ -105,7 +105,7 @@ function execute() {
 }
 
 function link_motionfolder_to_apache() {
-apache_web_shared_folder="/var/www/html/$($confighandler -s APACHE -o webshared_folder_name)"
+    local apache_web_shared_folder="/var/www/html/$($confighandler -s APACHE -o webshared_folder_name)"
 
     if [[ "$link_to_apche" == "True" ]] || [[ "$link_to_apche" == "true" ]]
     then
@@ -153,3 +153,5 @@ then
 else
     _msg_ "Invalid parameter: $motion_activate => True or False"
 fi
+
+link_motionfolder_to_apache
