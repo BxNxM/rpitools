@@ -5,8 +5,10 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 motion_target_folder="$($confighandler -s MOTION -o target_folder)"
 motion_activate="$($confighandler -s MOTION -o activate)"
-http_username="rpi"
-http_password="tools"
+http_username="$($confighandler -s MOTION -o http_user)"
+http_password="$($confighandler -s MOTION -o http_pawwd)"
+link_to_apche="$($confighandler -s MOTION -o link_under_apache)"
+apache_web_shared_folder="/var/www/html/$($confighandler -s APACHE -o webshared_folder_name)"
 
 source "${MYDIR}/../../../prepare/colors.bash"
 motion_conf_path="/etc/motion/motion.conf"              # https://tutorials-raspberrypi.com/raspberry-pi-security-camera-livestream-setup/
@@ -67,9 +69,6 @@ function configure() {
 
     _msg_ "Override $motion_conf_path conf file."
     sudo cp -f ${MYDIR}/motion.conf $motion_conf_path
-    sudo chmod +rw+r+r ${MYDIR}/motion.conf
-    sudo chown root $motion_conf_path
-    sudo chgrp root $motion_conf_path
 
     change_line "target_dir RPITOOLSREPALCEtargetdir" "target_dir ${motion_target_folder}" "$motion_conf_path"
     change_line "stream_authentication HTTPuser:HTTPpwd" "stream_authentication ${http_username}:${http_password}" "$motion_conf_path"
@@ -86,6 +85,10 @@ function configure() {
     else
         _msg_ "$motion_target_folder already exists."
     fi
+
+    sudo chmod +rw+r+r ${MYDIR}/motion.conf
+    sudo chown root $motion_conf_path
+    sudo chgrp root $motion_conf_path
 }
 
 function backup_official_configs() {
@@ -99,6 +102,34 @@ function execute() {
     sudo service motion start
     #sudo systemctl start motion
     #sudo systemctl enable motion
+}
+
+function link_motionfolder_to_apache() {
+apache_web_shared_folder="/var/www/html/$($confighandler -s APACHE -o webshared_folder_name)"
+
+    if [[ "$link_to_apche" == "True" ]] || [[ "$link_to_apche" == "true" ]]
+    then
+        local target_path="${apache_web_shared_folder}/$(basename $motion_target_folder)"
+        local source_path="$motion_target_folder"
+        if [ ! -e "$target_folder" ]
+        then
+            _msg_ "Create link: $source_path -> $target_path"
+            sudo ln -s $source_path $target_path
+        else
+            _msg_ "$source_path -> $target_path already exists."
+        fi
+    else
+        if [[ "$motion_target_folder" != "" ]] && [[ "$target_path" == *"$(basename $motion_target_folder)"* ]]
+        then
+            _msg_ "Remove $target_path"
+            if [ -e "$target_path" ]
+            then
+                sudo rm -f "$target_path"
+            fi
+        else
+            _msg_ "Cant remove: $target_path ... [WARNING]"
+        fi
+    fi
 }
 
 if [[ "$motion_activate" == "true" ]] || [[ "$motion_activate" == "True" ]]
