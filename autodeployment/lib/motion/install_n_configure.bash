@@ -5,6 +5,8 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 motion_target_folder="$($confighandler -s MOTION -o target_folder)"
 motion_activate="$($confighandler -s MOTION -o activate)"
+http_username="rpi"
+http_password="tools"
 
 source "${MYDIR}/../../../prepare/colors.bash"
 motion_conf_path="/etc/motion/motion.conf"              # https://tutorials-raspberrypi.com/raspberry-pi-security-camera-livestream-setup/
@@ -54,7 +56,7 @@ function configure() {
     then
         _msg_ "Add / Activate kernel module: bcm2835-v4l2"
         sudo modprobe bcm2835-v4l2
-        echo "bcm2835-v4l2\n" >> "$add_modeprobe_to"
+        echo -e "bcm2835-v4l2\n" >> "$add_modeprobe_to"
     else
         _msg_ "Kernel module bcm2835-v4l2 already added and avtivated."
     fi
@@ -63,14 +65,14 @@ function configure() {
     camera_details="$(v4l2-ctl -V)"
     _msg_ "$camera_details"
 
-    _msg_ "Edit $motion_conf_path conf."
-    change_line "daemon off" "daemon on" "$motion_conf_path"
-    change_line "target_dir" "target_dir $motion_target_folder" "$motion_conf_path"
-    change_line "v4l2_palette" "v4l2_palette 15" "$motion_conf_path"
-    change_line "width 320" "width 800" "$motion_conf_path"
-    change_line "height 240" "height 400" "$motion_conf_path"
-    change_line "framerate" "framerate 10" "$motion_conf_path"
-    change_line "locate_motion_mode off" "locate_motion_mode on" "$motion_conf_path"
+    _msg_ "Override $motion_conf_path conf file."
+    sudo cp -f ${MYDIR}/motion.conf $motion_conf_path
+    sudo chmod +rw+r+r ${MYDIR}/motion.conf
+    sudo chown root $motion_conf_path
+    sudo chgrp root $motion_conf_path
+
+    change_line "target_dir RPITOOLSREPALCEtargetdir" "target_dir ${motion_target_folder}" "$motion_conf_path"
+    change_line "stream_authentication HTTPuser:HTTPpwd" "stream_authentication ${http_username}:${http_password}" "$motion_conf_path"
 
     _msg_ "Edit $motion_conf_path2 conf."
     change_line "start_motion_daemon=no" "start_motion_daemon=yes" "$motion_conf_path2"
