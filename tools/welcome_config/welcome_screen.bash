@@ -9,18 +9,30 @@ then
     if [ -e ~/welcomeColor.dat ]
     then
         source ~/welcomeColor.dat
+        if [[ "$WELCOME_TEXT" != "true" ]] && [[ "$WELCOME_TEXT" != "True" ]]
+        then
+            exit 0
+        fi
         wColor=${SELECTED_COLOR}
     fi
 
     ip=$(hostname -I)
-    echo -e "WELCOME ${wColor}${USER}${NC}! PI IP ADDRESS ${wColor}${ip}${NC}\nConnected from: ${wColor}$(~/rpitools/tools/get_connected_user_address.bash)${NC}"
-    echo -e "WELCOME ${wColor}${USER}${NC}! PI IP ADDRESS ${wColor}${ip}${NC}"
+    echo -e "${wColor} _     _  _______  ___      _______  _______  __   __  _______"
+    echo -e "| | _ | ||       ||   |    |       ||       ||  |_|  ||       |"
+    echo -e "| || || ||    ___||   |    |       ||   _   ||       ||    ___|"
+    echo -e "|       ||   |___ |   |    |       ||  | |  ||       ||   |___"
+    echo -e "|       ||    ___||   |___ |      _||  |_|  ||       ||    ___|"
+    echo -e "|   _   ||   |___ |       ||     |_ |       || ||_|| ||   |___"
+    echo -e "|__| |__||_______||_______||_______||_______||_|   |_||_______|${NC}"
+    echo -e ""
+    echo -e "${wColor}${USER}${NC}! LOCAL IP ADDRESS ${wColor}${ip}${NC}\nConnected from: ${wColor}$(~/rpitools/tools/get_connected_user_address.bash)${NC}"
     echo -e "TODAY: ${wColor}$(date)${NC}"
     echo -e "$(cal)"
     echo -e "${wColor}HOME DISK:${NC} $(du -sh ./ --exclude=./sshfs_folder)"
     echo -e ""
-    echo -e "${wColor}AVAIBLE SERVICES AND TOOLS:${NC}"
-    echo -e "Service (rpitools) interfaces:"
+    echo -e "${wColor}AVAILABLE SERVICES AND TOOLS:${NC}"
+    echo -e "${wColor}-----------------------------${NC}"
+    echo -e "${wColor}Service (rpitools) interfaces:${NC}"
     echo -e "\toledinterface -h\t-> oled service command line control"
     echo -e "\trgbinterface -h\t\t-> rgb command line control"
     echo -e "\thapticinterface -h\t-> vibre motor cmd line control"
@@ -33,17 +45,24 @@ then
     echo -e "\tclientMemDict -h\t-> access for the internal ram memory dict structure [programs API]"
     echo -e "\trpihelp\t\t\t-> show this help screen again :D"
 
-    echo -e "Manage GUI (X):"
+    echo -e "${wColor}Manage GUI (X):${NC}"
     echo -e "\tstartxbg\t\t-> start gui in the background"
     echo -e "\tpkill x \t\t-> stop gui"
     echo -e "\tstartvnc\t\t-> start vnc service"
     echo -e "\tkodibg\t\t\t-> start kodi media center"
 
-    echo -e "Camera (over built in camera connector):"
+    echo -e "${wColor}Camera (over built in camera connector):${NC}"
     echo -e "\tcamera --man\t\t-> get more info ablot camera interface"
     echo -e "\tsystemctl status motion\t-> camera streamer app with motion detection"
 
-    echo -e "Other commands:"
+    echo -e "${wColor}User handling - create - delete:${NC}"
+    echo -e "\tsudo useradd -m fred -G sudo\t-> add new user named fred with sudo permissions (group)"
+    echo -e "\tsudo passwd fred\t\t-> add password for fred"
+    echo -e "\tsudo visudo\t\t\t-> show sudoers file"
+    echo -e "\tsudo deluser fred\t\t-> delete fred user"
+    echo -e "\tsudo deluser -remove-home fred\t-> delete fred user with fred home folder"
+
+    echo -e "${wColor}Other commands:${NC}"
     echo -e "\tAdd new user for\n\t\
 apache webshared dir:\thtpasswd -cb /home/$USER/.secure/apasswords user_name user_pwd"
     echo -e "\tAdd new samba user:\tsudo smbpasswd -a samba_user"
