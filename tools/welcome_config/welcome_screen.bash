@@ -26,10 +26,12 @@ then
     echo -e "\thapticinterface -h\t-> vibre motor cmd line control"
     echo -e "\tsysmonitor -h\t\t-> system monitoring tool"
     echo -e "\tdiskhandler -h\t\t-> external disks handling based on fstab"
-    echo -e "\tconfighandler -h\t-> config handler based on rpitools_config.cfg"
-    echo -e "\tmysshfs\t\t\t-> built in sshfs based on rpitools_config.cfg"
-    echo -e "\tupdate_rpitools\t\t-> update your repository"
-    echo -e "\tconfhelper\t\t-> interactive config handler for easy modifications."
+    echo -e "\tconfighandler -h\t-> config handler based on rpitools_config.cfg [programs API]"
+    echo -e "\tconfhelper\t\t-> interactive config handler for easy modifications. [Human API]"
+    echo -e "\tmysshfs\t\t\t-> built in sshfs based on rpitools_config.cfg [0|1]"
+    echo -e "\tupdate_rpitools\t\t-> update your repository with an easy command :D"
+    echo -e "\tclientMemDict -h\t-> access for the internal ram memory dict structure [programs API]"
+    echo -e "\trpihelp\t\t\t-> show this help screen again :D"
 
     echo -e "Manage GUI (X):"
     echo -e "\tstartxbg\t\t-> start gui in the background"
@@ -39,6 +41,7 @@ then
 
     echo -e "Camera (over built in camera connector):"
     echo -e "\tcamera --man\t\t-> get more info ablot camera interface"
+    echo -e "\tsystemctl status motion\t-> camera streamer app with motion detection"
 
     echo -e "Other commands:"
     echo -e "\tAdd new user for\n\t\
