@@ -2,19 +2,22 @@
 
 # call my bootup services
 boot_up_msg="true"
-if [ "$boot_up_msg" == "true" ]
+
+wColor=""
+NC='\033[0m'
+if [ -e ~/welcomeColor.dat ]
 then
-    wColor=""
-    NC='\033[0m'
-    if [ -e ~/welcomeColor.dat ]
+    source ~/welcomeColor.dat
+    if [[ ! -z "$WELCOME_TEXT_ENV" ]]
     then
-        source ~/welcomeColor.dat
-        if [[ "$WELCOME_TEXT" != "true" ]] && [[ "$WELCOME_TEXT" != "True" ]]
-        then
-            exit 0
-        fi
-        wColor=${SELECTED_COLOR}
+        WELCOME_TEXT="true"
     fi
+    if [[ ! -z "$WELCOME_TEXT" ]] && [[ "$WELCOME_TEXT" != "true" ]] && [[ "$WELCOME_TEXT" != "True" ]]
+    then
+        boot_up_msg="false"
+    fi
+    wColor=${SELECTED_COLOR}
+fi
 
     ip=$(hostname -I)
     echo -e "${wColor} _     _  _______  ___      _______  _______  __   __  _______"
@@ -29,6 +32,8 @@ then
     echo -e "TODAY: ${wColor}$(date)${NC}"
     echo -e "$(cal)"
     echo -e "${wColor}HOME DISK:${NC} $(du -sh ./ --exclude=./sshfs_folder)"
+if [ "$boot_up_msg" == "true" ]
+then
     echo -e ""
     echo -e "${wColor}AVAILABLE SERVICES AND TOOLS:${NC}"
     echo -e "${wColor}-----------------------------${NC}"

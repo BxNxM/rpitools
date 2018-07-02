@@ -111,7 +111,7 @@ function link_motionfolder_to_apache() {
     then
         local target_path="${apache_web_shared_folder}/$(basename $motion_target_folder)"
         local source_path="$motion_target_folder"
-        if [ ! -e "$target_folder" ]
+        if [ ! -e "$target_path" ]
         then
             _msg_ "Create link: $source_path -> $target_path"
             sudo ln -s $source_path $target_path
