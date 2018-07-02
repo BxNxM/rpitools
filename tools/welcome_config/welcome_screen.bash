@@ -66,6 +66,7 @@ then
     echo -e "\tsudo visudo\t\t\t-> show sudoers file"
     echo -e "\tsudo deluser fred\t\t-> delete fred user"
     echo -e "\tsudo deluser -remove-home fred\t-> delete fred user with fred home folder"
+    echo -e "\tpasswd fred\t\t\t-> change fred user password"
 
     echo -e "${wColor}Other commands:${NC}"
     echo -e "\tAdd new user for\n\t\
