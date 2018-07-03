@@ -271,6 +271,9 @@ then
         # set custom hostname
         . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
 
+        # set up security stuffs
+        . ${REPOROOT}/prepare/system/security.bash
+
         # run postinstall deplyments after reboot
         if [ -e "${REPOROOT}/cache/.first_run_reboot_done" ]
         then
