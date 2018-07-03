@@ -75,3 +75,6 @@ _msg_ "RUN: set up service if needed - rgb_led_controller"
 
 _msg_ "RUN: motion install and configure"
 (. "/home/$USER/rpitools/autodeployment/lib/motion/install_n_configure.bash")
+
+_msg_ "RUN: motion video stream forwarding"
+(. /home/$USER/rpitools/autodeployment/lib/motion_remote_video_stream_over_apache.bash)
