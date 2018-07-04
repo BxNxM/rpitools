@@ -9,6 +9,9 @@ ssh_passed_state="$($confighandler -s SECURITY -o password_authentication)"
 ssh_id_rsa_pub="$($confighandler -s SECURITY -o id_rsa_pub)"
 sshd_config_path="/etc/ssh/sshd_config"
 authorized_keys_path="/home/$USER/.ssh/authorized_keys"
+default_id_rsa_pub_value_in_conf="write_you_id_rsa_pub_here"
+rpi_config_path="/home/$USER/rpitools/autodeployment/config/rpitools_config.cfg"
+repo_conf_restore_backup="/home/$USER/rpitools/tools/cache_restore_backup.bash"
 
 _msg_title="SECURITY [SSH] SETUP"
 function _msg_() {
@@ -36,12 +39,62 @@ function change_line() {
     fi
 }
 
+function change_parameter() {
+    local from="$1"
+    local to="$2"
+    local where="$3"
+    if [ ! -z "$from" ]
+    then
+        is_set="$(sudo cat "$where" | grep -v grep | grep "$to")"
+        _msg_ "sudo cat $where | grep -v grep | grep $to\nis_set: $is_set"
+        _msg_ "$is_set"
+        if [ "$is_set" == "" ]
+        then
+            _msg_ "${GREEN}Set parameter: $to  (from: $from) ${NC}"
+            sudo sed -i 's|'"${from}"'|'"${to}"'|g' "$where"
+        else
+            _msg_ "${GREEN}Custom parameter $to already set in $where ${NC}"
+        fi
+    fi
+}
+
+function save_authorized_keys_first_key_to_rpi_config() {
+    local first_id_rsa_pub="$(head -n 1 $authorized_keys_path)"
+    if [[ "$first_id_rsa_pub" == *"ssh-rsa"* ]]
+    then
+        _msg_ "id_rsa_pub exists in $authorized_keys_path, SAVE it to rpi_config"
+        change_parameter "id_rsa_pub=write_you_id_rsa_pub_here" "id_rsa_pub=${first_id_rsa_pub}" "$rpi_config_path"
+
+        _msg_ "Validate config after modifications"
+        echo -e "$($confighandler -v)"
+        if [ "$?" -eq 0 ]
+        then
+            _msg_ "Save modifications."
+            _msg_ "$($repo_conf_restore_backup backup)"
+            id_rsa_pubVALID=1
+        else
+            _msg_ "Save id_rsa.pub first key to $rpi_config_path went failed! restoring previous one."
+            _msg_ "$($repo_conf_restore_backup restore)"
+            id_rsa_pubVALID=0
+        fi
+    else
+        _msg_ "id_rsa_pub not exists in $authorized_keys_path"
+        id_rsa_pubVALID=0
+    fi
+}
+
 if [[ "$ssh_id_rsa_pub" == *"ssh-rsa"* ]]
 then
     id_rsa_pubVALID=1
 else
-    _msg_ "id_rsa_pub ${RED}INVALID${NC}"
-    id_rsa_pubVALID=0
+    if [ "$ssh_id_rsa_pub" != "$default_id_rsa_pub_value_in_conf" ]
+    then
+        _msg_ "id_rsa_pub ${RED}INVALID${NC}"
+        id_rsa_pubVALID=0
+    else
+        _msg_ "id_rsa_pub was not set in rpi_config!"
+        save_authorized_keys_first_key_to_rpi_config
+    fi
 fi
 
 id_rsa_pub_is_set=$(cat "$authorized_keys_path" | grep "$ssh_id_rsa_pub")
@@ -52,7 +105,7 @@ then
 else
     if [ "$id_rsa_pubVALID" -eq 1 ]
     then
-        _msg_ "id_rsa_pub from raspi_config was already set: $ssh_id_rsa_pub"
+        _msg_ "id_rsa_pub was already set (rpi_confing)"
     fi
 fi
 
