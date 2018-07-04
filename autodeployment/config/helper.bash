@@ -23,6 +23,7 @@ else
     echo -e "$custom_config EXISTS"
     echo -e "OPEN [Y/N] | DIFF [D]"
     read option
+    option_y_n_d="$option"
     if [ "$option" == "Y" ] || [ "$option" == "y" ]
     then
         vim "$custom_config"
@@ -40,10 +41,13 @@ else
     fi
 fi
 
-echo -e "SAVE CHANGES? [Y] | [N]"
-read option
-if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
+if [ "$option" == "Y" ] || [ "$option" == "y" ] || [ "$option" == "D" ] || [ "$option" == "d" ]
 then
-   (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
+    echo -e "SAVE CHANGES? [Y] | [N]"
+    read option
+    if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
+    then
+        (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
+    fi
 fi
 echo -e "Goodbye ;)"
