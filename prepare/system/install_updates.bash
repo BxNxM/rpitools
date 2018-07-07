@@ -75,6 +75,6 @@ function update_grade_dits_clean() {
     # sudo rpi-update
 }
 
-elapsed_time "start"
+#elapsed_time "start"
 update_grade_dits_clean
-elapsed_time "stop"
+#elapsed_time "stop"

@@ -46,11 +46,11 @@ fi
 is_installed_file_indicator=${REPOROOT}/cache/.PIXEL_installed
 x11_config=/etc/X11/Xwrapper.config
 
-elapsed_time "start"
+#elapsed_time "start"
 if [ -f "$is_installed_file_indicator" ]
 then
     message "PIXEL GUI is already installed"
-    elapsed_time "stop"
+    #elapsed_time "stop"
 else
 
     message "install: sudo apt-get update"
@@ -122,7 +122,7 @@ else
 
     echo "$(date) PIXEL was installed" > "$is_installed_file_indicator"
 
-    elapsed_time "stop"
+    #elapsed_time "stop"
     message "REBOOT..."
     sleep 3
     sudo reboot

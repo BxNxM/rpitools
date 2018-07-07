@@ -55,6 +55,6 @@ function install_vnc() {
     fi
 }
 
-elapsed_time "start"
+#elapsed_time "start"
 install_vnc
-elapsed_time "stop"
+#elapsed_time "stop"

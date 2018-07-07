@@ -176,10 +176,11 @@ function main() {
         install_pymodule_pip_secure "$current_modul_pip"
     done
 }
-elapsed_time "start"
+
+#elapsed_time "start"
 main
 if [ "$was_installation" -eq 1 ]
 then
     message "After program installations good to make a reboot -> sudo reboot"
 fi
-elapsed_time "stop"
+#elapsed_time "stop"
