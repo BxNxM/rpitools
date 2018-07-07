@@ -46,6 +46,17 @@ function message() {
     fi
 }
 
+function set_rpiconfig_permissions() {
+    local rpitools_config_path="${REPOROOT}/autodeployment/config/rpitools_config.cfg"
+    if [ -e "$rpitools_config_path" ]
+    then
+        message "(Re)Set config permissions (-rw-------): $rpitools_config_path"
+        chmod go-rw "$rpitools_config_path"
+    else
+        message "Config NOT exists: $rpitools_config_path [!!!]"
+    fi
+}
+
 # Set two quick config access interface:
 alias confhelper='${MYDIR}/autodeployment/config/helper.bash'
 alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
@@ -84,6 +95,9 @@ then
     # restore existing backup
     output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash restore; popd)
     echo -e "$output"
+
+    # security config permission set
+    set_rpiconfig_permissions
 
     # config files list
     file_to_link_list=("/etc/wpa_supplicant/wpa_supplicant.conf" \
