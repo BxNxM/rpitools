@@ -67,14 +67,18 @@ _msg_ "RUN: DROPBOX HALPAGE service setup"
 _msg_ "RUN: custom logrotate service: log_cleaner.bash or rpitools_logrotate.service"
 (. /home/$USER/rpitools/tools/log_cleaner_service/systemd_setup/set_service.bash)
 
+# set custom apache webpage
 _msg_ "RUN apache basic setup based on rpi_config and rpitools/autodeployment/lib/apache_setup/template"
 (. /home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash)
 
+# set rgb service for faster access and load time
 _msg_ "RUN: set up service if needed - rgb_led_controller"
 (. "/home/$USER/rpitools/gpio/rgb_led/systemd_setup/set_service.bash")
 
+# install and configure motion camera service
 _msg_ "RUN: motion install and configure"
 (. "/home/$USER/rpitools/autodeployment/lib/motion/install_n_configure.bash")
 
+# motion video stream over apache server setup, run after apache config
 _msg_ "RUN: motion video stream forwarding"
 (. /home/$USER/rpitools/autodeployment/lib/motion_remote_video_stream_over_apache.bash)
