@@ -2,27 +2,32 @@
 
 arg_helper_lolcat="$SETUPLOLCAT"
 quick_conf=false
-if [ "$#" -eq 1 ]
-then
-    if [ "$1" == "-qc" ] || [ "$1" == "--quickconf" ]
+
+function detect_device() {
+    local _DEVICE="OTHER"
+    local model_path="/sys/firmware/devicetree/base/model"
+    if [ -e "$model_path" ]
+    then
+        model="$(cat $model_path)"
+        model="${model,,}"
+        if [[ "$model" == *"raspberry"* ]]
+        then
+            _DEVICE="RASPBERRY"
+        else
+            _DEVICE="LINUX"
+        fi
+    fi
+    export DEVICE=$_DEVICE
+
+    if [[  "$DEVICE" == "LINUX" ]] || [[ "$DEVICE" == "OTHER" ]]
     then
         quick_conf=true
-    else
-        help_text="Help: For quick rpitools.conf acces use -> source setup -qc\nIt creates two commands for config access."
-        help_text+="\nOr use without parameters for the complete configuration -> source setup"
-        if [ "$arg_helper_lolcat" == "true" ]
-        then
-            echo -e "$help_text" | lolcat
-        else
-            echo -e "$help_text"
-        fi
-        return 0
     fi
-elif [ "$#" -gt 1 ]
-then
-    echo -e "Too many arguments!"
-fi
+}
 
+# detect platform (device) separate workflow in RASPBERRY | OTHER | LINUX
+detect_device
+# Set setup env vars and aliases
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export REPOROOT="$MYDIR"
@@ -72,12 +77,12 @@ then
 fi
 
 # exit if we are not on raspberyy pi
-if [ "$OS" != "GNU/Linux" ]
+if [[ "$OS" != "GNU/Linux" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
  then
     # rpitools configuration access from anywhere
     message "[INFO] For configuiration use: confhelper OR confighandler"
 
-    message "This script works on raspbian properly, this OS $OS is not supported!"
+    message "This script works on raspbian properly, this OS $OS DEVICE $DEVICE is not supported!"
     run_source=false
 fi
 
