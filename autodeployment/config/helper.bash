@@ -41,13 +41,16 @@ else
     fi
 fi
 
-if [ "$option" == "Y" ] || [ "$option" == "y" ] || [ "$option" == "D" ] || [ "$option" == "d" ]
+if [[ -z "$DEVICE" ]] || [[ "$DEVICE" == "RASPBERRY" ]]
 then
-    echo -e "SAVE CHANGES? [Y] | [N]"
-    read option
-    if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
+    if [ "$option" == "Y" ] || [ "$option" == "y" ] || [ "$option" == "D" ] || [ "$option" == "d" ]
     then
-        (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
+        echo -e "SAVE CHANGES? [Y] | [N]"
+        read option
+        if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
+        then
+            (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
+        fi
     fi
 fi
 echo -e "Goodbye ;)"
