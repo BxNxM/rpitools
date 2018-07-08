@@ -3,11 +3,24 @@
 arg_helper_lolcat="$SETUPLOLCAT"
 quick_conf=false
 
+function logo() {
+    local logo_text=""
+    logo_text+=" _____  _____  _____  _   _ ______\n"
+    logo_text+="/  ___||  ___||_   _|| | | || ___ |\n"
+    logo_text+="\ \'--.| |__    | |  | | | || |_/ /\n"
+    logo_text+=" \`--. \|  __|   | |  | | | ||  __/ \n"
+    logo_text+="/\__/ /| |___   | |  | |_| || |    \n"
+    logo_text+="\____/ \____/   \_/   \___/ \_|    rpitools\n"
+    echo -e "$logo_text"
+}
+logo
+
 function detect_device() {
     local _DEVICE="OTHER"
     local model_path="/sys/firmware/devicetree/base/model"
     if [ -e "$model_path" ]
     then
+        echo -e "IGNORE ERRORS MSG: -bash: warning: command substitution: ignored null byte in input"
         model="$(cat $model_path)"
         model="${model,,}"
         if [[ "$model" == *"raspberry"* ]]

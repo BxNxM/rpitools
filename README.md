@@ -99,9 +99,9 @@ git clone https://github.com/BxNxM/rpitools.git
 
 ```
 cd rpitools/
-source setup -qc
+source setup
 ```
-It creates access for the config handler for easy config handling (-gc or --quickconf)
+It creates access for the config handler for easy config handling
 
 * go to rpitools/prepare/sd_card/ to find SD card preparing scripts
 
@@ -110,7 +110,7 @@ cd rpitools/prepare/sd_card/
 ```
 
 * Create custom config file from template
- 
+
 ```
 confhelper
 ```
