@@ -87,12 +87,14 @@ while True:
     output = main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services)
 
     if output != "":
-        print(LocalMachine.run_command_safe("clear"))
+        if _loop:
+            print(LocalMachine.run_command_safe("clear"))
         print(output)
     else:
         _all = True
         output = main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services)
-        print(LocalMachine.run_command_safe("clear"))
+        if _loop:
+            print(LocalMachine.run_command_safe("clear"))
         print(output)
 
     if not _loop or is_interrupted:
