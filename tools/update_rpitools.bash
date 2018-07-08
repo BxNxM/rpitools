@@ -33,30 +33,35 @@ function config_is_changed_on_HEAD() {
     fi
 }
 
-function stop_running_processes() {
-    process_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller" "memDictCore")
-    for process in "${process_list[@]}"
+function stop_running_services() {
+    service_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller" "memDictCore")
+    for service in "${service_list[@]}"
     do
-        is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$process")
-        is_run=$(ps aux | grep "$process" | grep -v grep)
+        is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$service")
+        is_run=$(ps aux | grep "$service" | grep -v grep)
         if [ "$is_run" != "" ] && [ "$is_exists" != "" ]
         then
-            echo -e "sudo systemctl stop $process"
-            sudo systemctl stop "$process"
+            echo -e "sudo systemctl stop $service"
+            sudo systemctl stop "$service"
         fi
     done
 }
 
-function start_running_processes() {
-    process_list=("memDictCore" "oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller")
-    for process in "${process_list[@]}"
+function start_running_services() {
+    service_list=("memDictCore" "oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller")
+    for service in "${service_list[@]}"
     do
-        is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$process")
-        is_run=$(ps aux | grep "$process" | grep -v grep)
+        is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$service")
+        is_run=$(ps aux | grep "$service" | grep -v grep)
         if [ "$is_run" == "" ] && [ "$is_exists" != "" ]
         then
-            echo -e "sudo systemctl start $process"
-            sudo systemctl start "$process"
+            if [ "$(systemctl is-enabled $service)" == "enabled" ]
+            then
+                echo -e "sudo systemctl start $service"
+                sudo systemctl start "$service"
+            else
+                echo -e "systemctl is-enabled $proces => disabled - autostart after upgrade off"
+            fi
         fi
     done
 }
@@ -64,13 +69,13 @@ function start_running_processes() {
 config_is_changed_on_HEAD
 if [ "$option" == "stop" ]
 then
-    echo -e "STOP PROCESSES"
-    stop_running_processes
+    echo -e "STOP SERVICES"
+    stop_running_services
     echo -e "UPDATE"
 elif [ "$option" == "start" ]
 then
-    echo -e "START PROCESSES"
-    start_running_processes
+    echo -e "START SERVICES "
+    start_running_services
     echo -e "DONE"
 fi
 exit 0
