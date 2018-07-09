@@ -25,7 +25,6 @@ function logo() {
     logo_text+="\____/ \____/   \_/   \___/ \_|    rpitools${NC}\n"
     echo -e "$logo_text"
 }
-logo
 
 function detect_device() {
     local _DEVICE="OTHER"
@@ -71,8 +70,11 @@ alias clean_cache="rm -f ${REPOROOT}/cache/.*_installed && rm -f ${REPOROOT}/cac
 
 #source colors
 source prepare/colors.bash
+# start time measuring
 source prepare/sub_elapsed_time.bash
 elapsed_time "start"
+
+logo
 
 function set_rpiconfig_permissions() {
     local rpitools_config_path="${REPOROOT}/autodeployment/config/rpitools_config.cfg"
