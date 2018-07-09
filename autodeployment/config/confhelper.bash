@@ -26,7 +26,12 @@ then
     fi
 else
     echo -e "$custom_config EXISTS"
-    question "OPEN [Y/N] | DIFF [D]"
+    menu_text="OPEN [Y/N] | DIFF [D]"
+    if [[ ! -z "$DEVICE" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
+    then
+        menu_text+=" | IMPORT [I]"
+    fi
+    question "$menu_text"
     read option
     option_y_n_d="$option"
     if [ "$option" == "Y" ] || [ "$option" == "y" ]
@@ -42,6 +47,29 @@ else
         if [ "$option" == "Y" ] || [ "$option" == "y" ]
         then
             vimdiff -O "$custom_config" "$template_config"
+        fi
+    elif [ "$option" == "I" ] || [ "$option" == "i" ]
+    then
+        question "ADD YOUR CUSTOM CONFIG PATH HERE:"
+        read existing_config_path
+        if [ -f "$existing_config_path" ]
+        then
+            if [ -f "$custom_config" ]
+            then
+                echo -e "$custom_config EXISTS, before override backup:"
+                echo -e "Copy $custom_config -> ~/Desktop/${custom_config}.BCKP"
+                cp "$custom_config" ~/Desktop/$(basename $custom_config).BCKP
+            fi
+            echo -e "Copy: $existing_config_path -> $custom_config"
+            cp "$existing_config_path" "$custom_config"
+            if [ -f "$custom_config" ]
+            then
+                echo -e "\t${GREEN}SUCCESS${NC}"
+            else
+                echo -e "\t${RED}FAILED${NC}"
+            fi
+        else
+            echo -e "${RED}NOT EXISTS:${NC} $existing_config_path"
         fi
     fi
 fi
