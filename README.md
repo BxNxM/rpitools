@@ -69,6 +69,16 @@ for more info use: ->| alias |<- command
 * bash
 * vim
 * ssh-keygen 			- for the passwordless login - run if ~/.ssh/id_rsa.pub not exists.
+* sshpass
+
+***INSTALL ON LINUX:*** sudo apt-get install ...
+
+***INSTALL ON MAC:*** brew install ...
+
+sshpass on mac:
+```
+brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
+```
 
 ## How to install:
  
@@ -101,38 +111,7 @@ git clone https://github.com/BxNxM/rpitools.git
 cd rpitools/
 source setup
 ```
-It creates access for the config handler for easy config handling
-
-* go to rpitools/prepare/sd_card/ to find SD card preparing scripts
-
-```
-cd rpitools/prepare/sd_card/
-```
-
-* Create custom config file from template
-
-```
-confhelper
-```
-It opens ***rpitools/autodeployment/config/rpitools_config.cfg***
-
-```
-
-WRITE YOUR CUSTOM PARAMETERS TO THE "<>" PLACEHOLDERS
-
-EXAMPLE:
-  6 [NETWORK]				; offlineset
-  7 ssid="<>"				; your wifi name
-  8 pwd="<>"				; your wifi password 
-  .
-  .
-  .
-  41 [EXTIPHANDLER] 
-  49 OAUTH_ACCESS_TOKEN="<>"
-  Place of "<>" genarate your dropbox API key:
-  https://www.dropbox.com/developers/support -> MyApp -> (login) -> create -> etc 
-```
-confhelper use vim command line text editor. For these some ***help***:
+Follow the instructions.
 
 ## VIM - command line text editor
 

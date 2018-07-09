@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# SSHPASS
+# install on mac: brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
+# install on linux: sudo apt-get-install sshpass
+
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
 CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
 username="pi"
+default_pwd="raspberry"
 hostname="$($CONFIGAHNDLER -s RPI_MODEL -o custom_hostname).local"
 
 function copy_repo_to_rpi_machine() {
@@ -16,12 +21,12 @@ function copy_repo_to_rpi_machine() {
         then
             echo -e "COPY: scp "$rpitools_path" pi@raspberrypi.local:/home/pi/"
             echo -e "Default PWD: raspberry"
-            scp -r "$rpitools_path" pi@raspberrypi.local:/home/pi/
+            sshpass -p "$default_pwd" scp -r "$rpitools_path" "$username@raspberrypi.local:/home/$username/"
         elif [ "$cpwith" == "rsync" ]
         then
             echo -e "COPY: rsync -avz -e  \"ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null\" --progress \"$rpitools_path\" pi@raspberrypi.local:/home/pi"
             echo -e "Default PWD: raspberry"
-            rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress "$rpitools_path" pi@raspberrypi.local:/home/pi
+            sshpass -p "$default_pwd" rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --progress "$rpitools_path" "$username@raspberrypi.local:/home/$username"
         fi
     fi
 }
@@ -29,12 +34,12 @@ function copy_repo_to_rpi_machine() {
 function copy_localmachine_ssh_pub_key_to_rpi_machine() {
     ssh_pub_key="$(cat ~/.ssh/id_rsa.pub)"
     echo -e "Copy id_rsa.pub to raspberry known_hosts: $ssh_pub_key"
-    ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ ! -d /home/pi/.ssh ]; then mkdir /home/pi/.ssh; fi"
-    ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ ! -e '/home/pi/.ssh/authorized_keys' ]; then echo $ssh_pub_key > /home/pi/.ssh/authorized_keys; fi"
+    sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ ! -d /home/pi/.ssh ]; then mkdir /home/pi/.ssh; fi"
+    sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ ! -e '/home/pi/.ssh/authorized_keys' ]; then echo $ssh_pub_key > /home/pi/.ssh/authorized_keys; fi"
 }
 
 function execute_source_setup_on_rpi_machine() {
-    ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && source setup'
+    sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && source setup'
 }
 
 function execute_source_setup_on_rpi_machine_custom_host() {
