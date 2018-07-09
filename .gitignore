@@ -12,3 +12,4 @@ gpio/haptic_engine/lib/.is_running
 gpio/oled_128x64/lib/logs/*
 autodeployment/lib/motion/factory_confs/
 tools/socketmem/lib/logs/
+tools/socketmem/lib/.dictbackup.json

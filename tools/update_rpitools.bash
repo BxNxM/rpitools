@@ -60,7 +60,7 @@ function start_running_services() {
                 echo -e "sudo systemctl start $service"
                 sudo systemctl start "$service"
             else
-                echo -e "systemctl is-enabled $proces => disabled - autostart after upgrade off"
+                echo -e "systemctl is-enabled $service => disabled - autostart after upgrade off"
             fi
         fi
     done
