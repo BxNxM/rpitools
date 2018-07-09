@@ -3,14 +3,26 @@
 arg_helper_lolcat="$SETUPLOLCAT"
 quick_conf=false
 
+# message handler function
+function message() {
+    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
+
+    local msg="$1"
+    if [ ! -z "$msg" ]
+    then
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $msg" >> "$rpitools_log_path"
+    fi
+}
+
 function logo() {
-    local logo_text=""
+    local logo_text="${YELLOW}"
     logo_text+=" _____  _____  _____  _   _ ______\n"
     logo_text+="/  ___||  ___||_   _|| | | || ___ |\n"
     logo_text+="\ \'--.| |__    | |  | | | || |_/ /\n"
     logo_text+=" \`--. \|  __|   | |  | | | ||  __/ \n"
     logo_text+="/\__/ /| |___   | |  | |_| || |    \n"
-    logo_text+="\____/ \____/   \_/   \___/ \_|    rpitools\n"
+    logo_text+="\____/ \____/   \_/   \___/ \_|    rpitools${NC}\n"
     echo -e "$logo_text"
 }
 logo
@@ -38,6 +50,16 @@ function detect_device() {
     fi
 }
 
+function deploy_mode_text() {
+    message "================================="
+    message "${LIGHT_GREEN}DEPLOY MODE${NC} rpitools - WELCOME :D"
+    message "================================="
+    message "${LIGHT_GREEN}[1]${NC} Set your configuration: RUN COMMAND:  ${LIGHT_GREEN}confhelper${NC}"
+    message "${LIGHT_GREEN}[2]${NC} Run this script in order:"
+    cd "${REPOROOT}/prepare/sd_card"
+    ls -l "${REPOROOT}/prepare/sd_card"
+}
+
 # detect platform (device) separate workflow in RASPBERRY | OTHER | LINUX
 detect_device
 # Set setup env vars and aliases
@@ -51,18 +73,6 @@ alias clean_cache="rm -f ${REPOROOT}/cache/.*_installed && rm -f ${REPOROOT}/cac
 source prepare/colors.bash
 source prepare/sub_elapsed_time.bash
 elapsed_time "start"
-
-# message handler function
-function message() {
-    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
-
-    local msg="$1"
-    if [ ! -z "$msg" ]
-    then
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $msg"
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $msg" >> "$rpitools_log_path"
-    fi
-}
 
 function set_rpiconfig_permissions() {
     local rpitools_config_path="${REPOROOT}/autodeployment/config/rpitools_config.cfg"
@@ -86,6 +96,7 @@ then
     else
         echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h"
     fi
+    deploy_mode_text
     return 0
 fi
 
@@ -94,8 +105,7 @@ if [[ "$OS" != "GNU/Linux" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
  then
     # rpitools configuration access from anywhere
     message "[INFO] For configuiration use: confhelper OR confighandler"
-
-    message "This script works on raspbian properly, this OS $OS DEVICE $DEVICE is not supported!"
+    message "[INFO] [MAIN SCRIPT] This script works on raspbian properly, this OS $OS DEVICE $DEVICE is not supported! => DEPLOYMENT MODE"
     run_source=false
 fi
 
