@@ -27,7 +27,7 @@ then
 else
     echo -e "$custom_config EXISTS"
     menu_text="OPEN [Y/N] | DIFF [D]"
-    if [[ ! -z "$DEVICE" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
+    if [[ -z "$DEVICE" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
     then
         menu_text+=" | IMPORT [I]"
     fi
