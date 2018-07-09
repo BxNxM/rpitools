@@ -76,7 +76,7 @@ function set_rpiconfig_permissions() {
 }
 
 # Set two quick config access interface:
-alias confhelper='${MYDIR}/autodeployment/config/helper.bash'
+alias confhelper='${MYDIR}/autodeployment/config/confhelper.bash'
 alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
 if [ "$quick_conf" == "true" ]
 then
