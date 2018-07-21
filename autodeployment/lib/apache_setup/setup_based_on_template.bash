@@ -187,11 +187,7 @@ function motion_stream_forwarding_apache_link_icon() {
         change_line "$index_html_motion_icon_placeholder" "$http_cmd" "$index_html_to_edit_path"
     else
         _msg_ "Set motion stream forwarding icon link NOT required [ $is_activated ]"
-        if [ "$(cat $index_html_to_edit_path | grep -v grep | grep $motion_video_stream_proxy_point)" != "" ]
-        then
-            _msg_ "TODO: edit apache2.conf -> replace icon with placeholder"
-            #change_line "$http_cmd" "$index_html_motion_icon_placeholder" "$index_html_to_edit_path"
-        fi
+        change_line "images\/webcam.png" "$index_html_motion_icon_placeholder" "$index_html_to_edit_path"
     fi
 }
 
