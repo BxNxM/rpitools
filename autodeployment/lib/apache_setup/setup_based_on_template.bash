@@ -191,6 +191,27 @@ function motion_stream_forwarding_apache_link_icon() {
     fi
 }
 
+function sites_enabled_000-defaultconf_patch() {
+    # https://www.thegeekstuff.com/2014/12/patch-command-examples/
+    local apache2_sites_available_000_default_conf_path="/etc/apache2/sites-available/000-default.conf"
+    local patch_file_path="${MYDIR_}/patches/000-default_patch.conf"
+
+    # CREATE PATH FILE
+    #diff -u ORIGINAL FINAL > PATCH
+
+    (grep "ErrorDocument 404 /error.html" -rnwi "$apache2_sites_available_000_default_conf_path" > /dev/null)
+    if [ "$?" -ne 0 ]
+    then
+        _msg_ "APPLY PATH: sudo patch $apache2_sites_available_000_default_conf_path $patch_file_path"
+        # sudo patch OFFICIAL PATCH
+        sudo patch "$apache2_sites_available_000_default_conf_path" "$patch_file_path"
+
+        _msg_ "PATCH DONE [$?] restart apache2 service"
+        sudo systemctl restart apache2
+    else
+        _msg_ "$apache2_sites_available_000_default_conf_path already patched"
+    fi
+}
 
 link_html_folder_to_requested_path
 if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
@@ -198,6 +219,8 @@ then
     copy_template_under_apache_html_folder
     echo -e "$(date)" > "$CACHE_PATH_is_set"
     link_transmission_downloads_folder
+
+    sites_enabled_000-defaultconf_patch
 else
     _msg_ "HTML template copy already done: ${CACHE_PATH_is_set} exists."
 fi
