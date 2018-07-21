@@ -426,5 +426,11 @@ Get Kernel modules load state (spi, i2c)
 systemctl status systemd-modules-load.service
 ```
 
+* Convert pdf to html
+
+```
+http://www.pdfonline.com/convert-pdf-to-html/
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
