@@ -1,162 +1,224 @@
-<html>
-<head><meta http-equiv=Content-Type content="text/html; charset=UTF-8">
-<style type="text/css">
-<!--
-span.cls_002{font-family:Arial,serif;font-size:20.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-div.cls_002{font-family:Arial,serif;font-size:20.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_003{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-div.cls_003{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_009{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: underline}
-div.cls_009{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-span.cls_005{font-family:Arial,serif;font-size:13.2px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-div.cls_005{font-family:Arial,serif;font-size:13.2px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-span.cls_004{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-div.cls_004{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:normal;font-style:normal;text-decoration: none}
-span.cls_010{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: underline}
-div.cls_010{font-family:Arial,serif;font-size:11.1px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_006{font-family:Arial,serif;font-size:13.2px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-div.cls_006{font-family:Arial,serif;font-size:13.2px;color:rgb(0,0,0);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_007{font-family:Arial,serif;font-size:12.1px;color:rgb(69,68,69);font-weight:bold;font-style:normal;text-decoration: none}
-div.cls_007{font-family:Arial,serif;font-size:12.1px;color:rgb(69,68,69);font-weight:bold;font-style:normal;text-decoration: none}
-span.cls_008{font-family:Arial,serif;font-size:12.1px;color:rgb(69,68,69);font-weight:normal;font-style:normal;text-decoration: none}
-div.cls_008{font-family:Arial,serif;font-size:12.1px;color:rgb(69,68,69);font-weight:normal;font-style:normal;text-decoration: none}
--->
-</style>
-</head>
-<body>
-<div style="position:absolute;left:50%;margin-left:-297px;top:0px;width:595px;height:841px;border-style:outset;overflow:hidden">
-<div style="position:absolute;left:0px;top:0px">
-<div style="position:absolute;left:57.00px;top:56.00px" class="cls_002"><span class="cls_002">BASIC</span></div>
-<div style="position:absolute;left:57.00px;top:92.00px" class="cls_003"><span class="cls_003">Navigate in file system:</span></div>
-<div style="position:absolute;left:66.17px;top:105.00px" class="cls_009"><span class="cls_009">Get where we are:</span></div>
-<div style="position:absolute;left:69.00px;top:114.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_003"> pwd</span><span class="cls_004"> [print working directory]</span></div>
-<div style="position:absolute;left:93.00px;top:130.00px" class="cls_004"><span class="cls_004">Shows where we are in the file system.</span></div>
-<div style="position:absolute;left:69.00px;top:139.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_003"> ls</span><span class="cls_004"> [list]</span></div>
-<div style="position:absolute;left:93.00px;top:155.00px" class="cls_004"><span class="cls_004">List files and folders in the actual folder (where we are).</span></div>
-<div style="position:absolute;left:69.23px;top:180.00px" class="cls_010"><span class="cls_010">ls [list] parameters</span><span class="cls_009">:</span></div>
-<div style="position:absolute;left:69.23px;top:192.00px" class="cls_004"><span class="cls_004">Other shortcuts (aliases) with ls command with parameters.</span></div>
-<div style="position:absolute;left:81.00px;top:201.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_003"> llt</span><span class="cls_004"> (ls -lrth) [-l long] [-r reverse] [-t time] [-h human readable]</span></div>
-<div style="position:absolute;left:93.00px;top:217.00px" class="cls_004"><span class="cls_004">List files and folders in the actual folder, in a "special format".</span></div>
-<div style="position:absolute;left:81.00px;top:238.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_003"> ll</span><span class="cls_004"> (ls -lrt) [-l long] [-r reverse] [-t time]</span></div>
-<div style="position:absolute;left:93.00px;top:254.00px" class="cls_004"><span class="cls_004">List files and folders in the actual folder, in a "special format".</span></div>
-<div style="position:absolute;left:81.00px;top:275.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_004"> ls / llt / ll </span><span class="cls_003">-a </span><span class="cls_004">[-a all]</span></div>
-<div style="position:absolute;left:93.00px;top:291.00px" class="cls_004"><span class="cls_004">List files and folders in the actual folder, in a "special format", showing hidden files too.</span></div>
-<div style="position:absolute;left:81.00px;top:313.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_003"> ls </span><span class="cls_004">/path/example/</span></div>
-<div style="position:absolute;left:93.00px;top:329.00px" class="cls_004"><span class="cls_004">ls command supports showing other directories in the given path, not just the current one.</span></div>
-<div style="position:absolute;left:69.23px;top:355.00px" class="cls_003"><span class="cls_003">- tree</span></div>
-<div style="position:absolute;left:93.00px;top:367.00px" class="cls_004"><span class="cls_004">It is a command line program, what can show file structure in a very nice way.</span></div>
-<div style="position:absolute;left:69.23px;top:391.00px" class="cls_009"><span class="cls_009">Moving in file system:</span></div>
-<div style="position:absolute;left:69.00px;top:400.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_003"> cd</span><span class="cls_004"> [change directory] path/example/</span></div>
-<div style="position:absolute;left:93.00px;top:416.00px" class="cls_004"><span class="cls_004">Jumps to the given path.</span></div>
-<div style="position:absolute;left:69.00px;top:437.80px" class="cls_006"><span class="cls_006">-</span><span class="cls_003"> cd ..</span></div>
-<div style="position:absolute;left:93.00px;top:454.00px" class="cls_004"><span class="cls_004">Jumps one level up in the file system based on the current position.</span></div>
-<div style="position:absolute;left:69.00px;top:475.80px" class="cls_006"><span class="cls_006">-</span><span class="cls_003"> cd ~</span><span class="cls_004"> [ cd /home/$USER]</span></div>
-<div style="position:absolute;left:93.00px;top:491.00px" class="cls_004"><span class="cls_004">Jumps to your home folder.</span></div>
-<div style="position:absolute;left:69.00px;top:512.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_003"> pushd</span><span class="cls_004"> [push directory] path/example/</span></div>
-<div style="position:absolute;left:93.00px;top:528.00px" class="cls_004"><span class="cls_004">Jumps to the given directory (like cd), but stores your current position.</span></div>
-<div style="position:absolute;left:69.00px;top:549.80px" class="cls_006"><span class="cls_006">-</span><span class="cls_003"> popd </span><span class="cls_004">[pop directory]</span></div>
-<div style="position:absolute;left:93.00px;top:566.00px" class="cls_004"><span class="cls_004">Jumps back to the stored (pushd) position.</span></div>
-<div style="position:absolute;left:57.00px;top:599.80px" class="cls_006"><span class="cls_006">-</span></div>
-<div style="position:absolute;left:69.00px;top:603.00px" class="cls_003"><span class="cls_003">Editing / View files with vim editor </span><span class="cls_004">- Vi IMproved, a programmers text editor</span></div>
-<div style="position:absolute;left:69.00px;top:612.80px" class="cls_005"><span class="cls_005">-</span><span class="cls_004"> vim filename</span></div>
-<div style="position:absolute;left:93.00px;top:640.00px" class="cls_003"><span class="cls_003">ESC mode </span><span class="cls_004">- command mode:</span></div>
-<div style="position:absolute;left:93.00px;top:652.00px" class="cls_004"><span class="cls_004">- :w [save file]</span></div>
-<div style="position:absolute;left:93.00px;top:664.00px" class="cls_004"><span class="cls_004">- :wq [save and exit]</span></div>
-<div style="position:absolute;left:93.00px;top:676.00px" class="cls_004"><span class="cls_004">- q [exit (if file not modified)]</span></div>
-<div style="position:absolute;left:93.00px;top:688.00px" class="cls_004"><span class="cls_004">- q! [exit without saving]</span></div>
-<div style="position:absolute;left:93.00px;top:700.00px" class="cls_004"><span class="cls_004">- 0 [jump begin of the line]</span></div>
-<div style="position:absolute;left:93.00px;top:712.00px" class="cls_004"><span class="cls_004">- $ [jump end of the line]</span></div>
-<div style="position:absolute;left:93.00px;top:737.00px" class="cls_003"><span class="cls_003">INSERT mode</span></div>
-<div style="position:absolute;left:93.00px;top:749.00px" class="cls_004"><span class="cls_004">- navigate with arrows [ up - down - right - left]</span></div>
-</div>
-<div style="position:absolute;left:50%;margin-left:-297px;top:851px;width:595px;height:841px;border-style:outset;overflow:hidden">
-<div style="position:absolute;left:0px;top:0px">
-<div style="position:absolute;left:57.00px;top:68.00px" class="cls_002"><span class="cls_002">ACCESS TO RPITOOLS FUNCTIONS</span></div>
-<div style="position:absolute;left:57.00px;top:105.00px" class="cls_003"><span class="cls_003">RPITOOLS SERVICES:</span></div>
-<div style="position:absolute;left:85.00px;top:119.00px" class="cls_007"><span class="cls_007">oledinterface</span><span class="cls_008"> -h</span></div>
-<div style="position:absolute;left:197.00px;top:119.00px" class="cls_008"><span class="cls_008">-> oled service command line control</span></div>
-<div style="position:absolute;left:113.00px;top:133.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:147.00px" class="cls_008"><span class="cls_008">With this command it controls the oled display framework.</span></div>
-<div style="position:absolute;left:85.00px;top:162.00px" class="cls_007"><span class="cls_007">rgbinterface</span><span class="cls_008"> -h</span></div>
-<div style="position:absolute;left:225.00px;top:162.00px" class="cls_008"><span class="cls_008">-> rgb command line control</span></div>
-<div style="position:absolute;left:113.00px;top:176.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:190.00px" class="cls_008"><span class="cls_008">With this command it controls the RGB led framework.</span></div>
-<div style="position:absolute;left:85.00px;top:205.00px" class="cls_007"><span class="cls_007">hapticinterface</span><span class="cls_008"> -h</span></div>
-<div style="position:absolute;left:197.00px;top:205.00px" class="cls_008"><span class="cls_008">-> vibre motor cmd line control</span></div>
-<div style="position:absolute;left:113.00px;top:219.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:233.00px" class="cls_008"><span class="cls_008">With this command it controls the vibre motor or haptic engine on the</span></div>
-<div style="position:absolute;left:113.00px;top:247.00px" class="cls_008"><span class="cls_008">extension shield framework.</span></div>
-<div style="position:absolute;left:85.00px;top:262.00px" class="cls_007"><span class="cls_007">sysmonitor</span><span class="cls_008"> -h</span></div>
-<div style="position:absolute;left:197.00px;top:262.00px" class="cls_008"><span class="cls_008">-> system monitoring tool</span></div>
-<div style="position:absolute;left:113.00px;top:276.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:290.00px" class="cls_008"><span class="cls_008">With this command you can monitor the operating system.</span></div>
-<div style="position:absolute;left:85.00px;top:305.00px" class="cls_007"><span class="cls_007">diskhandler </span><span class="cls_008">-h</span></div>
-<div style="position:absolute;left:197.00px;top:305.00px" class="cls_008"><span class="cls_008">-> external disks handling based on fstab</span></div>
-<div style="position:absolute;left:113.00px;top:319.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:333.00px" class="cls_008"><span class="cls_008">With this command you can access and control the external drives e.g. HDD,</span></div>
-<div style="position:absolute;left:113.00px;top:347.00px" class="cls_008"><span class="cls_008">pendrive, SD card.</span></div>
-<div style="position:absolute;left:85.00px;top:362.00px" class="cls_007"><span class="cls_007">confighandler</span><span class="cls_008"> -h</span></div>
-<div style="position:absolute;left:197.00px;top:362.00px" class="cls_008"><span class="cls_008">-> config handler based on rpitools_config.cfg</span></div>
-<div style="position:absolute;left:113.00px;top:376.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:390.00px" class="cls_008"><span class="cls_008">With this command you can access for the rpitools environment parameters.</span></div>
-<div style="position:absolute;left:85.00px;top:405.00px" class="cls_007"><span class="cls_007">mysshfs</span></div>
-<div style="position:absolute;left:197.00px;top:405.00px" class="cls_008"><span class="cls_008">-> built in sshfs based on rpitools_config.cfg</span></div>
-<div style="position:absolute;left:113.00px;top:419.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:433.00px" class="cls_008"><span class="cls_008">With this command you can mount your preset sshfs server.</span></div>
-<div style="position:absolute;left:85.00px;top:448.00px" class="cls_007"><span class="cls_007">update_rpitools</span></div>
-<div style="position:absolute;left:225.00px;top:448.00px" class="cls_008"><span class="cls_008">-> update your repository</span></div>
-<div style="position:absolute;left:113.00px;top:462.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:476.00px" class="cls_008"><span class="cls_008">With this command you can update the rpitools environment and services.</span></div>
-<div style="position:absolute;left:85.00px;top:491.00px" class="cls_007"><span class="cls_007">confhelper</span></div>
-<div style="position:absolute;left:197.00px;top:491.00px" class="cls_008"><span class="cls_008">-> interactive config handler for easy modifications.</span></div>
-<div style="position:absolute;left:113.00px;top:505.00px" class="cls_008"><span class="cls_008">With -h or --help print the available options.</span></div>
-<div style="position:absolute;left:113.00px;top:519.00px" class="cls_008"><span class="cls_008">With this command you can edit your rpitools main configuration.</span></div>
-<div style="position:absolute;left:57.00px;top:560.00px" class="cls_002"><span class="cls_002">PROFESSIONAL</span></div>
-<div style="position:absolute;left:57.00px;top:598.00px" class="cls_003"><span class="cls_003">MANAGE GUI and PROCESSES:</span></div>
-<div style="position:absolute;left:85.00px;top:612.00px" class="cls_007"><span class="cls_007">startxbg</span></div>
-<div style="position:absolute;left:169.00px;top:612.00px" class="cls_008"><span class="cls_008">-> start gui in the background</span></div>
-<div style="position:absolute;left:113.00px;top:626.00px" class="cls_008"><span class="cls_008">Start graphic environment (PIXEL). On HDMI.</span></div>
-<div style="position:absolute;left:85.00px;top:641.00px" class="cls_007"><span class="cls_007">pkill x</span></div>
-<div style="position:absolute;left:169.00px;top:641.00px" class="cls_008"><span class="cls_008">-> stop gui</span></div>
-<div style="position:absolute;left:113.00px;top:655.00px" class="cls_008"><span class="cls_008">Stop graphic environment (PIXEL). On HDMI.</span></div>
-<div style="position:absolute;left:85.00px;top:670.00px" class="cls_007"><span class="cls_007">startvnc</span></div>
-<div style="position:absolute;left:169.00px;top:670.00px" class="cls_008"><span class="cls_008">-> start vnc service</span></div>
-<div style="position:absolute;left:113.00px;top:684.00px" class="cls_008"><span class="cls_008">Start vnc graphical remote access.</span></div>
-<div style="position:absolute;left:85.00px;top:699.00px" class="cls_007"><span class="cls_007">kodibg</span></div>
-<div style="position:absolute;left:197.00px;top:699.00px" class="cls_008"><span class="cls_008">-> start kodi media center</span></div>
-<div style="position:absolute;left:113.00px;top:713.00px" class="cls_008"><span class="cls_008">Start KODI media player. On HDMI.</span></div>
-<div style="position:absolute;left:85.00px;top:742.00px" class="cls_007"><span class="cls_007">htop</span></div>
-<div style="position:absolute;left:113.00px;top:756.00px" class="cls_008"><span class="cls_008">Command line system performance monitor ("graphic").</span></div>
-</div>
-<div style="position:absolute;left:50%;margin-left:-297px;top:1702px;width:595px;height:841px;border-style:outset;overflow:hidden">
-<div style="position:absolute;left:0px;top:0px">
-<div style="position:absolute;left:85.00px;top:56.00px" class="cls_007"><span class="cls_007">ps aux</span></div>
-<div style="position:absolute;left:113.00px;top:70.00px" class="cls_008"><span class="cls_008">Command line system process monitor.</span></div>
-<div style="position:absolute;left:85.00px;top:99.00px" class="cls_007"><span class="cls_007">kill</span><span class="cls_008"> &lt;pid></span></div>
-<div style="position:absolute;left:113.00px;top:113.00px" class="cls_008"><span class="cls_008">Stop running process  by process id (pid)</span></div>
-<div style="position:absolute;left:57.00px;top:142.00px" class="cls_007"><span class="cls_007">SERVICES MANAGEMENT</span></div>
-<div style="position:absolute;left:85.00px;top:157.00px" class="cls_007"><span class="cls_007">systemctl status</span><span class="cls_008"> &lt;service_name></span></div>
-<div style="position:absolute;left:113.00px;top:171.00px" class="cls_008"><span class="cls_008">Show status of the given service (daemon).</span></div>
-<div style="position:absolute;left:85.00px;top:200.00px" class="cls_007"><span class="cls_007">sudo systemctl restart</span><span class="cls_008"> &lt;service_name></span></div>
-<div style="position:absolute;left:113.00px;top:214.00px" class="cls_008"><span class="cls_008">Restart the given service (daemon).</span></div>
-<div style="position:absolute;left:85.00px;top:243.00px" class="cls_007"><span class="cls_007">sudo systemctl start </span><span class="cls_008">&lt;service_name></span></div>
-<div style="position:absolute;left:113.00px;top:257.00px" class="cls_008"><span class="cls_008">Start the given service (or daemon).</span></div>
-<div style="position:absolute;left:85.00px;top:286.00px" class="cls_007"><span class="cls_007">sudo systemctl stop</span><span class="cls_008"> &lt;service_name></span></div>
-<div style="position:absolute;left:113.00px;top:300.00px" class="cls_008"><span class="cls_008">Stop the given service (or daemon).</span></div>
-<div style="position:absolute;left:57.00px;top:343.00px" class="cls_007"><span class="cls_007">RASPBIAN SYSTEM CONFIGURATION FILES:</span></div>
-<div style="position:absolute;left:85.00px;top:358.00px" class="cls_007"><span class="cls_007">ll ~/rpitools/config/</span></div>
-<div style="position:absolute;left:96.00px;top:386.00px" class="cls_008"><span class="cls_008">lrwxrwxrwx 1 pi pi  25 May 29 20:12 apache2.conf -> /etc/apache2/apache2.conf</span></div>
-<div style="position:absolute;left:96.00px;top:400.00px" class="cls_008"><span class="cls_008">lrwxrwxrwx 1 pi pi  17 May 29 20:12 cmdline.txt -> /boot/cmdline.txt</span></div>
-<div style="position:absolute;left:96.00px;top:414.00px" class="cls_008"><span class="cls_008">lrwxrwxrwx 1 pi pi  16 May 29 20:12 config.txt -> /boot/config.txt</span></div>
-<div style="position:absolute;left:96.00px;top:428.00px" class="cls_008"><span class="cls_008">lrwxrwxrwx 1 pi pi  19 May 29 20:12 dphys-swapfile -> /etc/dphys-swapfile</span></div>
-<div style="position:absolute;left:57.00px;top:496.00px" class="cls_003"><span class="cls_003">OLED AVAILABLE PAGES AND EXAMPLES:</span></div>
-<div style="position:absolute;left:85.00px;top:509.00px" class="cls_008"><span class="cls_008">ll</span></div>
-<div style="position:absolute;left:93.66px;top:509.00px" class="cls_008"><span class="cls_008">~/rpitools/gpio/oled_128x64/lib/pages/</span></div>
-<div style="position:absolute;left:96.00px;top:523.00px" class="cls_008"><span class="cls_008">-rw-r--r-- 1 pi pi 1.8K May 29 20:12 page_0.py</span></div>
-<div style="position:absolute;left:96.00px;top:537.00px" class="cls_008"><span class="cls_008">-rw-r--r-- 1 pi pi 1.8K May 29 20:12 page_1.py</span></div>
-<div style="position:absolute;left:96.00px;top:551.00px" class="cls_008"><span class="cls_008">-rw-r--r-- 1 pi pi 1.7K May 29 20:12 page_2.py</span></div>
-<div style="position:absolute;left:96.00px;top:565.00px" class="cls_008"><span class="cls_008">-rw-r--r-- 1 pi pi 1.5K May 29 20:12 page_3.py</span></div>
-</div>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<META http-equiv="X-UA-Compatible" content="IE=8">
+<TITLE>bcl_834805139.htm</TITLE>
+<META name="generator" content="BCL easyConverter SDK 5.0.101">
+<STYLE type="text/css">
 
-</body>
-</html>
+body {margin-top: 0px;margin-left: 0px;}
+
+#page_1 {position:relative; overflow: hidden;margin: 73px 0px 107px 76px;padding: 0px;border: none;width: 718px;}
+
+
+
+
+
+#page_2 {position:relative; overflow: hidden;margin: 89px 0px 97px 76px;padding: 0px;border: none;width: 718px;}
+
+
+
+
+
+#page_3 {position:relative; overflow: hidden;margin: 70px 0px 294px 76px;padding: 0px;border: none;width: 718px;}
+
+
+
+
+
+.ft0{font: bold 27px 'Arial';line-height: 32px;}
+.ft1{font: bold 15px 'Arial';line-height: 18px;}
+.ft2{font: 15px 'Arial';text-decoration: underline;line-height: 17px;}
+.ft3{font: 18px 'Arial';line-height: 21px;}
+.ft4{font: bold 15px 'Arial';margin-left: 9px;line-height: 18px;}
+.ft5{font: 15px 'Arial';line-height: 17px;}
+.ft6{font: 18px 'Arial';line-height: 17px;}
+.ft7{font: bold 15px 'Arial';margin-left: 9px;line-height: 17px;}
+.ft8{font: bold 15px 'Arial';text-decoration: underline;line-height: 18px;}
+.ft9{font: bold 15px 'Arial';margin-left: 10px;line-height: 20px;}
+.ft10{font: 15px 'Arial';line-height: 19px;}
+.ft11{font: 15px 'Arial';margin-left: 9px;line-height: 17px;}
+.ft12{font: bold 15px 'Arial';margin-left: 9px;line-height: 20px;}
+.ft13{font: bold 18px 'Arial';line-height: 21px;}
+.ft14{font: 15px 'Arial';margin-left: 4px;line-height: 17px;}
+.ft15{font: bold 16px 'Arial';color: #454545;line-height: 22px;}
+.ft16{font: 16px 'Arial';color: #454545;line-height: 21px;}
+.ft17{font: 16px 'Arial';color: #454545;line-height: 18px;}
+.ft18{font: bold 16px 'Arial';color: #454545;line-height: 20px;}
+.ft19{font: 16px 'Arial';color: #454545;line-height: 19px;}
+.ft20{font: bold 16px 'Arial';color: #454545;line-height: 19px;}
+.ft21{font: bold 16px 'Arial';color: #454545;line-height: 21px;}
+.ft22{font: 16px 'Arial';color: #454545;line-height: 20px;}
+.ft23{font: 16px 'Arial';color: #454545;line-height: 22px;}
+.ft24{font: bold 16px 'Arial';color: #454545;line-height: 25px;}
+.ft25{font: 16px 'Arial';color: #454545;line-height: 24px;}
+.ft26{font: 16px 'Arial';color: #454545;line-height: 23px;}
+.ft27{font: bold 16px 'Arial';color: #454545;line-height: 23px;}
+.ft28{font: bold 16px 'Arial';color: #454545;line-height: 24px;}
+
+.p0{text-align: left;margin-top: 0px;margin-bottom: 0px;}
+.p1{text-align: left;margin-top: 14px;margin-bottom: 0px;}
+.p2{text-align: left;padding-left: 12px;margin-top: 0px;margin-bottom: 0px;}
+.p3{text-align: left;padding-left: 4px;padding-right: 455px;margin-top: 0px;margin-bottom: 0px;text-indent: 12px;}
+.p4{text-align: left;padding-left: 16px;margin-top: 0px;margin-bottom: 0px;}
+.p5{text-align: left;padding-left: 4px;margin-top: 0px;margin-bottom: 0px;}
+.p6{text-align: left;padding-left: 16px;margin-top: 10px;margin-bottom: 0px;}
+.p7{text-align: left;padding-left: 52px;padding-right: 266px;margin-top: 1px;margin-bottom: 0px;text-indent: -20px;}
+.p8{text-align: left;padding-left: 32px;margin-top: 3px;margin-bottom: 0px;}
+.p9{text-align: left;padding-left: 52px;margin-top: 1px;margin-bottom: 0px;}
+.p10{text-align: left;padding-left: 32px;margin-top: 12px;margin-bottom: 0px;}
+.p11{text-align: left;padding-left: 52px;margin-top: 0px;margin-bottom: 0px;}
+.p12{text-align: left;padding-left: 32px;margin-top: 11px;margin-bottom: 0px;}
+.p13{text-align: left;padding-left: 16px;margin-top: 12px;margin-bottom: 0px;}
+.p14{text-align: left;padding-left: 4px;margin-top: 4px;margin-bottom: 0px;}
+.p15{text-align: left;padding-left: 16px;margin-top: 8px;margin-bottom: 0px;}
+.p16{text-align: left;padding-left: 4px;padding-right: 448px;margin-top: 5px;margin-bottom: 0px;text-indent: 12px;}
+.p17{text-align: left;padding-left: 16px;margin-top: 6px;margin-bottom: 0px;}
+.p18{text-align: left;padding-left: 48px;margin-top: 0px;margin-bottom: 0px;}
+.p19{text-align: left;padding-left: 4px;padding-right: 525px;margin-top: 14px;margin-bottom: 0px;text-indent: 12px;}
+.p20{text-align: left;padding-left: 16px;margin-top: 5px;margin-bottom: 0px;}
+.p21{text-align: left;padding-left: 16px;margin-top: 11px;margin-bottom: 0px;}
+.p22{text-align: left;padding-left: 48px;margin-top: 1px;margin-bottom: 0px;}
+.p23{text-align: left;padding-left: 16px;padding-right: 195px;margin-top: 30px;margin-bottom: 0px;text-indent: -16px;}
+.p24{text-align: left;padding-left: 48px;margin-top: 4px;margin-bottom: 0px;}
+.p25{text-align: left;padding-left: 48px;margin-top: 9px;margin-bottom: 0px;}
+.p26{text-align: left;margin-top: 17px;margin-bottom: 0px;}
+.p27{text-align: left;padding-left: 42px;padding-right: 291px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p28{text-align: left;padding-left: 42px;margin-top: 0px;margin-bottom: 0px;}
+.p29{text-align: left;padding-left: 42px;padding-right: 324px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p30{text-align: left;padding-left: 37px;padding-right: 286px;margin-top: 0px;margin-bottom: 0px;text-indent: 4px;}
+.p31{text-align: left;padding-left: 42px;padding-right: 180px;margin-top: 0px;margin-bottom: 0px;}
+.p32{text-align: left;padding-left: 42px;padding-right: 365px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p33{text-align: left;padding-left: 37px;padding-right: 258px;margin-top: 0px;margin-bottom: 0px;text-indent: 4px;}
+.p34{text-align: left;padding-left: 42px;padding-right: 126px;margin-top: 0px;margin-bottom: 0px;}
+.p35{text-align: left;padding-left: 42px;padding-right: 221px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p36{text-align: left;padding-left: 42px;padding-right: 246px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p37{text-align: left;padding-left: 42px;padding-right: 345px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p38{text-align: left;padding-left: 42px;padding-right: 198px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p39{text-align: left;margin-top: 32px;margin-bottom: 0px;}
+.p40{text-align: left;margin-top: 18px;margin-bottom: 0px;}
+.p41{text-align: left;padding-left: 42px;padding-right: 356px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p42{text-align: left;padding-left: 37px;margin-top: 0px;margin-bottom: 0px;}
+.p43{text-align: left;padding-left: 37px;padding-right: 356px;margin-top: 0px;margin-bottom: 0px;text-indent: 4px;}
+.p44{text-align: left;padding-left: 42px;padding-right: 379px;margin-top: 0px;margin-bottom: 0px;text-indent: -3px;}
+.p45{text-align: left;padding-left: 37px;margin-top: 3px;margin-bottom: 0px;}
+.p46{text-align: left;padding-left: 42px;margin-top: 4px;margin-bottom: 0px;}
+.p47{text-align: left;padding-left: 42px;margin-top: 5px;margin-bottom: 0px;}
+.p48{text-align: left;padding-left: 37px;margin-top: 16px;margin-bottom: 0px;}
+.p49{text-align: left;padding-left: 37px;padding-right: 433px;margin-top: 14px;margin-bottom: 0px;text-indent: -36px;}
+.p50{text-align: left;padding-left: 42px;padding-right: 388px;margin-top: 19px;margin-bottom: 0px;text-indent: -3px;}
+.p51{text-align: left;padding-left: 42px;padding-right: 403px;margin-top: 8px;margin-bottom: 0px;text-indent: -3px;}
+.p52{text-align: left;padding-left: 42px;padding-right: 405px;margin-top: 9px;margin-bottom: 0px;text-indent: -3px;}
+.p53{text-align: left;padding-left: 37px;padding-right: 373px;margin-top: 29px;margin-bottom: 0px;text-indent: -36px;}
+.p54{text-align: left;padding-left: 52px;padding-right: 84px;margin-top: 4px;margin-bottom: 0px;}
+.p55{text-align: left;padding-left: 52px;margin-top: 2px;margin-bottom: 0px;}
+.p56{text-align: left;margin-top: 13px;margin-bottom: 0px;}
+.p57{text-align: left;padding-left: 52px;padding-right: 336px;margin-top: 0px;margin-bottom: 0px;text-indent: -47px;}
+.p58{text-align: justify;padding-left: 52px;padding-right: 336px;margin-top: 0px;margin-bottom: 0px;}
+
+
+
+
+</STYLE>
+</HEAD>
+
+<BODY bgcolor="white">
+<DIV id="page_1">
+
+
+<P class="p0 ft0">BASIC</P>
+<P class="p1 ft1">Navigate in ﬁle system:</P>
+<P class="p2 ft2">Get where we are:</P>
+<P class="p3 ft5"><SPAN class="ft3">-</SPAN><SPAN class="ft4">pwd </SPAN>[print working directory] Shows where we are in the ﬁle system.</P>
+<P class="p4 ft5"><SPAN class="ft6">-</SPAN><SPAN class="ft7">ls </SPAN>[list]</P>
+<P class="p5 ft5">List ﬁles and folders in the actual folder (where we are).</P>
+<P class="p6 ft8">ls [list] parameters<SPAN class="ft2">:</SPAN></P>
+<P class="p4 ft5">Other shortcuts (aliases) with ls command with parameters.</P>
+<P class="p7 ft10"><SPAN class="ft3">-</SPAN><SPAN class="ft9">llt </SPAN>(ls <NOBR>-lrth)</NOBR> <NOBR>[-l</NOBR> long] <NOBR>[-r</NOBR> reverse] <NOBR>[-t</NOBR> time] <NOBR>[-h</NOBR> human readable] List ﬁles and folders in the actual folder, in a "special format".</P>
+<P class="p8 ft5"><SPAN class="ft3">-</SPAN><SPAN class="ft4">ll </SPAN>(ls <NOBR>-lrt)</NOBR> <NOBR>[-l</NOBR> long] <NOBR>[-r</NOBR> reverse] <NOBR>[-t</NOBR> time]</P>
+<P class="p9 ft5">List ﬁles and folders in the actual folder, in a "special format".</P>
+<P class="p10 ft5"><SPAN class="ft3">-</SPAN><SPAN class="ft11">ls / llt / ll </SPAN><NOBR><SPAN class="ft1">-a</SPAN></NOBR><SPAN class="ft1"> </SPAN><NOBR>[-a</NOBR> all]</P>
+<P class="p11 ft5">List ﬁles and folders in the actual folder, in a "special format", showing hidden ﬁles too.</P>
+<P class="p12 ft5"><SPAN class="ft3">-</SPAN><SPAN class="ft4">ls </SPAN>/path/example/</P>
+<P class="p9 ft5">ls command supports showing other directories in the given path, not just the current one.</P>
+<P class="p13 ft1">- tree</P>
+<P class="p14 ft5">It is a command line program, what can show ﬁle structure in a very nice way.</P>
+<P class="p15 ft2">Moving in ﬁle system:</P>
+<P class="p16 ft10"><SPAN class="ft3">-</SPAN><SPAN class="ft12">cd </SPAN>[change directory] path/example/ Jumps to the given path.</P>
+<P class="p17 ft1"><SPAN class="ft13">-</SPAN><SPAN class="ft4">cd ..</SPAN></P>
+<P class="p18 ft5">Jumps one level up in the ﬁle system based on the current position.</P>
+<P class="p19 ft10"><SPAN class="ft13">-</SPAN><SPAN class="ft12">cd ~ </SPAN>[ cd /home/$USER] Jumps to your home folder.</P>
+<P class="p20 ft5"><SPAN class="ft3">-</SPAN><SPAN class="ft4">pushd </SPAN>[push directory] path/example/</P>
+<P class="p5 ft5">Jumps to the given directory (like cd), but stores your current position.</P>
+<P class="p21 ft5"><SPAN class="ft13">-</SPAN><SPAN class="ft4">popd </SPAN>[pop directory]</P>
+<P class="p22 ft5">Jumps back to the stored (pushd) position.</P>
+<P class="p23 ft5"><SPAN class="ft13">-</SPAN><SPAN class="ft4">Editing / View ﬁles with vim editor </SPAN>- Vi IMproved, a programmers text editor <SPAN class="ft3">- </SPAN>vim ﬁlename</P>
+<P class="p24 ft5"><SPAN class="ft1">ESC mode </SPAN>- command mode:</P>
+<P class="p5 ft5"><SPAN class="ft5">-</SPAN><SPAN class="ft14">:w [save ﬁle]</SPAN></P>
+<P class="p5 ft5"><SPAN class="ft5">-</SPAN><SPAN class="ft14">:wq [save and exit]</SPAN></P>
+<P class="p5 ft5"><SPAN class="ft5">-</SPAN><SPAN class="ft14">q [exit (if ﬁle not modiﬁed)]</SPAN></P>
+<P class="p5 ft5"><SPAN class="ft5">-</SPAN><SPAN class="ft14">q! [exit without saving]</SPAN></P>
+<P class="p5 ft5"><SPAN class="ft5">-</SPAN><SPAN class="ft14">0 [jump begin of the line]</SPAN></P>
+<P class="p5 ft5"><SPAN class="ft5">-</SPAN><SPAN class="ft14">$ [jump end of the line]</SPAN></P>
+<P class="p25 ft1">INSERT mode</P>
+<P class="p14 ft5">- navigate with arrows [ up - down - right - left]</P>
+</DIV>
+<DIV id="page_2">
+
+
+<P class="p0 ft0">ACCESS TO RPITOOLS FUNCTIONS</P>
+<P class="p26 ft1">RPITOOLS SERVICES:</P>
+<P class="p27 ft16"><SPAN class="ft15">oledinterface </SPAN><NOBR>-h</NOBR> <NOBR>-&gt;</NOBR> oled service command line control With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p28 ft17">With this command it controls the oled display framework.</P>
+<P class="p29 ft19"><SPAN class="ft18">rgbinterface </SPAN><NOBR>-h</NOBR> <NOBR>-&gt;</NOBR> rgb command line control With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p30 ft19">With this command it controls the RGB led framework. <SPAN class="ft18">hapticinterface </SPAN><NOBR>-h</NOBR> <NOBR>-&gt;</NOBR> vibre motor cmd line control With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p31 ft19">With this command it controls the vibre motor or haptic engine on the extension shield framework.</P>
+<P class="p32 ft17"><SPAN class="ft20">sysmonitor </SPAN><NOBR>-h</NOBR> <NOBR>-&gt;</NOBR> system monitoring tool With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p33 ft19">With this command you can monitor the operating system. <SPAN class="ft18">diskhandler </SPAN><NOBR>-h</NOBR> <NOBR>-&gt;</NOBR> external disks handling based on fstab With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p34 ft19">With this command you can access and control the external drives e.g. HDD, pendrive, SD card.</P>
+<P class="p35 ft17"><SPAN class="ft20">conﬁghandler </SPAN><NOBR>-h</NOBR> <NOBR>-&gt;</NOBR> conﬁg handler based on rpitools_conﬁg.cfg With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p28 ft17">With this command you can access for the rpitools environment parameters.</P>
+<P class="p36 ft19"><SPAN class="ft18">mysshfs </SPAN><NOBR>-&gt;</NOBR> built in sshfs based on rpitools_conﬁg.cfg With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p28 ft17">With this command you can mount your preset sshfs server.</P>
+<P class="p37 ft22"><SPAN class="ft21">update_rpitools </SPAN><NOBR>-&gt;</NOBR> update your repository With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p28 ft17">With this command you can update the rpitools environment and services.</P>
+<P class="p38 ft19"><SPAN class="ft18">confhelper </SPAN><NOBR>-&gt;</NOBR> interactive conﬁg handler for easy modiﬁcations. With <NOBR>-h</NOBR> or <NOBR>--help</NOBR> print the available options.</P>
+<P class="p28 ft17">With this command you can edit your rpitools main conﬁguration.</P>
+<P class="p39 ft0">PROFESSIONAL</P>
+<P class="p40 ft1">MANAGE GUI and PROCESSES:</P>
+<P class="p41 ft23"><SPAN class="ft15">startxbg </SPAN><NOBR>-&gt;</NOBR> start gui in the background Start graphic environment (PIXEL). On HDMI.</P>
+<P class="p42 ft17"><SPAN class="ft20">pkill x </SPAN><NOBR>-&gt;</NOBR> stop gui</P>
+<P class="p43 ft19">Stop graphic environment (PIXEL). On HDMI. <SPAN class="ft18">startvnc </SPAN><NOBR>-&gt;</NOBR> start vnc service</P>
+<P class="p28 ft17">Start vnc graphical remote access.</P>
+<P class="p44 ft25"><SPAN class="ft24">kodibg </SPAN><NOBR>-&gt;</NOBR> start kodi media center Start KODI media player. On HDMI.</P>
+<P class="p45 ft20">htop</P>
+<P class="p46 ft17">Command line system performance monitor ("graphic").</P>
+</DIV>
+<DIV id="page_3">
+
+
+<P class="p42 ft20">ps aux</P>
+<P class="p47 ft17">Command line system process monitor.</P>
+<P class="p48 ft20">kill <SPAN class="ft17">&lt;pid&gt;</SPAN></P>
+<P class="p46 ft17">Stop running process by process id (pid)</P>
+<P class="p49 ft27">SERVICES MANAGEMENT systemctl status <SPAN class="ft26">&lt;service_name&gt;</SPAN></P>
+<P class="p28 ft17">Show status of the given service (daemon).</P>
+<P class="p50 ft25"><SPAN class="ft24">sudo systemctl restart </SPAN>&lt;service_name&gt; Restart the given service (daemon).</P>
+<P class="p51 ft25"><SPAN class="ft24">sudo systemctl start </SPAN>&lt;service_name&gt; Start the given service (or daemon).</P>
+<P class="p52 ft26"><SPAN class="ft28">sudo systemctl stop </SPAN>&lt;service_name&gt; Stop the given service (or daemon).</P>
+<P class="p53 ft24">RASPBIAN SYSTEM CONFIGURATION FILES: ll ~/rpitools/conﬁg/</P>
+<P class="p54 ft22">lrwxrwxrwx 1 pi pi 25 May 29 20:12 apache2.conf <NOBR>-&gt; /etc/apache2/apache2.conf</NOBR> lrwxrwxrwx 1 pi pi 17 May 29 20:12 cmdline.txt <NOBR>-&gt; /boot/cmdline.txt</NOBR> lrwxrwxrwx 1 pi pi 16 May 29 20:12 conﬁg.txt <NOBR>-&gt; /boot/conﬁg.txt</NOBR></P>
+<P class="p11 ft17">lrwxrwxrwx 1 pi pi 19 May 29 20:12 <NOBR>dphys-swapﬁle</NOBR> <NOBR>-&gt; /etc/dphys-swapﬁle</NOBR></P>
+<P class="p11 ft17">.</P>
+<P class="p11 ft17">.</P>
+<P class="p55 ft17">.</P>
+<P class="p56 ft1">OLED AVAILABLE PAGES AND EXAMPLES:</P>
+<P class="p57 ft16">ll ~/rpitools/gpio/oled_128x64/lib/pages/ <NOBR>-rw-r--r--</NOBR> 1 pi pi 1.8K May 29 20:12 page_0.py</P>
+<P class="p58 ft19"><NOBR>-rw-r--r--</NOBR> 1 pi pi 1.8K May 29 20:12 page_1.py <NOBR>-rw-r--r--</NOBR> 1 pi pi 1.7K May 29 20:12 page_2.py <NOBR>-rw-r--r--</NOBR> 1 pi pi 1.5K May 29 20:12 page_3.py</P>
+<P class="p11 ft17">.</P>
+<P class="p11 ft17">.</P>
+<P class="p11 ft17">.</P>
+</DIV>
+</BODY>
+</HTML>
