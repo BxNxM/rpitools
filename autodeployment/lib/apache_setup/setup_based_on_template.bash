@@ -18,6 +18,8 @@ html_shared_default_user_password="$($confighandler -s APACHE -o http_passwd)"
 html_webshared_folder_name="$($confighandler -s APACHE -o webshared_folder_name)"
 html_shared_folder="${html_folder_path}/${html_webshared_folder_name}"
 transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
+motion_video_stream_is_activated="$($confighandler -s APACHE_MOTION_STREAM_FORWARDING -o activate)"
+motion_video_stream_proxy_point="$($confighandler -s APACHE_MOTION_STREAM_FORWARDING -o proxy_point)"
 apache2_conf_path="/etc/apache2/apache2.conf"
 
 _msg_title="APACHE SETUP"
@@ -34,6 +36,25 @@ then
         force="True"
     fi
 fi
+
+function change_line() {
+    local from="$1"
+    local to="$2"
+    local where="$3"
+    if [ ! -z "$from" ]
+    then
+        _msg_ "sudo cat $where | grep -v grep | grep $to\nis_set: $is_set"
+        is_set="$(sudo cat "$where" | grep -v grep | grep "$to")"
+        _msg_ "$is_set"
+        if [ "$is_set" == "" ]
+        then
+            _msg_ "${GREEN}Set parameter (full line): $to  (from: $from) ${NC}"
+            sudo sed -i '/'"${from}"'/c\'"${to}"'' "$where"
+        else
+            _msg_ "${GREEN}Custom config line $to already set in $where ${NC}"
+        fi
+    fi
+}
 
 function copy_template_under_apache_html_folder() {
 
@@ -154,6 +175,27 @@ function set_embedded_transmission_access() {
     fi
 }
 
+function motion_stream_forwarding_apache_link_icon() {
+    local index_html_motion_icon_placeholder="    <!--MOTION_STREAM_ICON_PLACEHOLDER-->"
+    local http_cmd="    <a href=\"$motion_video_stream_proxy_point\"><img align=\"right\" src=\"images/webcam.png\" style=\"width:50px;height:auto\"></a>"
+    local index_html_to_edit_path="${html_folder_path}/index.html"
+    local is_activated="$motion_video_stream_is_activated"
+
+    if [[ "$is_activated" == "true" ]] || [[ "$is_activated" == "True" ]]
+    then
+        _msg_ "Set motion stream forwarding icon link required [ $is_activated ]"
+        change_line "$index_html_motion_icon_placeholder" "$http_cmd" "$index_html_to_edit_path"
+    else
+        _msg_ "Set motion stream forwarding icon link NOT required [ $is_activated ]"
+        if [ "$(cat $index_html_to_edit_path | grep -v grep | grep $motion_video_stream_proxy_point)" != "" ]
+        then
+            _msg_ "TODO: edit apache2.conf -> replace icon with placeholder"
+            #change_line "$http_cmd" "$index_html_motion_icon_placeholder" "$index_html_to_edit_path"
+        fi
+    fi
+}
+
+
 link_html_folder_to_requested_path
 if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
 then
@@ -165,3 +207,5 @@ else
 fi
 set_shared_folder_password_protected
 set_embedded_transmission_access
+
+motion_stream_forwarding_apache_link_icon
