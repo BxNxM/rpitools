@@ -53,7 +53,7 @@ function deploy_mode_text() {
     message "================================="
     message "${LIGHT_GREEN}DEPLOY MODE${NC} rpitools - WELCOME :D"
     message "================================="
-    message "${LIGHT_GREEN}[1]${NC} Set your configuration: RUN COMMAND:  ${LIGHT_GREEN}confhelper, and press D${NC}"
+    message "${LIGHT_GREEN}[1]${NC} Set your configuration: RUN COMMAND:  ${LIGHT_GREEN}confhelper${NC}"
     message "${LIGHT_GREEN}[2]${NC} Run this script in order:"
     cd "${REPOROOT}/prepare/sd_card"
     ls -l "${REPOROOT}/prepare/sd_card"
