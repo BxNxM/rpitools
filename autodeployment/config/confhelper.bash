@@ -27,16 +27,48 @@ function validate_conf() {
 }
 validate_conf
 
+function import_configuration() {
+    question "ADD YOUR CUSTOM CONFIG PATH HERE:"
+    read existing_config_path
+    if [ -f "$existing_config_path" ]
+    then
+        if [ -f "$custom_config" ]
+        then
+            echo -e "$custom_config EXISTS, before override backup:"
+            echo -e "Copy $custom_config -> ~/Desktop/${custom_config}.BCKP"
+            cp "$custom_config" ~/Desktop/$(basename $custom_config).BCKP
+        fi
+        echo -e "Copy: $existing_config_path -> $custom_config"
+        cp "$existing_config_path" "$custom_config"
+        if [ -f "$custom_config" ]
+        then
+            validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
+            if [ "$?" -eq 0 ]
+            then
+                echo -e "\t${GREEN}IMPORT SUCCESS & VALIDATE OK!${NC}"
+            else
+                echo -e "$validate_msg"
+                echo -e "\t${RED}IMPORT SUCCESS & VALIDATE FAILED${NC}\nPls. solve config problems: confhelper -> D"
+            fi
+        else
+            echo -e "\t${RED}IMPORT FAILED!${NC}"
+        fi
+    fi
+}
+
 if [ ! -e "$custom_config" ]
 then
     echo -e "$custom_config NOT EXISTS"
-    question "CREATE? [Y/N]"
+    question "CREATE? [Y/N] IMPORT? [I]"
     read option
     if [ "$option" == "Y" ] || [ "$option" == "y" ]
     then
         echo -e "cp $template_config -> $custom_config"
         cp "$template_config" "$custom_config"
         vim "$custom_config"
+    elif [ "$option" == "I" ] || [ "$option" == "i" ]
+    then
+        import_configuration
     else
         question "See you later ;) - see our git README.md file\nhttps://github.com/BxNxM/rpitools"
     fi
@@ -66,34 +98,7 @@ else
         fi
     elif [ "$option" == "I" ] || [ "$option" == "i" ]
     then
-        question "ADD YOUR CUSTOM CONFIG PATH HERE:"
-        read existing_config_path
-        if [ -f "$existing_config_path" ]
-        then
-            if [ -f "$custom_config" ]
-            then
-                echo -e "$custom_config EXISTS, before override backup:"
-                echo -e "Copy $custom_config -> ~/Desktop/${custom_config}.BCKP"
-                cp "$custom_config" ~/Desktop/$(basename $custom_config).BCKP
-            fi
-            echo -e "Copy: $existing_config_path -> $custom_config"
-            cp "$existing_config_path" "$custom_config"
-            if [ -f "$custom_config" ]
-            then
-                validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
-                if [ "$?" -eq 0 ]
-                then
-                    echo -e "\t${GREEN}IMPORT SUCCESS & VALIDATE OK!${NC}"
-                else
-                    echo -e "$validate_msg"
-                    echo -e "\t${RED}IMPORT SUCCESS & VALIDATE FAILED${NC}\nPls. solve config problems: confhelper -> D"
-                fi
-            else
-                echo -e "\t${RED}IMPORT FAILED!${NC}"
-            fi
-        else
-            echo -e "${RED}NOT EXISTS:${NC} $existing_config_path"
-        fi
+        import_configuration
     fi
 fi
 
