@@ -69,8 +69,15 @@ _msg_ "RUN: custom logrotate service: log_cleaner.bash or rpitools_logrotate.ser
 
 # set custom apache webpage
 _msg_ "RUN apache basic setup based on rpi_config and rpitools/autodeployment/lib/apache_setup/template"
-(. /home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash)
-
+apache_override_underupdate_webpage="$($confighandler -s APACHE -o override_underupdate)"
+if [[ "$apache_override_underupdate_webpage" == "True" ]] || [[ "$apache_override_underupdate_webpage" == "true" ]]
+then
+    _msg_ "\t override_underupdate: $apache_override_underupdate_webpage"
+    (. /home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash -f)
+else
+    _msg_ "\t override_underupdate: $apache_override_underupdate_webpage"
+    (. /home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash)
+fi
 # set rgb service for faster access and load time
 _msg_ "RUN: set up service if needed - rgb_led_controller"
 (. "/home/$USER/rpitools/gpio/rgb_led/systemd_setup/set_service.bash")

@@ -64,9 +64,16 @@ else
             cp "$existing_config_path" "$custom_config"
             if [ -f "$custom_config" ]
             then
-                echo -e "\t${GREEN}SUCCESS${NC}"
+                validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
+                if [ "$?" -eq 0 ]
+                then
+                    echo -e "\t${GREEN}IMPORT SUCCESS & VALIDATE OK!${NC}"
+                else
+                    echo -e "$validate_msg"
+                    echo -e "\t${RED}IMPORT SUCCESS & VALIDATE FAILED${NC}\nPls. solve config problems: confhelper -> D"
+                fi
             else
-                echo -e "\t${RED}FAILED${NC}"
+                echo -e "\t${RED}IMPORT FAILED!${NC}"
             fi
         else
             echo -e "${RED}NOT EXISTS:${NC} $existing_config_path"
@@ -83,6 +90,14 @@ then
         if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
         then
             (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
+            question "APPLY MODIFICATIONS (source setup)? [Y] | [N]"
+            read option_resource
+            if [ "$option_resource" == "Y" ] || [ "$option_resource" == "y" ]
+            then
+                pushd ~/rpitools
+                source setup
+                popd
+            fi
         fi
     fi
 fi
