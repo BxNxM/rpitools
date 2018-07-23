@@ -11,6 +11,22 @@ function question() {
     echo -e "${YELLOW}$1${NC}"
 }
 
+function validate_conf() {
+    if [ -f "${MYDIR_CONF}/rpitools_config.cfg" ]
+    then
+        local validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
+        if [ "$?" -eq 0 ]
+        then
+            echo -e "${GREEN}VALID: rpitools_config.cfg${NC}"
+        else
+            echo -e "$validate_msg"
+            echo -e "${RED}INVALID: rpitools_config.cfg${NC}\nPls. solve config problems: confhelper -> D"
+            exit 0
+        fi
+    fi
+}
+validate_conf
+
 if [ ! -e "$custom_config" ]
 then
     echo -e "$custom_config NOT EXISTS"
