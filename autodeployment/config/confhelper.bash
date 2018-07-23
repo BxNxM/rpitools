@@ -15,13 +15,17 @@ function validate_conf() {
     if [ -f "${MYDIR_CONF}/rpitools_config.cfg" ]
     then
         local validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
-        if [ "$?" -eq 0 ]
+        local exitcode="$?"
+        if [[ "$validate_msg" == *"MISSING"* ]]
         then
-            echo -e "${GREEN}VALID: rpitools_config.cfg${NC}"
+            exitcode=$((exitcode+1))
+        fi
+        if [ "$exitcode" -eq 0 ]
+        then
+            echo -e "${GREEN}VALID: rpitools_config.cfg [$exitcode]${NC}"
         else
             echo -e "$validate_msg"
-            echo -e "${RED}INVALID: rpitools_config.cfg${NC}\nPls. solve config problems: confhelper -> D"
-            exit 0
+            echo -e "${RED}INVALID: rpitools_config.cfg [$exitcode]${NC}\nPls. solve config problems: confhelper -> D"
         fi
     fi
 }
@@ -42,13 +46,18 @@ function import_configuration() {
         cp "$existing_config_path" "$custom_config"
         if [ -f "$custom_config" ]
         then
-            validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
-            if [ "$?" -eq 0 ]
+            local validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
+            local exitcode="$?"
+            if [[ "$validate_msg" == *"MISSING"* ]]
             then
-                echo -e "\t${GREEN}IMPORT SUCCESS & VALIDATE OK!${NC}"
+                exitcode=$((exitcode+1))
+            fi
+            if [ "$exitcode" -eq 0 ]
+            then
+                echo -e "\t${GREEN}IMPORT SUCCESS & VALIDATE OK! [$exitcode]${NC}"
             else
                 echo -e "$validate_msg"
-                echo -e "\t${RED}IMPORT SUCCESS & VALIDATE FAILED${NC}\nPls. solve config problems: confhelper -> D"
+                echo -e "\t${RED}IMPORT SUCCESS & VALIDATE FAILED[$exitcode]${NC}\nPls. solve config problems: confhelper -> D"
             fi
         else
             echo -e "\t${RED}IMPORT FAILED!${NC}"
