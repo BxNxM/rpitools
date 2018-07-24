@@ -8,7 +8,7 @@ confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py
 
 git_mail="$($confighandler -s MYGIT -o git_username)"
 git_name="$($confighandler -s MYGIT -o git_mail)"
-git_set_action="$($confighandler -s MYGIT -o action)"
+git_set_action="$($confighandler -s MYGIT -o activate)"
 
 _msg_title="GIT SETUP"
 function _msg_() {

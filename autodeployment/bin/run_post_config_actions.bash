@@ -29,7 +29,7 @@ _msg_ "RUN: configure_samba"
 (. "$configure_samba")
 
 # pixel install config executor
-pixel_install="$($confighandler -s INSTALL_PIXEL -o action)"
+pixel_install="$($confighandler -s INSTALL_PIXEL -o activate)"
 if [ "$pixel_install" == "True" ] || [ "$pixel_install" == "true" ]
 then
     _msg_ "RUN: PIXEL install"
@@ -39,7 +39,7 @@ else
 fi
 
 # vnc install config executor
-vnc_install="$($confighandler -s INSTALL_VNC -o action)"
+vnc_install="$($confighandler -s INSTALL_VNC -o activate)"
 if [ "$vnc_install" == "True" ] || [ "$vnc_install" == "true" ]
 then
     _msg_ "RUN: VNC install"

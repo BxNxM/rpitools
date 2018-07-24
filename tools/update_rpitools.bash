@@ -74,10 +74,15 @@ then
     echo -e "UPDATE"
 elif [ "$option" == "start" ]
 then
-    /home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py -v
+    validate_msg=$(/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py -v)
     exit_code="$?"
+    if [[ "$validate_msg" == *"MISSING"* ]]
+    then
+        exit_code+=$((exit_code+1))
+    fi
     if [ "$exit_code" -ne 0 ]
     then
+        echo -e "$validate_msg"
         echo -e "Set your configuration berfore continue!\n${GREEN}confhelper, and press D${NC}"
         echo -e "CAN NOT START SERVICES!"
     else

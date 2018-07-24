@@ -21,7 +21,7 @@ ssh_port="$($confighandler -s EXTIPHANDLER -o ssh_port)"
 transmission_port="$($confighandler -s EXTIPHANDLER -o transmission_port)"
 http_port="$($confighandler -s EXTIPHANDLER -o http_port)"
 refresh_time="$($confighandler -s EXTIPHANDLER -o refresh_time)"
-action="$($confighandler -s EXTIPHANDLER -o action)"
+action="$($confighandler -s EXTIPHANDLER -o activate)"
 
 local_cache_myextaddr="${local_cache_folder}${uid_name}"
 local_cache_myextaddr_hum="${local_cache_folder}${uid_name_hum}"

@@ -5,7 +5,7 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-set_service_conf="$($confighandler -s INSTALL_OLED -o action)"
+set_service_conf="$($confighandler -s INSTALL_OLED -o activate)"
 
 function message() {
     local msg="$1"
