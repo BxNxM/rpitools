@@ -10,7 +10,7 @@ CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
 CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
 username="pi"
 default_pwd="raspberry"
-hostname="$($CONFIGAHNDLER -s RPI_MODEL -o custom_hostname).local"
+hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
 
 function copy_repo_to_rpi_machine() {
     local cpwith="rsync"

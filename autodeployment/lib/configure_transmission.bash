@@ -109,7 +109,7 @@ then
     _msg_ "Reload transmission: sudo service transmission-daemon reload"
     sudo service transmission-daemon reload
 else
-    hostname="$($confighandler -s RPI_MODEL -o custom_hostname)"
+    hostname="$($confighandler -s GENERAL -o custom_hostname)"
     _msg_ "Transmission is already set: $CACHE_PATH_is_set is exists"
     _msg_ "Connect: http://${hostname}:9091"
     _msg_ "Connect: http://$(hostname -I):9091"

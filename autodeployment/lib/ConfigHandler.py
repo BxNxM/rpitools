@@ -57,7 +57,7 @@ class SimpleConfig(ConfigParser.ConfigParser):
             self.add_section(section)
         self.set(section, option, value)
         self.__sync_to_cfg_file()
-        if "-undef-" not in self.get(section, option, value):
+        if "-undef-" not in self.get(section, option):
             return True
         else:
             return False
@@ -91,7 +91,7 @@ def validate_configs_based_on_template_printout(msg, is_active):
     if is_active:
         print(msg)
 
-def validate_configs_based_on_template(custom_cfg_obj, cfg_path_path=template_config_path, print_is_active=False):
+def validate_configs_based_on_template(custom_cfg_obj, cfg_template_path=template_config_path, print_is_active=False):
     difference_cnt = 0
     cfg_tmp = SimpleConfig(cfg_path=template_config_path)
     custom_all_dict = custom_cfg_obj.get_full()
@@ -113,9 +113,23 @@ def validate_configs_based_on_template(custom_cfg_obj, cfg_path_path=template_co
                 validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - " + Colors.RED + "MISSING" + Colors.NC, is_active=print_is_active)
                 difference_cnt += 1
     if difference_cnt == 0:
+        sync_rpitools_version(custom_cfg_obj, cfg_tmp)
         return True
     else:
         return False
+
+def sync_rpitools_version(custom_cfg_obj, template_config_path):
+    option = "GENERAL"
+    section = "rpitools_version"
+    try:
+        version = float(template_config_path.get(option, section))
+        version_actual = float(custom_cfg_obj.get(option, section))
+        if version != version_actual:
+            if not custom_cfg_obj.add(option, section, str(version)):
+                print("Fail to update rpitools version: " + str(version_actual) + " -> " + str(version))
+    except Exception as e:
+        print("Verison jumber update failed: " + str(e))
+
 
 def init(validate_print=False):
     cfg = SimpleConfig(cfg_path=config_path)

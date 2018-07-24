@@ -5,7 +5,7 @@ MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
 CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
 username="pi"
-hostname="$($CONFIGAHNDLER -s RPI_MODEL -o custom_hostname).local"
+hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
 echo -e "$hostname"
 
 echo -e "\n=======================  RPITOOLS INFORMATIONS =============================="

@@ -4,7 +4,7 @@
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-rpimodel="$($confighandler -s RPI_MODEL -o model)"
+rpimodel="$($confighandler -s GENERAL -o model)"
 conky_conf_pi_zero=".conkyrc_pizero"
 conky_conf_pi_3=".conkyrc_pi3"
 if [ "$rpimodel" == "rpi_zero" ]

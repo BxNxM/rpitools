@@ -84,7 +84,7 @@ function set_boot_config() {
     fi
 
     # SET USB ETHERNET IF TARGET IS RPI_ZERO
-    rpi_module="$($CONFIGAHNDLER -s RPI_MODEL -o model)"
+    rpi_module="$($CONFIGAHNDLER -s GENERAL -o model)"
     if [ "$rpi_module" == "rpi_zero" ]
     then
         #config.txt add -> dtoverlay=dwc2 <- end of the file
@@ -113,7 +113,7 @@ function set_boot_config() {
     is_added=$(grep -rnw "$config_path" -e "gpu_mem")
     if [ "$is_added" == "" ]
     then
-        gpu_mem="$($CONFIGAHNDLER -s RPI_MODEL -o required_gpu_mem)"
+        gpu_mem="$($CONFIGAHNDLER -s GENERAL -o required_gpu_mem)"
         message "Set $config_path file - add new line gpu_mem=$gpu_mem [ for video playing ]"
         echo -e "\n# Set GPU allocated memory\ngpu_mem=$gpu_mem" >> "$config_path"
     else
