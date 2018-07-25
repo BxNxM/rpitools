@@ -36,6 +36,7 @@ alias motioncontroll='/home/$USER/rpitools/tools/motioncontroll.bash $@'
 alias network_monitor='bmon -p wlan0'
 alias listlocalrpis='local_rpis=($(sudo arp-scan --interface=wlan0 --localnet | grep "Raspberry Pi" | awk "{print \$1}")); for rpiip in "${local_rpis[@]}"; do hostname="$(nmblookup -A "$rpiip" | grep "<00" | grep -v GROUP | awk "{print \$1}")"; echo -e "$rpiip : $hostname"; done'
 alias cdrpitools='cd ~/rpitools'
+alias backupmaker='/home/pi/rpitools/tools/backup_maker.sh'
 
 alias gitlog='git log --all --decorate --oneline --graph'
 alias gitbranch='git branch -av'
