@@ -432,5 +432,23 @@ systemctl status systemd-modules-load.service
 http://www.pdfonline.com/convert-pdf-to-html/
 ```
 
+* Set crontab for programs time based execution
+
+```
+* * * * * command to be executed
+- - - - -
+| | | | |
+| | | | ----- Day of week (0 - 7) (Sunday=0 or 7)
+| | | ------- Month (1 - 12)
+| | --------- Day of month (1 - 31)
+| ----------- Hour (0 - 23)
+------------- Minute (0 - 59)
+
+crontab -e
+crontab -l
+
+https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
