@@ -4,8 +4,17 @@ MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-home_backups_path="$($confighandler -s GENERAL -o home_backups_path)/backups/"
-limit=5
+activate_backup="$($confighandler -s BACKUP -o activate)"
+home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/"
+limit="$($confighandler -s BACKUP -o limit)"
+
+if [[ "$activate_backup" != "True" ]] && [[ "$activate_backup" != "true" ]]
+then
+    echo -e "Backup creator for users home folder was not activated [$activate_backup] in rpi_config.cfg"
+    echo -e "To activate, use: confhelper -> Y and edit [BACKUP] section"
+    exit 1
+fi
+
 if [ ! -d "$home_backups_path" ]
 then
     sudo mkdir -p "$home_backups_path"
