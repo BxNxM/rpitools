@@ -236,11 +236,74 @@ function sites_enabled_000-defaultconf_patch() {
     fi
 }
 
+function restore_backup_cloud_storage_content() {
+    local mode="$1"
+    local obsolete_webshared_folder_path="${html_folder_path}/webshared/"
+    local html_shared_folder_private_path="${html_shared_folder_private}/"
+    local html_shared_folder_public_path="${html_shared_folder_public}/"
+    local tmp_workspace="/tmp/apache_migration/"
+
+    if [ "$mode" == "backup" ]
+    then
+        _msg_ "Create backup before override $html_folder_path to $tmp_workspace"
+        # create tmp workspace
+        if [ -e "${tmp_workspace}" ]
+        then
+            sudo rm -rf "${tmp_workspace}"
+        fi
+        sudo mkdir -p "$tmp_workspace"
+
+        if [ -e "$obsolete_webshared_folder_path" ]
+        then
+            _msg_ "\tCopy: $obsolete_webshared_folder_path -> $tmp_workspace"
+            sudo cp -r "$obsolete_webshared_folder_path" "$tmp_workspace"
+        fi
+        if [ -e "$html_shared_folder_private_path" ]
+        then
+            _msg_ "\tCopy: $html_shared_folder_private_path -> $tmp_workspace"
+            sudo cp -r "$html_shared_folder_private_path" "$tmp_workspace"
+        fi
+        if [ -e "$html_shared_folder_public_path" ]
+        then
+            _msg_ "\tCopy: $html_shared_folder_public_path -> $tmp_workspace"
+            sudo cp -r "$html_shared_folder_public_path" "$tmp_workspace"
+        fi
+    elif [ "$mode" == "restore" ]
+    then
+        _msg_ "Restore from $tmp_workspace to  $html_folder_path"
+        if [ -e "${tmp_workspace}webshared" ]
+        then
+            _msg_ "\tCopy: ${tmp_workspace}webshared -> $html_shared_folder_private_path"
+            sudo cp -r ${tmp_workspace}webshared/* "$html_shared_folder_private_path"
+        fi
+        local tmp_private_path="${tmp_workspace}/private_cloud"
+        if [ -e "$tmp_private_path" ]
+        then
+            _msg_ "\tCopy: $tmp_private_path -> ${html_shared_folder_private_path}"
+            sudo cp -r ${tmp_private_path}/* "${html_shared_folder_private_path}"
+        fi
+        local tmp_public_path="${tmp_workspace}/public_cloud"
+        if [ -e "$tmp_public_path" ]
+        then
+            _msg_ "\tCopy: $tmp_public_path -> ${html_shared_folder_public_path}"
+            sudo cp -r ${tmp_public_path}/* "${html_shared_folder_public_path}"
+        fi
+        sudo rm -rf "${tmp_workspace}"
+    else
+        _msg_ "Unknown mode: $mode"
+    fi
+
+
+}
+
 link_html_folder_to_requested_path
 if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
 then
+    restore_backup_cloud_storage_content "backup"
     copy_template_under_apache_html_folder
     create_cloud_structure
+    restore_backup_cloud_storage_content "restore"
+
     echo -e "$(date)" > "$CACHE_PATH_is_set"
     link_transmission_downloads_folder
 
