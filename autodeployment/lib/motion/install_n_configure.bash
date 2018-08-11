@@ -8,13 +8,16 @@ motion_activate="$($confighandler -s MOTION -o activate)"
 http_username="$($confighandler -s MOTION -o http_user)"
 http_password="$($confighandler -s MOTION -o http_pawwd)"
 link_to_apche="$($confighandler -s MOTION -o link_under_apache)"
-apache_web_shared_folder="/var/www/html/$($confighandler -s APACHE -o webshared_folder_name)"
 
 source "${MYDIR}/../../../prepare/colors.bash"
 motion_conf_path="/etc/motion/motion.conf"              # https://tutorials-raspberrypi.com/raspberry-pi-security-camera-livestream-setup/
 motion_conf_path2="/etc/default/motion"                 # start_motion_daemon=yes
 add_modeprobe_to="/etc/modules-load.d/raspberrypi.conf"
 initial_config_done_indicator="/home/$USER/rpitools/cache/.motion_initial_config_done"
+
+# source apache path env
+source "${MYDIR}/../apache_setup/apache.env"
+apache_web_shared_folder="$APACHE_PRIVATE_SHARED_FOLDER"
 
 _msg_title="MOTION SETUP"
 function _msg_() {
@@ -105,8 +108,6 @@ function execute() {
 }
 
 function link_motionfolder_to_apache() {
-    local apache_web_shared_folder="/var/www/html/$($confighandler -s APACHE -o webshared_folder_name)"
-
     if [[ "$link_to_apche" == "True" ]] || [[ "$link_to_apche" == "true" ]]
     then
         local target_path="${apache_web_shared_folder}/$(basename $motion_target_folder)"

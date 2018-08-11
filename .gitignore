@@ -14,3 +14,4 @@ autodeployment/lib/motion/factory_confs/
 tools/socketmem/lib/logs/
 tools/socketmem/lib/.dictbackup.json
 gpio/oled_128x64/lib/.defaultindex.dat
+autodeployment/lib/apache_setup/apache.env
