@@ -15,6 +15,15 @@ function _msg_() {
     echo -e "${YELLOW}[ $_msg_title ]${NC} - $msg"
 }
 
+function post_config_actions_done() {
+    local cache_dir="$MYDIR_/../../cache/"
+    local indicator_file="${cache_dir}/.post_config_actions_done"
+    if [ ! -f "$indicator_file" ]
+    then
+        echo -e "$(date)" > "${indicator_file}"
+    fi
+}
+
 _msg_ "RUN: set up service if needed - memDictCore"
 (. "/home/$USER/rpitools/tools/socketmem/systemd_setup/set_service.bash")
 
@@ -89,3 +98,6 @@ _msg_ "RUN: motion install and configure"
 # motion video stream over apache server setup, run after apache config
 _msg_ "RUN: motion video stream forwarding"
 (. /home/$USER/rpitools/autodeployment/lib/motion_remote_video_stream_over_apache.bash)
+
+# Set status file under cache
+post_config_actions_done

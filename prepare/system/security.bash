@@ -11,6 +11,7 @@ sshd_config_path="/etc/ssh/sshd_config"
 authorized_keys_path="/home/$USER/.ssh/authorized_keys"
 default_id_rsa_pub_value_in_conf="write_you_id_rsa_pub_here"
 rpi_config_path="/home/$USER/rpitools/autodeployment/config/rpitools_config.cfg"
+cache_path="/home/$USER/rpitools/cache/"
 repo_conf_restore_backup="/home/$USER/rpitools/tools/cache_restore_backup.bash"
 
 _msg_title="SECURITY [SSH] SETUP"
@@ -82,6 +83,43 @@ function save_authorized_keys_first_key_to_rpi_config() {
         id_rsa_pubVALID=0
     fi
 }
+
+function configure_ufw() {
+    local PORT_LIST=()
+    local PORT=""
+    local APP_LIST=()
+    local APP=""
+    local bckp_msg_title="$_msg_title"
+    _msg_title="SECURITY [ufw] SETUP"
+
+    _msg_ "Show used ports: sudo netstat -tulpn"
+    active_ports_apps_list=($(sudo netstat -tulpn | grep -i LISTEN | awk '{print $4 "\t" $7}'))
+
+    for ((portsapps_i=0; portsapps_i<"${#active_ports_apps_list[@]}"; portsapps_i+=2))
+    do
+        IFS=':' read -ra PORT_LIST <<< "${active_ports_apps_list[$portsapps_i]}"
+        PORT_LIST=(${PORT_LIST[@]})
+        PORT="${PORT_LIST[-1]}"
+        IFS='/' read -ra APP_LIST <<< "${active_ports_apps_list[$(($portsapps_i+1))]}"
+        APP_LIST=(${APP_LIST[@]})
+        APP="${APP_LIST[-1]}"
+        echo -e "ENABLE $APP IN UNIX FIREWALL:\tsudo ufw allow ${PORT}"
+        #TODO call commands
+
+    done
+    echo -e "ENABLE UNIX FIREWALL: sudo ufw enable"
+    #TODO call command
+    # echo -e "$(date)" > "${cache_path}.configure_ufw"
+
+    _msg_title="$bckp_msg_title"
+}
+
+if [ -e "${cache_path}.post_config_actions_done" ]
+then
+    configure_ufw
+else
+    _msg_ "configure_ufw skipping - ${cache_path}.post_config_actions_done not exists yet."
+fi
 
 if [[ "$ssh_id_rsa_pub" == *"ssh-rsa"* ]]
 then
