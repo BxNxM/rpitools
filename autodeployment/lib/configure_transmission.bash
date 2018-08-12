@@ -57,8 +57,7 @@ function change_line() {
     fi
 }
 
-if [ ! -e "$CACHE_PATH_is_set" ]
-then
+function create_transmission_folders() {
     # create downloads dir
     if [ ! -e "${download_path}" ]
     then
@@ -80,7 +79,11 @@ then
     else
         _msg_ "Incomplete downloads dir exists: ${incomp_download_path}"
     fi
+}
+create_transmission_folders
 
+if [ ! -e "$CACHE_PATH_is_set" ]
+then
     # make usermod
     sudo usermod -a -G debian-transmission "$USER"
 
