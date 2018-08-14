@@ -11,6 +11,17 @@ CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
 username="pi"
 default_pwd="raspberry"
 hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
+pixel_activate="$($CONFIGAHNDLER -s INSTALL_PIXEL -o activate)"
+vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
+reboot_wait_loop=4
+if [ "$pixel_activate" == "False" ] || [ "$pixel_activate" == "false" ]
+then
+    reboot_wait_loop=$((reboot_wait_loop-1))
+fi
+if [ "$vnc_activate" == "False" ] || [ "$vnc_activate" == "false" ]
+then
+    reboot_wait_loop=$((reboot_wait_loop-1))
+fi
 
 function copy_repo_to_rpi_machine() {
     local cpwith="rsync"
@@ -105,7 +116,7 @@ then
     echo -e "ssh-keygen -R $hostname"
     ssh-keygen -R "$hostname"
     # run until reboot is not happens
-    for ((k=0; k<3; k++))
+    for ((k=0; k<${reboot_wait_loop}; k++))
     do
         echo -e "\texecute source setup"
         execute_source_setup_on_rpi_machine_custom_host
