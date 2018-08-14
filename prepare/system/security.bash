@@ -104,19 +104,34 @@ function configure_ufw() {
         APP_LIST=(${APP_LIST[@]})
         APP="${APP_LIST[-1]}"
         echo -e "ENABLE $APP IN UNIX FIREWALL:\tsudo ufw allow ${PORT}"
-        #TODO call commands
-
+        sudo ufw allow "${PORT}"
     done
-    echo -e "ENABLE UNIX FIREWALL: sudo ufw enable"
-    #TODO call command
-    # echo -e "$(date)" > "${cache_path}.configure_ufw"
+    if [[ "$(sudo ufw status)" != *"Status: active"* ]]
+    then
+        _msg_ "ENABLE UNIX FIREWALL: sudo ufw enable"
+        echo y | sudo ufw enable
+    else
+        _msg_ "UNIX FIREWALL ALREADY ENABLED"
+    fi
 
+    sudo ufw status verbose
     _msg_title="$bckp_msg_title"
+
+    if [ ! -e "${cache_path}.configure_ufw_done" ]
+    then
+        echo -e "$(date)" > "${cache_path}.configure_ufw_done"
+    fi
 }
 
 if [ -e "${cache_path}.post_config_actions_done" ]
 then
-    configure_ufw
+    if [ ! -e "${cache_path}.configure_ufw_done" ]
+    then
+        configure_ufw
+    else
+        _msg_ "UNIX FIREWALL ALREADY CONFIGURED"
+        sudo ufw status verbose
+    fi
 else
     _msg_ "configure_ufw skipping - ${cache_path}.post_config_actions_done not exists yet."
 fi
