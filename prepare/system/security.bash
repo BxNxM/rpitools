@@ -90,6 +90,8 @@ function configure_ufw() {
     local APP_LIST=()
     local APP=""
     local bckp_msg_title="$_msg_title"
+    local whitelist=(137 138)                   # samba ("passive ports")
+    local black_list=()                         # TODO
     _msg_title="SECURITY [ufw] SETUP"
 
     _msg_ "Show used ports: sudo netstat -tulpn"
@@ -98,13 +100,17 @@ function configure_ufw() {
     for ((portsapps_i=0; portsapps_i<"${#active_ports_apps_list[@]}"; portsapps_i+=2))
     do
         IFS=':' read -ra PORT_LIST <<< "${active_ports_apps_list[$portsapps_i]}"
-        PORT_LIST=(${PORT_LIST[@]})
+        PORT_LIST=(${PORT_LIST[*]})
         PORT="${PORT_LIST[-1]}"
         IFS='/' read -ra APP_LIST <<< "${active_ports_apps_list[$(($portsapps_i+1))]}"
-        APP_LIST=(${APP_LIST[@]})
+        APP_LIST=(${APP_LIST[*]})
         APP="${APP_LIST[-1]}"
         echo -e "ENABLE $APP IN UNIX FIREWALL:\tsudo ufw allow ${PORT}"
         sudo ufw allow "${PORT}"
+    done
+    for addother in "${whitelist[@]}"
+    do
+        sudo ufw allow "${addother}"
     done
     if [[ "$(sudo ufw status)" != *"Status: active"* ]]
     then
