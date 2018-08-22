@@ -57,7 +57,20 @@ function change_line() {
     fi
 }
 
+function set_drive_permissions() {
+    local drive_path="$1"
+    local user_name="$2"
+
+    _msg_ "Set dive permissions:"
+    _msg_ "\tsudo chgrp -R $user_name $drive_path"
+    sudo chgrp -R "$user_name" "$drive_path"
+    _msg_ "\tsudo chmod go+w -R $drive_path"
+    sudo chmod g+w -R "$drive_path"
+}
+
 function create_transmission_folders() {
+    set_drive_permissions "/media" "$USER"
+
     # create downloads dir
     if [ ! -e "${download_path}" ]
     then
@@ -82,7 +95,7 @@ function create_transmission_folders() {
 }
 create_transmission_folders
 
-if [ ! -e "$CACHE_PATH_is_set" ]
+if [ ! -e "$CACHE_PATH_is_set" ] && [ -d "${download_path}" ] && [ -d "${incomp_download_path}" ]
 then
     # make usermod
     sudo usermod -a -G debian-transmission "$USER"
