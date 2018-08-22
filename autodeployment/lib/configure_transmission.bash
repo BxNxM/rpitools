@@ -69,8 +69,10 @@ function set_drive_permissions() {
 }
 
 function create_transmission_folders() {
-    set_drive_permissions "/media" "$USER"
-
+    if [ ! -e "$CACHE_PATH_is_set" ]
+    then
+        set_drive_permissions "/media" "$USER"
+    fi
     # create downloads dir
     if [ ! -e "${download_path}" ]
     then
