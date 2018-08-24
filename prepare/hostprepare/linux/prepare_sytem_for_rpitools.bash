@@ -1,36 +1,42 @@
 #!/bin/bash
 
-required_app_list=("vim" "git" "python3" "python" "sshpass")
+MYDIR_linux="$(dirname $(readlink -f $0))"
+
+required_app_list=("vim" "git" "python3" "python" "sshpass" "shellcheck")
 fail_cnt=0
 
-echo -e "INSTALL REQUIRED APPLICATIONS FOR RPITOOLS DEPOYMENT"
+function prepare_linux_msg() {
+	echo -e "\e[104m[LINUX HOST PREPARE]\e[49m $1"
+}
+
+prepare_linux_msg "INSTALL REQUIRED APPLICATIONS FOR RPITOOLS DEPOYMENT"
 for app in "${required_app_list[@]}"
 do
-	echo -e "INSTALL: $app"
+	prepare_linux_msg "INSTALL: $app"
 	echo "Y" | sudo apt-get install "$app"
 	if [ "$?" -ne 0 ]
 	then
-		echo -e "[ERROR] install was failed: $app"
+		prepare_linux_msg "[ERROR] install was failed: $app"
 		fail_cnt=$((fail_cnt+1))
 	else
-		echo -e "[OK] install was successful $app"
+		prepare_linux_msg "[OK] install was successful $app"
 	fi
 done
 
 if [ ! -e ~/.ssh/id_rsa.pub ]
 then
-	echo -e "GENERATE SSH KEY FOR PASSWORDLESS LOGIN"
+	prepare_linux_msg "GENERATE SSH KEY FOR PASSWORDLESS LOGIN"
 	ssh-keygen
 	if [ "$?" -ne 0 ]
 	then
-		echo -e "[ERROR] SSH KEY generation failed"
+		prepare_linux_msg "[ERROR] SSH KEY generation failed"
 		fail_cnt=$((fail_cnt+1))
 	else
-		echo -e "[OK] SSH KEY generation was successful"
+		prepare_linux_msg "[OK] SSH KEY generation was successful"
 	fi
 fi
 
-echo -e "Get raspbian lite image"
+prepare_linux_msg "Get raspbian lite image"
 pushd ~/Downloads
 	rm -f ./raspbian_lite_latest
 	rm -f ./*.img
@@ -39,17 +45,24 @@ pushd ~/Downloads
 	unzip raspbian_lite_latest
 	if [ "$?" -ne 0 ]
 	then
-		echo -e "[ERROR] DOWNLOAD RASPBIAN LITE IMAGE FAILED"
+		prepare_linux_msg "[ERROR] DOWNLOAD RASPBIAN LITE IMAGE FAILED"
 		fail_cnt=$((fail_cnt+1))
 	else
-		echo -e "[OK] DOWNLOAD RASPBIAN LITE IMAGE DONE"
-	fi	
+		prepare_linux_msg "[OK] DOWNLOAD RASPBIAN LITE IMAGE DONE"
+	fi
 popd
+
+if [ ! -e ~/.vimrc ]
+then
+    prepare_linux_msg "Set ~/.vimrc"
+    cp "${REPOROOT}/template/vimrc" ~/.vimrc
+else
+    prepare_linux_msg "~/.vimrc is already set."
+fi
 
 if [ "$fail_cnt" -eq 0 ]
 then
-	echo -e "REQUIREMENTS INSTALLATIONS WAS SUCCESSFUL :D"
+	prepare_linux_msg "REQUIREMENTS INSTALLATIONS WAS SUCCESSFUL :D"
 else
-	echo -e "SOMETHINGS WENT WRONG :("
+	prepare_linux_msg "SOMETHINGS WENT WRONG :("
 fi
-

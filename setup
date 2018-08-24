@@ -40,10 +40,19 @@ function detect_device() {
         else
             _DEVICE="LINUX"
         fi
+    else
+        _UNAME="$(uname)"
+	if [ "$_UNAME" == "Darwin" ]
+        then
+            _DEVICE="MACOS"
+	elif [ "$_UNAME" == "Linux" ]
+        then
+            _DEVICE="LINUX"
+	fi
     fi
     export DEVICE=$_DEVICE
 
-    if [[  "$DEVICE" == "LINUX" ]] || [[ "$DEVICE" == "OTHER" ]]
+    if [[  "$DEVICE" == "LINUX" ]] || [[ "$DEVICE" == "OTHER" ]] || [[ "$DEVICE" == "MACOS" ]]
     then
         quick_conf=true
     fi
@@ -87,6 +96,29 @@ function set_rpiconfig_permissions() {
     fi
 }
 
+function set_requirements_on_host_side() {
+    echo -e "DETECTED DEVICE: ${DEVICE}"
+    if [ "$DEVICE" == "LINUX" ]
+    then
+        if [ ! -e ~/Downloads/*raspbian-stretch-lite.img ]
+	then
+	    message "Linux rpitools requirements installing..."
+            . "${MYDIR}/prepare/hostprepare/linux/prepare_sytem_for_rpitools.bash"
+	else
+	    message "Linux rpitools requirements already installed."
+	fi
+    elif [ "$DEVICE" == "MACOS" ]
+    then
+        if [ ! -e ~/Downloads/*raspbian-stretch-lite.img ]
+	then
+	    message "macOS rpitools requirements installing..."
+            echo -e "TODO: ${MYDIR}/prepare/hostprepare/macos/prepare_sytem_for_rpitools.bash"
+	else
+	    message "macOS rpitools requirements already installed."
+	fi
+    fi
+}
+
 # Set two quick config access interface:
 alias confhelper='${MYDIR}/autodeployment/config/confhelper.bash'
 alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
@@ -98,6 +130,7 @@ then
     else
         echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h"
     fi
+    set_requirements_on_host_side
     deploy_mode_text
     return 0
 fi
