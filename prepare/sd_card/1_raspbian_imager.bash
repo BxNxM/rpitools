@@ -74,13 +74,19 @@ then
     message "List drives: diskutil list / lsblk"
     echo -e "$glob_list_disks"
 
-    message "Which drive want you use? example: /dev/disk<n>"
+    message "Which drive want you use? example: /dev/disk<n> or /dev/sd<n>"
     read drive
 
     if [ -e "$drive" ]
     then
-        message "Unmount drive: diskutil unmountDisk $drive"
-        diskutil unmountDisk "$drive"
+        if [ "$OS" == "Darwin" ]
+        then
+            message "Unmount drive: diskutil unmountDisk $drive"
+            diskutil unmountDisk "$drive"
+        else
+            message "Unmount drive: umount $drive"
+            umount "$drive"
+        fi
         message "Deploy img to drive: sudo dd bs=1m if=$img_path of=$drive conv=$glob_conv"
         message "WARNING: please wait patiently!"
         sudo dd bs="$glob_bs_size" if="$img_path"  of="$drive" conv="$glob_conv"
