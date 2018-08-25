@@ -89,7 +89,7 @@ if [ "$is_avaible_exitcode" -eq 0 ]
 then
     echo -e "ssh-keygen -R raspberrypi.local"
     ssh-keygen -R raspberrypi.local
-    is_rpi_machine_set=$(ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
+    is_rpi_machine_set=$(sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
     custom_hostname_is_active=1
 else
     echo -e "ssh-keygen -R $hostname"
