@@ -1,4 +1,4 @@
-![logo](https://github.com/BxNxM/rpitools/blob/master/autodeployment/lib/apache_setup/template/images/rpitools_structure.png?raw=true)
+![logo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/rpitools_structure.png?raw=true)
 
 ```
   _____    _____    _____   _______    ____     ____    _         _____ 
