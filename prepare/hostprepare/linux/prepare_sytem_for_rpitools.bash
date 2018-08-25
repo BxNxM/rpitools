@@ -2,7 +2,7 @@
 
 MYDIR_linux="$(dirname $(readlink -f $0))"
 
-required_app_list=("vim" "git" "python3" "python" "sshpass" "shellcheck")
+required_app_list=("vim" "git" "python3" "python" "sshpass" "shellcheck" "wget")
 fail_cnt=0
 
 function prepare_linux_msg() {

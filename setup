@@ -112,7 +112,7 @@ function set_requirements_on_host_side() {
         if [ ! -e ~/Downloads/*raspbian-stretch-lite.img ]
 	then
 	    message "macOS rpitools requirements installing..."
-            echo -e "TODO: ${MYDIR}/prepare/hostprepare/macos/prepare_sytem_for_rpitools.bash"
+            . "${MYDIR}/prepare/hostprepare/macos/prepare_sytem_for_rpitools.bash"
 	else
 	    message "macOS rpitools requirements already installed."
 	fi
