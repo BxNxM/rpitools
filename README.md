@@ -24,61 +24,6 @@
 	* vim, xdotool, scrot, python (with many modules), kodi etc.
 	* custom ```rpitools/autodeployment/config/rpitools_config.cfg``` user configuration based on ```rpitools/autodeployment/config/rpitools_config_template.cfg```
 	* easy update: ```update_rpitools```
-	* custom login help console:
-
-```
-WELCOME pi! PI IP ADDRESS 10.0.1.7 
-Connected from: fe80::1421:2053:794e:fa25%wlan0
-WELCOME pi! PI IP ADDRESS 10.0.1.7 
-TODAY: Thu Apr 19 19:25:25 UTC 2018
-     April 2018       
-Su Mo Tu We Th Fr Sa  
- 1  2  3  4  5  6  7  
- 8  9 10 11 12 13 14  
-15 16 17 18 19 20 21  
-22 23 24 25 26 27 28  
-29 30                 
-                      
-HOME DISK: 41M	./
-
-AVAIBLE SERVICES AND TOOLS:
-Service (rpitools) interfaces:
-	oledinterface -h	-> oled service command line control
-	rgbinterface -h		-> rgb command line control
-	hapticinterface -h	-> vibre motor cmd line control
-	sysmonitor -h		-> system monitoring tool
-	diskhandler -h		-> external disks handling based on fstab
-	confighandler -h	-> config handler based on rpitools_config.cfg
-	mysshfs			-> built in sshfs based on rpitools_config.cfg
-	update_rpitools		-> update your repository
-Manage GUI (X):
-	startxbg		-> start gui in the background
-	pkill x 		-> stop gui
-	startvnc		-> start vnc service
-	kodibg			-> start kodi media center
-Other commands:
-	Add new user for
-	apache webshared dir:	htpasswd -cb /home/pi/.secure/apasswords user_name user_pwd
-	Add new samba user:	sudo smbpasswd -a samba_user
-
-for more info use: ->| alias |<- command
-########################################################
-```
-## Dependences on installation side [Linux and macOS]:
-* python
-* bash
-* vim
-* ssh-keygen 			- for the passwordless login - run if ~/.ssh/id_rsa.pub not exists.
-* sshpass
-
-***INSTALL ON LINUX:*** sudo apt-get install ...
-
-***INSTALL ON MAC:*** brew install ...
-
-sshpass on mac:
-```
-brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
-```
 
 ## How to install:
  
@@ -86,18 +31,8 @@ brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Librar
 
 ***Deploy and setup raspbian image***
 
-* Download raspbian lite (debian) image:
-
-```
-Browse:
-https://www.raspberrypi.org/downloads/raspbian/
-
-and dowload:
-RASPBIAN STRETCH LITE
-example: https://downloads.raspberrypi.org/raspbian_lite_latest
-```
-* macOS: open terminal ```CMD+SPACE``` type ```Terminal``` press enter
-* Linux: open ```terminal```
+* ***macOS***: open terminal ```CMD+SPACE``` type ```Terminal``` press enter
+* ***Linux***: open ```terminal``` and ```sudo apt-get install git```
 
 * clone rpitools repository from github - to get the resources
 
@@ -110,6 +45,13 @@ git clone https://github.com/BxNxM/rpitools.git
 ```
 cd rpitools/
 source setup
+
+#### SETUP EXECUTION ####
+* Detect the device | linux | mac | raspbian
+* [linux | mac] install requirements on deployment side
+  and set installation environment. 
+* [raspbain] manage depoyment depends on your custom config
+#########################
 ```
 Follow the instructions.
 
@@ -201,11 +143,6 @@ oledinterface -b stanbyFalse
 ```
 
 #### CUSTOMIZE OLED FRAMEWORK AND CREATE NEW PAGES (OPTIONAL)
-* set default page 0 < - > page numbers in /home/$USER/rpitools/gpio/oled_128x64/lib/pages/ folder
-
-```
-vim /home/$USER/rpitools/gpio/oled_128x64/lib/.defaultindex.dat
-```
 
 * create your own page under
 
