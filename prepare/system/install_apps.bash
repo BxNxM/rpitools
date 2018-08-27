@@ -40,6 +40,7 @@ applist=${REPOROOT}/template/programs.dat
 pymodulelist=${REPOROOT}/template/python_moduls.dat
 pymodulelist_pip=${REPOROOT}/template/python_moduls_pip.dat
 installed_python_module=${REPOROOT}/cache/installed_pymodules.dat
+installed_apps=${REPOROOT}/cache/installed_apps.dat
 
 function fileReader {
     lineS=()
@@ -55,12 +56,25 @@ function fileReader {
     fi
 }
 
+function install_printout() {
+    local app="$1"
+    local exitcode="$2"
+
+    if [ "$exitcode" -eq 0 ]
+    then
+        message "$app install ...DONE"
+        echo -e "$app" >> "$installed_apps"
+    else
+        message "$app install ...FAILS"
+    fi
+}
+
 function install_apps_secure() {
     local app="$1"
     if [ ! -z "$app" ]
     then
         output=$(command -v "$app")
-        if [ -z "$output" ]
+        if [ -z "$output" ] && [ "$(cat $installed_apps | grep $app)" == "" ]   # grepping workaround for caca-utils, fail2ban, minidlna, etc.
         then
             if [ "$app" == "samba" ] || [ "$app" == "apache2" ]
             then
@@ -68,7 +82,7 @@ function install_apps_secure() {
             else
                 echo -e "Install app: $app"
                 echo "Y" | sudo apt-get install "$app"
-                message "$app install ...DONE"
+                install_printout "$app" "$?"
                 was_installation=1
             fi
         else
@@ -83,7 +97,7 @@ function apps_exception() {
     then
         echo -e "Install app: samba samba-common-bin"
         echo "Y" | sudo apt-get install samba samba-common-bin
-        message "samba samba-common-bin install ...DONE"
+        install_printout "samba samba-common-bin" "$?"
         was_installation=1
     fi
 
@@ -91,7 +105,7 @@ function apps_exception() {
     then
         echo -e "Install app: apache2 -y"
         echo "Y" | sudo apt-get install apache2 -y
-        message "apache2 -y install ...DONE"
+        install_printout "apache2 -y" "$?"
         was_installation=1
     fi
 }

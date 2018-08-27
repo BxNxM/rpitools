@@ -213,8 +213,13 @@ then
         then
             message "$REPOROOT/config/${filename}${extension} is already linked"
         else
-            message "Linking: ln -s ${file_path} $REPOROOT/config/${filename}${extension}"
-            ln -s "${file_path}" "$REPOROOT/config/${filename}${extension}"
+            if [ -e "${file_path}" ]
+            then
+                message "Linking: ln -s ${file_path} $REPOROOT/config/${filename}${extension}"
+                ln -s "${file_path}" "$REPOROOT/config/${filename}${extension}"
+            else
+                message "Linking not possible: ${file_path} not exists (yet)."
+            fi
         fi
     done
 
