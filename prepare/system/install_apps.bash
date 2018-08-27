@@ -41,6 +41,11 @@ pymodulelist=${REPOROOT}/template/python_moduls.dat
 pymodulelist_pip=${REPOROOT}/template/python_moduls_pip.dat
 installed_python_module=${REPOROOT}/cache/installed_pymodules.dat
 installed_apps=${REPOROOT}/cache/installed_apps.dat
+# initialize installed_apps.dat
+if [ ! -e "$installed_apps" ]
+then
+    echo "" > "$installed_apps"
+fi
 
 function fileReader {
     lineS=()
