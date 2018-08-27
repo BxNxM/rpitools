@@ -99,5 +99,9 @@ _msg_ "RUN: motion install and configure"
 _msg_ "RUN: motion video stream forwarding"
 (. /home/$USER/rpitools/autodeployment/lib/motion_remote_video_stream_over_apache.bash)
 
+# set media stream with minidlna
+_msg_ "RUN: minidlna setup"
+(. /home/$USER/rpitools/autodeployment/lib/configure_minidlna.bash)
+
 # Set status file under cache
 post_config_actions_done
