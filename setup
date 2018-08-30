@@ -240,6 +240,9 @@ then
         # set up security stuffs
         . ${REPOROOT}/prepare/system/security.bash
 
+        # set custom password for the linux user
+        . ${REPOROOT}/prepare/system/custom_user.bash                   # default user - custom hostname
+
         # set vimrc
         if [ -f ~/.vimrc ]
         then

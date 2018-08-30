@@ -3,11 +3,11 @@
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${MYDIR_}/../colors.bash"
+cache_indicator_path="/home/$USER/rpitools/cache/.custom_user_passwd_set_done"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-#ssh_passed_state="$($confighandler -s SECURITY -o password_authentication)"
-custom_user="fred"
-custom_password="fred"
+custom_user="$($confighandler -s GENERAL -o user_name_on_os)"
+custom_password="$($confighandler -s SECURITY -o os_user_passwd)"
 
 _msg_title="USER MANAGER"
 function _msg_() {
@@ -23,12 +23,24 @@ function create_custom_user() {
         _msg_ "ADD CUSTOM USER: sudo useradd -c \"rpitools generated user\" -m \"${custom_user}\""
         sudo useradd -c "rpitools generated user" -m "${custom_user}"
 
-        _msg_ "SET PASSWORD: echo \"${custom_user}:*******\" | sudo chpasswd"
-        echo "${custom_user}:${custom_password}" | sudo chpasswd
-
-        # encripted user password handling
-        #echo "fred:fred" | sudo chpasswd --encrypted
+        set_user_password
     fi
+}
+
+function set_user_password() {
+
+        if [ ! -e "$cache_indicator_path" ]
+        then
+            _msg_ "SET PASSWORD: echo \"${custom_user}:*******\" | sudo chpasswd"
+            echo "${custom_user}:${custom_password}" | sudo chpasswd
+
+            # encripted user password handling
+            #echo "fred:fred" | sudo chpasswd --encrypted
+
+            echo -e "$(date)" > "$cache_indicator_path"
+        else
+            _msg_ "CUSTOM PASSWORD for ${custom_user} WAS ALREADY SET: $cache_indicator_path EXISTS."
+        fi
 }
 
 function add_to_sudoers() {
@@ -55,7 +67,8 @@ function del_user_with_home_dir() {
     sudo deluser --remove-home "$1"
 }
 
-create_custom_user
+#create_custom_user
 #add_to_sudoers
-move_rpitools_repo_under_custom_user
+#move_rpitools_repo_under_custom_user
 
+set_user_password
