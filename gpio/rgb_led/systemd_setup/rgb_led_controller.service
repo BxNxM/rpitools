@@ -5,8 +5,9 @@ After=network.target
 [Service]
 ExecStart=/usr/bin/python3 rgb_led_controller.py
 WorkingDirectory=/home/pi/rpitools/gpio/rgb_led/bin/
-StandardOutput=/dev/null
-StandardError=/dev/null
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=rgb_led_controller
 Restart=always
 User=pi
 

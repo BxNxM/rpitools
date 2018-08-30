@@ -115,6 +115,7 @@ elif [ "$set_service_conf" == "False" ] || [ "$set_service_conf" == "false" ]
 then
     if [ ! -e "/lib/systemd/system/${service_name}" ]
     then
+        create_service
         message "COPY: ${MYDIR}/${service_name} -> /lib/systemd/system/${service_name}"
         sudo cp "${MYDIR}/${service_name}" "/lib/systemd/system/${service_name}"
         check_exitcode "$?"
