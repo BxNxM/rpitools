@@ -6,6 +6,7 @@ CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
 CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
 username="pi"
 hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
+custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
 echo -e "$hostname"
 
 echo -e "\n=======================  RPITOOLS INFORMATIONS =============================="

@@ -13,6 +13,7 @@ default_pwd="raspberry"
 hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
 pixel_activate="$($CONFIGAHNDLER -s INSTALL_PIXEL -o activate)"
 vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
+custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
 reboot_wait_loop=4
 if [ "$pixel_activate" == "False" ] || [ "$pixel_activate" == "false" ]
 then
@@ -79,10 +80,6 @@ function waiting_for_up_again_after_reboot() {
     done
 }
 
-echo -e "###### RPI CONF ######"
-echo -e "Default PWD: raspberry"
-echo -e "######################"
-
 is_avaible_output="$(ping -c 2 raspberrypi.local)"
 is_avaible_exitcode="$?"
 if [ "$is_avaible_exitcode" -eq 0 ]
@@ -113,6 +110,7 @@ then
         waiting_for_up_again_after_reboot "$hostname"
     fi
 
+    default_pwd="$custom_pwd"
     echo -e "ssh-keygen -R $hostname"
     ssh-keygen -R "$hostname"
     # run until reboot is not happens
