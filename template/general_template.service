@@ -1,0 +1,15 @@
+[Unit]
+Description=%DESCRIPTION%
+After=network.target
+
+[Service]
+ExecStart=%INTERPRETER_n_SCRIPTNAME%
+WorkingDirectory=%SCRIPT_PATH%
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=%SYSLOG_IDF%
+Restart=always
+User=%USER%
+
+[Install]
+WantedBy=multi-user.target
