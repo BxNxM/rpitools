@@ -93,7 +93,7 @@ then
         #function_demo
     fi
 
-    if [ "$(systemctl is-active memDictCore)" == "inactive" ]
+    if [ "$(systemctl is-active ${service_name})" == "inactive" ]
     then
         message "START SERICE: sudo systemctl start ${service_name}"
         sudo systemctl start "${service_name}"
@@ -102,7 +102,7 @@ then
         message "ALREADY RUNNING SERICE: ${service_name}"
     fi
 
-    if [ "$(systemctl is-enabled memDictCore)" == "disabled" ]
+    if [ "$(systemctl is-enabled ${service_name})" == "disabled" ]
     then
         message "ENABLE SERICE: sudo systemctl enable ${service_name}"
         sudo systemctl enable "${service_name}"
@@ -126,7 +126,7 @@ then
 
     echo -e "dropbox halpage service is required - turn off"
 
-    if [ "$(systemctl is-active memDictCore)" == "active" ]
+    if [ "$(systemctl is-active ${service_name})" == "active" ]
     then
         message "STOP SERICE: sudo systemctl stop ${service_name}"
         sudo systemctl stop "${service_name}"
@@ -135,7 +135,7 @@ then
         message "SERICE NOT RUNNING: ${service_name}"
     fi
 
-    if [ "$(systemctl is-enabled memDictCore)" == "enabled" ]
+    if [ "$(systemctl is-enabled ${service_name})" == "enabled" ]
     then
         message "DISABLE SERICE: sudo systemctl disable ${service_name}"
         sudo systemctl disable "${service_name}"
