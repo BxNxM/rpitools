@@ -34,10 +34,8 @@ function create_custom_user() {
 function add_to_sudoers() {
     if [ "$(sudo cat /etc/sudoers | grep ${custom_user})" == "" ]
     then
-        sudo chmod go+w /etc/sudoers
-        _msg_ "ADD SUDO RIGHT FOR ${custom_user}: echo '${custom_user}  ALL=(ALL:ALL) ALL' >> /etc/sudoers"
-        echo ''"${custom_user}"'  ALL=(ALL:ALL) ALL' >> /etc/sudoers
-        sudo chmod go-w /etc/sudoers
+        _msg_ "ADD SUDO RIGHT FOR ${custom_user}: sudo bash -c \"echo '${custom_user}  ALL=(ALL:ALL) ALL' >> /etc/sudoers\""
+        sudo bash -c "echo ''"${custom_user}"'  ALL=(ALL:ALL) ALL' >> /etc/sudoers"
     else
         _msg_ "USER ${custom_user} ALREADY IN THE SUDOERS [/etc/sudoers]"
     fi
