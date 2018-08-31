@@ -104,9 +104,23 @@ def __init__RGB_schema():
     else:
         print("\tSchema injection failed RGB")
 
+def __init__oledBUTTONS_schema():
+    dict_backup = jsonHandler(backupfilepath)
+
+    # inject_schema
+    test_schema = {"oled": { "sysbuttons": None,
+                            "joystick": None
+                          }
+                  }
+    if dict_backup.inject_schema(test_schema):
+        print("\tSchema oledBUTTONS injected successfully.")
+    else:
+        print("\tSchema injection failed oledBUTTONS")
+
 if "jsonHandler" in __name__:
     if INITED is False:
         __init__RGB_schema()
+        __init__oledBUTTONS_schema()
         INITED = True
 
 if __name__ == "__main__":

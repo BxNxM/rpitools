@@ -1,19 +1,29 @@
 #!/usr/bin/python3
 import LogHandler
+import os
+import time
+import threading
+import sys
 mylogger = LogHandler.LogHandler("joystick_handler")
+myfolder = os.path.dirname(os.path.abspath(__file__))
+
+# IMPORT IMPORTING GPIO LIB
 try:
     import RPi.GPIO as GPIO
 except RuntimeError:
     mylogger.logger.error("Error importing RPi.GPIO!  This is probably because you need superuser privileges.  You can achieve this by using 'sudo' to run your script")
 
-import os
-import time
-import threading
+# IMPORT SAHERED SOCKET MEMORY FOR VIRTUAL BUTTONS
+try:
+    sys.path.append( os.path.join(myfolder, "../../../tools/socketmem/lib/") )
+    import clientMemDict
+    socketdict = clientMemDict.SocketDictClient()
+except Exception as e:
+    socketdict = None
+    print("Socket client error: " + str(e))
 
 # IMPORT HAPTIC ENGINE INTERFACE
 try:
-    import sys
-    myfolder = os.path.dirname(os.path.abspath(__file__))
     haptic_eng_bin_path = os.path.join(myfolder, "../../haptic_engine/bin/")
     sys.path.append(haptic_eng_bin_path)
     import hapticenginge_interface as hei
@@ -42,7 +52,7 @@ class JoystickHandler():
         self.threads = []
         self.last_event_cmd = None
         self.button_thrd_timing = 0.1
-        self.virtual_button_file_watch_thrd_timing = 0.2
+        self.virtual_button_socketMemDict_watch_thrd_timing = 0.2
 
         self.button_threads_init()
 
@@ -52,7 +62,7 @@ class JoystickHandler():
         self.threads.append(threading.Thread(target=self.left_button_thrd))
         self.threads.append(threading.Thread(target=self.right_button_thrd))
         self.threads.append(threading.Thread(target=self.center_button_thrd))
-        self.threads.append(threading.Thread(target=self.virtual_button_file_watch_thrd))
+        self.threads.append(threading.Thread(target=self.virtual_button_socketMemDict_watch_thrd))
         # write more threads here...
         for thd in self.threads:
             thd.daemon = True                                   # with this set, can stop therad
@@ -96,19 +106,14 @@ class JoystickHandler():
                 self.last_event_cmd = "CENTER"
             time.sleep(self.button_thrd_timing)
 
-    def virtual_button_file_watch_thrd(self):
-        myfolder = os.path.dirname(os.path.abspath(__file__))
-        virtual_button_file_pipe = os.path.join(myfolder, ".virtual_button_file")
+    def virtual_button_socketMemDict_watch_thrd(self):
         while True:
-            if os.path.exists(virtual_button_file_pipe):
-                with open(virtual_button_file_pipe, 'r') as f:
-                    cmd = f.read().rstrip()
-                if cmd == "joystickUP" or cmd == "joystickDOWN" or cmd == "joystickCENTER" or cmd == "joystickRIGHT" or cmd == "joystickLEFT":
-                    cmd = cmd[8:len(cmd)]
-                    self.last_event_cmd = cmd
-                    time.sleep(0.5)
-                    open(virtual_button_file_pipe, 'w').close()
-            time.sleep(self.virtual_button_file_watch_thrd_timing)
+            cmd = socketdict.get_parameter("oled", "joystick").rstrip().upper()
+            if cmd == "UP" or cmd == "DOWN" or cmd == "CENTER" or cmd == "RIGHT" or cmd == "LEFT":
+                self.last_event_cmd = cmd
+                time.sleep(0.5)
+                socketdict.set_parameter("oled", "joystick", "None")
+            time.sleep(self.virtual_button_socketMemDict_watch_thrd_timing)
 
     def get_button_evenet(self, in_loop=True):
         while in_loop:

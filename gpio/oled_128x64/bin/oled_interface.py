@@ -7,6 +7,15 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 import subprocess
 import time
 
+# IMPORT SAHERED SOCKET MEMORY FOR VIRTUAL BUTTONS
+try:
+    sys.path.append( os.path.join(myfolder, "../../../tools/socketmem/lib/") )
+    import clientMemDict
+    socketdict = clientMemDict.SocketDictClient()
+except Exception as e:
+    socketdict = None
+    print("Socket client error: " + str(e))
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-ol", "--oled", help="Oled service ON or OFF")
 parser.add_argument("-sh", "--show",  action='store_true', help="show service status")
@@ -22,7 +31,6 @@ button = args.button
 set_service = args.set_service
 
 oled_core_script = "oled_gui_core.py"
-oled_virtual_buttons_file = os.path.join(myfolder, "../lib/.virtual_button_file")
 set_service_script = os.path.join(myfolder, "../systemd_setup/set_service.bash")
 
 def process_is_run(process_name):
@@ -93,9 +101,7 @@ def set_buttons(button):
         command = "standbyTrue"
 
     if command is not None:
-        with open(oled_virtual_buttons_file, 'w') as f:
-            f.write(command)
-            print("Button is set: " + str(command))
+        socketdict.set_parameter("oled", "sysbuttons", str(command))
     else:
         print("Button is invalid: " + str(command))
 
