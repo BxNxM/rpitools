@@ -7,7 +7,7 @@ service_template_path="/home/$USER/rpitools/template/general_template.service"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 rpitools_linux_user="$($confighandler -s GENERAL -o user_name_on_os)"
 set_service_conf="True"
-service_name="${service_name}.service"
+service_name="memDictCore.service"
 
 function message() {
     local msg="$1"
@@ -38,9 +38,9 @@ function change_parameter() {
 
 function create_service() {
     local service_description="socket memory dict service louncher"
-    local exec_cmd="/bin/bash ${service_name}.bash"
+    local exec_cmd="/bin/bash memDictCore.bash"
     local working_dir="/home/${rpitools_linux_user}/rpitools/tools/socketmem/bin/"
-    local syslog_idf="${service_name}"
+    local syslog_idf="memDictCore"
     local user="${rpitools_linux_user}"
 
     message "Copy service template ${service_template_path} -> ${MYDIR}/${service_name}"
