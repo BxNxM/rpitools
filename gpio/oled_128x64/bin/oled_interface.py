@@ -21,6 +21,7 @@ parser.add_argument("-ol", "--oled", help="Oled service ON or OFF")
 parser.add_argument("-sh", "--show",  action='store_true', help="show service status")
 parser.add_argument("-re", "--restart",  action='store_true', help="restart oled service")
 parser.add_argument("-bu", "--button", help="LEFT / STANDBY / RIGHT / standbyFalse / standbyTrue")
+parser.add_argument("-jo", "--joystick", help="LEFT / RIGHT / UP / DOWN /CENTER")
 parser.add_argument("-ss", "--set_service", action='store_true', help="set systemd service - boot start...")
 
 args = parser.parse_args()
@@ -28,6 +29,7 @@ oled = args.oled
 show = args.show
 restart = args.restart
 button = args.button
+joystick = args.joystick
 set_service = args.set_service
 
 oled_core_script = "oled_gui_core.py"
@@ -105,6 +107,18 @@ def set_buttons(button):
     else:
         print("Button is invalid: " + str(command))
 
+def set_joystick(button):
+    command = None
+    if button.upper() == "RIGHT" or button.upper() == "LEFT" or button.upper() == "UP" \
+    or button.upper() == "DOWN" or button.upper() == "CENTER":
+        command = button.upper()
+
+    if command is not None:
+        print(command)
+        socketdict.set_parameter("oled", "joystick", str(command))
+    else:
+        print("Button is invalid: " + str(command))
+
 def restart_oled_gui_core():
     # restart with systemctl
     process = subprocess.Popen("sudo systemctl is-active oled_gui_core", stdout=subprocess.PIPE, shell=True)
@@ -153,6 +167,9 @@ if show:
 # oled virtual button
 if button is not None:
     set_buttons(button)
+
+if joystick is not None:
+    set_joystick(joystick)
 
 # set systemd service
 if set_service:
