@@ -25,7 +25,7 @@ function validate_conf() {
             echo -e "${GREEN}VALID: rpitools_config.cfg [$exitcode]${NC}"
         else
             echo -e "$validate_msg"
-            echo -e "${RED}INVALID: rpitools_config.cfg [$exitcode]${NC}\nPls. solve config problems: confhelper -> D"
+            echo -e "${RED}INVALID: rpitools_config.cfg [$exitcode]${NC}\nPls. solve config problems: confeditor -> D"
         fi
     fi
 }
@@ -57,7 +57,7 @@ function import_configuration() {
                 echo -e "\t${GREEN}IMPORT SUCCESS & VALIDATE OK! [$exitcode]${NC}"
             else
                 echo -e "$validate_msg"
-                echo -e "\t${RED}IMPORT SUCCESS & VALIDATE FAILED[$exitcode]${NC}\nPls. solve config problems: confhelper -> D"
+                echo -e "\t${RED}IMPORT SUCCESS & VALIDATE FAILED[$exitcode]${NC}\nPls. solve config problems: confeditor -> D"
             fi
         else
             echo -e "\t${RED}IMPORT FAILED!${NC}"

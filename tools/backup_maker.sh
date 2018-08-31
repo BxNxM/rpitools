@@ -11,7 +11,7 @@ limit="$($confighandler -s BACKUP -o limit)"
 if [[ "$activate_backup" != "True" ]] && [[ "$activate_backup" != "true" ]]
 then
     echo -e "Backup creator for users home folder was not activated [$activate_backup] in rpi_config.cfg"
-    echo -e "To activate, use: confhelper -> Y and edit [BACKUP] section"
+    echo -e "To activate, use: confeditor -> Y and edit [BACKUP] section"
     exit 1
 fi
 

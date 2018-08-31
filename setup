@@ -62,7 +62,7 @@ function deploy_mode_text() {
     message "================================="
     message "${LIGHT_GREEN}DEPLOY MODE${NC} rpitools - WELCOME :D"
     message "================================="
-    message "${LIGHT_GREEN}[1]${NC} Set your configuration: RUN COMMAND:  ${LIGHT_GREEN}confhelper${NC}"
+    message "${LIGHT_GREEN}[1]${NC} Set your configuration: RUN COMMAND:  ${LIGHT_GREEN}confeditor${NC}"
     message "${LIGHT_GREEN}[2]${NC} Run this script in order:"
     cd "${REPOROOT}/prepare/sd_card"
     ls -l "${REPOROOT}/prepare/sd_card"
@@ -120,15 +120,15 @@ function set_requirements_on_host_side() {
 }
 
 # Set two quick config access interface:
-alias confhelper='${MYDIR}/autodeployment/config/confhelper.bash'
+alias confeditor='${MYDIR}/autodeployment/config/confeditor.bash'
 alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
 if [ "$quick_conf" == "true" ]
 then
     if [ "$arg_helper_lolcat" == "true" ]
     then
-        echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h" | lolcat
+        echo -e "QUICK COMMANDS WAS SET:\nconfeditor -h\nconfighandler -h" | lolcat
     else
-        echo -e "QUICK COMMANDS WAS SET:\nconfhelper -h\nconfighandler -h"
+        echo -e "QUICK COMMANDS WAS SET:\nconfeditor -h\nconfighandler -h"
     fi
     set_requirements_on_host_side
     deploy_mode_text
@@ -139,7 +139,7 @@ fi
 if [[ "$OS" != "GNU/Linux" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
  then
     # rpitools configuration access from anywhere
-    message "[INFO] For configuiration use: confhelper OR confighandler"
+    message "[INFO] For configuiration use: confeditor OR confighandler"
     message "[INFO] [MAIN SCRIPT] This script works on raspbian properly, this OS $OS DEVICE $DEVICE is not supported! => DEPLOYMENT MODE"
     run_source=false
 fi
@@ -228,7 +228,7 @@ then
     exit_code="$?"
     if [ "$exit_code" -ne 0 ]
     then
-        echo -e "Set your configuration berfore continue!\n${GREEN}confhelper, and press D${NC}"
+        echo -e "Set your configuration berfore continue!\n${GREEN}confeditor, and press D${NC}"
         INVALID_CONFIG="TRUE"
     else
         echo -e "Your configuration is valid :D"

@@ -83,7 +83,7 @@ then
     if [ "$exit_code" -ne 0 ]
     then
         echo -e "$validate_msg"
-        echo -e "Set your configuration berfore continue!\n${GREEN}confhelper, and press D${NC}"
+        echo -e "Set your configuration berfore continue!\n${GREEN}confeditor, and press D${NC}"
         echo -e "CAN NOT START SERVICES!"
     else
         echo -e "Your configuration is valid :D"
