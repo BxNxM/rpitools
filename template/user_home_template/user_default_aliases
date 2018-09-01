@@ -1,0 +1,13 @@
+export RPITOOLSUSER="pi"
+export VISUAL="vim"             # set editors for git and others
+export EDITOR="$VISUAL"         # -||-
+export LC_ALL=C                 # fix: setlocale: No such file or directory
+alias llt='ls -lrth'
+alias ll='ls -lh'
+alias weather_wttr='curl wttr.in/Budapest'
+alias cd..='cd ..'
+alias sysmonitor='/home/${RPITOOLSUSER}/rpitools/tools/sysmonitor/bin/sysmonitor.py'
+alias copy_my_sshkey_to='/home/${RPITOOLSUSER}/rpitools/tools/copy_my_sshkey_to.bash'
+alias rpihelp='export WELCOME_TEXT_ENV="true"; /home/${RPITOOLSUSER}/rpitools/tools/welcome_config/welcome_screen.bash; unset WELCOME_TEXT_ENV'
+alias gitlog='git log --all --decorate --oneline --graph'
+alias gitbranch='git branch -av'

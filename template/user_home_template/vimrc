@@ -1,0 +1,101 @@
+"==================================================================================
+"=========================== CUSTOM SETTINGS FOR VIM ==============================
+"==================================================================================
+" SET COLOR SCHEME:
+" exsisting chemes: /usr/share/vim/vim72/colors
+"write :colorscheme press tab ...
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" BASIC CONFIG - LINE NUMBERS AND SYNTAX HIGHTLIGHTNING:
+" set line numbers color:
+highlight LineNr ctermfg=darkyellow
+"set line numbering on
+set number
+syntax on
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" AUTO IDENT BY FILE TYPE:
+"filetype indent plugin on
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SEARCH SETUP WITH HIGHLIGHT
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" HIGHTLIGHT GROUP FOR TRAILING WHITESPACES:
+" doc: http://vim.wikia.com/wiki/Highlight_unwanted_spaces
+highlight ExtraWhitespace ctermbg=darkred guibg=lightgreen
+" Show trailing whitespace:
+match ExtraWhitespace /\s\+$/
+" Switch off :match highlighting.
+"match
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" DELETE WITH BACKSPACE:
+set backspace=indent,eol,start
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SET TAB FOR 4 SPACES:
+set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SET WHITESPACES VISIBLE:
+set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+"enable:        :set list
+"disable:       :set nolist
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" SET MOUSE EVENTS (MOUSE CLICK):
+"set mouse=a
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" INDENT LINES (esc mode):
+"to right:      >lines_fromcursor          ex. >2
+"to left:       <lines_fromcursor          ex. <2
+"
+"================================= MANUAL OPTIONS =================================
+" TURN OFF SETTINGS ON RUNTIME:
+"line numbers off:      :set nonumber or :set nonu
+"mouse off:             :set mouse=c
+"if background is dark set text colors for it - (optional) enable the following line:
+":set background=dark
+"if background is light set text colors for it - (optional) enable the following line:
+":set background=light
+"
+"===================================== HELP ========================================
+" HOW TO USE THESE SETTINGS (VISUAL MODE):
+"SEARCH:                visual mode - /text - n next found - N previous find option
+"CHANGE ALL:            :%s/textToChange/newText/g
+"CHANGE:                :s/textToChange/newText/g
+"SELECT FULL LINE:      shift-v
+"SELECT BLOCK:          ctrl-v
+"COPY:                  y
+"CUT:                   x
+"PASTE:                 p
+"UNDO:                  u
+"SAVE:                  w
+"QUIT:                  q
+"FORCE QUIT:            (without save): q!
+"AUTOCOMPLETE:          ctrl-n
+"
+"================================== DEFAULT COLORS ==================================
+"               *cterm-colors*
+"               NR-16   NR-8    COLOR NAME
+"               0       0       Black
+"               1       4       DarkBlue
+"               2       2       DarkGreen
+"               3       6       DarkCyan
+"               4       1       DarkRed
+"               5       5       DarkMagenta
+"               6       3       Brown, DarkYellow
+"               7       7       LightGray, LightGrey, Gray, Grey
+"               8       0*      DarkGray, DarkGrey
+"               9       4*      Blue, LightBlue
+"               10      2*      Green, LightGreen
+"               11      6*      Cyan, LightCyan
+"               12      1*      Red, LightRed
+"               13      5*      Magenta, LightMagenta
+"               14      3*      Yellow, LightYellow
+"               15      7*      White
