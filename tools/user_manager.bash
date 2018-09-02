@@ -2,10 +2,10 @@
 
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "${MYDIR_}/../../prepare/colors.bash"
+source "${MYDIR_}/../prepare/colors.bash"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-#custom_user="$($confighandler -s GENERAL -o user_name_on_os)"
+transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
 
 #########################################################################################
 #                                 ARGUMENTUM HANDLER                                    #
@@ -251,6 +251,7 @@ function __copy_user_temaplete() {
     local username="$1"
     local temaplet_dir="/home/$USER/rpitools/template/user_home_template/"
     local template_content=($(ls -1 "$temaplet_dir"))
+    local sharedmovies_path="/home/${username}/SharedMovies"
     for file in "${template_content[@]}"
     do
         if [[ "$file" == *".dat"* ]]
@@ -264,8 +265,17 @@ function __copy_user_temaplete() {
     done
 
     _msg_ "SET USER PERMISSION FOR THE COPIED FILES"
-    sudo chown "${username}" "/home/${username}/"
-    sudo chgrp "${username}" "/home/${username}/"
+    sudo chown -R "${username}" "/home/${username}/"
+    sudo chgrp -R "${username}" "/home/${username}/"
+
+    if [ ! -e "$sharedmovies_path" ]
+    then
+        _msg_ "Linking $transmission_downloads_path -> $sharedmovies_path"
+        sudo ln -s "$transmission_downloads_path" "$sharedmovies_path"
+
+        _msg_ "Add $username to the debian-transmission group."
+        sudo usermod -a -G debian-transmission "$username"
+    fi
 }
 
 ARGPARSE
