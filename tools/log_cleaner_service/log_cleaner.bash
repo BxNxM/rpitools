@@ -13,12 +13,12 @@ fi
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-log_file_sizeGB_trigger="$($confighandler -s LOGROTATE -o log_file_sizegb_trigger)"
+log_file_sizeMB_trigger="$($confighandler -s LOGROTATE -o log_file_size_mb_trigger)"
 run_period_sec="$($confighandler -s LOGROTATE -o run_period_sec)"
 
 logs_folder="/var/log/"
 logs_folder2="/var/log/"
-find_size_over_Gb="$log_file_sizeGB_trigger"
+find_size_over_Mb="$log_file_sizeMB_trigger"
 sleeptime="$run_period_sec"
 rotate_lines=50
 black_list=("syslog" "daemon")
@@ -35,7 +35,7 @@ function debug_msg() {
 
 function logs_to_clean() {
     local log_folder_path="$1"
-    filtered_logs="$(sudo find "$log_folder_path" -size +${find_size_over_Gb}G)"
+    filtered_logs="$(sudo find "$log_folder_path" -size +${find_size_over_Mb}M)"
     filtered_logs=($filtered_logs)
     for log in "${filtered_logs[@]}"
     do
@@ -43,7 +43,7 @@ function logs_to_clean() {
         do
             if [[ "$log" == *"$black"* ]]
             then
-                debug_msg "FILTERED FILE TO CLEAN: $log BIGGER THEN LIMIT [ $find_size_over_Gb GB ]"
+                debug_msg "FILTERED FILE TO CLEAN: $log BIGGER THEN LIMIT [ $find_size_over_Mb Mb ]"
                 rotate "$log"
             else
                 debug_msg "UNKNOWN FILETERED LOG, to clean add it to the black list"
