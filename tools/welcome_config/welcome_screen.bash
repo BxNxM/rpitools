@@ -44,9 +44,11 @@ then
     echo -e "\tsysmonitor -h\t\t-> system monitoring tool"
     echo -e "\tdiskhandler -h\t\t-> external disks handling based on fstab"
     echo -e "\tconfighandler -h\t-> config handler based on rpitools_config.cfg [programs API]"
-    echo -e "\tconfhelper\t\t-> interactive config handler for easy modifications. [Human API]"
+    echo -e "\tconfeditor\t\t-> interactive config handler for easy modifications. [Human API]"
     echo -e "\tmysshfs\t\t\t-> built in sshfs based on rpitools_config.cfg [0|1]"
     echo -e "\tupdate_rpitools\t\t-> update your repository with an easy command :D"
+    echo -e "\tnetwork_monitor\t\t->show actual network traffic"
+    echo -e "\thalpage -h\t\t-> if you set extarnal (dropbox based) IP handling"
     echo -e "\tclientMemDict -h\t-> access for the internal ram memory dict structure [programs API]"
     echo -e "\trpihelp\t\t\t-> show this help screen again :D"
 
@@ -61,12 +63,8 @@ then
     echo -e "\tsystemctl status motion\t-> camera streamer app with motion detection"
 
     echo -e "${wColor}User handling - create - delete:${NC}"
-    echo -e "\tsudo useradd -m fred -G sudo\t-> add new user named fred with sudo permissions (group)"
-    echo -e "\tsudo passwd fred\t\t-> add password for fred"
-    echo -e "\tsudo visudo\t\t\t-> show sudoers file"
-    echo -e "\tsudo deluser fred\t\t-> delete fred user"
-    echo -e "\tsudo deluser -remove-home fred\t-> delete fred user with fred home folder"
-    echo -e "\tpasswd fred\t\t\t-> change fred user password"
+    echo -e "\tusermanager --man\t-> see the available options: create, delete, change password, list"
+    echo -e "\tsudo visudo\t\t-> show sudoers file"
 
     echo -e "${wColor}Other commands:${NC}"
     echo -e "\tAdd new user for\n\t\
