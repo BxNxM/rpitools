@@ -81,7 +81,13 @@ function _download_server_info_and_parse() {
     echo -e "Dropbox-Uploader/dropbox_uploader.sh download $server_info_file_name ${local_requests_cache}${server_basename}"
     local get_server_info_file=$($dropbox_uploader download "$server_info_file_name" "${local_requests_cache}${server_basename}")
     echo -e "$get_server_info_file"
-    info_txt=$(cat ${local_requests_cache}${server_basename})
+
+    if [ -e "${local_requests_cache}${server_basename}" ]
+    then
+        info_txt="$(cat ${local_requests_cache}${server_basename})"
+    else
+        info_txt="undef"
+    fi
     echo -e "$info_txt"
 }
 
