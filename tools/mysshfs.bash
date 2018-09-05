@@ -22,6 +22,7 @@ default_halpage_name="official"
 #-----------------------------------------------#
 server_path="/home/${user}"                      # remote server path
 sshfs_louncher_path="${MYDIR}/mysshfs.bash"      # actual script full path
+MODE="None"
 
 #--------------------------------------------- COLORS ----------------------------------------------------#
 BLACK='\033[0;30m'
@@ -42,19 +43,24 @@ LIGHT_CYAN='\033[1;36m'
 WHITE='\033[1;37m'
 NC='\033[0m'
 
+function info_msg() {
+    echo -e "${LIGHT_PURPLE}[INFO][MODE:$MODE]${NC} ${*}"
+}
+
 # ------------------- SET ARG PARSER ----------------#
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point")                             # valid arg list - add new args - call with -- expl: --man
-    known_args_subs_pcs=(0 0 0 0 1 1 1 1)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
+    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name")                             # valid arg list - add new args - call with -- expl: --man
+    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
     man_for_args=("--man\t\t::\tmanual"\                                        # add help text here
                   "--mount\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
                   "--unmount\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
-                  "--ip\t::\tserver ip (optional), ${known_args_subs_pcs[4]} par"\
-                  "--port\t::\tserver port (optional), ${known_args_subs_pcs[5]} par"\
-                  "--user\t::\tserver username (optional), ${known_args_subs_pcs[6]} par"\
-                  "--mount_point\t::\tlocal mount point for the server (optional), ${known_args_subs_pcs[7]} par")
+                  "--ip\t::\tserver ip (optional) grp0, ${known_args_subs_pcs[4]} par"\
+                  "--port\t::\tserver port (optional) grp0, ${known_args_subs_pcs[5]} par"\
+                  "--user\t::\tserver username (optional) grp0, ${known_args_subs_pcs[6]} par"\
+                  "--mount_point\t::\tlocal mount point for the server (optional) grp1, ${known_args_subs_pcs[7]} par"\
+                  "--halpage_name\t::\thalpage identifier name (optional) grp0, ${known_args_subs_pcs[8]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -181,40 +187,54 @@ function argParseRun() {
     man
 }
 
+function logo() {
+    echo -e "${RED}
+          _____    _____   _    _   ______    _____
+         / ____|  / ____| | |  | | |  ____|  / ____|
+        | (___   | (___   | |__| | | |__    | (___
+        '\___ \   \___ \  |  __  | |  __|    \___ \'
+         ____) |  ____) | | |  | | | |       ____) |
+     my |_____/  |_____/  |_|  |_| |_|      |_____/
+     ${NC}"
+    echo -e "_______________MOUNT YOUR SERVER________________"
+}
+
 # functions
 function debug_param_info() {
 
-    echo -e "user: $user"                               # from config | input par.
-    echo -e "host: $host"                               # default_host | halpage_host | input par.
-    echo -e "port: $port"                               # default_port | external_port | input par.
-    echo -e "mount_folder_path: $mount_folder_path"     # from config | input par. | generated
-    echo -e "default_halpage_name: $default_halpage_name" # from config | input par.
-    echo -e "server_path: $server_path"                 # generated
+    info_msg "user: $user"                               # from config | input par.
+    info_msg "host: $host"                               # default_host | halpage_host | input par.
+    info_msg "port: $port"                               # default_port | external_port | input par.
+    info_msg "mount_folder_path: $mount_folder_path"     # from config | input par. | generated
+    info_msg "default_halpage_name: $default_halpage_name" # from config | input par.
+    info_msg "server_path: $server_path"                 # generated
 }
 
-function test_ip(){
-    ip=$1
-    p=$2
-    echo -e "${YELLOW}Testing ip: ${ip}${NC}"
+function validate_host(){
+    local ip=$1
+    local p=$2
+    info_msg "Testing host: ${ip} :: $p"
     ping -p ${p} ${ip} -c 2
-    status=$?
+    status="$?"
     if [ $status == 0 ]
     then
+        echo -e "\t$(info_msg "Succesfully located")"
         status=true
     else
+        echo -e "\t$(info_msg "Can't found")"
         status=false
     fi
 }
 
 function get_info_from_dropbox_halpage() {
-    local server_halpage_name="official"
+    local server_halpage_name="$1"
     if [ "$server_halpage_name" != "None" ] | [ "$server_halpage_name" != "none" ]
     then
-        echo -e "[INFO] Get host and port for the $server_halpage_name server from halpage (dropbox)"
+        info_msg "Get host and port for the $server_halpage_name server from halpage (dropbox)"
         local halpage_handler="/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash"
         host="$($halpage_handler --name $server_halpage_name --ip)"
         port="$($halpage_handler --name $server_halpage_name --port)"
-        test_ip "$host" "$port"
+        validate_host "$host" "$port"
         local status_="$status"
         echo -e "HOST:$host PORT:$port status:$status_"
     else
@@ -223,7 +243,9 @@ function get_info_from_dropbox_halpage() {
 }
 
 function default_settings_mount() {
-    test_ip "$default_host" "$default_port"
+    MODE="DEFAULT"
+    info_msg "Attempt to connect with config settings..."
+    validate_host "$default_host" "$default_port"
     if [ "$status" == "true" ]
     then
         echo -e "MOUNT WITH: $default_host $default_port"
@@ -234,7 +256,10 @@ function default_settings_mount() {
 }
 
 function dynamic_settings_mount() {
-    test_ip "$host" "$port"
+    MODE="DEFAULT HALPAGE"
+    info_msg "Appempt to connect with halpage settings..."
+    get_info_from_dropbox_halpage "$default_halpage_name"
+    validate_host "$host" "$port"
     if [ "$status" == "true" ]
     then
         echo -e "MOUNT WITH: $host $port"
@@ -242,13 +267,68 @@ function dynamic_settings_mount() {
     fi
 }
 
+function connect_with_manual_settings() {
+    MODE="MANUAL"
+    info_msg "Attept to connect with manual settings..."
+    if [ ! -z "$halpage_name" ]
+    then
+        MODE="MANUAL HALPAGE"
+        info_msg "Attempt to connect with manual settings with halpage api (dropbox) to $halpage_name server"
+        get_info_from_dropbox_halpage "$halpage_name"
+    else
+        if [ "$manual_connection" -gt 2 ]
+        then
+            MODE="MANUAL PARAMETERS"
+            info_msg "Attept to connect with manual settings ip, port, host"
+        else
+            MODE="INVALID"
+            info_msg "INVALID PARAMETER SET, REQUIRED: --ip, --port, --user"
+        fi
+    fi
+
+}
+
+function mount_sshfs() {
+    if [ ! -d "$mount_folder_path" ]
+    then
+        info_msg "Create mount point: $mount_folder_pat"
+        sudo mkdir -p "$mount_folder_path"
+    else
+        info_msg "Mount point exists: $mount_folder_pat"
+    fi
+
+    echo "MOUNT: => cmd: sshfs -p $port -o follow_symlinks $user@$host:$server_path $mount_folder_path"
+    sshfs -p $port -o follow_symlinks $user@$host:$server_path $mount_folder_path
+    local exitcode="$?"
+    if [ "$exitcode" -eq 0 ]
+    then
+        echo -e "\t$(info_msg "SUCCESS [$exitcode]")"
+    else
+        echo -e "\t$(info_msg "FAIL [$exitcode]")"
+    fi
+}
+
+function unmount_sshfs() {
+    if [ -d  "$mount_folder_path" ]
+    then
+        info_msg "UNMOUNT: => $mount_folder_path"
+        sudo umount "$mount_folder_path"
+        local exitcode="$?"
+        if [ "$exitcode" -eq 0 ]
+        then
+            echo -e "\t$(info_msg "SUCCESS [$exitcode]")"
+        else
+            echo -e "\t$(info_msg "FAIL [$exitcode]")"
+        fi
+    else
+        info_msg "$mount_folder_path NOT FOUND"
+    fi
+}
+
 #:::::::::::::::::::: MAIN USAGE ::::::::::::::::::::::
 function main() {
-
-    if [ "$args_pcs" -eq 1 ]
-    then
-        get_info_from_dropbox_halpage
-    fi
+    logo
+    local manual_connection=0
 
     # run argparser
     argParseRun
@@ -256,6 +336,7 @@ function main() {
     if [ "$(get_arg_status "ip")" -eq 1 ]
     then
         # get required arg values
+        manual_connection=$((manual_connection+1))
         echo -e "IP: $(get_arg_value "ip")"
         host="$(get_arg_value "ip")"
     fi
@@ -263,6 +344,7 @@ function main() {
     if [ "$(get_arg_status "port")" -eq 1 ]
     then
         # get required arg values
+        manual_connection=$((manual_connection+1))
         echo -e "PORT: $(get_arg_value "port")"
         port="$(get_arg_value "port")"
     fi
@@ -270,33 +352,50 @@ function main() {
     if [ "$(get_arg_status "user")" -eq 1 ]
     then
         # get required arg values
+        manual_connection=$((manual_connection+1))
         user="$(get_arg_value "user")"
-    else
-        user="$($confighandler -s SSHFS -o user)"
+        server_path="/home/$user"
     fi
     # check arg was called
     if [ "$(get_arg_status "mount_point")" -eq 1 ]
     then
         # get required arg values
         echo -e "MOUNT POINT: $(get_arg_value "mount_point")"
-        mount_point="$(get_arg_value "mount_point")"
+        mount_folder_path="$(get_arg_value "mount_point")"
+        manual_connection=$((manual_connection+1))
+    elif [ "$user" != "$($confighandler -s SSHFS -o user)" ]
+    then
+        mount_folder_path="/media/$user"
     fi
+    # check arg was called
+    if [ "$(get_arg_status "halpage_name")" -eq 1 ]
+    then
+        # get required arg values
+        echo -e "HALPAGE NAME: $(get_arg_value "halpage_name")"
+        halpage_name="$(get_arg_value "halpage_name")"
+        manual_connection=$((manual_connection+1))
+    fi
+
     # check arg was called
     if [ "$(get_arg_status "mount")" -eq 1 ]
     then
-        # get required arg values
-        echo -e "mount was called with parameters: ->|$(get_arg_value "mount")|<-"
-        default_settings_mount
-        if [ "$status" != "true" ]
+        if [ "$manual_connection" -eq 0 ]
         then
-            dynamic_settings_mount
+            default_settings_mount
+            if [ "$status" != "true" ]
+            then
+                dynamic_settings_mount
+            fi
+        else
+            connect_with_manual_settings
         fi
+        mount_sshfs
     fi
     # check arg was called
     if [ "$(get_arg_status "unmount")" -eq 1 ]
     then
         # get required arg values
-        echo -e "unmount was called with parameters: ->|$(get_arg_value "unmont")|<-"
+        unmount_sshfs
     fi
 }
 
