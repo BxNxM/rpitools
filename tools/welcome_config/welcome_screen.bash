@@ -45,7 +45,7 @@ then
     echo -e "\tdiskhandler -h\t\t-> external disks handling based on fstab"
     echo -e "\tconfighandler -h\t-> config handler based on rpitools_config.cfg [programs API]"
     echo -e "\tconfeditor\t\t-> interactive config handler for easy modifications. [Human API]"
-    echo -e "\tmysshfs\t\t\t-> built in sshfs based on rpitools_config.cfg [0|1]"
+    echo -e "\tmysshfs --man\t\t\t-> built in sshfs based on rpitools_config.cfg [0|1]"
     echo -e "\tupdate_rpitools\t\t-> update your repository with an easy command :D"
     echo -e "\tnetwork_monitor\t\t->show actual network traffic"
     echo -e "\thalpage -h\t\t-> if you set extarnal (dropbox based) IP handling"

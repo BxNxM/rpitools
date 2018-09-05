@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -x
+
 # get arg list pcs
 args_pcs=$#
 # get arg list
@@ -54,11 +56,11 @@ function info_msg() {
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage")                             # valid arg list - add new args - call with -- expl: --man
-    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
+    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u")                             # valid arg list - add new args - call with -- expl: --man
+    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
     man_for_args=("--man\t\t::\tmanual"\                                        # add help text here
-                  "--mount\t\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
-                  "--unmount\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
+                  "--mount [m]\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
+                  "--unmount [u]\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
                   "--ip\t\t::\tserver ip (optional) grp0, ${known_args_subs_pcs[4]} par"\
                   "--port\t\t::\tserver port (optional) grp0, ${known_args_subs_pcs[5]} par"\
                   "--user\t\t::\tserver username (optional) grp0, ${known_args_subs_pcs[6]} par"\
@@ -201,6 +203,10 @@ function logo() {
      my |_____/  |_____/  |_|  |_| |_|      |_____/
      ${NC}"
     echo -e "_______________MOUNT YOUR SERVER________________"
+    if [ "$args_pcs" -eq 0 ]
+    then
+        info_msg "For more info: mysshfs --man"
+    fi
 }
 
 # functions
@@ -348,6 +354,7 @@ function main() {
 
     # run argparser
     argParseRun
+
     # check arg was called
     if [ "$(get_arg_status "list_halpage")" -eq 1 ]
     then
@@ -403,7 +410,7 @@ function main() {
     fi
 
     # check arg was called
-    if [ "$(get_arg_status "mount")" -eq 1 ]
+    if [ "$(get_arg_status "mount")" -eq 1 ] || [ "$(get_arg_status "m")" -eq 1 ]
     then
         if [ "$manual_connection" -eq 0 ]
         then
@@ -418,7 +425,7 @@ function main() {
         mount_sshfs
     fi
     # check arg was called
-    if [ "$(get_arg_status "unmount")" -eq 1 ]
+    if [ "$(get_arg_status "unmount")" -eq 1 ] || [ "$(get_arg_status "u")" -eq 1 ]
     then
         # get required arg values
         unmount_sshfs
