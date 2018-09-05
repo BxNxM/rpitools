@@ -332,6 +332,7 @@ function unmount_sshfs() {
         if [ "$exitcode" -eq 0 ]
         then
             echo -e "\t$(info_msg "${GREEN}SUCCESS${NC} [$exitcode]")"
+            rmdir "${mount_folder_path}"
         else
             echo -e "\t$(info_msg "${RED}FAIL${NC} [$exitcode]")"
         fi
