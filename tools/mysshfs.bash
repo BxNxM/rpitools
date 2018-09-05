@@ -11,13 +11,16 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # WRITE USER HERE
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
+# HALPAGE HANDLER
+halpage_handler="/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash"
 
 user="$($confighandler -s SSHFS -o user)"
 default_host="$($confighandler -s SSHFS -o default_host)"
 default_port="$($confighandler -s SSHFS -o default_port)"
 external_port="$($confighandler -s SSHFS -o external_port)"
 mount_folder_path="$($confighandler -s SSHFS -o mount_folder_path)"
-default_halpage_name="official"
+default_halpage_name="$($confighandler -s SSHFS -o halpage_name)"
+halpage_is_available="$($confighandler -s EXTIPHANDLER -o activate)"
 
 #-----------------------------------------------#
 server_path="/home/${user}"                      # remote server path
@@ -44,23 +47,24 @@ WHITE='\033[1;37m'
 NC='\033[0m'
 
 function info_msg() {
-    echo -e "${LIGHT_PURPLE}[INFO][MODE:$MODE]${NC} ${*}"
+    echo -e "${YELLOW}[INFO][MODE:$MODE]${NC} ${*}"
 }
 
 # ------------------- SET ARG PARSER ----------------#
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name")                             # valid arg list - add new args - call with -- expl: --man
-    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
+    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage")                             # valid arg list - add new args - call with -- expl: --man
+    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
     man_for_args=("--man\t\t::\tmanual"\                                        # add help text here
-                  "--mount\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
+                  "--mount\t\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
                   "--unmount\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
-                  "--ip\t::\tserver ip (optional) grp0, ${known_args_subs_pcs[4]} par"\
-                  "--port\t::\tserver port (optional) grp0, ${known_args_subs_pcs[5]} par"\
-                  "--user\t::\tserver username (optional) grp0, ${known_args_subs_pcs[6]} par"\
+                  "--ip\t\t::\tserver ip (optional) grp0, ${known_args_subs_pcs[4]} par"\
+                  "--port\t\t::\tserver port (optional) grp0, ${known_args_subs_pcs[5]} par"\
+                  "--user\t\t::\tserver username (optional) grp0, ${known_args_subs_pcs[6]} par"\
                   "--mount_point\t::\tlocal mount point for the server (optional) grp1, ${known_args_subs_pcs[7]} par"\
-                  "--halpage_name\t::\thalpage identifier name (optional) grp0, ${known_args_subs_pcs[8]} par")
+                  "--halpage_name\t::\thalpage identifier name (optional) grp0, ${known_args_subs_pcs[8]} par"\
+                  "--list_halpage\t::\tlist halpage server names grp2, ${known_args_subs_pcs[9]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -202,6 +206,7 @@ function logo() {
 # functions
 function debug_param_info() {
 
+    info_msg "CONNECTION DETAILS:"
     info_msg "user: $user"                               # from config | input par.
     info_msg "host: $host"                               # default_host | halpage_host | input par.
     info_msg "port: $port"                               # default_port | external_port | input par.
@@ -218,7 +223,7 @@ function validate_host(){
     status="$?"
     if [ $status == 0 ]
     then
-        echo -e "\t$(info_msg "Succesfully located")"
+        echo -e "\t$(info_msg "${GREEN}Succesfully located${NC}")"
         status=true
     else
         echo -e "\t$(info_msg "Can't found")"
@@ -228,17 +233,22 @@ function validate_host(){
 
 function get_info_from_dropbox_halpage() {
     local server_halpage_name="$1"
-    if [ "$server_halpage_name" != "None" ] | [ "$server_halpage_name" != "none" ]
+
+    if [ "$halpage_is_available" == "True" ] || [ "$halpage_is_available" == "true" ]
     then
-        info_msg "Get host and port for the $server_halpage_name server from halpage (dropbox)"
-        local halpage_handler="/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash"
-        host="$($halpage_handler --name $server_halpage_name --ip)"
-        port="$($halpage_handler --name $server_halpage_name --port)"
-        validate_host "$host" "$port"
-        local status_="$status"
-        echo -e "HOST:$host PORT:$port status:$status_"
+        if [ "$server_halpage_name" != "None" ] | [ "$server_halpage_name" != "none" ]
+        then
+            info_msg "Get host and port for the $server_halpage_name server from halpage (dropbox)"
+            host="$($halpage_handler --name $server_halpage_name --ip)"
+            port="$($halpage_handler --name $server_halpage_name --port)"
+            validate_host "$host" "$port"
+            local status_="$status"
+            echo -e "HOST:$host PORT:$port status:$status_"
+        else
+            echo -e "get_info_from_dropbox_halpage -> server_halpage_name: Not set in config [$server_halpage_name]"
+        fi
     else
-        echo -e "get_info_from_dropbox_halpage -> server_halpage_name: Not set in config [$server_halpage_name]"
+        info_msg "Halpage api was not activated (see in rpitools_config.cfg) Use this app directly: --ip --port --user"
     fi
 }
 
@@ -289,10 +299,13 @@ function connect_with_manual_settings() {
 }
 
 function mount_sshfs() {
+    debug_param_info
     if [ ! -d "$mount_folder_path" ]
     then
         info_msg "Create mount point: $mount_folder_pat"
         sudo mkdir -p "$mount_folder_path"
+        sudo chown -R "$USER" "$mount_folder_path"
+        sudo chgrp -R "$USER" "$mount_folder_path"
     else
         info_msg "Mount point exists: $mount_folder_pat"
     fi
@@ -302,23 +315,25 @@ function mount_sshfs() {
     local exitcode="$?"
     if [ "$exitcode" -eq 0 ]
     then
-        echo -e "\t$(info_msg "SUCCESS [$exitcode]")"
+        echo -e "\t$(info_msg "${GREEN}SUCCESS${NC} [$exitcode]")"
+        info_msg "Server $host contenet $mount_folder_path:"
+        ls -lth "$mount_folder_path"
     else
-        echo -e "\t$(info_msg "FAIL [$exitcode]")"
+        echo -e "\t$(info_msg "${RED}FAIL${NC} [$exitcode]")"
     fi
 }
 
 function unmount_sshfs() {
-    if [ -d  "$mount_folder_path" ]
+    if [ -e  "$mount_folder_path" ]
     then
         info_msg "UNMOUNT: => $mount_folder_path"
         sudo umount "$mount_folder_path"
         local exitcode="$?"
         if [ "$exitcode" -eq 0 ]
         then
-            echo -e "\t$(info_msg "SUCCESS [$exitcode]")"
+            echo -e "\t$(info_msg "${GREEN}SUCCESS${NC} [$exitcode]")"
         else
-            echo -e "\t$(info_msg "FAIL [$exitcode]")"
+            echo -e "\t$(info_msg "${RED}FAIL${NC} [$exitcode]")"
         fi
     else
         info_msg "$mount_folder_path NOT FOUND"
@@ -332,6 +347,16 @@ function main() {
 
     # run argparser
     argParseRun
+    # check arg was called
+    if [ "$(get_arg_status "list_halpage")" -eq 1 ]
+    then
+        if [ "$halpage_is_available" == "True" ] || [ "$halpage_is_available" == "true" ]
+        then
+            echo -e "$($halpage_handler --list )"
+        else
+            info_msg "Halpage api was not activated (see in rpitools_config.cfg) SORRY This option is not available!"
+        fi
+    fi
     # check arg was called
     if [ "$(get_arg_status "ip")" -eq 1 ]
     then
@@ -400,4 +425,3 @@ function main() {
 }
 
 main
-debug_param_info
