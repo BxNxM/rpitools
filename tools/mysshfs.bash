@@ -377,7 +377,7 @@ function main() {
             connect_with_manual_settings
         fi
         info_msg "Copy ssh ~/.ssh/id_rsa.pub -> ${user}@${host}:~/.ssh/authorized_keys"
-        info_msg "$(${MYDIR}/copy_my_sshkey_to.bash "${user}@${host}")"
+        . "${MYDIR}/copy_my_sshkey_to.bash" "${user}@${host}"
     fi
     # check arg was called
     if [ "$(get_arg_status "list_halpage")" -eq 1 ]
