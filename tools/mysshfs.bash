@@ -56,9 +56,9 @@ function info_msg() {
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u")                             # valid arg list - add new args - call with -- expl: --man
-    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
-    man_for_args=("--man\t\t::\tmanual"\                                        # add help text here
+    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u" "remount" "sshkey_sync")
+    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0 0 0)
+    man_for_args=("--man\t\t::\tmanual"\
                   "--mount [m]\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
                   "--unmount [u]\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
                   "--ip\t\t::\tserver ip (optional) grp0, ${known_args_subs_pcs[4]} par"\
@@ -66,7 +66,9 @@ function init() {
                   "--user\t\t::\tserver username (optional) grp0, ${known_args_subs_pcs[6]} par"\
                   "--mount_point\t::\tlocal mount point for the server (optional) grp1, ${known_args_subs_pcs[7]} par"\
                   "--halpage_name\t::\thalpage identifier name (optional) grp0, ${known_args_subs_pcs[8]} par"\
-                  "--list_halpage\t::\tlist halpage server names grp2, ${known_args_subs_pcs[9]} par")
+                  "--list_halpage\t::\tlist halpage server names grp2, ${known_args_subs_pcs[9]} par"\
+                  "--remount\t::\tunmount and mount server, ${known_args_subs_pcs[10]} par"\
+                  "--sshkey_sync\t::\tsync ssh key to remote server for the passwordless connection, ${known_args_subs_pcs[11]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -347,6 +349,12 @@ function unmount_sshfs() {
     fi
 }
 
+function remount_sshfs() {
+    info_msg "REMOUNT SSHFS SERVER"
+    echo -e "$($MYPATH --unmount)"
+    echo -e "$($MYPATH --mount)"
+}
+
 #:::::::::::::::::::: MAIN USAGE ::::::::::::::::::::::
 function main() {
     logo
@@ -355,6 +363,22 @@ function main() {
     # run argparser
     argParseRun
 
+    # check arg was called
+    if [ "$(get_arg_status "sshkey_sync")" -eq 1 ]
+    then
+        if [ "$manual_connection" -eq 0 ]
+        then
+            default_settings_mount
+            if [ "$status" != "true" ]
+            then
+                dynamic_settings_mount
+            fi
+        else
+            connect_with_manual_settings
+        fi
+        info_msg "Copy ssh ~/.ssh/id_rsa.pub -> ${user}@${host}:~/.ssh/authorized_keys"
+        info_msg "$(${MYDIR}/copy_my_sshkey_to.bash "${user}@${host}")"
+    fi
     # check arg was called
     if [ "$(get_arg_status "list_halpage")" -eq 1 ]
     then
@@ -429,6 +453,11 @@ function main() {
     then
         # get required arg values
         unmount_sshfs
+    fi
+    # check arg was called
+    if [ "$(get_arg_status "remount")" -eq 1 ]
+    then
+        remount_sshfs
     fi
 }
 
