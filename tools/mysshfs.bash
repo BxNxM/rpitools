@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#set -x
-
 # get arg list pcs
 args_pcs=$#
 # get arg list
@@ -10,6 +8,11 @@ arg_list=($@)
 # script path n name
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+mount_history_path="${MYDIR}/.mysshfs_history"
+if [ ! -f "$mount_history_path" ]
+then
+    echo "" > "$mount_history_path"
+fi
 
 # WRITE USER HERE
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
@@ -56,8 +59,8 @@ function info_msg() {
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u" "remount" "sshkey_sync")
-    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0 0 0)
+    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u" "remount" "sshkey_sync" "history")
+    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0 0 0 0)
     man_for_args=("--man\t\t::\tmanual"\
                   "--mount [m]\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
                   "--unmount [u]\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
@@ -68,7 +71,8 @@ function init() {
                   "--halpage_name\t::\thalpage identifier name (optional) grp0, ${known_args_subs_pcs[8]} par"\
                   "--list_halpage\t::\tlist halpage server names grp2, ${known_args_subs_pcs[9]} par"\
                   "--remount\t::\tunmount and mount server, ${known_args_subs_pcs[10]} par"\
-                  "--sshkey_sync\t::\tsync ssh key to remote server for the passwordless connection, ${known_args_subs_pcs[11]} par")
+                  "--sshkey_sync\t::\tsync ssh key to remote server for the passwordless connection, ${known_args_subs_pcs[11]} par"\
+                  "--history\t::\tshow command mount/unmount history and select, ${known_args_subs_pcs[12]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -269,7 +273,6 @@ function default_settings_mount() {
         echo -e "MOUNT WITH: $default_host $default_port"
         host="$default_host"
         port="$default_port"
-        # TODO: mount with default settings
     fi
 }
 
@@ -281,7 +284,6 @@ function dynamic_settings_mount() {
     if [ "$status" == "true" ]
     then
         echo -e "MOUNT WITH: $host $port"
-        # TODO: mount with dynamic settings
     fi
 }
 
@@ -293,11 +295,13 @@ function connect_with_manual_settings() {
         MODE="MANUAL HALPAGE"
         info_msg "Attempt to connect with manual settings with halpage api (dropbox) to $halpage_name server"
         get_info_from_dropbox_halpage "$halpage_name"
+        mysshfs_history_handler_save
     else
         if [ "$manual_connection" -gt 2 ]
         then
             MODE="MANUAL PARAMETERS"
             info_msg "Attept to connect with manual settings ip, port, host"
+            mysshfs_history_handler_save
         else
             MODE="INVALID"
             info_msg "INVALID PARAMETER SET, REQUIRED: --ip, --port, --user"
@@ -351,10 +355,48 @@ function unmount_sshfs() {
 
 function remount_sshfs() {
     info_msg "REMOUNT SSHFS SERVER"
-    echo -e "$($MYPATH --unmount)"
-    echo -e "$($MYPATH --mount)"
+    local subcmd=""
+    for cmd in "${arg_list[@]}"
+    do
+        if [[ "$subcmd" != *"remount"* ]]
+        then
+            subcmd+="$subcmd"
+        fi
+    done
+    echo -e "$($MYPATH --unmount $subcmd)"
+    echo -e "$($MYPATH --mount $subcmd)"
 }
 
+function mysshfs_history_handler_save() {
+    local cmd_str="${arg_list[*]}"
+    (grep -r "\\$cmd_str" "$mount_history_path")
+    if [ "$?" -ne 0 ]
+    then
+        echo -e "$cmd_str" >> "$mount_history_path"
+    fi
+}
+
+function mysshfs_history_handler_select() {
+    local line_counter=0
+    while IFS='\n' read -r line || [[ -n "$line" ]]
+    do
+        echo -e "[$line_counter]\t$line"
+        line_counter=$((line_counter+1))
+    done < "$mount_history_path"
+    info_msg "Select one to execite [0-"$((line_counter-1))"]"
+    read -p ">" option
+    line_counter=0
+
+    while IFS='\n' read -r line || [[ -n "$line" ]]
+    do
+        if [ "$option" == "$line_counter" ]
+        then
+            info_msg "EXECUTE: $line"
+            echo -e "$($MYPATH $line)"
+        fi
+        line_counter=$((line_counter+1))
+    done < "$mount_history_path"
+}
 #:::::::::::::::::::: MAIN USAGE ::::::::::::::::::::::
 function main() {
     logo
@@ -363,6 +405,11 @@ function main() {
     # run argparser
     argParseRun
 
+    # check arg was called
+    if [ "$(get_arg_status "history")" -eq 1 ]
+    then
+        mysshfs_history_handler_select
+    fi
     # check arg was called
     if [ "$(get_arg_status "sshkey_sync")" -eq 1 ]
     then
@@ -453,6 +500,10 @@ function main() {
     then
         # get required arg values
         unmount_sshfs
+        if [ "$manual_connection" -gt 0 ]
+        then
+            mysshfs_history_handler_save
+        fi
     fi
     # check arg was called
     if [ "$(get_arg_status "remount")" -eq 1 ]
