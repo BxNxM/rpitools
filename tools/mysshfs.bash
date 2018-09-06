@@ -11,7 +11,7 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 mount_history_path="${MYDIR}/.mysshfs_history"
 if [ ! -f "$mount_history_path" ]
 then
-    echo "" > "$mount_history_path"
+    echo -e $(touch "$mount_history_path")
 fi
 
 # WRITE USER HERE
@@ -469,7 +469,7 @@ function main() {
         manual_connection=$((manual_connection+1))
     elif [ "$user" != "$($confighandler -s SSHFS -o user)" ]
     then
-        mount_folder_path="/media/$user"
+        mount_folder_path="/media/${host}_${user}"
     fi
     # check arg was called
     if [ "$(get_arg_status "halpage_name")" -eq 1 ]
