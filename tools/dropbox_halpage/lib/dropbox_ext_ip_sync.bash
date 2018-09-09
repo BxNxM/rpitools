@@ -92,7 +92,7 @@ function create_file_structure_if_not_exits() {
     fi
 
     dropbox_folder_content=$("$dropbox_uploader" list "$halpage_folder")
-    if [ "$dropbox_folder_content" == *"servers"* ]
+    if [[ "$dropbox_folder_content" == *"servers"* ]]
     then
         debug_msg "[3] Create servers folder"
         server_folder_create=$("$dropbox_uploader" mkdir ${halpage_folder}/servers)
@@ -118,13 +118,11 @@ function create_human_readabe_md_file() {
     text+="####$(date)\n\n"
     text+="***EXTERNAL IP ADDRESS:***\n\n"
     IFS=' ' read -r -a my_ext_ip <<< "$(cat $local_cache_myextaddr)"
-    text+="\`\`\`${my_ext_ip[0]}\`\`\`\n\n"
+    text+="\`\`\`${my_ext_ip[0]}\`\`\`"
     text+="***EXTERNAL SSH PORT:***\n\n"
     text+="\`\`\`${ssh_port}\`\`\`\n\n"
-    text+="***TRANSMISSION ACCESS:***\n\n"
-    text+="[http://${my_ext_ip[0]}:${transmission_port}](http://${my_ext_ip[0]}:${transmission_port})\n\n"
     text+="***HTTP ADDRESS:***\n\n"
-    text+="[http://${my_ext_ip[0]}:${http_port}](http://${my_ext_ip[0]}:${http_port})"
+    text+="[http://${my_ext_ip[0]}](http://${my_ext_ip[0]}:${http_port})"
     echo -e "$text" > "$local_cache_myextaddr_hum"
 }
 
