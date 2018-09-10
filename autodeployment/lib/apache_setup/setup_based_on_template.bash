@@ -296,6 +296,11 @@ function restore_backup_cloud_storage_content() {
 
 }
 
+function generate_project_structure() {
+    folder="/home/$USER/rpitools"; tree "$folder" -T "RPITOOLS FILE STRUCURE" -H rpitools -C > "${MYDIR_}/template/htmls/$(basename ${folder})_file_structure.html"; sed -i 's|href=".*"||g' "${MYDIR_}/template/htmls/$(basename ${folder})_file_structure.html"
+}
+generate_project_structure
+
 link_html_folder_to_requested_path
 if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
 then
