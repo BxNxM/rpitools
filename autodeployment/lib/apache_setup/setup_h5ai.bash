@@ -1,3 +1,4 @@
+#!/bin/bash
 
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -11,6 +12,7 @@ html_shared_folder_private="${apache_webshared_root_folder}/private_cloud"
 html_shared_folder_public="${apache_webshared_root_folder}/public_cloud"
 h5ai_folder_name="_h5ai"
 apache2_conf_path="/etc/apache2/apache2.conf"
+restart_required=0
 
 _msg_title="h5ai SETUP"
 function _msg_() {
@@ -28,7 +30,7 @@ function download_and_prepare_h5ai() {
         _msg_ "unzip"
         unzip h5ai-0.29.0.zip
 
-        #_h5ai/private/php/core/class-json.php
+        restart_required=$((restart_required+1))
     else
         _msg_ "already downloaded"
     fi
@@ -46,6 +48,7 @@ function copy_h5ai_to() {
     then
         _msg_ "copy ${MYDIR_}/${h5ai_folder_name} to ${to}/${h5ai_folder_name} "
         sudo cp -rp "${MYDIR_}/${h5ai_folder_name}" "${to}/${h5ai_folder_name}"
+        restart_required=$((restart_required+1))
     else
         _msg_ " ${to}/${h5ai_folder_name} already exists."
     fi
@@ -60,6 +63,7 @@ function generate_htaccess() {
     then
         _msg_ "add $htaccess_content to .htaccess"
         sudo bash -c "echo -e ${htaccess_content} >> ${full_htaccess_path}"
+        restart_required=$((restart_required+1))
     else
         _msg_ "$htaccess_content already added."
     fi
@@ -71,6 +75,7 @@ function override_apache2conf_workaround() {
     then
 	_msg_ "hack apache2.conf: AllowOverride AuthConfig --> #AllowOverride AuthConfig"
 	sudo bash -c "sed -i 's|AllowOverride AuthConfig|#AllowOverride AuthConfig|g' $apache2_conf_path"
+        restart_required=$((restart_required+1))
     fi
 
     (grep -zl '#AllowOverride AuthConfig.*AllowOverride All' "$apache2_conf_path")
@@ -78,8 +83,17 @@ function override_apache2conf_workaround() {
     then
         _msg_ "hack apache2.conf: add AllowOverride All"
         sudo bash -c "sed -i 's|#AllowOverride AuthConfig|#AllowOverride AuthConfig\n         AllowOverride All|g' $apache2_conf_path"
+        restart_required=$((restart_required+1))
     fi
 
+}
+
+function restart_if_required() {
+    if [ "$restart_required" -gt 0 ]
+    then
+        _msg_ "restart apache2"
+        sudo systemctl restart apache2
+    fi
 }
 
 _msg_ "$(date)"
@@ -91,3 +105,4 @@ copy_h5ai_to "$html_shared_folder_public"
 generate_htaccess "${webshared_root_folder_name}/private_cloud/"
 generate_htaccess "${webshared_root_folder_name}/public_cloud/"
 
+restart_if_required
