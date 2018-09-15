@@ -118,7 +118,7 @@ function create_human_readabe_md_file() {
     text+="####$(date)\n\n"
     text+="***EXTERNAL IP ADDRESS:***\n\n"
     IFS=' ' read -r -a my_ext_ip <<< "$(cat $local_cache_myextaddr)"
-    text+="\`\`\`${my_ext_ip[0]}\`\`\`"
+    text+="\`\`\`${my_ext_ip[0]}\`\`\`\n\n"
     text+="***EXTERNAL SSH PORT:***\n\n"
     text+="\`\`\`${ssh_port}\`\`\`\n\n"
     text+="***HTTP ADDRESS:***\n\n"
