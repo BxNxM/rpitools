@@ -17,3 +17,5 @@ gpio/oled_128x64/lib/.defaultindex.dat
 autodeployment/lib/apache_setup/apache.env
 tools/.mysshfs_history
 autodeployment/lib/apache_setup/template/htmls/rpitools_file_structure.html
+autodeployment/lib/apache_setup/h5ai*
+autodeployment/lib/apache_setup/_h5ai*
