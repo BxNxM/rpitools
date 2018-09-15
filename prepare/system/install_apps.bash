@@ -81,7 +81,7 @@ function install_apps_secure() {
         output=$(command -v "$app")
         if [ -z "$output" ] && [ "$(cat $installed_apps | grep $app)" == "" ]   # grepping workaround for caca-utils, fail2ban, minidlna, etc.
         then
-            if [ "$app" == "samba" ] || [ "$app" == "apache2" ]
+            if [ "$app" == "samba" ] || [ "$app" == "apache2" ] || [ "$app" == "php" ]
             then
                 apps_exception "$app"
             else
@@ -108,9 +108,17 @@ function apps_exception() {
 
     if [ "$app" == "apache2" ]
     then
-        echo -e "Install app: apache2 -y"
-        echo "Y" | sudo apt-get install apache2 -y
+        echo -e "install app: apache2 -y"
+        echo "y" | sudo apt-get install apache2 -y
         install_printout "apache2 -y" "$?"
+        was_installation=1
+    fi
+
+    if [ "$app" == "php" ]
+    then
+        echo -e "install app: sudo apt-get install php libapache2-mod-php -y"
+        echo "y" | sudo apt-get install php libapache2-mod-php -y
+        install_printout "php libapache2-mod-php -y" "$?"
         was_installation=1
     fi
 }
