@@ -33,6 +33,10 @@ function download_and_prepare_h5ai() {
         _msg_ "already downloaded"
     fi
 
+    _msg_ "set cache permissions: _h5ai/private/cache/ and _h5ai/public/cache/"
+    sudo chmod o+w _h5ai/private/cache/
+    sudo chmod o+w _h5ai/public/cache/
+
     popd
 }
 
@@ -41,7 +45,7 @@ function copy_h5ai_to() {
     if [ ! -d "${to}/${h5ai_folder_name}" ]
     then
         _msg_ "copy ${MYDIR_}/${h5ai_folder_name} to ${to}/${h5ai_folder_name} "
-        sudo cp -r "${MYDIR_}/${h5ai_folder_name}" "${to}/${h5ai_folder_name}"
+        sudo cp -rp "${MYDIR_}/${h5ai_folder_name}" "${to}/${h5ai_folder_name}"
     else
         _msg_ " ${to}/${h5ai_folder_name} already exists."
     fi
