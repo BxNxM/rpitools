@@ -72,7 +72,7 @@ function copy_template_under_apache_html_folder() {
     sudo rm -rf ${html_folder_path}*
 
     _msg_ "COPY: ${template_folder_path}* ${html_folder_path}"
-    sudo cp -r ${template_folder_path}* "${html_folder_path}"
+    sudo cp -rp ${template_folder_path}* "${html_folder_path}"
 
     _msg_ "YOUR ${html_folder_path} CONTENT:"
     ls -lrth "${html_folder_path}"
@@ -257,17 +257,17 @@ function restore_backup_cloud_storage_content() {
         if [ -e "$obsolete_webshared_folder_path" ]
         then
             _msg_ "\tCopy: $obsolete_webshared_folder_path -> $tmp_workspace"
-            sudo cp -r "$obsolete_webshared_folder_path" "$tmp_workspace"
+            sudo cp -rp "$obsolete_webshared_folder_path" "$tmp_workspace"
         fi
         if [ -e "$html_shared_folder_private_path" ]
         then
             _msg_ "\tCopy: $html_shared_folder_private_path -> $tmp_workspace"
-            sudo cp -r "$html_shared_folder_private_path" "$tmp_workspace"
+            sudo cp -rp "$html_shared_folder_private_path" "$tmp_workspace"
         fi
         if [ -e "$html_shared_folder_public_path" ]
         then
             _msg_ "\tCopy: $html_shared_folder_public_path -> $tmp_workspace"
-            sudo cp -r "$html_shared_folder_public_path" "$tmp_workspace"
+            sudo cp -rp "$html_shared_folder_public_path" "$tmp_workspace"
         fi
     elif [ "$mode" == "restore" ]
     then
@@ -275,19 +275,19 @@ function restore_backup_cloud_storage_content() {
         if [ -e "${tmp_workspace}webshared" ]
         then
             _msg_ "\tCopy: ${tmp_workspace}webshared -> $html_shared_folder_private_path"
-            sudo cp -r ${tmp_workspace}webshared/* "$html_shared_folder_private_path"
+            sudo cp -rp ${tmp_workspace}webshared/* "$html_shared_folder_private_path"
         fi
         local tmp_private_path="${tmp_workspace}/private_cloud"
         if [ -e "$tmp_private_path" ]
         then
             _msg_ "\tCopy: $tmp_private_path -> ${html_shared_folder_private_path}"
-            sudo cp -r ${tmp_private_path}/* "${html_shared_folder_private_path}"
+            sudo cp -rp ${tmp_private_path}/* "${html_shared_folder_private_path}"
         fi
         local tmp_public_path="${tmp_workspace}/public_cloud"
         if [ -e "$tmp_public_path" ]
         then
             _msg_ "\tCopy: $tmp_public_path -> ${html_shared_folder_public_path}"
-            sudo cp -r ${tmp_public_path}/* "${html_shared_folder_public_path}"
+            sudo cp -rp ${tmp_public_path}/* "${html_shared_folder_public_path}"
         fi
         sudo rm -rf "${tmp_workspace}"
     else
