@@ -89,8 +89,8 @@ function link_html_folder_to_requested_path() {
 }
 
 function set_shared_folder_password_protected() {
-    is_edited="$(sudo cat $apache2_conf_path | grep '<Directory /var/www/html>')"
-    if [ "$is_edited" == "" ]
+    is_edited="$(grep -i '<Directory /var/www/html>' $apache2_conf_path)"
+    if [ "$?" -ne 0 ]
     then
         _msg_ "Configure $apache2_conf_path for custom rpitools shaerd folder."
         apache2_config='# SHARED FODER FOR RPITOOLS APACHE\n'

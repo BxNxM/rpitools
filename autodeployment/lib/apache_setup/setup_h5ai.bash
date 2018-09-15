@@ -10,6 +10,7 @@ apache_webshared_root_folder="${html_folder_path}/${webshared_root_folder_name}"
 html_shared_folder_private="${apache_webshared_root_folder}/private_cloud"
 html_shared_folder_public="${apache_webshared_root_folder}/public_cloud"
 h5ai_folder_name="_h5ai"
+apache2_conf_path="/etc/apache2/apache2.conf"
 
 _msg_title="h5ai SETUP"
 function _msg_() {
@@ -59,6 +60,26 @@ function generate_htaccess() {
         _msg_ "$htaccess_content already added."
     fi
 }
+
+function override_apache2conf_workaround() {
+    (grep "#AllowOverride AuthConfig" "$apache2_conf_path")
+    if [ "$?" -ne 0 ]
+    then
+	_msg_ "hack apache2.conf: AllowOverride AuthConfig --> #AllowOverride AuthConfig"
+	sudo bash -c "sed -i 's|AllowOverride AuthConfig|#AllowOverride AuthConfig|g' $apache2_conf_path"
+    fi
+
+    (grep -zl '#AllowOverride AuthConfig.*AllowOverride All' "$apache2_conf_path")
+    if [ "$?" -ne 0 ]
+    then
+        _msg_ "hack apache2.conf: add AllowOverride All"
+        sudo bash -c "sed -i 's|#AllowOverride AuthConfig|#AllowOverride AuthConfig\n         AllowOverride All|g' $apache2_conf_path"
+    fi
+
+}
+
+_msg_ "$(date)"
+override_apache2conf_workaround
 
 download_and_prepare_h5ai
 copy_h5ai_to "$html_shared_folder_private"
