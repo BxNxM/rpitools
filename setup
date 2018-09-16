@@ -144,6 +144,7 @@ if [[ "$OS" != "GNU/Linux" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
     run_source=false
 fi
 
+# raspberry pi side of configuration
 if [ -z "$run_source" ] && [ "$run_source" != "false" ]
 then
     # set DISPLAY=:0 if xinit is run
@@ -161,6 +162,9 @@ then
 
     # security config permission set
     set_rpiconfig_permissions
+
+    # Run configurations on the system
+    . ${REPOROOT}/prepare/system/configure_wpasupplient_and_configtxt_and_cmdlinetxt.bash
 
     # config files list
     file_to_link_list=("/etc/wpa_supplicant/wpa_supplicant.conf" \
