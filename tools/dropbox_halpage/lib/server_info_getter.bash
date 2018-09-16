@@ -27,12 +27,17 @@ then
         then
             list_switch=1
         fi
+        if [ "$arg" == "--url" ] || [ "$arg" == "-u" ]
+        then
+            url_switch=1
+        fi
         if [ "$arg" == "--help" ] || [ "$arg" == "-h" ]
         then
             echo -e "--name\t-\tadd server name"
             echo -e "--ip\t-\tfilter for IP address"
             echo -e "--port\t-\tfilder for PORT number"
             echo -e "--list\t-\tlist your servers"
+            echo -e "--url\t-\tshow this server access url"
         fi
     done
 else
@@ -125,4 +130,8 @@ else
     fi
 fi
 
+if [ ! -z "$url_switch" ]
+then
+    cat "${local_cache_folder}/accesslinks.dat"
+fi
 

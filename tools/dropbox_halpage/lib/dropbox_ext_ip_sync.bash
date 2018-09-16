@@ -141,6 +141,21 @@ function upload_human_readable_page() {
     fi
 }
 
+ext_ip_links_saved=false
+function save_my_access_links() {
+    if [ "$ext_ip_links_saved" == "false" ]
+    then
+        ext_ip_links_saved=true
+        local human_readable_link=$("$dropbox_uploader" share "halpage/${uid_name_hum}")
+        local server_link_host_port=$("$dropbox_uploader" share "halpage/servers/${uid_name}")
+        local access_info_path="${local_cache_folder}/accesslinks.dat"
+        local url_access_text=""
+        url_access_text+="${uid_name_hum} link (pretty): ${human_readable_link}\n"
+        url_access_text+="${uid_name} link (for scripts): ${server_link_host_port}"
+        echo -e "${url_access_text}" > "${access_info_path}"
+    fi
+}
+
 if [ "$action" == "True" ] || [ "$action" == "true" ]
 then
     echo -e "[ DROPBOX HALPAGE ] service on"
@@ -150,6 +165,7 @@ then
         create_file_structure_if_not_exits
         upload_myip_file_if_new_ip_found
         upload_human_readable_page
+        save_my_access_links
         sleep "$refresh_time"
     done
 elif [ "$action" == "False" ] || [ "$action" == "false" ]
