@@ -8,7 +8,7 @@ arg_list=($@)
 # script path n name
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-mount_history_path="${MYDIR}/.mysshfs_history"
+mount_history_path="${MYDIR}/../cache/.mysshfs_history"
 if [ ! -f "$mount_history_path" ]
 then
     echo -e $(touch "$mount_history_path")
