@@ -49,7 +49,7 @@ function GetIp {
     debug_msg "[1] Get IP address: |$valid_ext_ip|"
 }
 
-function safe_if_ext_ip_changed() {
+function save_if_ext_ip_changed() {
     new_ip_is_found=0
     GetIp
     if [ "$valid_ext_ip" != "" ]
@@ -146,7 +146,7 @@ then
     echo -e "[ DROPBOX HALPAGE ] service on"
     while true
     do
-        safe_if_ext_ip_changed
+        save_if_ext_ip_changed
         create_file_structure_if_not_exits
         upload_myip_file_if_new_ip_found
         upload_human_readable_page
