@@ -298,7 +298,7 @@ function connect_with_manual_settings() {
         get_info_from_dropbox_halpage "$halpage_name"
         mysshfs_history_handler_save
     else
-        if [ "$manual_connection" -gt 2 ]
+        if [ "$manual_connection" -gt 2 ] || [ "$(get_arg_status "url")" -eq 1 ]
         then
             MODE="MANUAL PARAMETERS"
             info_msg "Attept to connect with manual settings ip, port, host"
@@ -315,10 +315,10 @@ function mount_sshfs() {
     debug_param_info
     if [ ! -d "$mount_folder_path" ]
     then
-        info_msg "Create mount point: $mount_folder_pat"
-        sudo mkdir -p "$mount_folder_path"
-        sudo chown -R "$USER" "$mount_folder_path"
-        sudo chgrp -R "$USER" "$mount_folder_path"
+        info_msg "Create mount point: $mount_folder_path"
+        sudo bash -c "mkdir -p $mount_folder_path"
+        sudo bash -c "chown -R $USER $mount_folder_path"
+        sudo bash -c "chgrp -R $USER $mount_folder_path"
     else
         info_msg "Mount point exists: $mount_folder_pat"
     fi
