@@ -179,6 +179,19 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
     fi
 }
 
+function check_ssh_daemion() {
+    if [ "$(systemctl is-enabled ssh)" != "enabled" ]
+    then
+        _msg_ "enable ssh service"
+        sudo systemctl enable ssh
+        if [ "$(systemctl is-active ssh)" != "active" ]
+        then
+            _msg_ "start ssh service"
+            sudo systemctl start ssh
+        fi
+    fi
+}
+
 _msg_ "Configure system: wpa_supplient - config.txt - cmdline.txt"
 if [ ! -e "$CACHE_indicator_done_path" ]
 then
@@ -188,6 +201,8 @@ then
     set_wifi_wpa_data "$($CONFIGAHNDLER -s NETWORK -o ssid)" "$($CONFIGAHNDLER -s NETWORK -o pwd)"
 
     configure_config_dot_txt_and_cmdline_dot_txt
+
+    check_ssh_daemion
 
     echo -e "$(date)" > "$CACHE_indicator_done_path"
 else
