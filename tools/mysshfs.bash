@@ -59,8 +59,8 @@ function info_msg() {
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u" "remount" "sshkey_sync" "history")
-    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0 0 0 0)
+    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u" "remount" "sshkey_sync" "history" "url")
+    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0 0 0 0 1)
     man_for_args=("--man\t\t::\tmanual"\
                   "--mount [m]\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
                   "--unmount [u]\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
@@ -72,7 +72,8 @@ function init() {
                   "--list_halpage\t::\tlist halpage server names grp2, ${known_args_subs_pcs[9]} par"\
                   "--remount\t::\tunmount and mount server, ${known_args_subs_pcs[10]} par"\
                   "--sshkey_sync\t::\tsync ssh key to remote server for the passwordless connection, ${known_args_subs_pcs[11]} par"\
-                  "--history\t::\tshow command mount/unmount history and select, ${known_args_subs_pcs[12]} par")
+                  "--history\t::\tshow command mount/unmount history and select, ${known_args_subs_pcs[12]} par"\
+                  "--url\t::\t, add halpage access url [contails: host and port] ${known_args_subs_pcs[13]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -436,6 +437,25 @@ function main() {
             info_msg "Halpage api was not activated (see in rpitools_config.cfg) SORRY This option is not available!"
         fi
     fi
+
+    # check arg was called
+    if [ "$(get_arg_status "url")" -eq 1 ]
+    then
+        # get required arg values
+        echo -e "URL: $(get_arg_value "url")"
+        # URL support for access
+        URL=$(get_arg_value "url"); access=($(wget ${URL} -q -O -))
+        URL_exitcode="$?"
+        if [ "$URL_exitcode" -eq 0 ] && [ "${#access[@]}" -eq 2 ]
+        then
+            manual_connection=$((manual_connection+1))
+            host="${access[0]}"
+            port="${access[1]}"
+        else
+            echo -e "WRONG URL: code: $URL_exitcode; args: ${#access[@]}"
+        fi
+    fi
+
     # check arg was called
     if [ "$(get_arg_status "ip")" -eq 1 ]
     then
