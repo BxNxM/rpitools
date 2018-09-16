@@ -43,6 +43,8 @@ function add_configuration() {
         config_text+="   directory mask = 0777\n"
         config_text+="   Public = yes\n"
         config_text+="   Guest ok = yes\n"
+        config_text+="   follow symlinks = yes\n"
+        config_text+="   wide links = yes\n"
         _msg_ "Samba configuration:$config_text"
         sudo echo -e "$config_text" >> "$samba_conf_path"
     else
@@ -72,6 +74,3 @@ then
 else
     _msg_ "Samba is already set: $CACHE_PATH_is_set exists"
 fi
-
-
-
