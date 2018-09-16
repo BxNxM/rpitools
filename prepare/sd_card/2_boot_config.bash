@@ -76,98 +76,12 @@ function set_boot_config() {
     local wpa_supplicant_path="${sd_path}/wpa_supplicant.conf"
 
     # check generated file pathes
-    if [ ! -e "$config_path" ] || [ ! -e "$cmdline_path" ]
+    if [ ! -e "$cmdline_path" ]
     then
         message "ERROR - $config_path and/or $cmdline_path not exists!"
         sleep 5
         exit 2
     fi
-
-    ## SET USB ETHERNET IF TARGET IS RPI_ZERO
-    #rpi_module="$($CONFIGAHNDLER -s GENERAL -o model)"
-    #if [ "$rpi_module" == "rpi_zero" ]
-    #then
-    #    #config.txt add -> dtoverlay=dwc2 <- end of the file
-    #    is_added=$(grep -rnw "$config_path" -e "dtoverlay=dwc2")
-    #    if [ "$is_added" == "" ]
-    #    then
-    #        message "Set $config_path file - add new line dtoverlay=dwc2 [ USB ETHERNET ]"
-    #        echo -e "\n# Enable usb-ethernet\ndtoverlay=dwc2" >> "$config_path"
-    #    else
-    #        message "In $config_path , dtoverlay=dwc2 is already set"
-    #    fi
-
-    #    #cmdline.txt add -> modules-load=dwc2,g_ether <- after rootwait, before quiet
-    #    is_added=$(grep -rnw "$cmdline_path" -e "modules-load=dwc2,g_ether")
-    #    if [ "$is_added" == "" ]
-    #    then
-    #        message "Set cmdline.txt after rootwait -> modules-load=dwc2,g_ether <- before quiet [ USB ETHERNET ]"
-    #        sed "s/rootwait/rootwait modules-load=dwc2,g_ether/g" "$cmdline_path" > "${cmdline_path}_edeted"
-    #        mv "${cmdline_path}_edeted" "$cmdline_path"
-    #    else
-    #        message "$cmdline_path is alredy set."
-    #    fi
-    #fi
-
-    ##config.txt add -> gpu_mem=xyz <- end of the file
-    #is_added=$(grep -rnw "$config_path" -e "gpu_mem")
-    #if [ "$is_added" == "" ]
-    #then
-    #    gpu_mem="$($CONFIGAHNDLER -s GENERAL -o required_gpu_mem)"
-    #    message "Set $config_path file - add new line gpu_mem=$gpu_mem [ for video playing ]"
-    #    echo -e "\n# Set GPU allocated memory\ngpu_mem=$gpu_mem" >> "$config_path"
-    #else
-    #    message "In $config_path , gpu_mem is already set"
-    #fi
-
-    ##config.txt add -> dtparam=i2c_arm=on <- end of the file
-    #is_added=$(grep -rnw "$config_path" -e "#dtparam=i2c_arm=on")
-    #if [ "$is_added" != "" ]
-    #then
-    #    message "Set $config_path file - add new line dtparam=i2c_arm=on [ for i2c ]"
-    #    #echo -e "\n# I2C enabled\ndtparam=i2c_arm=on" >> "$config_path"
-    #    change_parameter "#dtparam=i2c_arm=on" "dtparam=i2c_arm=on" "$config_path"
-    #else
-    #    message "In $config_path , dtparam=i2c_arm=on is already set"
-    #fi
-
-    ## Add device_tree_param=i2c_arm=on to $config_path
-    #is_added=$(grep -rnw "$config_path" -e "device_tree_param=i2c_arm=on")
-    #is_added_=$(grep -rnw "$config_path" -e "#device_tree_param=i2c_arm=on")
-    #if [ "$is_added_" != "" ]
-    #then
-    #    echo -e "Change #device_tree_param=i2c_arm=on -> device_tree_param=i2c_arm=on in $config_path [ for i2c ]"
-    #    change_parameter "#device_tree_param=i2c_arm=on" "device_tree_param=i2c_arm=on" $config_path
-    #fi
-    #if [ "$is_added" == "" ]
-    #then
-    #    echo -e "Add device_tree_param=i2c_arm=on to $config_path [ for i2c ]"
-    #    echo -e "\n#I2C enable\ndevice_tree_param=i2c_arm=on" >> "$config_path"
-    #else
-    #    echo -e "device_tree_param=i2c_arm=on is already set in $config_path"
-    #fi
-
-    ## set parameter in $cmdline_path for i2c enable
-    #is_enable=$(grep -rnw "$cmdline_path" -e "bcm2708.vc_i2c_override=1")
-    #if [ "$is_enable" == ""  ]
-    #then
-    #    echo -e "Add bcm2708.vc_i2c_override=1 to $cmdline_path [ for i2c ]"
-    #    #echo "bcm2708.vc_i2c_override=1" >> "$cmdline_path"
-    #    change_parameter "quiet" "bcm2708.vc_i2c_override=1 quit" "$cmdline_path"
-    #else
-    #    echo -e "bcm2708.vc_i2c_override=1 in $cmdline_path is already set."
-    #fi
-
-    ##config.txt add -> dtparam=spi=on <- end of the file
-    #is_added=$(grep -rnw "$config_path" -e "#dtparam=spi=on")
-    #if [ "$is_added" != "" ]
-    #then
-    #    message "Set $config_path file - add new line #dtparam=spi=on [ for i2c ]"
-    #    #echo -e "\n# SPI enabled\ndtparam=spi=on" >> "$config_path"
-    #    change_parameter "#dtparam=spi=on" "dtparam=spi=on" "$config_path"
-    #else
-    #    message "In $config_path , dtparam=spi=on is already set"
-    #fi
 
     #touch /Volumes/boot/ssh
     if [ ! -e "$ssh_en_path" ]
@@ -209,26 +123,6 @@ function set_boot_config() {
 
     message "[!!!] ONLY DO THESE STEP ONCE BEFORE FIRST BOOT [!!!]"
     read -p "Press ENTER, if you read and accept!"
-}
-
-function change_parameter() {
-    local from="$1"
-    local to="$2"
-    local where="$3"
-    if [ ! -z "$from" ]
-    then
-        echo -e "cat $where | grep -v grep | grep $from\nis_set: $is_set"
-        is_set="$( cat "$where" | grep -v grep | grep "$from")"
-        echo -e "$is_set"
-        if [ "$is_set" != "" ]
-        then
-            message "sed \"s|${from}|${to}|g\" \"$where\" > \"${where}_edeted\""
-            sed 's|'"${from}"'|'"${to}"'|g' "$where" > "${where}_edeted"
-            mv "${where}_edeted" "$where"
-        else
-            echo -e "${GREEN}Custom parameter $to already set in $where ${NC}"
-        fi
-    fi
 }
 
 echo "$(config_is_avaible)"

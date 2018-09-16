@@ -4,7 +4,7 @@ MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
 CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
-CACHE_indicator_done_path="${MYDIR_}/../../cache/.initial_wpa_suppl_and_config_and_cmdline_txt+setup_done"
+CACHE_indicator_done_path="${MYDIR_}/../../cache/.initial_wpa_suppl_and_config_and_cmdline_txt_setup_done"
 source ${MYDIR_}/../colors.bash
 source ${MYDIR_}/../sub_elapsed_time.bash
 wpa_supplicant_path="/etc/wpa_supplicant/wpa_supplicant.conf"
@@ -24,15 +24,16 @@ function change_parameter() {
     local where="$3"
     if [ ! -z "$from" ]
     then
-        echo -e "cat $where | grep -v grep | grep $from\nis_set: $is_set"
-        is_set="$( cat "$where" | grep -v grep | grep "$from")"
-        echo -e "$is_set"
+        _msg_ "cat $where | grep -v grep | grep $from\nis_set: $is_set"
+        is_set="$( sudo cat "$where" | grep -v grep | grep "$from")"
+        _msg_ "$is_set"
         if [ "$is_set" != "" ]
         then
-            message "sed \"s|${from}|${to}|g\" \"$where\" > \"${where}_edeted\""
-            sudo bash -c "sed -i 's|'"${from}"'|'"${to}"'|g' $where"
+            local cmd="sed -i \"s|${from}|${to}|g\" $where"
+            _msg_ "sudo bash -c '$cmd'"
+	    sudo bash -c "${cmd}"
         else
-            echo -e "${GREEN}Custom parameter $to already set in $where ${NC}"
+            _msg_ "${GREEN}Custom parameter $to already set in $where ${NC}"
         fi
     fi
 }
@@ -114,7 +115,7 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
         if [ "$is_added" == "" ]
         then
             _msg_ "Set cmdline.txt after rootwait -> modules-load=dwc2,g_ether <- before quiet [ USB ETHERNET ]"
-            sudo bash -c "sed -i 's/rootwait/rootwait modules-load=dwc2,g_ether/g' $cmdline_path"
+            change_parameter "rootwait" "rootwait modules-load=dwc2,g_ether" "$cmdline_path"
         else
             _msg_ "$cmdline_path is alredy set."
         fi
@@ -136,7 +137,6 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
     if [ "$is_added" != "" ]
     then
         _msg_ "Set $config_path file - add new line dtparam=i2c_arm=on [ for i2c ]"
-        #echo -e "\n# I2C enabled\ndtparam=i2c_arm=on" >> "$config_path"
         change_parameter "#dtparam=i2c_arm=on" "dtparam=i2c_arm=on" "$config_path"
     else
         _msg_ "In $config_path , dtparam=i2c_arm=on is already set"
@@ -147,26 +147,25 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
     is_added_=$(grep -rnw "$config_path" -e "#device_tree_param=i2c_arm=on")
     if [ "$is_added_" != "" ]
     then
-        echo -e "Change #device_tree_param=i2c_arm=on -> device_tree_param=i2c_arm=on in $config_path [ for i2c ]"
+        _msg_ "Change #device_tree_param=i2c_arm=on -> device_tree_param=i2c_arm=on in $config_path [ for i2c ]"
         change_parameter "#device_tree_param=i2c_arm=on" "device_tree_param=i2c_arm=on" $config_path
     fi
     if [ "$is_added" == "" ]
     then
-        echo -e "Add device_tree_param=i2c_arm=on to $config_path [ for i2c ]"
-        echo -e "\n#I2C enable\ndevice_tree_param=i2c_arm=on" >> "$config_path"
+        _msg_ "Add device_tree_param=i2c_arm=on to $config_path [ for i2c ]"
+        sudo bash -c "echo -e '\n#I2C enable\ndevice_tree_param=i2c_arm=on' >> $config_path"
     else
-        echo -e "device_tree_param=i2c_arm=on is already set in $config_path"
+        _msg_ "device_tree_param=i2c_arm=on is already set in $config_path"
     fi
 
     # set parameter in $cmdline_path for i2c enable
     is_enable=$(grep -rnw "$cmdline_path" -e "bcm2708.vc_i2c_override=1")
     if [ "$is_enable" == ""  ]
     then
-        echo -e "Add bcm2708.vc_i2c_override=1 to $cmdline_path [ for i2c ]"
-        #echo "bcm2708.vc_i2c_override=1" >> "$cmdline_path"
-        change_parameter "quiet" "bcm2708.vc_i2c_override=1 quit" "$cmdline_path"
+        _msg_ "Add bcm2708.vc_i2c_override=1 to $cmdline_path [ for i2c ]"
+        change_parameter 'rootwait' 'rootwait bcm2708.vc_i2c_override=1' "$cmdline_path"
     else
-        echo -e "bcm2708.vc_i2c_override=1 in $cmdline_path is already set."
+        _msg_ "bcm2708.vc_i2c_override=1 in $cmdline_path is already set."
     fi
 
     #config.txt add -> dtparam=spi=on <- end of the file
@@ -174,7 +173,6 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
     if [ "$is_added" != "" ]
     then
         _msg_ "Set $config_path file - add new line #dtparam=spi=on [ for i2c ]"
-        #echo -e "\n# SPI enabled\ndtparam=spi=on" >> "$config_path"
         change_parameter "#dtparam=spi=on" "dtparam=spi=on" "$config_path"
     else
         _msg_ "In $config_path , dtparam=spi=on is already set"
@@ -193,5 +191,5 @@ then
 
     echo -e "$(date)" > "$CACHE_indicator_done_path"
 else
-    _msg_ "\talready done"
+    _msg_ "\talready done: $CACHE_indicator_done_path exists."
 fi
