@@ -81,7 +81,7 @@ function install_apps_secure() {
         output=$(command -v "$app")
         if [ -z "$output" ] && [ "$(cat $installed_apps | grep $app)" == "" ]   # grepping workaround for caca-utils, fail2ban, minidlna, etc.
         then
-            if [ "$app" == "samba" ] || [ "$app" == "apache2" ] || [ "$app" == "php" ]
+            if [ "$app" == "samba" ] || [ "$app" == "apache2" ] || [ "$app" == "php" ] || [ "$app" == "nfs" ]
             then
                 apps_exception "$app"
             else
@@ -119,6 +119,14 @@ function apps_exception() {
         echo -e "install app: sudo apt-get install php libapache2-mod-php -y"
         echo "y" | sudo apt-get install php libapache2-mod-php -y
         install_printout "php libapache2-mod-php -y" "$?"
+        was_installation=1
+    fi
+
+    if [ "$app" == "nfs" ]
+    then
+        echo -e "install app: sudo apt-get install nfs-common nfs-server -y"
+        echo "y" | sudo apt-get install nfs-common nfs-server -y
+        install_printout "nfs-common nfs-server -y" "$?"
         was_installation=1
     fi
 }

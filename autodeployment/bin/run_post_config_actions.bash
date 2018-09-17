@@ -103,5 +103,9 @@ _msg_ "RUN: motion video stream forwarding"
 _msg_ "RUN: minidlna setup"
 (. /home/$USER/rpitools/autodeployment/lib/configure_minidlna.bash)
 
+# set nfs server
+_msg_ "RUN: nfs setup"
+(. /home/$USER/rpitools/autodeployment/lib/configure_nfs.bash)
+
 # Set status file under cache
 post_config_actions_done

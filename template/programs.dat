@@ -15,6 +15,7 @@ conky
 transmission-daemon
 matchbox-keyboard
 sshfs
+nfs
 kodi
 arp-scan
 samba
