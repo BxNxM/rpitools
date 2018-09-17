@@ -129,8 +129,8 @@ then
 else
     hostname="$($confighandler -s GENERAL -o custom_hostname)"
     _msg_ "Transmission is already set: $CACHE_PATH_is_set is exists"
-    _msg_ "Connect: http://${hostname}:9091"
-    _msg_ "Connect: http://$(hostname -I):9091"
+    _msg_ "Connect: http://${hostname}"
+    _msg_ "Connect: http://$(hostname -I)"
 fi
 
 
