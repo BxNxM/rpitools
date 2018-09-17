@@ -1,5 +1,8 @@
 #!/bin/bash
 
+arg_len="$#"
+arg_list=("$@")
+
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${MYDIR_}/../colors.bash"
@@ -131,11 +134,11 @@ function configure_ufw() {
 
 if [ -e "${cache_path}.post_config_actions_done" ]
 then
-    if [ ! -e "${cache_path}.configure_ufw_done" ]
+    if [ ! -e "${cache_path}.configure_ufw_done" ] || [[ "${arg_list[*]}" == *"ufw"*  ]]
     then
         configure_ufw
     else
-        _msg_ "UNIX FIREWALL ALREADY CONFIGURED"
+        _msg_ "UNIX FIREWALL ALREADY CONFIGURED [for reconfigure: $MYPATH_ ufw]"
         sudo ufw status verbose
     fi
 else
