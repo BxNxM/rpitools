@@ -27,7 +27,10 @@ def list_connected_devices():
     textmatrix = ""
     devices = []
 
-    exitcode, stdout, stderr = LocalMachine.run_command(cmd)
+    exitcode, stdout, stderr = LocalMachine.run_command(cmd) 
+    if exitcode != 0 and "No such file or directory" in stderr:
+        print "\tNO DEVICES WAS FOUND."
+        return []
     if exitcode == 0:
         textmatrix = LocalMachine.text_to_matrix_converter(stdout)
         for line in textmatrix:
@@ -129,6 +132,11 @@ def mount_all_devices():
         if exitcode == 0:
             print("/media/{} is already mounted".format(actualdir))
         elif exitcode == 1:
+            exitcode, stdout, stderr = LocalMachine.run_command("cat /etc/fstab")
+            if exitcode == 0 and actualdir not in stdout:
+                print(actualdir + " not in /etc/fstab")
+                print("\tSkipping mount...")
+                return
             print("/media/{} mount".format(actualdir))
             mount_cmd = "mount /media/" + str(actualdir)
             exitcode, stdout, stderr = LocalMachine.run_command(mount_cmd)
