@@ -21,6 +21,7 @@ arp-scan
 samba
 apache2
 php
+php-gd
 lolcat
 cowsay
 fortune
