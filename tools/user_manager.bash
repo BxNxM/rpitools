@@ -23,13 +23,14 @@ MY_NAME="`basename \"$0\"`"
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "adduser" "removeuser" "changepasswd" "userstat")                             # valid arg list - add new args - call with -- expl: --man
-    known_args_subs_pcs=(0 0 2 1 2 0)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
+    known_args=("man" "debug" "adduser" "removeuser" "changepasswd" "userstat" "logoff")                             # valid arg list - add new args - call with -- expl: --man
+    known_args_subs_pcs=(0 0 2 1 2 0 0)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
     man_for_args=("--man\t\t::\tmanual"\                                        # add help text here
                   "--adduser\t::\tAdd new user with settings, <username> <userpasswd> ${known_args_subs_pcs[2]} par"\
                   "--removeuser\t::\tRemove user, <username> ${known_args_subs_pcs[3]} par"\
                   "--changepasswd\t::\tChange user password, <username> <userpasswd> ${known_args_subs_pcs[4]} par"\
-                  "--userstat\t::\tShow users list and used disk space ${known_args_subs_pcs[5]} par")
+                  "--userstat\t::\tShow users list and used disk space ${known_args_subs_pcs[5]} par"\
+                  "--logoff\t::\tLog off user - select after execute ${known_args_subs_pcs[6]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -188,6 +189,12 @@ function ARGPARSE() {
         show_users_stat
     fi
 
+    # check arg was called
+    if [ "$(get_arg_status "logoff")" -eq 1 ]
+    then
+        LogOffUser
+    fi
+
     if [ "$args_pcs" -eq 0 ]
     then
         bash "$MYPATH_" --man
@@ -276,6 +283,14 @@ function __copy_user_temaplete() {
         _msg_ "Add $username to the debian-transmission group."
         sudo usermod -a -G debian-transmission "$username"
     fi
+}
+
+function LogOffUser {
+	ps aux | egrep "sshd: [a-zA-Z]+@"
+	echo -e "${LIGHT_RED}Kill User [PID]:${NC}"
+	read PID
+	sudo kill -9 $PID
+	echo -e "${LIGHT_RED}$PID KILLED!${NC}"
 }
 
 ARGPARSE
