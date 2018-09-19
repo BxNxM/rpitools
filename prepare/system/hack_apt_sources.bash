@@ -7,7 +7,7 @@ source "${MYDIR_}/../colors.bash"
 _msg_title="apt source extend"
 function _msg_() {
     local msg="$1"
-    echo -e "${YELLOW}[ $_msg_title ]${NC} - $msg"
+    echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ $_msg_title ]${NC} - $msg"
 }
 
 function extend_apt_source_list() {

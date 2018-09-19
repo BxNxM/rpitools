@@ -32,11 +32,8 @@ export_env+="export APACHE_PRIVATE_SHARED_FOLDER=${html_shared_folder_private}\n
 export_env+="export APACHE_PUBLIC_SHARED_FOLDER=${html_shared_folder_public}"
 echo -e "${export_env}" > ${MYDIR_}/apache.env
 
+source "${MYDIR_}/../message.bash"
 _msg_title="APACHE SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 if [ "$arg_len" -eq 1 ]
 then

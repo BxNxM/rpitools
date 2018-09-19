@@ -13,11 +13,8 @@ motion_proxy_point="$($confighandler -s APACHE_MOTION_STREAM_FORWARDING -o proxy
 apache_html_folder_link_to="$($confighandler -s APACHE -o html_folder_link_to)"
 apache_conf="/etc/apache2/apache2.conf"
 
+source "${MYDIR_}/message.bash"
 _msg_title="motion stream forwarding SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${GREEN}[ $_msg_title ]${NC} - $msg"
-}
 
 function set_apache_conf_proxy() {
     local is_set_proxy_forwarding="$(cat $apache_conf | grep -v grep | grep ${motion_proxy_point})"

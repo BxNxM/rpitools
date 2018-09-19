@@ -14,11 +14,8 @@ h5ai_folder_name="_h5ai"
 apache2_conf_path="/etc/apache2/apache2.conf"
 restart_required=0
 
+source "${MYDIR_}/../message.bash"
 _msg_title="h5ai SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 function download_and_prepare_h5ai() {
     pushd "$MYDIR_"

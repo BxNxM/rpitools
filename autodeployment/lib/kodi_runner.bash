@@ -8,11 +8,8 @@ confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py
 autorun="$($confighandler -s KODI -o autorun)"
 desktop_icon="$($confighandler -s KODI -o desktop_icon)"
 
+source "${MYDIR_}/message.bash"
 _msg_title="KODI SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 function add() {
     local text="$1"

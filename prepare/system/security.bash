@@ -20,7 +20,7 @@ repo_conf_restore_backup="/home/$USER/rpitools/tools/cache_restore_backup.bash"
 _msg_title="SECURITY [SSH] SETUP"
 function _msg_() {
     local msg="$1"
-    echo -e "${RED}[ $_msg_title ]${NC} - $msg"
+    echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${RED}[ $_msg_title ]${NC} - $msg"
 }
 
 function change_line() {
@@ -139,6 +139,7 @@ then
         configure_ufw
     else
         _msg_ "UNIX FIREWALL ALREADY CONFIGURED [for reconfigure: $MYPATH_ ufw]"
+        _msg_ "UFW status:"
         sudo ufw status verbose
     fi
 else

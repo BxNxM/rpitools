@@ -6,17 +6,14 @@ CACHE_PATH_is_set="/home/$USER/rpitools/cache/.minidlna_configure_is_done"
 source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 
+source "${MYDIR_}/message.bash"
+_msg_title="MINIDLNA SETUP"
+
 minidlna_conf_path="/etc/minidlna.conf"
 friendly_name="$($confighandler -s MINIDLNA -o friendly_name)"
 media_dir_path="$($confighandler -s MINIDLNA -o dlna_path)"
 link_downloads="$($confighandler -s MINIDLNA -o link_downloads)"
 transmission_downloads_dir="$($confighandler -s TRANSMISSION -o download_path)"
-
-_msg_title="MINIDLNA SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 function create_shared_folder() {
     if [ ! -d "$media_dir_path" ]

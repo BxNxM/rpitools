@@ -7,14 +7,11 @@ source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 exports_file="/etc/exports"
 
+source "${MYDIR_}/message.bash"
+_msg_title="NFS SETUP"
+
 nfs_shared_folder="$($confighandler -s NFS_SERVER -o nfs_shared_folder)"
 nfs_shared_folder_permissions="$($confighandler -s NFS_SERVER -o nfs_shared_folder_permissions)"
-
-_msg_title="NFS SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 action=false
 function create_nfs_file_structure() {

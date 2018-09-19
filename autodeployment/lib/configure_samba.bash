@@ -6,16 +6,13 @@ CACHE_PATH_is_set="/home/$USER/rpitools/cache/.samba_configure_is_done"
 source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 
+source "${MYDIR_}/message.bash"
+_msg_title="SAMBA SETUP"
+
 samba_conf_path="/etc/samba/smb.conf"
 remote_name="$($confighandler -s SAMBA -o remote_name)"
 samba_path="$($confighandler -s SAMBA -o samba_path)"
 samba_user="$($confighandler -s SAMBA -o username)"
-
-_msg_title="SAMBA SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 function create_shared_folder() {
     if [ ! -d "$samba_path" ]

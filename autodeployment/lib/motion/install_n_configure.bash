@@ -19,11 +19,8 @@ initial_config_done_indicator="/home/$USER/rpitools/cache/.motion_initial_config
 source "${MYDIR}/../apache_setup/apache.env"
 apache_web_shared_folder="$APACHE_PRIVATE_SHARED_FOLDER"
 
+source "${MYDIR_}/../message.bash"
 _msg_title="MOTION SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${LIGHT_PURPLE}[ $_msg_title ]${NC} - $msg"
-}
 
 function change_line() {
     local from="$1"

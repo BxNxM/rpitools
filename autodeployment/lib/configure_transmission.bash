@@ -6,17 +6,14 @@ CACHE_PATH_is_set="/home/$USER/rpitools/cache/.transmission_configure_is_done"
 source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 
+source "${MYDIR_}/message.bash"
+_msg_title="TRANSMISSION SETUP"
+
 transmission_conf_path="/etc/transmission-daemon/settings.json"
 download_path="$($confighandler -s TRANSMISSION -o download_path)"
 incomp_download_path="$($confighandler -s TRANSMISSION -o incomp_download_path)"
 username="$($confighandler -s TRANSMISSION -o username)"
 passwd="$($confighandler -s TRANSMISSION -o passwd)"
-
-_msg_title="TRANSMISSION SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 function change_parameter() {
     local from="$1"

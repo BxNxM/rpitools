@@ -4,11 +4,8 @@ MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${MYDIR_}/../../prepare/colors.bash"
 
+source "${MYDIR_}/message.bash"
 _msg_title="SPI SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 conf_file_path="/etc/modules-load.d/raspberrypi.conf"
 conf_file_path_moduls="/etc/modules"

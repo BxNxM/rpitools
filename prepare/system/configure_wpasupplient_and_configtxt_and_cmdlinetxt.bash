@@ -13,8 +13,14 @@ cmdline_path="/boot/cmdline.txt"
 
 _msg_title="wpa_supplient - config.txt - cmdline.txt SETUP"
 function _msg_() {
+    local rpitools_log_path="${MYDIR_}/../../cache/rpitools.log"
+
     local msg="$1"
-    echo -e "${GREEN}[ $_msg_title ]${NC} - $msg"
+    if [ ! -z "$msg" ]
+    then
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $_msg_title - $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $_msg_title - $msg" >> "$rpitools_log_path"
+    fi
 }
 
 # SUB FUNCTIONS

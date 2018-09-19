@@ -12,7 +12,7 @@ configure_samba="${MYDIR_}/../lib/configure_samba.bash"
 _msg_title="CONFIG POST ACTIONS"
 function _msg_() {
     local msg="$1"
-    echo -e "${YELLOW}[ $_msg_title ]${NC} - $msg"
+    echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ $_msg_title ]${NC} - $msg"
 }
 
 function post_config_actions_done() {

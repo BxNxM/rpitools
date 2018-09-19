@@ -6,15 +6,12 @@ CACHE_PATH_is_set="/home/$USER/rpitools/cache/.git_configure_is_done"
 source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 
+source "${MYDIR_}/message.bash"
+_msg_title="GIT SETUP"
+
 git_mail="$($confighandler -s MYGIT -o git_username)"
 git_name="$($confighandler -s MYGIT -o git_mail)"
 git_set_action="$($confighandler -s MYGIT -o activate)"
-
-_msg_title="GIT SETUP"
-function _msg_() {
-    local msg="$1"
-    echo -e "${BLUE}[ $_msg_title ]${NC} - $msg"
-}
 
 if [ ! -e "$CACHE_PATH_is_set" ]
 then
