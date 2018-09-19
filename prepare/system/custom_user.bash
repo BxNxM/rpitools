@@ -9,10 +9,10 @@ confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py
 custom_user="$($confighandler -s GENERAL -o user_name_on_os)"
 custom_password="$($confighandler -s SECURITY -o os_user_passwd)"
 
-_msg_title="USER MANAGER"
+_msg_title="SET USER"
 function _msg_() {
     local msg="$1"
-    echo -e "${LIGHT_RED}[ $_msg_title ]${NC} - $msg"
+    echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${LIGHT_RED}[ $_msg_title ]${NC} - $msg"
 }
 
 function create_custom_user() {

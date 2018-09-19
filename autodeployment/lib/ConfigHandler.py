@@ -87,6 +87,21 @@ class SimpleConfig(ConfigParser.ConfigParser):
             self.__parse_config(reparse=True)
 
 
+    def set_user_script(self):
+        state = "Unknown"
+        is_activated = self.get("USER_SPACE", "activate", reparse=True)
+        if "-undef-section" not in is_activated and is_activated.lower() == "true":
+            path = self.get("USER_SPACE", "path", reparse=False)
+            script = self.get("USER_SPACE", "script", reparse=False)
+            with open(path, 'w') as f:
+                f.write(script)
+            state = "Write user script was successful."
+        elif "-undef-section" not in is_activated and is_activated.lower() != "true":
+            state = "User script was NOT activated."
+        else:
+            state = "USER_SPACE not exists in config."
+        return state
+
 def validate_configs_based_on_template_printout(msg, is_active):
     if is_active:
         print(msg)

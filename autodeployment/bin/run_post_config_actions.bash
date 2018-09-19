@@ -24,6 +24,10 @@ function post_config_actions_done() {
     fi
 }
 
+# ||||||||||||||||||||||||||| #
+#  POST CONFIGURATION SCRIPT  #
+# ||||||||||||||||||||||||||| #
+
 _msg_ "RUN: set up service if needed - memDictCore"
 (. "/home/$USER/rpitools/tools/socketmem/systemd_setup/set_service.bash")
 
@@ -109,3 +113,20 @@ _msg_ "RUN: nfs setup"
 
 # Set status file under cache
 post_config_actions_done
+
+# ||||||||||||||||| #
+#  RUN USER SCRIPT  #
+# ||||||||||||||||| #
+userscript_is_activated="$($confighandler -s USER_SPACE -o activate)"
+if [ "$userscript_is_activated" == "true" ] || [ "$userscript_is_activated" == "True" ]
+then
+    _msg_ "USER SCRIPT WAS ACTIVATED"
+    _msg_ "\t$($confighandler --user_script)"
+    path="$($confighandler -s USER_SPACE -o path)"
+    _msg_ "RUN: bash $path"
+    _msg_ "\n################################## $(date '+%Y.%m.%d %H:%M:%S') ##################################"
+    sudo bash "$path"
+    echo -e "################################## $(date '+%Y.%m.%d %H:%M:%S') ##################################"
+else
+    _msg_ "USER SCRIPT WAS NOT ACTIVATED"
+fi
