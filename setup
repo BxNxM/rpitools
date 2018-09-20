@@ -120,8 +120,8 @@ function set_requirements_on_host_side() {
 }
 
 # Set two quick config access interface:
-alias confeditor='${MYDIR}/autodeployment/config/confeditor.bash'
-alias confighandler='${MYDIR}/autodeployment/bin/ConfigHandlerInterface.py'
+alias confeditor='${REPOROOT}/autodeployment/config/confeditor.bash'
+alias confighandler='${REPOROOT}/autodeployment/bin/ConfigHandlerInterface.py'
 if [ "$quick_conf" == "true" ]
 then
     if [ "$arg_helper_lolcat" == "true" ]
