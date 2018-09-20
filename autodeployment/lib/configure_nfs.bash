@@ -12,6 +12,7 @@ _msg_title="NFS SETUP"
 
 nfs_shared_folder="$($confighandler -s NFS_SERVER -o nfs_shared_folder)"
 nfs_shared_folder_permissions="$($confighandler -s NFS_SERVER -o nfs_shared_folder_permissions)"
+nfs_link_downloads_folder="$($confighandler -s NFS_SERVER -o link_downloads)"
 
 action=false
 function create_nfs_file_structure() {
@@ -54,6 +55,18 @@ function edit_exports_file_and_permissions() {
     fi
 }
 
+function link_downloades_under_shared_folder() {
+    local link_to="$1"
+    if [ -d "$link_to" ]
+    then
+        local downloads_folder="$($confighandler -s TRANSMISSION -o download_path)"
+        _msg_ "Link: $downloads_folder -> $link_to"
+        sudo ln -fs "$downloads_folder" "$link_to"
+    else
+        _msg_ "Link error: $link_to folder not exists."
+    fi
+}
+
 _msg_ "NFS HOWTO: https://www.htpcguides.com/configure-nfs-server-and-nfs-client-raspberry-pi/"
 if [ ! -f "$CACHE_PATH_is_set" ]
 then
@@ -61,4 +74,9 @@ then
     edit_exports_file_and_permissions
 else
     _msg_ "NFS was aleady set: $CACHE_PATH_is_set exists"
+fi
+
+if [ "$nfs_link_downloads_folder" == "True" ] || [ "$nfs_link_downloads_folder" == "true" ]
+then
+    link_downloades_under_shared_folder "$nfs_shared_folder"
 fi
