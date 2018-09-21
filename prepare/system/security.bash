@@ -67,7 +67,7 @@ function save_authorized_keys_first_key_to_rpi_config() {
     if [[ "$first_id_rsa_pub" == *"ssh-rsa"* ]]
     then
         _msg_ "id_rsa_pub exists in $authorized_keys_path, SAVE it to rpi_config"
-        change_parameter "id_rsa_pub=write_you_id_rsa_pub_here" "id_rsa_pub=${first_id_rsa_pub}" "$rpi_config_path"
+        change_parameter "id_rsa_pub.*=.*write_you_id_rsa_pub_here" "id_rsa_pub = ${first_id_rsa_pub}" "$rpi_config_path"
 
         _msg_ "Validate config after modifications"
         echo -e "$($confighandler -v)"
