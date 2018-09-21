@@ -82,6 +82,6 @@ then
         create_commands
     else
         _msg_ "System wide commands was already set: $cache_indicator_path exists."
-        _msg_ "Manual args: create | list"
+        _msg_ "Manual args: ${MYPATH_} create | list"
     fi
 fi
