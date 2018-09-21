@@ -15,6 +15,16 @@ samba_path="$($confighandler -s SAMBA -o samba_path)"
 samba_user="$($confighandler -s SAMBA -o username)"
 samba_link_downloads="$($confighandler -s SAMBA -o link_downloads)"
 
+function create_official_setup_backup() {
+    local samba_conf_path_bak="${samba_conf_path}.bak"
+    if [ ! -e "$samba_conf_path_bak" ]
+    then
+        _msg_ "Create $samba_conf_path backup -> $samba_conf_path_bak"
+        sudo bash -c "cp $samba_conf_path $samba_conf_path_bak"
+    fi
+}
+create_official_setup_backup
+
 function create_shared_folder() {
     if [ ! -d "$samba_path" ]
     then
@@ -50,6 +60,17 @@ function add_configuration() {
     fi
 }
 
+function add_to_global_section() {
+    local parameter="unix extensions = no"
+    if [ "$(cat $samba_conf_path | grep ${parameter})" == "" ]
+    then
+        _msg_ "Add ${parameter} parameter to $samba_conf_path"
+        sudo bash -c "sed -i 's/\[global\]/[global]\n  ${parameter}/g' $samba_conf_path"
+    else
+        _msg_ "${parameter} already exists in $samba_conf_path"
+    fi
+}
+
 function set_user_and_restart() {
     _msg_ "Set smbpasswd: sudo smbpasswd -an $samba_user"
     sudo smbpasswd -an "$samba_user"
@@ -79,6 +100,7 @@ then
     set_permissions
     create_shared_folder
     add_configuration
+    add_to_global_section
     set_user_and_restart
     echo -e "$(date)" > "$CACHE_PATH_is_set"
 else
