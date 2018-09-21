@@ -14,7 +14,7 @@ commands_name_list=($(cat "$aliases_path"  | grep "='.*.'" | cut -d' ' -f2 | cut
 commands_name_counter=0
 commands_list=$(cat "$aliases_path" | grep "='.*.'" | cut -d"'" -f2)
 user_commands_folder="/usr/bin/"
-cache_indicator_path="${MYDIR_}/../../cache/system_wide_commands_was_set"
+cache_indicator_path="${MYDIR_}/../../cache/.system_wide_commands_was_set"
 
 _msg_title="SYSTEM CMD CREATE"
 function _msg_() {

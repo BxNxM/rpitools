@@ -383,6 +383,9 @@ then
             message "AUTODEPLOYMENT: Waiting for initial first reboot! (Run autodeployments scrits after reboot...)"
         fi
 
+        # craate system wide commands
+        . "${REPOROOT}/prepare/system/set_system_wide_commands.bash"
+
         # backup modification configs
         output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
         echo -e "$output"
