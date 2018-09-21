@@ -51,7 +51,7 @@ function change_line() {
     if [ ! -z "$from" ]
     then
         _msg_ "sudo cat $where | grep -v grep | grep $to\nis_set: $is_set"
-        is_set="$(sudo cat "$where" | grep -v grep | grep "$to")"
+        is_set="$(sudo cat "$where" | grep "$to")"
         _msg_ "$is_set"
         if [ "$is_set" == "" ]
         then
