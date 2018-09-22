@@ -19,7 +19,7 @@ initial_config_done_indicator="/home/$USER/rpitools/cache/.motion_initial_config
 source "${MYDIR}/../apache_setup/apache.env"
 apache_web_shared_folder="$APACHE_PRIVATE_SHARED_FOLDER"
 
-source "${MYDIR_}/../message.bash"
+source "${MYDIR}/../message.bash"
 _msg_title="MOTION SETUP"
 
 function change_line() {

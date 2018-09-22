@@ -2,7 +2,7 @@
 
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CACHE_PATH_is_set="/home/$USER/rpitools/cache/.nfs_configure_is_done"
+CACHE_PATH_is_set="/home/$USER/rpitools/cache/.nfs_client_configure_done"
 source "${MYDIR_}/../../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 fstab_path="/etc/fstab"
@@ -32,35 +32,49 @@ function configure_nfs_clinet() {
     local ip="$1"
     local nfs_client_path_to_mount="$2"
     local nfs_client_mount_point_path="$3"
-    sudo mkdir -p "$nfs_client_mount_point_path"
-    sudo chown -R ${USER}:${USER} "$nfs_client_mount_point_path"
-
-    edit_fstab_for_automount "$ip"
+    if [ ! -d "$nfs_client_mount_point_path" ]
+    then
+        sudo mkdir -p "$nfs_client_mount_point_path"
+        sudo chown -R ${USER}:${USER} "$nfs_client_mount_point_path"
+    fi
+    edit_fstab_for_automount "$ip" "$nfs_client_path_to_mount" "$nfs_client_mount_point_path"
 }
 
 function mount_nfs_server() {
     local ip="$1"
     local nfs_client_path_to_mount="$2"
     local nfs_client_mount_point_path="$3"
-    _msg_ "Manual mount"
-    sudo mount "${ip}":"${nfs_client_path_to_mount}" "${nfs_client_mount_point_path}"
+    _msg_ "Manual mount: sudo mount ${ip} ${nfs_client_path_to_mount} ${nfs_client_mount_point_path}"
+    sudo mount ${ip}:${nfs_client_path_to_mount} ${nfs_client_mount_point_path}
 }
 
 function edit_fstab_for_automount() {
     local ip="$1"
     local nfs_client_path_to_mount="$2"
     local nfs_client_mount_point_path="$3"
-    local fstab_setup_cmd="${ip}:${nfs_client_path_to_mount}   ${nfs_client_mount_point_path}   nfs    rw  0  0"
-    $(cat ${fstab_path} | grep "${fstab_setup_cmd}")
+    local fstab_setup_cmd="${ip}:${nfs_client_path_to_mount} ${nfs_client_mount_point_path} nfs rw 0 0"
+    (sudo cat "${fstab_path}" | grep "${fstab_setup_cmd}")
     if [ "$?" -ne 0 ]
     then
         _msg_ "Set $fstab_setup_cmd to $fstab_path"
-        # TODO: edit fstab
-        mount_nfs_server "$ip" "$nfs_client_path_to_mount" "$nfs_client_mount_point_path"
+        sudo bash -c "echo -e ${fstab_setup_cmd} >> ${fstab_path}"
+
+        (sudo cat "${fstab_path}" | grep "${fstab_setup_cmd}")
+        if [ "$?" -eq 0 ]
+        then
+            echo -e "$(date)" > "$CACHE_PATH_is_set"
+        fi
     else
         _msg_ "$fstab_setup_cmd already set in $fstab_path"
     fi
+    mount_nfs_server "$ip" "$nfs_client_path_to_mount" "$nfs_client_mount_point_path"
 }
+
+if [ -e "$CACHE_PATH_is_set" ]
+then
+    _msg_ "NFS client configured: $CACHE_PATH_is_set exists."
+    exit 0
+fi
 
 if [ "$nfs_client_activate" == "True" ] || [ "$nfs_client_activate" == "true" ]
 then

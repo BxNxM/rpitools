@@ -28,6 +28,23 @@ function post_config_actions_done() {
 #  POST CONFIGURATION SCRIPT  #
 # ||||||||||||||||||||||||||| #
 
+# nfs client setup
+_msg_ "RUN: nfs client setup"
+(. "/home/$USER/rpitools/autodeployment/lib/configure_nfs_clinet.bash")
+
+# set media stream with minidlna
+_msg_ "RUN: minidlna setup"
+(. /home/$USER/rpitools/autodeployment/lib/configure_minidlna.bash)
+
+# set nfs server
+_msg_ "RUN: nfs setup"
+(. /home/$USER/rpitools/autodeployment/lib/configure_nfs_server.bash)
+
+# set samba configuration
+_msg_ "RUN: configure_samba"
+(. "$configure_samba")
+
+# set memdict core service
 _msg_ "RUN: set up service if needed - memDictCore"
 (. "/home/$USER/rpitools/tools/socketmem/systemd_setup/set_service.bash")
 
@@ -36,10 +53,6 @@ _msg_ "RUN: configure_transmission"
 (. "$configure_transmission")
 _msg_ "RUN: set transmission autorestart edit whitelist"
 (. "$set_transmission_whitelist_autoedit")
-
-# set samba configuration
-_msg_ "RUN: configure_samba"
-(. "$configure_samba")
 
 # pixel install config executor
 pixel_install="$($confighandler -s INSTALL_PIXEL -o activate)"
@@ -102,14 +115,6 @@ _msg_ "RUN: motion install and configure"
 # motion video stream over apache server setup, run after apache config
 _msg_ "RUN: motion video stream forwarding"
 (. /home/$USER/rpitools/autodeployment/lib/motion_remote_video_stream_over_apache.bash)
-
-# set media stream with minidlna
-_msg_ "RUN: minidlna setup"
-(. /home/$USER/rpitools/autodeployment/lib/configure_minidlna.bash)
-
-# set nfs server
-_msg_ "RUN: nfs setup"
-(. /home/$USER/rpitools/autodeployment/lib/configure_nfs.bash)
 
 # Set status file under cache
 post_config_actions_done
