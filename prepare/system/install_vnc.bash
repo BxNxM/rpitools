@@ -13,10 +13,10 @@ function message() {
     local msg="$1"
     if [ ! -z "$msg" ]
     then
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ install vnc ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ INSTALL VNC ]${NC} $msg"
         if [ ! -z "${REPOROOT}" ]
         then
-            echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ install vnc ]${NC} $msg" >> "$rpitools_log_path"
+            echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ INSTALL VNC ]${NC} $msg" >> "$rpitools_log_path"
         fi
     fi
 }
