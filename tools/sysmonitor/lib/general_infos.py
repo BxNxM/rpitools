@@ -10,7 +10,8 @@ from Colors import Colors
 import ConfigHandler
 
 def get_rpitools_version():
-    data = ConfigHandler.cfg.get("GENERAL", "rpitools_version")
+    cfg = ConfigHandler.init(validate_print=False)
+    data = cfg.get("GENERAL", "rpitools_version")
     return data
 
 def get_pi_version():

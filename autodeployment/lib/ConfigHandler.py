@@ -154,9 +154,6 @@ def init(validate_print=False):
         print("[ WARNING ] - CUSTOM CONFIG FILE IS INVALID! : " + str(config_path))
         sys.exit(1)
 
-if "ConfigHandler" in __name__:
-    cfg = init()
-
 if __name__ == "__main__":
     cfg = init(validate_print=True)
     print(cfg.get_full())
