@@ -2,10 +2,16 @@ import sys
 import os
 myfolder = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(myfolder, "api"))
+sys.path.append(os.path.join(myfolder, "../../../autodeployment/lib"))
 import LocalMachine
 import GeneralElements
 import ConsoleParameters
 from Colors import Colors
+import ConfigHandler
+
+def get_rpitools_version():
+    data = ConfigHandler.cfg.get("GENERAL", "rpitools_version")
+    return data
 
 def get_pi_version():
     data = LocalMachine.run_command_safe("sudo uname -a")
@@ -67,6 +73,7 @@ def create_printout(separator="|", char_width=80):
     text += " GPU memory size:\t{} Mb\n".format(get_dedicated_gpu_mem())
     text += " SWAP memory size:\t{} Mb\n".format(get_swap_memory_size())
     text += " DEVICE version:\t{}\n".format(get_device_version())
+    text += " RPITOOLS version:\t{}\n".format(get_rpitools_version())
     text += " MAC addresses:\n{}\n".format(get_mac_addresses())
     text += " {}".format(version)
     return text

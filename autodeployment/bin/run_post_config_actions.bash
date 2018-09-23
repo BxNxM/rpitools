@@ -12,7 +12,7 @@ configure_samba="${MYDIR_}/../lib/configure_samba.bash"
 _msg_title="CONFIG POST ACTIONS"
 function _msg_() {
     local msg="$1"
-    echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ $_msg_title ]${NC} - $msg"
+    echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${GREEN}[ $_msg_title ]${NC} - $msg"
 }
 
 function post_config_actions_done() {
@@ -99,7 +99,7 @@ apache_override_underupdate_webpage="$($confighandler -s APACHE -o override_unde
 if [[ "$apache_override_underupdate_webpage" == "True" ]] || [[ "$apache_override_underupdate_webpage" == "true" ]]
 then
     _msg_ "\t override_underupdate: $apache_override_underupdate_webpage"
-    ("/home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash -f")
+    ("/home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash" "-f")
 else
     _msg_ "\t override_underupdate: $apache_override_underupdate_webpage"
     ("/home/$USER/rpitools/autodeployment/lib/apache_setup/setup_based_on_template.bash")
