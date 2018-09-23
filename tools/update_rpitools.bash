@@ -39,7 +39,7 @@ function stop_running_services() {
     do
         is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$service")
         is_run=$(ps aux | grep "$service" | grep -v grep)
-        if [ "$is_run" != "" ] && [ "$is_exists" != "" ]
+        if [ "$is_run" != "" -o "$(systemctl is-active "$service")" == "active" ] && [ "$is_exists" != "" ]
         then
             echo -e "sudo systemctl stop $service"
             sudo systemctl stop "$service"
