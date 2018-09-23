@@ -3,8 +3,8 @@
 arg_helper_lolcat="$SETUPLOLCAT"
 quick_conf=false
 
-# message handler function
-function message() {
+# setupmessage handler function
+function setupmessage() {
     local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 
     local msg="$1"
@@ -59,11 +59,11 @@ function detect_device() {
 }
 
 function deploy_mode_text() {
-    message "================================="
-    message "${LIGHT_GREEN}DEPLOY MODE${NC} rpitools - WELCOME :D"
-    message "================================="
-    message "${LIGHT_GREEN}[1]${NC} Set your configuration: RUN COMMAND:  ${LIGHT_GREEN}confeditor${NC}"
-    message "${LIGHT_GREEN}[2]${NC} Run this script in order:"
+    setupmessage "================================="
+    setupmessage "${LIGHT_GREEN}DEPLOY MODE${NC} rpitools - WELCOME :D"
+    setupmessage "================================="
+    setupmessage "${LIGHT_GREEN}[1]${NC} Set your configuration: RUN COMMAND:  ${LIGHT_GREEN}confeditor${NC}"
+    setupmessage "${LIGHT_GREEN}[2]${NC} Run this script in order:"
     cd "${REPOROOT}/prepare/sd_card"
     ls -l "${REPOROOT}/prepare/sd_card"
 }
@@ -89,10 +89,10 @@ function set_rpiconfig_permissions() {
     local rpitools_config_path="${REPOROOT}/autodeployment/config/rpitools_config.cfg"
     if [ -e "$rpitools_config_path" ]
     then
-        message "(Re)Set config permissions (-rw-------): $rpitools_config_path"
+        setupmessage "(Re)Set config permissions (-rw-------): $rpitools_config_path"
         chmod go-rw "$rpitools_config_path"
     else
-        message "Config NOT exists: $rpitools_config_path [!!!]"
+        setupmessage "Config NOT exists: $rpitools_config_path [!!!]"
     fi
 }
 
@@ -102,19 +102,19 @@ function set_requirements_on_host_side() {
     then
         if [ ! -e ~/Downloads/*raspbian-stretch-lite.img ]
 	then
-	    message "Linux rpitools requirements installing..."
+	    setupmessage "Linux rpitools requirements installing..."
             . "${MYDIR}/prepare/hostprepare/linux/prepare_sytem_for_rpitools.bash"
 	else
-	    message "Linux rpitools requirements already installed."
+	    setupmessage "Linux rpitools requirements already installed."
 	fi
     elif [ "$DEVICE" == "MACOS" ]
     then
         if [ ! -e ~/Downloads/*raspbian-stretch-lite.img ]
 	then
-	    message "macOS rpitools requirements installing..."
+	    setupmessage "macOS rpitools requirements installing..."
             . "${MYDIR}/prepare/hostprepare/macos/prepare_sytem_for_rpitools.bash"
 	else
-	    message "macOS rpitools requirements already installed."
+	    setupmessage "macOS rpitools requirements already installed."
 	fi
     fi
 }
@@ -139,8 +139,8 @@ fi
 if [[ "$OS" != "GNU/Linux" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
  then
     # rpitools configuration access from anywhere
-    message "[INFO] For configuiration use: confeditor OR confighandler"
-    message "[INFO] [MAIN SCRIPT] This script works on raspbian properly, this OS $OS DEVICE $DEVICE is not supported! => DEPLOYMENT MODE"
+    setupmessage "[INFO] For configuiration use: confeditor OR confighandler"
+    setupmessage "[INFO] [MAIN SCRIPT] This script works on raspbian properly, this OS $OS DEVICE $DEVICE is not supported! => DEPLOYMENT MODE"
     run_source=false
 fi
 
@@ -152,7 +152,7 @@ then
     if [ "$xinitrx_is_run" != "" ]
     then
         # set display environment (for PIXEL startx)
-        message "Set DISPLAY env - gui is run"
+        setupmessage "Set DISPLAY env - gui is run"
         export DISPLAY=:0
     fi
 
@@ -216,14 +216,14 @@ then
         # make links if not exists
         if [  -e "$REPOROOT/config/${filename}${extension}" ]
         then
-            message "$REPOROOT/config/${filename}${extension} is already linked"
+            setupmessage "$REPOROOT/config/${filename}${extension} is already linked"
         else
             if [ -e "${file_path}" ]
             then
-                message "Linking: ln -s ${file_path} $REPOROOT/config/${filename}${extension}"
+                setupmessage "Linking: ln -s ${file_path} $REPOROOT/config/${filename}${extension}"
                 ln -s "${file_path}" "$REPOROOT/config/${filename}${extension}"
             else
-                message "Linking not possible: ${file_path} not exists (yet)."
+                setupmessage "Linking not possible: ${file_path} not exists (yet)."
             fi
         fi
     done
@@ -251,51 +251,51 @@ then
         # set vimrc
         if [ -f ~/.vimrc ]
         then
-            message "~/.vimrc is already set"
+            setupmessage "~/.vimrc is already set"
         else
             cp ${MYDIR}/template/vimrc ~/.vimrc
-            message "cp ${MYDIR}/template/vimrc ~/.vimrc ...DONE"
+            setupmessage "cp ${MYDIR}/template/vimrc ~/.vimrc ...DONE"
         fi
 
         # source custom aliases
         if [ -z $RPITOOLS_ALIASES ]
         then
             source ${MYDIR}/template/aliases
-            message "${MYDIR}/template/aliases source ...DONE"
+            setupmessage "${MYDIR}/template/aliases source ...DONE"
             export RPITOOLS_ALIASES="true"
         else
-            message "${MYDIR}/template/aliases is already sourced"
+            setupmessage "${MYDIR}/template/aliases is already sourced"
         fi
 
         if [ -e ~/.bash_aliases ]
         then
-            message "~/.bash_aliases is already exists."
+            setupmessage "~/.bash_aliases is already exists."
         else
-            message "Create ~/.bash_aliases with ${MYDIR}/template/aliases"
+            setupmessage "Create ~/.bash_aliases with ${MYDIR}/template/aliases"
             echo -e "source ${MYDIR}/template/aliases" > ~/.bash_aliases
         fi
 
         # set ssh folder
         if [ ! -d ~/.ssh ]
         then
-            message "Create ~/.ssh folder and ~/.ssh/authorized_keys file"
+            setupmessage "Create ~/.ssh folder and ~/.ssh/authorized_keys file"
             mkdir ~/.ssh
             echo "" > ~/.ssh/authorized_keys
-            message "Set your public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
+            setupmessage "Set your public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
         else
             if [ -e ~/.ssh/authorized_keys ]
             then
                 is_set=$(cat ~/.ssh/authorized_keys)
                 if [ "$is_set" == "" ]
                 then
-                   message "Set your public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
+                   setupmessage "Set your public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
                 else
-                   message "~/.ssh/authorized_keys is already set"
+                   setupmessage "~/.ssh/authorized_keys is already set"
                 fi
             else
-                message "Create ~/.ssh/authorized_keys file."
+                setupmessage "Create ~/.ssh/authorized_keys file."
                 echo "" > ~/.ssh/authorized_keys
-                message "Set your public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
+                setupmessage "Set your public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
             fi
         fi
 
@@ -304,45 +304,45 @@ then
         is_installed_file_indicator="$REPOROOT/cache/.first_boot_update_update_installed"
         if [ -e "$is_installed_file_indicator" ]
         then
-            message "After first boot update already done"
+            setupmessage "After first boot update already done"
         else
-            message "Make updates after first boot."
+            setupmessage "Make updates after first boot."
             . ${MYDIR}/prepare/system/install_updates.bash
             if [ "$?" -eq 0 ]
             then
                echo "$(date) First boot update done" > "$is_installed_file_indicator"
             else
-                message "ERROR: ${MYDIR}/prepare/system/install_updates.bash"
+                setupmessage "ERROR: ${MYDIR}/prepare/system/install_updates.bash"
             fi
         fi
 
         # automaticly mount connected devices -  add to fstab - and mount it
-        message "READ - ADD - MOUNT CONNECTED DEVICES"
+        setupmessage "READ - ADD - MOUNT CONNECTED DEVICES"
         sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -sge -m
 
         # install tools apps
-        message "Install requested programs from list ${MYDIR}/template/programs.dat:"
+        setupmessage "Install requested programs from list ${MYDIR}/template/programs.dat:"
         . ${MYDIR}/prepare/system/install_apps.bash
 
         # Adafruit repo - install oled library
         if [ ! -e "${REPOROOT}/gpio/Adafruit_Python_SSD1306" ]
         then
-            message "Install Adafruit_Python_SSD1306"
+            setupmessage "Install Adafruit_Python_SSD1306"
             pushd gpio
 
-            message "Clone git repository: git clone https://github.com/adafruit/Adafruit_Python_SSD1306.git"
+            setupmessage "Clone git repository: git clone https://github.com/adafruit/Adafruit_Python_SSD1306.git"
             git clone https://github.com/adafruit/Adafruit_Python_SSD1306.git
             if [ "$?" != 0 ]
             then
-                message "git clone - failed"
+                setupmessage "git clone - failed"
                 source /home/$USER/rpitools/setup
             else
-                message "Installation: cd Adafruit_Python_SSD1306 && sudo python setup.py install"
+                setupmessage "Installation: cd Adafruit_Python_SSD1306 && sudo python setup.py install"
                 cd Adafruit_Python_SSD1306
                 sudo python setup.py install
                 if [ "$?" != 0 ]
                 then
-                    message "sudo python setup.py install - failed"
+                    setupmessage "sudo python setup.py install - failed"
                     source /home/$USER/rpitools/setup
                 fi
                 cd -
@@ -350,19 +350,19 @@ then
 
             popd
         else
-            message "Adafruit_Python_SSD1306 already installed"
+            setupmessage "Adafruit_Python_SSD1306 already installed"
         fi
 
         # set welcome comsole settings
         welcome_screen_settings_output=$(${REPOROOT}/tools/welcome_config/set_welcome_screen.bash)
-        message "$welcome_screen_settings_output"
+        setupmessage "$welcome_screen_settings_output"
 
         # set raspberrypi.conf file for i2c
-        message "Set /etc/modules-load.d/raspberrypi.conf for i2c communication"
+        setupmessage "Set /etc/modules-load.d/raspberrypi.conf for i2c communication"
         . ${REPOROOT}/autodeployment/lib/set_i2c_raspberrypi.conf.bash
 
         # set raspberrypi.conf file for spi
-        message "Set /etc/modules-load.d/raspberrypi.conf for spi communication"
+        setupmessage "Set /etc/modules-load.d/raspberrypi.conf for spi communication"
         . ${REPOROOT}/autodeployment/lib/set_spi_raspberrypi.conf.bash
 
         # set custom hostname
@@ -374,13 +374,13 @@ then
             # set autodeployment post scripts
             if [ -e "${REPOROOT}/autodeployment/bin/run_post_config_actions.bash" ]
             then
-                message "Run autodeployment scripts."
+                setupmessage "Run autodeployment scripts."
                 . ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash
             else
-                message "Autodeployment post scripts not found: ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash"
+                setupmessage "Autodeployment post scripts not found: ${REPOROOT}/autodeployment/bin/run_post_config_actions.bash"
             fi
         else
-            message "AUTODEPLOYMENT: Waiting for initial first reboot! (Run autodeployments scrits after reboot...)"
+            setupmessage "AUTODEPLOYMENT: Waiting for initial first reboot! (Run autodeployments scrits after reboot...)"
         fi
 
         # craate system wide commands
