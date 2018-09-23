@@ -236,6 +236,8 @@ function set_user_password() {
 
     _msg_ "SET PASSWORD: echo \"${username}:*******\" | sudo chpasswd"
     echo "${username}:${userpasswd}" | sudo chpasswd
+
+    cleanup_history
 }
 
 function remove_user() {
@@ -291,6 +293,13 @@ function LogOffUser {
 	read PID
 	sudo kill -9 $PID
 	echo -e "${LIGHT_RED}$PID KILLED!${NC}"
+}
+
+function cleanup_history() {
+    _msg_ "Cleaning up history for security reasons:"
+    _msg_ "#############################################"
+    _msg_ 'cat /dev/null > ~/.bash_history && history -c'
+    _msg_ "#############################################"
 }
 
 ARGPARSE
