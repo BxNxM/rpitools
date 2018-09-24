@@ -132,14 +132,25 @@ for more info:
 oledinterface -h
 ```
 
-* use virtual buttons LEFT / OK / RIGHT / standbyTrue / standbyFalse
+* Use virtual buttons:
+
+Oled dedicated buttons
 
 ```
 oledinterface -b LEFT
 oledinterface -b RIGHT
 oledinterface -b OK
-oledinterface -b stanbyTrue
-oledinterface -b stanbyFalse
+oledinterface -b standby
+
+```
+Oled page joystick buttons
+
+```
+oledinterface -j LEFT
+oledinterface -j RIGHT
+oledinterface -j CENTER
+oledinterface -j UP
+oledinterface -j DOWN
 ```
 
 #### CUSTOMIZE OLED FRAMEWORK AND CREATE NEW PAGES (OPTIONAL)
@@ -168,10 +179,8 @@ ls -lath /home/$USER/rpitools/gpio/oled_128x64/lib/pages
 * automatic button handling (physical and virtual over oledinterface)
 * page control, load, run in loop, unload, next, previus etc...
 
-![page_welcome](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_pi.jpg?raw=true)
-![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/weather_page.jpg?raw=true)
-![weather](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/page_perf.jpg?raw=true)
-
+![oled_pages_demo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/oledPagesDemo.png?raw=true)
+![oled_pages_gif](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/oledp.GIF?raw=true)
 ## performance with default settings (medium)
 RaspberryPi Zero W - get service CPU usage (average)
 
