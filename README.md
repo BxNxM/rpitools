@@ -308,6 +308,7 @@ sysmonitor -g
 ```
 
 ![website_1.0](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/website1.0.png?raw=true)
+![websiteAllDemo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/webpageDemoAll.png?raw=true)
 
 # Useful links for basics
 * RaspberryPi GPIO usage:
