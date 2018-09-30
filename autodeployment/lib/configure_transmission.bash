@@ -56,27 +56,26 @@ function change_line() {
 
 function set_drive_permissions() {
     local drive_path="$1"
-    local user_name="$2"
 
     _msg_ "Set dive permissions:"
-    _msg_ "\tsudo chgrp -R $user_name $drive_path"
-    sudo chgrp -R "$user_name" "$drive_path"
+    _msg_ "\tsudo chgrp -R rpitools_user $drive_path"
+    sudo bash -c "sudo chgrp -R rpitools_user $drive_path"
     _msg_ "\tsudo chmod go+w -R $drive_path"
-    sudo chmod g+w -R "$drive_path"
+    sudo bash -c "sudo chmod g+w -R $drive_path"
 }
 
 function create_transmission_folders() {
     if [ ! -e "$CACHE_PATH_is_set" ]
     then
-        set_drive_permissions "/media" "$USER"
+        set_drive_permissions "/media"
     fi
     # create downloads dir
     if [ ! -e "${download_path}" ]
     then
         _msg_ "Create download dir: ${download_path}"
-        sudo -u "$USER" mkdir -p "${download_path}"
-        sudo chmod 770 "${download_path}"
-        sudo chgrp debian-transmission "${download_path}"
+        sudo bash -c "sudo mkdir -p ${download_path}"
+        sudo bash -c "sudo chmod 770 ${download_path}"
+        sudo bash -c "sudo chgrp debian-transmission ${download_path}"
     else
         _msg_ "Downloads dir exists: ${download_path}"
     fi
@@ -85,9 +84,9 @@ function create_transmission_folders() {
     if [ ! -e "${incomp_download_path}" ]
     then
         _msg_ "Create incomplete download dir: ${incomp_download_path}"
-        sudo -u "$USER" mkdir -p "${incomp_download_path}"
-        sudo chmod 770 "${incomp_download_path}"
-        sudo chgrp debian-transmission "${incomp_download_path}"
+        sudo bash -c "sudo mkdir -p ${incomp_download_path}"
+        sudo bash -c "sudo chmod 770 ${incomp_download_path}"
+        sudo bash -c "sudo chgrp debian-transmission ${incomp_download_path}"
     else
         _msg_ "Incomplete downloads dir exists: ${incomp_download_path}"
     fi
