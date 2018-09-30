@@ -226,6 +226,9 @@ function create_custom_user() {
         _msg_ "SET DEFAULT SHELL TO BASH FOR USER $username"
         sudo chsh -s /bin/bash "$username"
 
+        _msg_ "Add new user to group: rpitools_user"
+        sudo bash -c "sudo usermod -a -G rpitools_user $username"
+
         __copy_user_temaplete "$username"
     fi
 }

@@ -17,7 +17,7 @@ rpi_config_path="/home/$USER/rpitools/autodeployment/config/rpitools_config.cfg"
 cache_path="/home/$USER/rpitools/cache/"
 repo_conf_restore_backup="/home/$USER/rpitools/tools/cache_restore_backup.bash"
 
-_msg_title="SECURITY [SSH] SETUP"
+_msg_title="SECURITY [SSH|UFW|GROUPS] SETUP"
 function _msg_() {
     local msg="$1"
     echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${RED}[ $_msg_title ]${NC} - $msg"
@@ -132,6 +132,90 @@ function configure_ufw() {
     fi
 }
 
+function create_linux_groups_for_rpitools() {
+    local existsing_groups="/etc/group"
+    local rpitools_admin_group="rpitools_admin"
+    local rpitools_user_group="rpitools_user"
+    local rpitools_user="$USER"
+    local groups_settings_is_done_cache_indicator="${cache_path}/rpitools_groups_are_done."
+    if [ ! -e "$groups_settings_is_done_cache_indicator" ]
+    then
+        local error_counter=0
+
+        # create groups
+        _msg_ "Create groups: $rpitools_admin_group and $rpitools_user_group"
+        (grep "$rpitools_admin_group" "$existsing_groups")
+        if [ "$?" -ne 0 ]
+        then
+            _msg_ "Create $rpitools_admin_group"
+            sudo bash -c "sudo groupadd $rpitools_admin_group"
+            exit_code="$?"
+            error_counter=$((error_counter+exit_code))
+        else
+            _msg_ "$rpitools_admin_group already exists"
+        fi
+        (grep "$rpitools_user_group" "$existsing_groups")
+        if [ "$?" -ne 0 ]
+        then
+            _msg_ "Create $rpitools_user_group"
+            sudo bash -c "sudo groupadd $rpitools_user_group"
+            exit_code="$?"
+            error_counter=$((error_counter+exit_code))
+        else
+            _msg_ "$rpitools_user_group already exists"
+        fi
+
+        local rpitools_user_existsing_groups=($(cat "$existsing_groups" | grep ":$rpitools_user" | cut -d":" -f1 ))
+        if [[ "${rpitools_user_existsing_groups[*]}" != *"$rpitools_admin_group"* ]]
+        then
+            _msg_ "Add $rpitools_user user to $rpitools_admin_group group"
+            _msg_ "\tCMD: sudo usermod -a -G $rpitools_admin_group $rpitools_user"
+            sudo bash -c "sudo usermod -a -G $rpitools_admin_group $rpitools_user"
+            exit_code="$?"
+            error_counter=$((error_counter+exit_code))
+        else
+            _msg_ "$rpitools_user user is already $rpitools_admin_group group member."
+        fi
+        if [[ "${rpitools_user_existsing_groups[*]}" != *"$rpitools_user_group"* ]]
+        then
+            _msg_ "Add $rpitools_user user to $rpitools_user_group group"
+            _msg_ "\tCMD: sudo usermod -a -G $rpitools_user_group $rpitools_user"
+            sudo bash -c "sudo usermod -a -G $rpitools_user_group $rpitools_user"
+            exit_code="$?"
+            error_counter=$((error_counter+exit_code))
+        else
+            _msg_ "$rpitools_user user is already $rpitools_user_group group member."
+        fi
+        rpitools_user_existsing_groups=($(cat "$existsing_groups" | grep ":$rpitools_user" | cut -d":" -f1 ))
+        _msg_ "$rpitools_user [rpitools owner] groups: ${rpitools_user_existsing_groups[*]}"
+
+        _msg_ "Set rpitools repo secondery group to $rpitools_admin_group"
+        if [ -z "$REPOROOT" ] || [ ! -d "$REPOROOT" ]
+        then
+            REPOROOT="${MYDIR_}/../../"
+        fi
+        _msg_ "\tCMD: sudo chgrp -hR $rpitools_admin_group $REPOROOT"
+        sudo bash -c "sudo chgrp -hR $rpitools_admin_group $REPOROOT"
+        exit_code="$?"
+        error_counter=$((error_counter+exit_code))
+
+        if [ "$error_counter" -eq 0 ]
+        then
+            _msg_ "Groups creation was successful"
+            echo -e "$(date)" > "$groups_settings_is_done_cache_indicator"
+        else
+            _msg_ "Groups creation failed ;( exitcode: $error_counter"
+        fi
+    else
+        _msg_ "rpitools groups are already created [$rpitools_admin_group | $rpitools_user_group]: $groups_settings_is_done_cache_indicator exists."
+    fi
+}
+
+#########################################################################################
+#                                       MAIN                                            #
+#########################################################################################
+
+# CONFIGURE ufw IF .post_config_actions_done EXISTS  - SYSTEM IS REDY TO CONFIURE FIREWALL
 if [ -e "${cache_path}.post_config_actions_done" ]
 then
     if [ ! -e "${cache_path}.configure_ufw_done" ] || [[ "${arg_list[*]}" == *"ufw"*  ]]
@@ -146,6 +230,7 @@ else
     _msg_ "configure_ufw skipping - ${cache_path}.post_config_actions_done not exists yet."
 fi
 
+# CHECK ID RSA PUB KEY IN CONFIG FILE
 if [[ "$ssh_id_rsa_pub" == *"ssh-rsa"* ]]
 then
     id_rsa_pubVALID=1
@@ -160,6 +245,7 @@ else
     fi
 fi
 
+# SET ID RSA PUB FROM CONFIG FILE RO AUTHORIZED KEYS SSH FOLDER
 id_rsa_pub_is_set=$(cat "$authorized_keys_path" | grep "$ssh_id_rsa_pub")
 if [[ "$id_rsa_pub_is_set" == "" ]] && [[ "$id_rsa_pubVALID" -eq 1 ]]
 then
@@ -172,6 +258,7 @@ else
     fi
 fi
 
+# SET PasswordAuthentication FOR PASSWORD LIGIN OVER SSH ON | OFF
 get_ssh_passwd_state_is_yes=$(cat $sshd_config_path | grep -v grep | grep "PasswordAuthentication yes")
 get_ssh_passwd_state_is_no=$(cat $sshd_config_path | grep -v grep | grep "PasswordAuthentication no")
 if [[ "$ssh_passed_state" == "True" ]] || [[ "$ssh_passed_state" == "true" ]]
@@ -196,3 +283,6 @@ else
         _msg_ "Already set [PasswordAuthentication no]: $get_ssh_passwd_state_is_no"
     fi
 fi
+
+# SET RPITOOLS GROUPS
+create_linux_groups_for_rpitools
