@@ -397,5 +397,10 @@ crontab -l
 https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/
 ```
 
+* Image convert (convert howtogeek.png -quality 95 howtogeek.jpg)
+
+```
+https://www.howtogeek.com/109369/how-to-quickly-resize-convert-modify-images-from-the-linux-terminal/
+```
 ## GIT
 ***push repo:*** git push -u origin master
