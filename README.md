@@ -402,5 +402,12 @@ https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses
 ```
 https://www.howtogeek.com/109369/how-to-quickly-resize-convert-modify-images-from-the-linux-terminal/
 ```
+
+* DynamicDNS - duck DNS
+
+```
+https://www.duckdns.org
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
