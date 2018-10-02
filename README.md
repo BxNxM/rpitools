@@ -409,6 +409,18 @@ https://www.howtogeek.com/109369/how-to-quickly-resize-convert-modify-images-fro
 https://www.htpcguides.com/configure-nfs-server-and-nfs-client-raspberry-pi/
 ```
 
+* Terminal colors
+
+```
+https://misc.flogisoft.com/bash/tip_colors_and_formatting
+```
+
+* ASCII ART
+
+```
+http://patorjk.com/software/taag/#p=display&h=0&f=Big&t=RPITOOLS%0A
+```
+
 * DynamicDNS - duck DNS
 
 ```
