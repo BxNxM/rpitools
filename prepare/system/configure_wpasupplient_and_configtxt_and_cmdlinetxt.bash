@@ -10,6 +10,7 @@ source ${MYDIR_}/../sub_elapsed_time.bash
 wpa_supplicant_path="/etc/wpa_supplicant/wpa_supplicant.conf"
 config_path="/boot/config.txt"
 cmdline_path="/boot/cmdline.txt"
+swap_size_config="/etc/dphys-swapfile"
 
 _msg_title="wpa_supplient - config.txt - cmdline.txt SETUP"
 function _msg_() {
@@ -40,6 +41,26 @@ function change_parameter() {
 	    sudo bash -c "${cmd}"
         else
             _msg_ "${GREEN}Custom parameter $to already set in $where ${NC}"
+        fi
+    fi
+}
+
+function change_line() {
+    local from="$1"
+    local to="$2"
+    local where="$3"
+    if [ ! -z "$from" ]
+    then
+        _msg_ "sudo cat $where | grep -v grep | grep $to\nis_set: $is_set"
+        is_set="$(sudo cat "$where" | grep -v grep | grep "$to")"
+        _msg_ "$is_set"
+        if [ "$is_set" == "" ]
+        then
+            _msg_ "${GREEN}Set parameter (full line): $to  (from: $from) ${NC}"
+            #sudo sed -i 's|'"${from}"'\c|'"${to}"'|g' "$where"
+            sudo sed -i '/'"${from}"'/c\'"${to}"'' "$where"
+        else
+            _msg_ "${GREEN}Custom config line $to already set in $where ${NC}"
         fi
     fi
 }
@@ -185,7 +206,18 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
     fi
 }
 
-function check_ssh_daemion() {
+function set_swap_file() {
+    local swap_file_size="$($CONFIGAHNDLER -s GENERAL -o swap_size_mb)"
+    _msg_ "Set swap size to $swap_file_size in $swap_size_config"
+    change_line "CONF_SWAPSIZE=" "CONF_SWAPSIZE=$swap_file_size" "$swap_size_config" 
+    if [ "$is_set" == "" ]
+    then
+        _msg_ "Restart dphys-swapfile.service"
+        sudo systemctl restart dphys-swapfile.service
+    fi
+}
+
+function check_ssh_daemon() {
     if [ "$(systemctl is-enabled ssh)" != "enabled" ]
     then
         _msg_ "enable ssh service"
@@ -208,7 +240,9 @@ then
 
     configure_config_dot_txt_and_cmdline_dot_txt
 
-    check_ssh_daemion
+    check_ssh_daemon
+
+    set_swap_file
 
     echo -e "$(date)" > "$CACHE_indicator_done_path"
 else
