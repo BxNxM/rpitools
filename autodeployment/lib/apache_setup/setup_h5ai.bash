@@ -2,7 +2,6 @@
 
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CACHE_PATH_is_set="/home/$USER/rpitools/cache/.apache_set_done"
 source "${MYDIR_}/../../../prepare/colors.bash"
 
 html_folder_path="/var/www/html/"
