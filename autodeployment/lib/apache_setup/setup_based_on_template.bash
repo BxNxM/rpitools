@@ -320,3 +320,5 @@ set_embedded_transmission_access
 motion_stream_forwarding_apache_link_icon
 
 . "${MYDIR_}/setup_h5ai.bash"
+
+. "$MYDIR_/glances/setup_glances_system_monitor.bash"

@@ -22,7 +22,7 @@ function set_apache_conf_proxy() {
     if [  "$is_set_proxy_forwarding" == "" ]
     then
         _msg_ "Set $apache_conf for motion stream forwarding"
-        text="\n# external motion camera stream forwarding under apache\n" 
+        text="\n# external motion camera stream forwarding under apache\n"
         text+="ProxyPass ${motion_proxy_point} http://${motion_stream_hostname}:${motion_stream_port}\n"
         text+="ProxyPassReverse ${motion_proxy_point} http://${motion_stream_hostname}:${motion_stream_port}\n"
         sudo echo -e "$text" >> "$apache_conf"
