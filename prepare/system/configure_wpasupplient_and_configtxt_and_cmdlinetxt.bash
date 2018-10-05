@@ -242,9 +242,9 @@ then
 
     check_ssh_daemon
 
-    set_swap_file
-
     echo -e "$(date)" > "$CACHE_indicator_done_path"
 else
     _msg_ "\talready done: $CACHE_indicator_done_path exists."
 fi
+
+set_swap_file
