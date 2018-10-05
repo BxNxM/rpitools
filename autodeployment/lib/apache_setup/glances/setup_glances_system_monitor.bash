@@ -96,8 +96,10 @@ function set_apache_conf_proxy() {
 }
 
 # MAIN
+echo -e "GLANES OFFICIAL WEBSITE: https://github.com/nicolargo/glances" | /usr/games/lolcat
 if [ "$is_install_glances" == "True" ] || [ "$is_install_glances" == "true" ]
 then
+    echo -e "Default port: $glance_stream_port" | /usr/games/lolcat
     if [ ! -e "$CACHE_PATH_is_set" ]
     then
         _msg_ "Install glances..."
