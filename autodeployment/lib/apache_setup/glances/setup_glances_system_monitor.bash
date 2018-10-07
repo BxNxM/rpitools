@@ -40,6 +40,7 @@ function install_glances() {
     curl -L https://bit.ly/glances | /bin/bash
     if [ "$?" -eq 0 ]
     then
+        sudo bash -c "sudo ufw allow $glance_stream_port"
         echo -e "$(date)" > ${CACHE_PATH_is_set}
     fi
 }

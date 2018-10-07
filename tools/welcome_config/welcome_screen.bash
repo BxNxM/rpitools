@@ -45,11 +45,12 @@ then
     echo -e "\tdiskhandler -h\t\t-> external disks handling based on fstab"
     echo -e "\tconfighandler -h\t-> config handler based on rpitools_config.cfg [programs API]"
     echo -e "\tconfeditor\t\t-> interactive config handler for easy modifications. [Human API]"
-    echo -e "\tmysshfs --man\t\t\t-> built in sshfs based on rpitools_config.cfg [0|1]"
+    echo -e "\tmysshfs --man\t\t-> built in sshfs based on rpitools_config.cfg or manual parameters"
     echo -e "\tupdate_rpitools\t\t-> update your repository with an easy command :D"
-    echo -e "\tnetwork_monitor\t\t->show actual network traffic"
+    echo -e "\tnetwork_monitor\t\t-> show actual network traffic"
     echo -e "\thalpage -h\t\t-> if you set extarnal (dropbox based) IP handling"
     echo -e "\tclientMemDict -h\t-> access for the internal ram memory dict structure [programs API]"
+    echo -e "\tbackupmaker\t\t-> users home(s) backup creator based on rpitools_config.cfg"
     echo -e "\trpihelp\t\t\t-> show this help screen again :D"
 
     echo -e "${wColor}Manage GUI (X):${NC}"
@@ -60,7 +61,7 @@ then
 
     echo -e "${wColor}Camera (over built in camera connector):${NC}"
     echo -e "\tcamera --man\t\t-> get more info ablot camera interface"
-    echo -e "\tsystemctl status motion\t-> camera streamer app with motion detection"
+    echo -e "\tmotioncontroll <par>\t-> controll connected motion camera: start | stop | status"
 
     echo -e "${wColor}User handling - create - delete:${NC}"
     echo -e "\tusermanager --man\t-> see the available options: create, delete, change password, list"
@@ -70,6 +71,7 @@ then
     echo -e "\tAdd new user for\n\t\
 apache webshared dir:\thtpasswd -cb /home/$USER/.secure/apasswords user_name user_pwd"
     echo -e "\tAdd new samba user:\tsudo smbpasswd -a samba_user"
+    echo -e "\tGlances system monitor: http://$(hostname):61208"
     echo -e ""
     echo -e "for more info use: ->| ${wColor}alias${NC} |<- command"
     echo -e "${wColor}########################################################${NC}"
