@@ -71,7 +71,7 @@ then
     echo -e "\tAdd new user for\n\t\
 apache webshared dir:\thtpasswd -cb /home/$USER/.secure/apasswords user_name user_pwd"
     echo -e "\tAdd new samba user:\tsudo smbpasswd -a samba_user"
-    echo -e "\tGlances system monitor: http://$(hostname):61208"
+    echo -e "\tGlances system monitor: http://$(hostname).local:61208"
     echo -e ""
     echo -e "for more info use: ->| ${wColor}alias${NC} |<- command"
     echo -e "${wColor}########################################################${NC}"
