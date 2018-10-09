@@ -38,8 +38,8 @@ function change_parameter() {
 
 function create_service() {
     local service_description="GlancesWebUI"
-    local exec_cmd="/usr/local/bin/glances --webserver --disable-process --process-short-name --hide-kernel-threads --port 61208 --percpu --disable-irix"
-    local working_dir="/usr/local/bin/"
+    local exec_cmd="/bin/bash glances_launcher.bash"
+    local working_dir="/home/${rpitools_linux_user}/rpitools/autodeployment/lib/apache_setup/glances/"
     local syslog_idf="glances WebUI"
     local user="${rpitools_linux_user}"
 

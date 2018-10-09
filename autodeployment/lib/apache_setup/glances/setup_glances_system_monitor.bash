@@ -8,6 +8,8 @@ source "${MYDIR_}/../apache.env"
 html_folder_path="$APACHE_HTML_ROOT_FOLDER"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 is_install_glances="$($confighandler -s APACHE -o glances_service)"
+glances_username="$($confighandler -s APACHE -o glances_username)"
+glances_password="$($confighandler -s APACHE -o glances_password)"
 glanes_icon_status="$($confighandler -s APACHE -o glances_icon)"
 # parameters
 glance_stream_hostname="glances"
@@ -41,8 +43,16 @@ function install_glances() {
     if [ "$?" -eq 0 ]
     then
         sudo bash -c "sudo ufw allow $glance_stream_port"
+        set_glances_username_and_password "$glances_username" "$glances_password"
         echo -e "$(date)" > ${CACHE_PATH_is_set}
     fi
+}
+
+function set_glances_username_and_password() {
+    local username="$1"
+    local password="$2"
+    _msg_ "Set glances username $username with ***** password"
+    /usr/bin/expect -c 'spawn /usr/bin/python /usr/local/bin/glances --webserver --disable-process --process-short-name --hide-kernel-threads --port 61208 --percpu --disable-irix -B 0.0.0.0 --username --password; expect "Define the Glances webserver username:"; send -- "'"$username"'\r"; expect "Define the Glances webserver password*"; send -- "'"$password"'\r"; expect "Password (confirm):"; send -- "'"$password"'\r"; expect "Do you want to save the password?*"; send -- "Yes\r"; expect eof'
 }
 
 function glance_subpage_forwarding_apache_link_icon() {

@@ -33,3 +33,4 @@ fail2ban
 ufw
 minidlna
 imagemagick
+expect
