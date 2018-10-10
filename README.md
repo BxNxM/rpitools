@@ -427,5 +427,11 @@ http://patorjk.com/software/taag/#p=display&h=0&f=Big&t=RPITOOLS%0A
 https://www.duckdns.org
 ```
 
+* Elecrow HDMI 5" 800x480 TFT Display with XPT2046 Touch Controller
+
+```
+https://www.jeffgeerling.com/blog/2016/review-elecrow-hdmi-5-800x480-tft-display-xpt2046-touch-controller
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
