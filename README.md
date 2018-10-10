@@ -431,6 +431,7 @@ https://www.duckdns.org
 
 ```
 https://www.jeffgeerling.com/blog/2016/review-elecrow-hdmi-5-800x480-tft-display-xpt2046-touch-controller
+driver: git clone https://github.com/Elecrow-keen/Elecrow-LCD5.git
 ```
 
 ## GIT
