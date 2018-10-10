@@ -52,7 +52,7 @@ echo -e "Python modules:\t\t$(($python_modules+$python_modules2))"
 echo -e "See more: ${MYDIR}/template/python_moduls.dat and ${MYDIR}/template/python_moduls_pip.dat"
 
 echo -e "-----------------------------------------------"
-aliases="$(cat ${MYDIR}/template/aliases | wc -l | xargs)"
+aliases="$(cat ${MYDIR}/template/aliases | grep "alias" | wc -l | xargs)"
 echo -e "Supported aliases:\t$aliases"
 echo -e "${MYDIR}/template/aliases"
 
