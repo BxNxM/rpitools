@@ -40,6 +40,7 @@ alias listlocalrpis='local_rpis=($(sudo arp-scan --interface=wlan0 --localnet | 
 alias cdrpitools='cd ~/rpitools'
 alias backupmaker='/home/$USER/rpitools/tools/backup_maker.sh'
 alias usermanager='/home/$USER/rpitools/tools/user_manager.bash'
+alias retropie='/home/$USER/rpitools/autodeployment/lib/retropie/retropie.bash'
 
 alias gitlog='git log --all --decorate --oneline --graph'
 alias gitbranch='git branch -av'
