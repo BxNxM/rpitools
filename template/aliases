@@ -41,6 +41,7 @@ alias cdrpitools='cd ~/rpitools'
 alias backupmaker='/home/$USER/rpitools/tools/backup_maker.sh'
 alias usermanager='/home/$USER/rpitools/tools/user_manager.bash'
 alias retropie='/home/$USER/rpitools/autodeployment/lib/retropie/retropie.bash'
+alias ttyecho='/home/$USER/rpitools/tools/ttyecho/ttyecho_wrapper.bash'
 
 alias gitlog='git log --all --decorate --oneline --graph'
 alias gitbranch='git branch -av'
