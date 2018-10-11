@@ -6,6 +6,7 @@ arg_list=($@)
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+echo -e "Retropie: https://retropie.org.uk" | lolcat
 if [ "${arg_list[0]}" == "config" ] || [ "${arg_list[0]}" == "c" ]
 then
     if [ -e "${MYDIR}/RetroPie-Setup/retropie_setup.sh" ]

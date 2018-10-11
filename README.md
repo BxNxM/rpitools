@@ -434,5 +434,11 @@ https://www.jeffgeerling.com/blog/2016/review-elecrow-hdmi-5-800x480-tft-display
 driver: git clone https://github.com/Elecrow-keen/Elecrow-LCD5.git
 ```
 
+* retropie - the best gaming platform
+
+```
+https://retropie.org.uk/docs/Manual-Installation/
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
