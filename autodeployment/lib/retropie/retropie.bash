@@ -15,7 +15,7 @@ then
         sudo "${MYDIR}/RetroPie-Setup/retropie_setup.sh"
     else
         sudo apt-get install lsb-release
-        pushd "$MYPATH"
+        pushd "$MYDIR"
             git clone --depth=1 https://github.com/RetroPie/RetroPie-Setup.git
             cd RetroPie-Setup
                 chmod +x retropie_setup.sh
