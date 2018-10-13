@@ -309,6 +309,48 @@ sysmonitor -g
 
 ![website_1.0](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/website1.0.png?raw=true)
 ![websiteAllDemo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/webpageDemoAll.png?raw=true)
+# How to use bluetooth keyboard and other devices
+[resource](https://askubuntu.com/questions/17504/how-can-i-have-a-bluetooth-keyboard-auto-connect-at-startup)
+
+```
+sudo bluetoothctl -a
+
+[bluetooth]# power on
+[bluetooth]# agent KeyboardOnly
+[bluetooth]# pairable on
+[bluetooth]# scan on
+```
+
+Last command will show all available (waiting for pairing) bluetooth keyboards like this.
+
+Discovery started
+[CHG] Controller 06:05:04:03:02:01 Discovering: yes
+
+```
+[bluetooth]# pair 01:02:03:04:05:06
+[bluetooth]# trust 01:02:03:04:05:06
+[bluetooth]# connect 01:02:03:04:05:06
+[bluetooth]# quit
+```
+
+Now put this simple script into ```/etc/init.d/keyboard```
+
+```
+#! /bin/sh
+sudo hcitool spinq
+exit 0
+```
+
+Then execute these.
+
+```
+sudo chmod +x /etc/init.d/keyboard
+sudo update-rc.d keyboard defaults
+sudo service keyboard start
+sudo service keyboard status
+```
+
+That's it. Now whenever you turn your Bluetooth keyboard on, it'll be connected to your Linux automatically.
 
 # Useful links for basics
 * RaspberryPi GPIO usage:
