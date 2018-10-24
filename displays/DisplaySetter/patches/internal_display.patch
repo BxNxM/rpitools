@@ -1,0 +1,25 @@
+--- /boot/config.txt	2018-10-17 18:39:44.000000000 +0000
++++ config.txt.orig	2018-10-17 18:34:47.645665643 +0000
+@@ -62,13 +62,13 @@
+ device_tree_param=i2c_arm=on
+ 
+ # --- added by elecrow-pitft-setup Wed Oct 10 22:01:44 UTC 2018 ---
+-#hdmi_force_hotplug=1
+-#max_usb_current=1
+-#hdmi_drive=1
+-#hdmi_group=2
+-#hdmi_mode=1
+-#hdmi_mode=87
+-#hdmi_cvt 800 480 60 6 0 0 0
+-#dtoverlay=ads7846,cs=1,penirq=25,penirq_pull=2,speed=50000,keep_vref_on=0,swapxy=0,pmax=255,xohms=150,xmin=200,xmax=3900,ymin=200,ymax=3900
+-#display_rotate=0
++hdmi_force_hotplug=1
++max_usb_current=1
++hdmi_drive=1
++hdmi_group=2
++hdmi_mode=1
++hdmi_mode=87
++hdmi_cvt 800 480 60 6 0 0 0
++dtoverlay=ads7846,cs=1,penirq=25,penirq_pull=2,speed=50000,keep_vref_on=0,swapxy=0,pmax=255,xohms=150,xmin=200,xmax=3900,ymin=200,ymax=3900
++display_rotate=0
+ # --- end elecrow-pitft-setup Wed Oct 10 22:01:44 UTC 2018 ---
