@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Set setup env vars and aliases
-MYPATHd="${BASH_SOURCE[0]}"
-MYDIRd="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+MYPATHd="$(readlink -f $0)"
+MYDIRd="$( dirname $MYPATHd)"
 configtxt_path="/boot/config.txt"
 
 function exitcode_handler() {
@@ -50,11 +50,11 @@ function dialog_menu() {
 dialog_menu
 if [ "$result" == "Elecrow-LCD5" ]
 then
-    echo -e "int $result"
+    echo -e "internal display settigs $result"
     smartpatch "$configtxt_path" "${MYDIRd}/patches/internal_display.patch"
 elif [ "$result" == "standardHDMI" ]
 then
-    echo -e "ext $result"
+    echo -e "external display settigs $result"
     smartpatch "$configtxt_path" "${MYDIRd}/patches/external_display.patch"
 fi
 
