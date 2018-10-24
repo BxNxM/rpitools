@@ -1,10 +1,30 @@
-# FOR EDITING THESE CONFIG FILES USE SUDO USER
-sudo vim wpa_supplicant.conf
-
-# DESCRIPTIONS:
-
-# config for xserver - gui
-Xwrapper.config
-
-# config for wifi
-wpa_supplicant.conf
+CONFIG FILES TO KNOW
+==============================================================================================
+000-default.config              = apache2 webserver root configuration file
+apache2.conf                    = apache2 webserver main configuration
+cmdline.txt                     = raspbian os config file
+config.txt                      = raspbian os config file
+dhcpcd.conf                     = dhcp config file
+dphys-swapfile                  = swapfile config file
+exports                         = nfs export config
+fstab                           = fstab connections config file
+hostname                        = hostname config file
+hosts                           = hosts config file
+html                            = html wenserver folder - default webpage
+journald.conf                   = systemd log service config file
+log                             = system logs folder
+logrotate.conf                  = logrotate config file
+minidlna.conf                   = minidlna file sharing config file
+modules                         = kernel moduls config file
+raspberrypi.conf                = raspberrypi main config file
+retroarch.cfg                   = retroarch (retropie) config file
+rpitools_config.cfg             = rpitools main config file [what you are using for your server management ;]
+settings.json                   = transmission main config file
+smb.conf                        = samba (smb) config file
+sources.list                    = apt-get mirrors config file
+sshd_config                     = ssh daemon confing file
+system                          = systemd services folder
+torrents                        = transmission downloaded torrents
+welcomeColor.dat                = welcome promt settings (by rpitools)
+wpa_supplicant.conf             = wifi connections config file
+=================================================================================================
