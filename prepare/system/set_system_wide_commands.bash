@@ -2,7 +2,7 @@
 
 arglist=($@)
 
-commands_whitelist=("diskhandler" "halpage" "hapticinterface" "kodibg" "listlocalrpis" "motioncontroll" "mysshfs" "oledinterface" "rgbinterface" "sysmonitor" "ttyecho")
+commands_whitelist=("diskhandler" "halpage" "hapticinterface" "kodibg" "listlocalrpis" "motioncontroll" "mysshfs" "oledinterface" "rgbinterface" "sysmonitor" "ttyecho" "smartpatch")
 commands_blacklist=("ll")
 
 MYPATH_="${BASH_SOURCE[0]}"

@@ -42,6 +42,7 @@ alias backupmaker='/home/$USER/rpitools/tools/backup_maker.sh'
 alias usermanager='/home/$USER/rpitools/tools/user_manager.bash'
 alias retropie='/home/$USER/rpitools/autodeployment/lib/retropie/retropie.bash'
 alias ttyecho='/home/$USER/rpitools/tools/ttyecho/ttyecho_wrapper.bash'
+alias smartpatch='/home/$USER/rpitools/tools/smart_patch_applier.bash'
 
 alias gitlog='git log --all --decorate --oneline --graph'
 alias gitbranch='git branch -av'
