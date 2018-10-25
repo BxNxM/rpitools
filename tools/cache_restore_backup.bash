@@ -1,7 +1,7 @@
 #!/bin/bash
 
-arg_len=$#
-arg_list=$@
+arg_len="$#"
+arg_list=($@)
 mypath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 REPOROOT="$(dirname $mypath)"
 
@@ -33,9 +33,23 @@ then
         echo -e "\tbackup: ${REPOROOT}/gpio/Adafruit_Python_SSD1306 -> $backup_path"
         sudo cp -r "${REPOROOT}/gpio/Adafruit_Python_SSD1306" "$backup_path"
 
-        # Dropbox-Uploader lib
-        echo -e "\tbackup: ${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader -> $backup_path"
-        sudo cp -r "${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader" "$backup_path"
+        if [ -d "${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader" ]
+        then
+            # Dropbox-Uploader lib
+            echo -e "\tbackup: ${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader -> $backup_path"
+            sudo cp -r "${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader" "$backup_path"
+        else
+            echo -e "\t${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader not present in the system."
+        fi
+
+        if [ -d "${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup" ]
+        then
+            # Retropie setup
+            echo -e "\tbackup: ${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup" "$backup_path"
+            sudo cp -r "${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup" "$backup_path"
+        else
+            echo -e "\t${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup not present in the system."
+        fi
 
         # cache
         echo -e "\tbackup: ${REPOROOT}/cache -> $backup_path"
@@ -63,9 +77,23 @@ then
             echo -e "\trestore: ${backup_path}/cache/Adafruit_Python_SSD1306 -> ${REPOROOT}/gpio/"
             sudo cp -r "${backup_path}/Adafruit_Python_SSD1306" "${REPOROOT}/gpio/"
 
-            # Dropbox-Uploader lib
-            echo -e "\trestore: ${backup_path}/Dropbox-Uploader -> ${REPOROOT}/tools/dropbox_halpage/lib/"
-            sudo cp -r "${backup_path}/Dropbox-Uploader" "${REPOROOT}/tools/dropbox_halpage/lib/"
+            if [ -d "${backup_path}/Dropbox-Uploader" ]
+            then
+                # Dropbox-Uploader lib
+                echo -e "\trestore: ${backup_path}/Dropbox-Uploader -> ${REPOROOT}/tools/dropbox_halpage/lib/"
+                sudo cp -r "${backup_path}/Dropbox-Uploader" "${REPOROOT}/tools/dropbox_halpage/lib/"
+            else
+                echo -e "restore: ${backup_path}/Dropbox-Uploader not present in the system."
+            fi
+
+            if [ -d "${backup_path}/RetroPie-Setup" ]
+            then
+                # Retropie setup
+                echo -e "\trestore: ${backup_path}/RetroPie-Setup -> ${REPOROOT}/autodeployment/lib/retropie/"
+                sudo cp -r "${backup_path}/RetroPie-Setup" "${REPOROOT}/autodeployment/lib/retropie/"
+            else
+                echo -e "\trestore: ${backup_path}/RetroPie-Setup not present in the system."
+            fi
 
             # cache
             echo -e "\trestore: ${backup_path}/cache -> ${REPOROOT}"
