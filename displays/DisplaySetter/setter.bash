@@ -38,9 +38,10 @@ function dialog_menu() {
 
     exec 4>&1
     result=$(dialog --clear --title "Choose display settings with rpitools" \
-        --menu "Available displays:" 20 51 4 \
+        --menu "Available displays:" 20 65 4 \
         "Elecrow-LCD5"  "5inch touch display - internal" \
-        "standardHDMI" "general extarnal display" 2>&1 1>&4)
+        "standardHDMI" "general extarnal display" \
+        "Elecrow-LCD5driver_install" "driver download and install" 2>&1 1>&4)
     exitcode=$?
     exec 4>&-
 
@@ -56,5 +57,16 @@ elif [ "$result" == "standardHDMI" ]
 then
     echo -e "external display settigs $result"
     smartpatch "$configtxt_path" "${MYDIRd}/patches/external_display.patch"
+elif [ "$result" == "Elecrow-LCD5driver_install" ]
+then
+    pushd "${MYDIRd}/../"
+        if [ ! -d "Elecrow-LCD5" ]
+        then
+            echo -e "download Elecrow-LCD5 driver"
+            "${MYDIRd}/Elecrow-LCD5_driver_downloader.bash"
+        else
+            echo -e "Elecrow-LCD5 driver already exists."
+        fi
+        sudo ./Elecrow-LCD5/Elecrow-LCD5
+    popd
 fi
-
