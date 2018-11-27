@@ -56,7 +56,7 @@ function set_glances_username_and_password() {
 }
 
 function glance_subpage_forwarding_apache_link_icon() {
-    local glance_page_proxy_point="/$glance_stream_hostname"
+    local glance_page_proxy_point="/${glance_stream_hostname}/"
     local index_html_glances_icon_placeholder="    <!--GLANCE_SUBPAGE_ICON_PLACEHOLDER-->"
     local http_cmd="    <a href=\"$glance_page_proxy_point\"><img align=\"right\" src=\"media/glances_icn.png\" style=\"width:50px;height:auto\"></a>"
     local index_html_to_edit_path="${html_folder_path}/index.html"
