@@ -26,8 +26,8 @@ elif [ "${arg_list[0]}" == "start" ] || [ "${arg_list[0]}" == "s" ]
 then
     if [ -e "/usr/bin/emulationstation" ]
     then
-        echo -e "Execute: pkill x && /usr/bin/emulationstation &"
-        pkill x && /usr/bin/emulationstation &
+        echo -e "Execute: pkill X && /usr/bin/emulationstation &"
+        pkill X && /usr/bin/emulationstation &
     else
         echo -e "Retropie was not installed, pls run: $MYPATH config"
     fi
