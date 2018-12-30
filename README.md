@@ -485,5 +485,11 @@ https://www.jeffgeerling.com/blog/2016/review-elecrow-hdmi-5-800x480-tft-display
 https://retropie.org.uk/docs/Manual-Installation/
 ```
 
+* acct (Process accounting) - user monitor
+
+```
+https://www.ostechnix.com/monitor-user-activity-linux/
+```
+
 ## GIT
 ***push repo:*** git push -u origin master
