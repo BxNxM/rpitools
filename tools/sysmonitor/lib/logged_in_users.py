@@ -15,9 +15,14 @@ def get_logged_in_users():
         data += " " + line + "\n"
     return data
 
+def ac_user_statistic():
+    user_stat = LocalMachine.run_command_safe("ac -p").rstrip()
+    return Colors.LIGHT_BLUE + " USER STATISTIC\n" + Colors.NC + str(user_stat)
+
 def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" LOGGED-IN USERS ", char_width, separator, color_name=Colors.LIGHT_BLUE)
     text +=  get_logged_in_users()
+    text += ac_user_statistic()
     return text
 
 def main():
