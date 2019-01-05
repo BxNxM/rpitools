@@ -201,12 +201,12 @@ function main() {
         # skip transmission installation - based on rpitools config
         if [ "$current_app" == "transmission-daemon" ]
         then
-            if [ "$transmission_installation" != "True" ] || [ "$transmission_installation" != "true" ]; then message "Skip transmission installation..."; continue; fi
+            if [ "$(echo "$transmission_installation" | tr '[:upper:]' '[:lower:]')" != "true" ]; then message "Skip transmission installation..."; continue; fi
         fi
         # skip apache installation - based on rpitools config
         if [ "$current_app" == "apache2" ]
         then
-            if [ "$apache_installation" != "True" ] || [ "$apache_installation" != "true" ]; then message "Skip apache installation..."; continue; fi
+            if [ "$(echo "$apache_installation"  | tr '[:upper:]' '[:lower:]')" != "true" ]; then message "Skip apache installation..."; continue; fi
         fi
         install_apps_secure "$current_app"
     done
