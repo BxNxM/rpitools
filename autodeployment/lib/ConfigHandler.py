@@ -120,9 +120,9 @@ def validate_configs_based_on_template(custom_cfg_obj, cfg_template_path=templat
         else:
             validate_configs_based_on_template_printout(str(key) + " - section not exits - " + Colors.RED + "MISSING" + Colors.NC, is_active=print_is_active)
             difference_cnt += 1
-        # [weak] check options user (custom) config based on template config
+        # check options user (custom) config based on template config
         for key_in, value_in in value.items():
-            if str(key_in) in str(custom_all_dict):
+            if str(key_in) in str(custom_all_dict[key]):
                 validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - " + Colors.GREEN + "OK" + Colors.NC, is_active=print_is_active)
             else:
                 validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - " + Colors.RED + "MISSING" + Colors.NC, is_active=print_is_active)
