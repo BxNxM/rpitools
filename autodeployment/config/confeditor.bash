@@ -3,6 +3,16 @@
 MYPATH_CONF="${BASH_SOURCE[0]}"
 MYDIR_CONF="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+arg_list=($@)
+if [[ "${arg_list[*]}" == *"h"* ]] || [[ "${arg_list[*]}" == *"help"* ]]
+then
+    echo -e "==== QUICK COMANDS ===="
+    echo -e "edit | e\t- edit configuration"
+    echo -e "diff | d\t- diff configuration with template config"
+    echo -e "OR RUN WITHOUT PARAMETERS, AND FOLLOW THE INSTRUCTIONS (RECOMMENDED)"
+    exit 0
+fi
+
 template_config="${MYDIR_CONF}/rpitools_config_template.cfg"
 custom_config="${MYDIR_CONF}/rpitools_config.cfg"
 source "${MYDIR_CONF}/../../prepare/colors.bash"
@@ -83,24 +93,40 @@ then
     fi
 else
     echo -e "$custom_config EXISTS"
-    menu_text="OPEN [Y/N] | DIFF [D]"
-    if [[ ! -z "$DEVICE" ]] && [[ "$DEVICE" != "RASPBERRY" ]]
+
+    if [[ "${arg_list[*]}" == *"e"* ]] || [[ "${arg_list[*]}" == *"edit"* ]]
     then
-        menu_text+=" | IMPORT [I]"
+        echo -e "QUICK ARG OPTION: edit"
+        option="Y"
+    elif [[ "${arg_list[*]}" == *"d"* ]] || [[ "${arg_list[*]}" == *"diff"* ]]
+    then
+        echo -e "QUICK ARG OPTION: diff"
+        option="D"
+    else
+        menu_text="OPEN [Y/N] | DIFF [D]"
+        if [[ ! -z "$DEVICE" ]] && [[ "$DEVICE" != "RASPBERRY" ]]
+        then
+            menu_text+=" | IMPORT [I]"
+        fi
+        question "$menu_text"
+        read option
     fi
-    question "$menu_text"
-    read option
-    option_y_n_d="$option"
+
     if [ "$option" == "Y" ] || [ "$option" == "y" ]
     then
         vim "$custom_config"
     elif [ "$option" == "D" ] || [ "$option" == "d" ]
     then
-        echo "[INFO] change side: ctrl+w+w"
-        echo -e "[INFO] exit all: :wqa"
-        echo -e "[INFO] exit without saving all: :qa!"
-        question "GOT IT? [Y/N]"
-        read option
+        if [ "${#arg_list[@]}" -eq 0 ]
+        then
+            echo "[INFO] change side: ctrl+w+w"
+            echo -e "[INFO] exit all: :wqa"
+            echo -e "[INFO] exit without saving all: :qa!"
+            question "GOT IT? [Y/N]"
+            read option
+        else
+            option="Y"
+        fi
         if [ "$option" == "Y" ] || [ "$option" == "y" ]
         then
             vimdiff -O "$custom_config" "$template_config"
