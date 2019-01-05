@@ -41,23 +41,26 @@ class dictHandler(socketHandler.SocketServer):
             if "-s" in arg_list or "--silent" in arg_list:
                 is_known = True
                 for index_, arg_ in enumerate(arg_list):
-                    if "-s" in arg_list or "--silent" in arg_list:
+                    if "-s" == arg_ or "--silent" == arg_:
                         try:
-                            if arg_list[index_+1] == "True":
-                                silent_direct_state = True
-                            elif arg_list[index_+1] == "False":
-                                silent_direct_state = False
-                            else:
-                                raise Exception("Not bool [True/False]: " + str(arg_list[index_+1]))
-                            self.silentmode = silent_direct_state
-                            self.serverside_printout("silent mode direct set: {}".format(self.silentmode))
+                            if len(arg_list)-1 >= index_+1:
+                                if arg_list[index_+1] == "True":
+                                    silent_direct_state = True
+                                elif arg_list[index_+1] == "False":
+                                    silent_direct_state = False
+                                else:
+                                    raise Exception("Not bool [True/False]: " + str(arg_list[index_+1]) + " args: " + str(arg_list))
+                                self.silentmode = silent_direct_state
+                                self.serverside_printout("silent mode direct set: {}".format(self.silentmode))
                             break
                         except Exception as e:
+                            self.silentmode = not self.silentmode
                             mylogger.logger.error("EXCEPTION: {}".format(e))
                             mylogger.logger.error("silent mode automatic set: {}".format(self.silentmode))
-                            self.silentmode = not self.silentmode
                 if self.silentmode is False:
                     output_text += "Silent mode OFF\n"
+                else:
+                    output_text += "Silent mode ON\n"
 
             if "-sh" in arg_list or "--show" in arg_list:
                 is_known = True
@@ -113,7 +116,8 @@ class dictHandler(socketHandler.SocketServer):
         char_size_byte = 1
         mem_dict_size_byte = len(str(self.MEM_DICT)) * char_size_byte
         text = "\tCONNECTED CLIENTS: " + str(self.connected_clients) + "\n"
-        text += "\tMemDict size: {} byte".format(mem_dict_size_byte)
+        text += "\tMemDict size: {} byte\n".format(mem_dict_size_byte)
+        text += "\tSilent mode: " + str(self.silentmode)
         output_text = silentmode_text = text
         return output_text, silentmode_text
 
