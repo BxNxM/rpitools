@@ -14,6 +14,7 @@ webshared_root_folder_name="cloud"
 apache_webshared_root_folder="${html_folder_path}/${webshared_root_folder_name}"
 template_folder_path="${MYDIR_}/template/"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
+apache_default_website_creation="$($confighandler -s APACHE -o activate)"
 html_folder_link_to="$($confighandler -s APACHE -o html_folder_link_to)"
 html_shared_default_user="$($confighandler -s APACHE -o http_user)"
 html_shared_default_user_password="$($confighandler -s APACHE -o http_passwd)"
@@ -297,28 +298,39 @@ function restore_backup_cloud_storage_content() {
 function generate_project_structure() {
     folder="/home/$USER/rpitools"; tree "$folder" -T "RPITOOLS FILE STRUCURE" -H rpitools -C > "${MYDIR_}/template/htmls/$(basename ${folder})_file_structure.html"; sed -i 's|href=".*"||g' "${MYDIR_}/template/htmls/$(basename ${folder})_file_structure.html"
 }
-generate_project_structure
 
-link_html_folder_to_requested_path
-if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
+function create_apache_default_website() {
+    generate_project_structure
+
+    link_html_folder_to_requested_path
+    if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
+    then
+        restore_backup_cloud_storage_content "backup"
+        copy_template_under_apache_html_folder
+        create_cloud_structure
+        restore_backup_cloud_storage_content "restore"
+
+        echo -e "$(date)" > "$CACHE_PATH_is_set"
+        link_transmission_downloads_folder
+
+        sites_enabled_000-defaultconf_patch
+    else
+        _msg_ "HTML template copy already done: ${CACHE_PATH_is_set} exists."
+    fi
+    set_shared_folder_password_protected
+    set_embedded_transmission_access
+
+    motion_stream_forwarding_apache_link_icon
+
+    . "${MYDIR_}/setup_h5ai.bash"
+
+    . "$MYDIR_/glances/setup_glances_system_monitor.bash"
+}
+
+if [ "$apache_default_website_creation" == "True" ] || [ "$apache_default_website_creation" == "true" ]
 then
-    restore_backup_cloud_storage_content "backup"
-    copy_template_under_apache_html_folder
-    create_cloud_structure
-    restore_backup_cloud_storage_content "restore"
-
-    echo -e "$(date)" > "$CACHE_PATH_is_set"
-    link_transmission_downloads_folder
-
-    sites_enabled_000-defaultconf_patch
+    create_apache_default_website
 else
-    _msg_ "HTML template copy already done: ${CACHE_PATH_is_set} exists."
+    _msg_ "Apache default website setup not required (based on rpitools config)"
 fi
-set_shared_folder_password_protected
-set_embedded_transmission_access
 
-motion_stream_forwarding_apache_link_icon
-
-. "${MYDIR_}/setup_h5ai.bash"
-
-. "$MYDIR_/glances/setup_glances_system_monitor.bash"

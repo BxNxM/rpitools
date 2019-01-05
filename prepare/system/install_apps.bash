@@ -6,6 +6,10 @@ MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source ${MYDIR_}/../colors.bash
 source ${MYDIR_}/../sub_elapsed_time.bash
 was_installation=0
+# optional program installations
+confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
+transmission_installation="$($confighandler -s TRANSMISSION -o activate)"
+apache_installation="$($confighandler -s APACHE -o activate)"
 
 # message handler function
 function message() {
@@ -194,6 +198,16 @@ function main() {
     fileReader "$applist"
     for current_app in "${lineS[@]}"
     do
+        # skip transmission installation - based on rpitools config
+        if [ "$current_app" == "transmission-daemon" ]
+        then
+            if [ "$transmission_installation" != "True" ] || [ "$transmission_installation" != "true" ]; then message "Skip transmission installation..."; continue; fi
+        fi
+        # skip apache installation - based on rpitools config
+        if [ "$current_app" == "apache2" ]
+        then
+            if [ "$apache_installation" != "True" ] || [ "$apache_installation" != "true" ]; then message "Skip apache installation..."; continue; fi
+        fi
         install_apps_secure "$current_app"
     done
 

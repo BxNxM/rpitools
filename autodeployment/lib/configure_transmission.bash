@@ -10,6 +10,7 @@ source "${MYDIR_}/message.bash"
 _msg_title="TRANSMISSION SETUP"
 
 transmission_conf_path="/etc/transmission-daemon/settings.json"
+transmission_configuration="$($confighandler -s TRANSMISSION -o activate)"
 download_path="$($confighandler -s TRANSMISSION -o download_path)"
 incomp_download_path="$($confighandler -s TRANSMISSION -o incomp_download_path)"
 username="$($confighandler -s TRANSMISSION -o username)"
@@ -91,42 +92,51 @@ function create_transmission_folders() {
         _msg_ "Incomplete downloads dir exists: ${incomp_download_path}"
     fi
 }
-create_transmission_folders
 
-if [ ! -e "$CACHE_PATH_is_set" ] && [ -d "${download_path}" ] && [ -d "${incomp_download_path}" ]
+function configure_transmission() {
+    if [ ! -e "$CACHE_PATH_is_set" ] && [ -d "${download_path}" ] && [ -d "${incomp_download_path}" ]
+    then
+        # make usermod
+        sudo usermod -a -G debian-transmission "$USER"
+
+        _msg_ "SET DOWNLOADS FOLDER: $download_path IN: $transmission_conf_path"
+        #change_parameter "/var/lib/transmission-daemon/downloads" "$download_path" "$transmission_conf_path"
+        change_line "download-dir" "    \"download-dir\": \"${download_path}\"," "$transmission_conf_path"
+
+        _msg_ "SET INCOMP DOWNLOADS FOLDER: $incomp_download_path IN: $transmission_conf_path"
+        #change_parameter "/var/lib/transmission-daemon/Downloads" "$incomp_download_path" "$transmission_conf_path"
+        change_line "incomplete-dir" "    \"incomplete-dir\": \"$incomp_download_path\"," "$transmission_conf_path"
+        change_parameter "\"incomplete-dir-enabled\": false" "\"incomplete-dir-enabled\": true" "$transmission_conf_path"
+
+        _msg_ "SET USERNAME TO: $username (FROM transmission)"
+        #change_parameter "\"rpc-username\": \"transmission\"" "\"rpc-username\": \"${username}\"" "$transmission_conf_path"
+        change_line "rpc-username" "    \"rpc-username\": \"${username}\"," "$transmission_conf_path"
+
+        _msg_ "SET PASSWORD TO: $passwd"
+        change_line "rpc-password" "    \"rpc-password\": \""$passwd"\"," "$transmission_conf_path"
+
+        _msg_ "SET WHITELIST:"
+        "rpc-whitelist": "127.0.0.1",
+        change_line "\"rpc-whitelist\": \"127.0.0.1\"," "    \"rpc-whitelist\": \"127.0.0.1, 10.0.1.*, 192.168.0.*\"," "$transmission_conf_path"
+
+        echo "" > "$CACHE_PATH_is_set"
+
+        _msg_ "Reload transmission: sudo service transmission-daemon reload"
+        sudo service transmission-daemon reload
+    else
+        hostname="$($confighandler -s GENERAL -o custom_hostname)"
+        _msg_ "Transmission is already set: $CACHE_PATH_is_set is exists"
+        _msg_ "Connect: http://${hostname}"
+        _msg_ "Connect: http://$(hostname -I)"
+    fi
+}
+
+# =============================================== MAIN =========================================#
+if [ "$transmission_configuration" == "True" ] || [ "$transmission_configuration" == "true" ]
 then
-    # make usermod
-    sudo usermod -a -G debian-transmission "$USER"
-
-    _msg_ "SET DOWNLOADS FOLDER: $download_path IN: $transmission_conf_path"
-    #change_parameter "/var/lib/transmission-daemon/downloads" "$download_path" "$transmission_conf_path"
-    change_line "download-dir" "    \"download-dir\": \"${download_path}\"," "$transmission_conf_path"
-
-    _msg_ "SET INCOMP DOWNLOADS FOLDER: $incomp_download_path IN: $transmission_conf_path"
-    #change_parameter "/var/lib/transmission-daemon/Downloads" "$incomp_download_path" "$transmission_conf_path"
-    change_line "incomplete-dir" "    \"incomplete-dir\": \"$incomp_download_path\"," "$transmission_conf_path"
-    change_parameter "\"incomplete-dir-enabled\": false" "\"incomplete-dir-enabled\": true" "$transmission_conf_path"
-
-    _msg_ "SET USERNAME TO: $username (FROM transmission)"
-    #change_parameter "\"rpc-username\": \"transmission\"" "\"rpc-username\": \"${username}\"" "$transmission_conf_path"
-    change_line "rpc-username" "    \"rpc-username\": \"${username}\"," "$transmission_conf_path"
-
-    _msg_ "SET PASSWORD TO: $passwd"
-    change_line "rpc-password" "    \"rpc-password\": \""$passwd"\"," "$transmission_conf_path"
-
-    _msg_ "SET WHITELIST:"
-    "rpc-whitelist": "127.0.0.1",
-    change_line "\"rpc-whitelist\": \"127.0.0.1\"," "    \"rpc-whitelist\": \"127.0.0.1, 10.0.1.*, 192.168.0.*\"," "$transmission_conf_path"
-
-    echo "" > "$CACHE_PATH_is_set"
-
-    _msg_ "Reload transmission: sudo service transmission-daemon reload"
-    sudo service transmission-daemon reload
+    create_transmission_folders
+    configure_transmission
 else
-    hostname="$($confighandler -s GENERAL -o custom_hostname)"
-    _msg_ "Transmission is already set: $CACHE_PATH_is_set is exists"
-    _msg_ "Connect: http://${hostname}"
-    _msg_ "Connect: http://$(hostname -I)"
+    _msg_ "Transmission not installed - configuration not needed."
 fi
-
 
