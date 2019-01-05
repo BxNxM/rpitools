@@ -48,7 +48,7 @@ class dictHandler(socketHandler.SocketServer):
                             elif arg_list[index_+1] == "False":
                                 silent_direct_state = False
                             else:
-                                raise Exception("Not bool [True/False]")
+                                raise Exception("Not bool [True/False]: " + str(arg_list[index_+1]))
                             self.silentmode = silent_direct_state
                             self.serverside_printout("silent mode direct set: {}".format(self.silentmode))
                             break
