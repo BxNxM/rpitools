@@ -8,22 +8,33 @@ lib_path = os.path.join(myfolder, "../lib/")
 sys.path.append(lib_path)
 import format_disk
 import mount_connected_disks
+import storage_structure_handler
 import subprocess
 import time
 import threading
-import time
+try:
+    confhandler_path = os.path.join(myfolder,"../../../autodeployment/lib/")
+    sys.path.append(confhandler_path)
+    import ConfigHandler
+    cfg = ConfigHandler.init()
+except Exception as e:
+    print("Import config handler failed: " + str(e))
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-sge", "--search_get_edit", action='store_true', help="Search devices (/dev/sda*), get label and uuid, set fstab file")
+parser.add_argument("-s", "--search_get_edit", action='store_true', help="Search devices (/dev/sda*), get label and uuid, set fstab file")
 parser.add_argument("-m", "--mount",  action='store_true', help="Mount avaible devices (/media/*)")
 parser.add_argument("-f", "--format_ext4",  action='store_true', help="Format device for ext4 filesystem")
 parser.add_argument("-l", "--listdevs",  action='store_true', help="List connected devices with seversal commands")
+parser.add_argument("-t", "--storage_structure",  action='store_true', help="Set storage folder structure")
+parser.add_argument("-w", "--show_storage_structure",  action='store_true', help="Show storage folder structure")
 
 args = parser.parse_args()
 sge = args.search_get_edit
-m = args.mount
-f = args.format_ext4
-l = args.listdevs
+mount = args.mount
+form = args.format_ext4
+listdev = args.listdevs
+storage = args.storage_structure
+show_storage_structure = args.show_storage_structure
 
 def pre_check():
     state, msg = mount_connected_disks.is_any_device_avaible()
@@ -34,12 +45,27 @@ def pre_check():
 def main():
     if sge:
         mount_connected_disks.do_search_get_edit()
-    if m:
+    if mount:
         mount_connected_disks.mount()
-    if f:
+    if form:
         format_disk.main()
-    if l:
+    if listdev:
         format_disk.list_devices()
+    if storage:
+        if str(cfg.get(section="STORAGE", option="external")).lower() == "true":
+            set_extarnal_storage = True
+        else:
+            set_extarnal_storage = False
+        external_storage_label = str(cfg.get(section="STORAGE", option="label")).rstrip()
+        storage_structure_handler.create_storage_stucrure(set_extarnal_storage, external_storage_label)
+    if show_storage_structure:
+        if str(cfg.get(section="STORAGE", option="external")).lower() == "true":
+            set_extarnal_storage = True
+        else:
+            set_extarnal_storage = False
+        external_storage_label = str(cfg.get(section="STORAGE", option="label")).rstrip()
+        text = storage_structure_handler.get_storage_structure_folders(set_extarnal_storage, external_storage_label)
+        print(text)
 
 if __name__ == "__main__":
     pre_check()

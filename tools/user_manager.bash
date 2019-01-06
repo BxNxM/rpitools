@@ -7,6 +7,13 @@ source "${MYDIR_}/../prepare/colors.bash"
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
 
+storage_path_structure="${MYDIR_}/../cache/storage_path_structure"
+if [ -f "$storage_path_structure" ]
+then
+    source "$storage_path_structure"
+    # get userspace variable
+fi
+
 #########################################################################################
 #                                 ARGUMENTUM HANDLER                                    #
 #########################################################################################
@@ -210,6 +217,18 @@ function _msg_() {
     echo -e "${LIGHT_RED}[ $_msg_title ]${NC} - $msg"
 }
 
+function create_user_storage() {
+    username="$1"
+    if [ ! -z "${userspace}" ]
+    then
+        _msg_ "Create storage on disk for user ${username}"
+        sudo bash -c "mkdir -p ${userspace}/${username}"
+        sudo chown "${username}" "${userspace}/${username}"
+        sudo chgrp "${username}" "${userspace}/${username}"
+        sudo bash -c "ln -sf ${userspace}/${username} /home/${username}/storage"
+    fi
+}
+
 function create_custom_user() {
     local username="$1"
     local userpasswd="$2"
@@ -230,6 +249,8 @@ function create_custom_user() {
         sudo bash -c "sudo usermod -a -G rpitools_user $username"
 
         __copy_user_temaplete "$username"
+
+        create_user_storage "$username"
     fi
 }
 
@@ -248,6 +269,12 @@ function remove_user() {
 
     _msg_ "REMOVE USER WITH HOME DIR: sudo deluser --remove-home $username"
     sudo deluser --remove-home "$username"
+
+    if [ -e "${userspace}/${username}" ]
+    then
+        _msg_ "Remove ${userspace}/${username}"
+        sudo bash -c "rm -rf ${userspace}/${username}"
+    fi
 }
 
 function show_users_stat() {

@@ -308,8 +308,8 @@ function source_main_on_raspberrypi() {
             fi
 
             # automaticly mount connected devices -  add to fstab - and mount it
-            setupmessage "READ - ADD - MOUNT CONNECTED DEVICES"
-            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -sge -m
+            setupmessage "READ - ADD - MOUNT CONNECTED DEVICES AND CREATE STORAGE STRUCTURE"
+            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -s -m -t
 
             # install tools apps
             setupmessage "Install requested programs from list ${MYDIR}/template/programs.dat:"
