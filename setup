@@ -392,6 +392,7 @@ function source_main_on_raspberrypi() {
             fi
         fi
     fi
+    echo "$(date)" > $REPOROOT/cache/instantiation_done
 }
 
 function set_rpitools_env() {

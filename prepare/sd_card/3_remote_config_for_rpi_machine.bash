@@ -59,7 +59,7 @@ function execute_source_setup_on_rpi_machine_custom_host() {
 }
 
 function create_set_indicator_file() {
-    ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "touch ~/rpitools/cache/.rpi_remote_config_done"
+    ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "echo $(date) > ~/rpitools/cache/.rpi_remote_config_done"
 }
 
 function waiting_for_up_again_after_reboot() {
