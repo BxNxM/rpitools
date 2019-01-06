@@ -92,6 +92,7 @@ def get_storage_structure_folders(set_extarnal_storage, external_storage_label):
     create_source_file_for_bash_scripts(path_list)
     return text
 
+# external main function
 def create_storage_stucrure(set_extarnal_storage, external_storage_label):
     storage_root_path, path_list = get_storage_root_and_base_path_list(set_extarnal_storage, external_storage_label)
     print("Set external storage: " + str(set_extarnal_storage))
@@ -102,6 +103,7 @@ def create_storage_stucrure(set_extarnal_storage, external_storage_label):
     create_source_file_for_bash_scripts(path_list)
 
 def create_source_file_for_bash_scripts(path_list):
+    global default_storage_root
     source_path = pathname + os.sep + "../../../cache/storage_path_structure"
     text = "# storage structure"
     for path in path_list:
@@ -114,7 +116,6 @@ def create_source_file_for_bash_scripts(path_list):
         else:
             var_name = "unknown="
         text +=  "\n" + var_name + path
-
     try:
         with open(source_path, 'w') as f:
             f.write(text)
