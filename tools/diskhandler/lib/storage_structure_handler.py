@@ -85,11 +85,13 @@ def get_user_and_group(path):
     return user, group
 
 def get_storage_structure_folders(set_extarnal_storage, external_storage_label):
+    global default_storage_root
     storage_root_path, path_list = get_storage_root_and_base_path_list(set_extarnal_storage, external_storage_label)
+    create_source_file_for_bash_scripts(path_list)
     text = "Storage structure folders:"
+    text += "\n(default internal storage root: " + default_storage_root + ")"
     for path in path_list:
         text += "\n" + path + "\tgroup: " + get_user_and_group(path)[1]
-    create_source_file_for_bash_scripts(path_list)
     return text
 
 # external main function
