@@ -31,13 +31,39 @@ function set_custom_host() {
     fi
 }
 
-if [ ! -e "$CACHE_PATH_is_set" ]
+function hostname_change_is_needed() {
+    change_is_required=0
+    if [ -f "$hostname_path" ]
+    then
+        if [ "$(cat $hostname_path | grep $custom_host_name)" == "" ]
+        then
+            change_is_required=1
+        fi
+    else
+            change_is_required=1
+    fi
+}
+
+hostname_change_is_needed
+if [ "$change_is_required" -eq 1 ]
 then
-    default_hostname="raspberrypi"
+    # get previous hostname (default hostname) if $hostname_path exists
+    if [ -f "$hostname_path" ]
+    then
+        default_hostname="$(cat $hostname_path)"
+    else
+        default_hostname=""
+    fi
+    # if previous or default hostanme not available set it to factory default: raspberrypi
+    if [ "$default_hostname" == "" ]
+    then
+        default_hostname="raspberrypi"
+    fi
+
     _msg_ "${YELLOW}SET HOSTNAME: $custom_host_name (from: $default_hostname)${NC}"
     set_custom_host "$default_hostname" "$hostname_path"
     set_custom_host "$default_hostname" "$hosts_path"
     echo -e "" > "$CACHE_PATH_is_set"
 else
-    _msg_ "Machine hostname is already set! -> $CACHE_PATH_is_set exists"
+    _msg_ "Machine hostname is already set in $hostname_path -> $custom_host_name!"
 fi

@@ -230,6 +230,9 @@ function source_main_on_raspberrypi() {
 
         if [ "$INVALID_CONFIG" == "FALSE" ]
         then
+            # set custom hostname
+            . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
+
             # set up security stuffs
             . ${REPOROOT}/prepare/system/security.bash
 
@@ -352,9 +355,6 @@ function source_main_on_raspberrypi() {
             # set raspberrypi.conf file for spi
             setupmessage "Set /etc/modules-load.d/raspberrypi.conf for spi communication"
             . ${REPOROOT}/autodeployment/lib/set_spi_raspberrypi.conf.bash
-
-            # set custom hostname
-            . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
 
             # run postinstall deplyments after reboot
             if [ -e "${REPOROOT}/cache/.first_run_reboot_done" ]
