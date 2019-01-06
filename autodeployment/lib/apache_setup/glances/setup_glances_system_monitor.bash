@@ -121,6 +121,8 @@ then
     fi
 
     glance_subpage_forwarding_apache_link_icon
+else
+    _msg_ "Glances install is not required."
 fi
 
 "${MYDIR_}"/systemd_setup/set_service.bash
