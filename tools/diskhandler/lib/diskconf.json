@@ -1,0 +1,5 @@
+{
+    "label": "DISK_LABEL",
+    "format": "ext4",
+    "is_formatted": "False"
+}
