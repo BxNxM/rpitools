@@ -308,6 +308,8 @@ function source_main_on_raspberrypi() {
             fi
 
             # automaticly mount connected devices -  add to fstab - and mount it
+            setupmessage "PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON"
+            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -p
             setupmessage "READ - ADD - MOUNT CONNECTED DEVICES AND CREATE STORAGE STRUCTURE"
             sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -s -m -t
 

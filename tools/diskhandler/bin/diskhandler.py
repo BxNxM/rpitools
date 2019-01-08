@@ -12,6 +12,7 @@ import storage_structure_handler
 import subprocess
 import time
 import threading
+import prepare_and_format_blockdevice
 try:
     confhandler_path = os.path.join(myfolder,"../../../autodeployment/lib/")
     sys.path.append(confhandler_path)
@@ -27,6 +28,7 @@ parser.add_argument("-f", "--format_ext4",  action='store_true', help="Format de
 parser.add_argument("-l", "--listdevs",  action='store_true', help="List connected devices with seversal commands")
 parser.add_argument("-t", "--storage_structure",  action='store_true', help="Set storage folder structure")
 parser.add_argument("-w", "--show_storage_structure",  action='store_true', help="Show storage folder structure")
+parser.add_argument("-p", "--prepare_disks",  action='store_true', help="Prepare disks whick contains diskconf.json")
 
 args = parser.parse_args()
 sge = args.search_get_edit
@@ -35,6 +37,7 @@ form = args.format_ext4
 listdev = args.listdevs
 storage = args.storage_structure
 show_storage_structure = args.show_storage_structure
+prepare_disks = args.prepare_disks
 
 def pre_check():
     state, msg = mount_connected_disks.is_any_device_avaible()
@@ -66,6 +69,11 @@ def main():
         external_storage_label = str(cfg.get(section="STORAGE", option="label")).rstrip()
         text = storage_structure_handler.get_storage_structure_folders(set_extarnal_storage, external_storage_label)
         print(text)
+    if prepare_disks:
+        if str(cfg.get(section="STORAGE", option="external")).lower() == "true":
+            prepare_and_format_blockdevice.prepare_block_device()
+        else:
+            print("For automatic disk format based on diskconf.json switch STORAGE -> external True in rpitools_config.conf")
 
 if __name__ == "__main__":
     pre_check()
