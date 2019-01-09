@@ -165,3 +165,41 @@ def format_ex4(device, label):
         module_printer("\n")
     else:
         module_printer("EXITCODE:{}\nSTDOUT:{}\nSTDERR:{}\n".format(exit_code, stdout, stderr))
+
+def mount_all_devices():
+    media_dirs = []
+    for dirname, dirnames, filenames in os.walk('/media/'):
+        media_dirs = dirnames
+        break
+
+    for actualdir in media_dirs:
+        is_mounted_cmd = "grep -qs '/media/{}' /proc/mounts".format(actualdir)
+        exitcode, stdout, stderr = LocalMachine.run_command(is_mounted_cmd)
+        if exitcode == 0:
+            print("/media/{} is already mounted".format(actualdir))
+        elif exitcode == 1:
+            exitcode, stdout, stderr = LocalMachine.run_command("cat /etc/fstab")
+            if exitcode == 0 and actualdir not in stdout:
+                print(actualdir + " not in /etc/fstab")
+                print("\tSkipping mount...")
+                return
+            print("/media/{} mount".format(actualdir))
+            mount_cmd = "mount /media/" + str(actualdir)
+            exitcode, stdout, stderr = LocalMachine.run_command(mount_cmd)
+            if exitcode == 0:
+                is_mounted_cmd = "grep -qs '/media/{}' /proc/mounts".format(actualdir)
+                exitcode, stdout, stderr = LocalMachine.run_command(is_mounted_cmd)
+                if exitcode == 0:
+                    print("Successfully mounted")
+                elif exitcode == 1:
+                    print("Fail to mount - may device is not found")
+                else:
+                    error_msg("EXITCODE: {}\nSTDOUT: {}\nSTDERR:{}".format(exitcode, stdout, stderr))
+            else:
+                error_msg("Mount failed!")
+                error_msg("Command: {} return with error code: {}".format(mount_cmd, exitcode))
+                error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+        else:
+            error_msg("Unexpected error!")
+            error_msg("Command: {} return with error code: {}".format(is_mounted_cmd, exitcode))
+            error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))

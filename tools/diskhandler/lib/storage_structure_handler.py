@@ -5,6 +5,7 @@ import os
 import sys
 import grp
 import pwd
+import BlockDeviceHandler
 pathname = os.path.dirname(sys.argv[0])
 default_storage_folders = ["/UserSpace", "/SharedSpace", "/OtherSpace"]
 storage_folders_groups = [ "rpitools_admin", "rpitools_user", "rpitools_admin"]
@@ -87,6 +88,9 @@ def get_user_and_group(path):
 def get_storage_structure_folders(set_extarnal_storage, external_storage_label):
     global default_storage_root
     storage_root_path, path_list = get_storage_root_and_base_path_list(set_extarnal_storage, external_storage_label)
+    if set_extarnal_storage:
+        if not BlockDeviceHandler.device_is_mounted(storage_root_path):
+            return "External device is not available: " + str(storage_root_path)
     create_source_file_for_bash_scripts(path_list)
     text = "Storage structure folders:"
     text += "\n(default internal storage root: " + default_storage_root + ")"

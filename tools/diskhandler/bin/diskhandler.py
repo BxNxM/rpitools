@@ -13,6 +13,7 @@ import subprocess
 import time
 import threading
 import prepare_and_format_blockdevice
+import BlockDeviceHandler
 try:
     confhandler_path = os.path.join(myfolder,"../../../autodeployment/lib/")
     sys.path.append(confhandler_path)
@@ -40,7 +41,7 @@ show_storage_structure = args.show_storage_structure
 prepare_disks = args.prepare_disks
 
 def pre_check():
-    state, msg = mount_connected_disks.is_any_device_avaible()
+    state, msg = BlockDeviceHandler.is_any_device_avaible()
     if not state:
         print("There are no connected devices: " + str(msg))
         sys.exit(444)
@@ -53,7 +54,7 @@ def main():
     if form:
         format_disk.main()
     if listdev:
-        format_disk.list_devices()
+        format_disk.hum_readable_list_devices()
     if storage:
         if str(cfg.get(section="STORAGE", option="external")).lower() == "true":
             set_extarnal_storage = True

@@ -3,9 +3,8 @@
 arg_helper_lolcat="$SETUPLOLCAT"
 
 # setupmessage handler function
+rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 function setupmessage() {
-    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
-
     local msg="$1"
     if [ ! -z "$msg" ]
     then
@@ -307,15 +306,15 @@ function source_main_on_raspberrypi() {
                 fi
             fi
 
-            # automaticly mount connected devices -  add to fstab - and mount it
-            setupmessage "PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON"
-            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -p
-            setupmessage "READ - ADD - MOUNT CONNECTED DEVICES AND CREATE STORAGE STRUCTURE"
-            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -s -m -t
-
             # install tools apps
             setupmessage "Install requested programs from list ${MYDIR}/template/programs.dat:"
             . ${MYDIR}/prepare/system/install_apps.bash
+
+            # automaticly mount connected devices -  add to fstab - and mount it
+            setupmessage "PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON"
+            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -p 2>&1 | tee "$rpitools_log_path"
+            setupmessage "READ - ADD - MOUNT CONNECTED DEVICES AND CREATE STORAGE STRUCTURE"
+            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -s -m -t 2>&1 | tee "$rpitools_log_path"
 
             # Adafruit repo - install oled library
             if [ ! -e "${REPOROOT}/gpio/Adafruit_Python_SSD1306" ]

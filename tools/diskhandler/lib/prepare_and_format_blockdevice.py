@@ -45,20 +45,24 @@ def restore_diskconf_file(path, confname="diskconf.json"):
 def safe_format_disk_check_force_mode(json_data, dev):
     dev_data_modified = False
     # disk is not formatted
+    dev_data = BlockDeviceHandler.get_device_info_data(dev)
+    if json_data['label'] != dev_data['label']:
+        dev_data_modified = True
+    if json_data['format'] != dev_data['filesystem']:
+        dev_data_modified = True
+
     if json_data['is_formatted'] == "False":
-        dev_data = BlockDeviceHandler.get_device_info_data(dev)
-        if json_data['label'] != dev_data['label']:
-            dev_data_modified = True
-        if json_data['format'] != dev_data['filesystem']:
-            dev_data_modified = True
-    if json_data['force'] == "True" and dev_data_modified is False:
-        module_print("[i] Block device paramaters not changed but force mode is ON")
-        return True
-    elif dev_data_modified is True:
-        module_print("[i] Requested block device parameter(s) changed - format")
-        return True
+        if json_data['force'] == "True" and dev_data_modified is False:
+            module_print("[i] [format] Block device paramaters not changed but force mode is ON")
+            return True
+        elif dev_data_modified is True:
+            module_print("[i] [format] Requested block device parameter(s) changed - format")
+            return True
+        else:
+            module_print("[i] [Skip format] Blockdevice format not needed - label and system not changed")
+            return False
     else:
-        module_print("[i] Blockdevice format not needed")
+        module_print("[i] [is_formatted:True] Blockdevice already formatted.")
         return False
 
 def format_device_based_on_config_file(dev, premount_path):
