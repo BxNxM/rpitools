@@ -11,7 +11,7 @@ storage_path_structure="${MYDIR_}/../cache/storage_path_structure"
 if [ -f "$storage_path_structure" ]
 then
     source "$storage_path_structure"
-    # get userspace variable
+    # get USERSPACE variable
 fi
 
 #########################################################################################
@@ -219,13 +219,13 @@ function _msg_() {
 
 function create_user_storage() {
     username="$1"
-    if [ ! -z "${userspace}" ]
+    if [ ! -z "${USERSPACE}" ]
     then
         _msg_ "Create storage on disk for user ${username}"
-        sudo bash -c "mkdir -p ${userspace}/${username}"
-        sudo chown "${username}" "${userspace}/${username}"
-        sudo chgrp "${username}" "${userspace}/${username}"
-        sudo bash -c "ln -sf ${userspace}/${username} /home/${username}/storage"
+        sudo bash -c "mkdir -p ${USERSPACE}/${username}"
+        sudo chown "${username}" "${USERSPACE}/${username}"
+        sudo chgrp "${username}" "${USERSPACE}/${username}"
+        sudo bash -c "ln -sf ${USERSPACE}/${username} /home/${username}/storage"
     fi
 }
 
@@ -270,10 +270,10 @@ function remove_user() {
     _msg_ "REMOVE USER WITH HOME DIR: sudo deluser --remove-home $username"
     sudo deluser --remove-home "$username"
 
-    if [ -e "${userspace}/${username}" ]
+    if [ -e "${USERSPACE}/${username}" ]
     then
-        _msg_ "Remove ${userspace}/${username}"
-        sudo bash -c "rm -rf ${userspace}/${username}"
+        _msg_ "Remove ${USERSPACE}/${username}"
+        sudo bash -c "rm -rf ${USERSPACE}/${username}"
     fi
 }
 

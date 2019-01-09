@@ -114,13 +114,13 @@ def create_source_file_for_bash_scripts(path_list):
     text = "# storage structure"
     for path in path_list:
         if "user" in path.lower():
-            var_name = "userspace="
+            var_name = "USERSPACE="
         elif "shared" in path.lower():
-            var_name = "sharedspace="
+            var_name = "SHAREDSPACE="
         elif "other" in path.lower():
-            var_name = "otherspace="
+            var_name = "OTHERSPACE="
         else:
-            var_name = "unknown="
+            var_name = "UNKNOWN="
         text +=  "\n" + var_name + path
     try:
         with open(source_path, 'w') as f:
