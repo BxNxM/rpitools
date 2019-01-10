@@ -22,7 +22,7 @@ def parse_config_file_from_disk(path, confname="diskconf.json"):
 def write_state_config_file_from_disk(path, data, confname="diskconf.json"):
     json_path = str(path) + "/" + str(confname)
     with open(json_path, "w") as f:
-        data['is_formatted'] = "True"
+        str(data['is_formatted']).lower() == "true"
         json.dump(data, f, indent=2)
 
 def save_diskconf_file(path, confname="diskconf.json"):
@@ -51,8 +51,8 @@ def safe_format_disk_check_force_mode(json_data, dev):
     if json_data['format'] != dev_data['filesystem']:
         dev_data_modified = True
 
-    if json_data['is_formatted'] == "False":
-        if json_data['force'] == "True" and dev_data_modified is False:
+    if str(json_data['is_formatted']).lower() == "false":
+        if str(json_data['force']).lower() == "true" and dev_data_modified is False:
             module_print("[i] [format] Block device paramaters not changed but force mode is ON")
             return True
         elif dev_data_modified is True:

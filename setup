@@ -2,9 +2,9 @@
 
 arg_helper_lolcat="$SETUPLOLCAT"
 
-# setupmessage handler function
-rpitools_log_path="${REPOROOT}/cache/rpitools.log"
 function setupmessage() {
+    # setupmessage handler function
+    rpitools_log_path="${REPOROOT}/cache/rpitools.log"
     local msg="$1"
     if [ ! -z "$msg" ]
     then

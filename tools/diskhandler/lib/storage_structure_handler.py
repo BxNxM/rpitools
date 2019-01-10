@@ -100,6 +100,7 @@ def get_storage_structure_folders(set_extarnal_storage, external_storage_label):
 
 # external main function
 def create_storage_stucrure(set_extarnal_storage, external_storage_label):
+    print("CREATE STORAGE STUCTURE FOR RPITOOLS")
     storage_root_path, path_list = get_storage_root_and_base_path_list(set_extarnal_storage, external_storage_label)
     print("Set external storage: " + str(set_extarnal_storage))
     print("Storage root: " + str(storage_root_path))
