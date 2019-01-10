@@ -7,6 +7,7 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 config_path = os.path.join(myfolder, "../config/rpitools_config.cfg")
 template_config_path = os.path.join(myfolder, "../config/rpitools_config_template.cfg")
 USER = getpass.getuser()
+storage_path_structure_path = os.path.join(myfolder, "../../cache/storage_path_structure")
 
 class SimpleConfig(ConfigParser.ConfigParser):
 
@@ -26,8 +27,7 @@ class SimpleConfig(ConfigParser.ConfigParser):
                 self.config_dict[section] = {}
                 options_list = self.options(section)
                 for option in options_list:
-                    parameter = ConfigParser.ConfigParser.get(self, section, option).replace("$USER", USER)
-                    parameter = parameter.replace("~/", "/home/{}/".format(USER))
+                    parameter = self.__replace_magic_variables(ConfigParser.ConfigParser.get(self, section, option))
                     self.config_dict[section][option] = parameter
         return self.config_dict
 
@@ -101,6 +101,29 @@ class SimpleConfig(ConfigParser.ConfigParser):
         else:
             state = "USER_SPACE not exists in config."
         return state
+
+    def __replace_magic_variables(self, parameter):
+        global storage_path_structure_path
+        global USER
+
+        # Set username - runtime parameter "magic variable"
+        parameter = parameter.replace("$USER", USER)
+        parameter = parameter.replace("~/", "/home/{}".format(USER))
+        parameter = parameter.replace("$HOME", "/home/{}".format(USER))
+
+        # Set storage_path_structure parameters
+        if os.path.exists(storage_path_structure_path):
+            with open(storage_path_structure_path, 'r') as f:
+                storage_path_config_raw = f.read()
+            storage_path_config_lines = storage_path_config_raw.split('\n')
+            for line in storage_path_config_lines:
+                # remove comment
+                if line[0] != '#':
+                    #split by key=value
+                    key, value = line.split('=')
+                    if "$"+str(key) in parameter:
+                        parameter = parameter.replace("$"+str(key), value)
+        return parameter
 
 def validate_configs_based_on_template_printout(msg, is_active):
     if is_active:

@@ -6,7 +6,6 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 lib_path = os.path.join(myfolder, "../lib/")
 sys.path.append(lib_path)
 import ConfigHandler
-import pprint
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-s", "--section", help="select section")
@@ -39,5 +38,17 @@ if user_script:
     print(cfg.set_user_script())
 
 if listconfig_formatted:
-    pp = pprint.PrettyPrinter(depth=3)
-    pp.pprint(cfg.get_full())
+    print("=======================================")
+    print("====  rpitools_config.cfg content  ====")
+    print("=======================================")
+    column_len_base = 0
+    for section, opt_val in cfg.get_full().items():
+        for opt, val in opt_val.items():
+            if column_len_base < len(opt):
+                column_len_base = len(opt)
+    for section, opt_val in cfg.get_full().items():
+        print("[ {} ]".format(section))
+        for opt, val in opt_val.items():
+            column_len = " " * (column_len_base+1-len(opt))
+            print("\t{}:{}{}".format(opt, column_len, val))
+        print("")

@@ -221,10 +221,11 @@ function create_user_storage() {
     username="$1"
     if [ ! -z "${USERSPACE}" ]
     then
-        _msg_ "Create storage on disk for user ${username}"
+        _msg_ "Create storage on disk for user ${username} -> ${USERSPACE}/${username}"
         sudo bash -c "mkdir -p ${USERSPACE}/${username}"
         sudo chown "${username}" "${USERSPACE}/${username}"
         sudo chgrp "${username}" "${USERSPACE}/${username}"
+        _msg_ "Linking storage from disk ${USERSPACE}/${username} -> /home/${username}/storage"
         sudo bash -c "ln -sf ${USERSPACE}/${username} /home/${username}/storage"
     fi
 }
