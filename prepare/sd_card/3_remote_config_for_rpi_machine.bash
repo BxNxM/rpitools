@@ -14,7 +14,7 @@ hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
 pixel_activate="$($CONFIGAHNDLER -s INSTALL_PIXEL -o activate)"
 vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
 custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
-reboot_wait_loop=4
+reboot_wait_loop=5
 if [ "$pixel_activate" == "False" ] || [ "$pixel_activate" == "false" ]
 then
     reboot_wait_loop=$((reboot_wait_loop-1))
