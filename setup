@@ -1,6 +1,7 @@
 #!/bin/bash
 
 arg_helper_lolcat="$SETUPLOLCAT"
+instantiation_done_path="${REPOROOT}/cache/.instantiation_done"
 
 function setupmessage() {
     # setupmessage handler function
@@ -394,7 +395,7 @@ function source_main_on_raspberrypi() {
             fi
         fi
     fi
-    echo "$(date)" > $REPOROOT/cache/instantiation_done
+    echo "$(date)" > "$instantiation_done_path"
 }
 
 function set_rpitools_env() {

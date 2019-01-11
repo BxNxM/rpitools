@@ -14,7 +14,7 @@ hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
 pixel_activate="$($CONFIGAHNDLER -s INSTALL_PIXEL -o activate)"
 vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
 custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
-reboot_wait_loop=5
+reboot_wait_loop=8
 if [ "$pixel_activate" == "False" ] || [ "$pixel_activate" == "false" ]
 then
     reboot_wait_loop=$((reboot_wait_loop-1))
@@ -58,10 +58,6 @@ function execute_source_setup_on_rpi_machine_custom_host() {
     ssh -o StrictHostKeyChecking=no "${username}@${hostname}" 'cd rpitools && source setup'
 }
 
-function create_set_indicator_file() {
-    ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "echo $(date) > ~/rpitools/cache/.rpi_remote_config_done"
-}
-
 function waiting_for_up_again_after_reboot() {
     local host="$1"
     local retry=120
@@ -86,12 +82,12 @@ if [ "$is_avaible_exitcode" -eq 0 ]
 then
     echo -e "ssh-keygen -R raspberrypi.local"
     ssh-keygen -R raspberrypi.local
-    is_rpi_machine_set=$(sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
+    is_rpi_machine_set=$(sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.instantiation_done ]; then echo 1; else echo 0; fi")
     custom_hostname_is_active=1
 else
     echo -e "ssh-keygen -R $hostname"
     ssh-keygen -R "$hostname"
-    is_rpi_machine_set=$(ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "if [ -e  ~/rpitools/cache/.rpi_remote_config_done ]; then echo 1; else echo 0; fi")
+    is_rpi_machine_set=$(ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "if [ -e  ~/rpitools/cache/.instantiation_done ]; then echo 1; else echo 0; fi")
     custom_hostname_is_active=0
 fi
 
@@ -123,7 +119,7 @@ then
     done
 
         echo -e "\tWE ARE DONE :D"
-        create_set_indicator_file
+        exit 0
 else
     echo -e "remote settings are already done _@/\""
 fi
