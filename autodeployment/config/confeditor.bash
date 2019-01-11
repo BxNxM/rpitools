@@ -2,6 +2,7 @@
 
 MYPATH_CONF="${BASH_SOURCE[0]}"
 MYDIR_CONF="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+confighandler="${MYDIR_CONF}/../bin/ConfigHandlerInterface.py"
 
 arg_list=($@)
 if [[ "${arg_list[*]}" == *"h"* ]] || [[ "${arg_list[*]}" == *"help"* ]]
@@ -39,7 +40,30 @@ function validate_conf() {
         fi
     fi
 }
-validate_conf
+
+function export_diskconf_config_file() {
+    local diskconf_template_path="${MYDIR_CONF}/diskconf.json.template"
+    local diskconf_path="${MYDIR_CONF}/diskconf.json"
+    local external_disk_state="$($confighandler  -s STORAGE -o external)"
+    local disk_label="$($confighandler  -s STORAGE -o label)"
+    if [ "$external_disk_state" == "True" ] || [ "$external_disk_state" == "true" ]
+    then
+        echo -e "External disk required - > create config file: $diskconf_path"
+
+        echo -e "Copy $diskconf_template_path template to $diskconf_path"
+        cp "$diskconf_template_path" "$diskconf_path"
+
+        echo -e "Set $diskconf_path from rpitools_config.cfg"
+        sed -i 's/DISK_LABEL/'"$disk_label"'/g' "$diskconf_path"
+
+        if [ -e "${HOME}/Desktop/" ]
+        then
+            cp "$diskconf_path" "${HOME}/Desktop/diskconf.json"
+        fi
+    else
+        echo -e "External disk not required."
+    fi
+}
 
 function import_configuration() {
     question "ADD YOUR CUSTOM CONFIG PATH HERE:"
@@ -75,6 +99,9 @@ function import_configuration() {
     fi
 }
 
+
+########################### MAIN ###########################
+validate_conf
 if [ ! -e "$custom_config" ]
 then
     echo -e "$custom_config NOT EXISTS"
@@ -156,5 +183,9 @@ then
             fi
         fi
     fi
+fi
+if [ -f "${MYDIR_CONF}/rpitools_config.cfg" ]
+then
+    export_diskconf_config_file
 fi
 echo -e "Goodbye ;)"
