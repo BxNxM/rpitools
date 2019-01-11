@@ -314,7 +314,8 @@ function source_main_on_raspberrypi() {
             setupmessage "PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON"
             sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -p 2>&1 | tee "$rpitools_log_path"
             setupmessage "READ - ADD - MOUNT CONNECTED DEVICES AND CREATE STORAGE STRUCTURE"
-            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -s -m -t 2>&1 | tee "$rpitools_log_path"
+            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -s -m 2>&1 | tee "$rpitools_log_path"
+            sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py -t 2>&1 | tee "$rpitools_log_path"
 
             # Adafruit repo - install oled library
             if [ ! -e "${REPOROOT}/gpio/Adafruit_Python_SSD1306" ]
