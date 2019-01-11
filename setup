@@ -1,7 +1,6 @@
 #!/bin/bash
 
 arg_helper_lolcat="$SETUPLOLCAT"
-instantiation_done_path="${REPOROOT}/cache/.instantiation_done"
 
 function setupmessage() {
     # setupmessage handler function
@@ -395,7 +394,11 @@ function source_main_on_raspberrypi() {
             fi
         fi
     fi
-    echo "$(date)" > "$instantiation_done_path"
+    if [ ! -e "$instantiation_done_path" ]
+    then
+        setupmessage "rpitools Instantiation done"
+        echo "$(date)" > "$instantiation_done_path"
+    fi
 }
 
 function set_rpitools_env() {
@@ -406,6 +409,7 @@ function set_rpitools_env() {
     MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     export REPOROOT="$MYDIR"
     export OS=$(uname -o)
+    instantiation_done_path="${REPOROOT}/cache/.instantiation_done"
     alias clean_cache="rm -f ${REPOROOT}/cache/.*_installed && rm -f ${REPOROOT}/cache/rpitools.log"
 
     #source colors
