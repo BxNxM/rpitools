@@ -54,7 +54,8 @@ function export_diskconf_config_file() {
         cp "$diskconf_template_path" "$diskconf_path"
 
         echo -e "Set $diskconf_path from rpitools_config.cfg"
-        sed -i 's/DISK_LABEL/'"$disk_label"'/g' "$diskconf_path"
+        sed 's/DISK_LABEL/'"$disk_label"'/g' "$diskconf_path" > "${diskconf_path}mod"
+        mv "${diskconf_path}mod" "$diskconf_path"
 
         if [ -e "${HOME}/Desktop/" ]
         then

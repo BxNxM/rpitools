@@ -1,6 +1,7 @@
 import LocalMachine
 import os
 import sys
+import time
 
 def module_printer(text):
     printout = "[ BlockDevideHandler ] {}".format(text)
@@ -54,11 +55,15 @@ def get_device_info_data(device):
     cmd = "sudo blkid " + str(device)
     exitcode, stdout, stderr = LocalMachine.run_command(cmd)
     check_exitcode(cmd, exitcode, stderr)
-    dev_info = stdout.split(" ")
-    device_info_dict["path"] = dev_info[0].replace(':', '', 1)
-    device_info_dict["label"] = dev_info[1].split("=")[1].replace('"', '', 2)
-    device_info_dict["uuid"] = dev_info[2].split("=")[1].replace('"', '', 2)
-    device_info_dict["filesystem"] = dev_info[3].split("=")[1].replace('"', '', 2)
+    try:
+        dev_info = stdout.split(" ")
+        device_info_dict["path"] = dev_info[0].replace(':', '', 1)
+        device_info_dict["label"] = dev_info[1].split("=")[1].replace('"', '', 2)
+        device_info_dict["uuid"] = dev_info[2].split("=")[1].replace('"', '', 2)
+        device_info_dict["filesystem"] = dev_info[3].split("=")[1].replace('"', '', 2)
+    except Exception as e:
+        print("get_device_info_data: " + str(e))
+        device_info_dict = {"path": "", "label": "", "uuid": "", "filesystem": ""}
     return device_info_dict
 
 def device_is_mounted(device):
@@ -111,6 +116,10 @@ def unmount_device(dev):
     cmd = "sudo umount " + str(dev)
     exitcode, stdout, stderr = LocalMachine.run_command(cmd)
     check_exitcode(cmd, exitcode, stderr)
+    time.sleep(1)
+    if device_is_mounted(dev):
+        time.sleep(1)
+        unmount_device(dev)
 
 def unmount_all_devices(del_mount_point=False):
     """ unmount all mounted devices """

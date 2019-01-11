@@ -22,7 +22,7 @@ def parse_config_file_from_disk(path, confname="diskconf.json"):
 def write_state_config_file_from_disk(path, data, confname="diskconf.json"):
     json_path = str(path) + "/" + str(confname)
     with open(json_path, "w") as f:
-        str(data['is_formatted']).lower() == "true"
+        data['is_formatted'] == "True"
         json.dump(data, f, indent=2)
 
 def save_diskconf_file(path, confname="diskconf.json"):
