@@ -15,6 +15,10 @@ pixel_activate="$($CONFIGAHNDLER -s INSTALL_PIXEL -o activate)"
 vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
 custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
 reboot_wait_loop=8
+
+# SET timer
+SECONDS=0
+
 if [ "$pixel_activate" == "False" ] || [ "$pixel_activate" == "false" ]
 then
     reboot_wait_loop=$((reboot_wait_loop-1))
@@ -119,6 +123,7 @@ then
     done
 
         echo -e "\tWE ARE DONE :D"
+        echo -e "\tElapsed time $(($SECONDS/60/60)):$(($SECONDS/60%60)):$(($SECONDS%60))"
         exit 0
 else
     echo -e "remote settings are already done _@/\""
