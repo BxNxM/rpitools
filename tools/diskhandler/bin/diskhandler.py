@@ -40,20 +40,24 @@ storage = args.storage_structure
 show_storage_structure = args.show_storage_structure
 prepare_disks = args.prepare_disks
 
-def pre_check():
+def pre_check(info="CKECK"):
     state, msg = BlockDeviceHandler.is_any_device_avaible()
     if not state:
-        print("There are no connected devices: " + str(msg))
+        print("{} There are no connected devices: {}".format(info, msg))
         sys.exit(444)
 
 def main():
     if sge:
+        pre_check("do_search_get_edit")
         mount_connected_disks.do_search_get_edit()
     if mount:
+        pre_check("mount")
         mount_connected_disks.mount()
     if form:
+        pre_check("format_disk")
         format_disk.main()
     if listdev:
+        pre_check("hum_readable_list_devices")
         format_disk.hum_readable_list_devices()
     if storage:
         if str(cfg.get(section="STORAGE", option="external")).lower() == "true":
@@ -71,13 +75,13 @@ def main():
         text = storage_structure_handler.get_storage_structure_folders(set_extarnal_storage, external_storage_label)
         print(text)
     if prepare_disks:
+        pre_check("prepare_block_device")
         if str(cfg.get(section="STORAGE", option="external")).lower() == "true":
             prepare_and_format_blockdevice.prepare_block_device()
         else:
             print("For automatic disk format based on diskconf.json switch STORAGE -> external True in rpitools_config.conf")
 
 if __name__ == "__main__":
-    pre_check()
     main()
     time.sleep(1)
     sys.exit(0)
