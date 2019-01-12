@@ -211,6 +211,17 @@ function create_linux_groups_for_rpitools() {
     fi
 }
 
+function create_ssh_key_pair_if_not_exists() {
+    if [ ! -d "${HOME}/.ssh" ] || [ ! -f "${HOME}/.ssh/id_rsa" ]
+    then
+        _msg_ "Generate SSH key for raspberry pi (under ${HOME}/.ssh)"
+        mkdir -p "${HOME}/.ssh"
+        ssh-keygen -t rsa -N "" -f "${HOME}/.ssh/id_rsa"
+    else
+        _msg_ "${HOME}/.ssh SSH keys already exists."
+    fi
+}
+
 #########################################################################################
 #                                       MAIN                                            #
 #########################################################################################
@@ -286,3 +297,4 @@ fi
 
 # SET RPITOOLS GROUPS
 create_linux_groups_for_rpitools
+create_ssh_key_pair_if_not_exists
