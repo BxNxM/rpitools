@@ -230,10 +230,13 @@ function main() {
 main
 if [ "$was_installation" -eq 1 ]
 then
-    message "After program installations, execute: sudo reboot"
     if [ ! -e "${MYPATH_}/../../cache/.instantiation_done" ]
     then
+        message "After program installations, execute: sudo reboot"
+        . "${MYPATH_}/../../tools/cache_restore_backup.bash" "backup"
         sudo reboot
+    else
+        message "After program installations good to restart the system: sudo reboot"
     fi
 fi
 #elapsed_time "stop"
