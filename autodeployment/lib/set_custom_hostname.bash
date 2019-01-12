@@ -66,7 +66,7 @@ then
     echo -e "" > "$CACHE_PATH_is_set"
 
     _msg_ "NEW HOSTNAME WAS SET RESTART SYSTEM"
-    sudo restart
+    sudo reboot
 else
     _msg_ "Machine hostname is already set in $hostname_path -> $custom_host_name!"
 fi
