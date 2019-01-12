@@ -24,7 +24,11 @@ def get_cpu_freq():
 
 def get_internal_ip():
     data = LocalMachine.run_command_safe("hostname -I")
-    return data
+    data_list = data.split(" ")
+    ip_printout = ""
+    for index, ip in enumerate(data_list):
+        ip_printout += "IP[{}]: {} ".format(index, ip)
+    return ip_printout
 
 def get_external_ip():
     data = LocalMachine.run_command_safe("curl http://ipecho.net/plain 2>/dev/null")
@@ -32,14 +36,14 @@ def get_external_ip():
 
 def get_mac_addresses():
     output = ""
-    devices = LocalMachine.run_command_safe("ls /sys/class/net")
+    devices = LocalMachine.run_command_safe("ls -1 /sys/class/net")
     devices_list = devices.split("\n")
     for index, device in enumerate(devices_list):
         if device != "lo":
-            cmd = "ifconfig " + device + " | grep 'ether'"
-            mac = LocalMachine.run_command_safe(cmd)
-            if str(mac) != "" and mac is not None:
-                output += " \t" + device + "\t" + str(mac)[13:]
+            cmd = "ifconfig " + device + " | grep 'HWaddr'"
+            mac_line = LocalMachine.run_command_safe(cmd)
+            if str(mac_line) != "" and mac_line is not None:
+                output += " \t" + device + "\t\t" + str(mac_line)[-17:]
                 if index < len(devices_list) - 1:
                     output += "\n"
     return output
