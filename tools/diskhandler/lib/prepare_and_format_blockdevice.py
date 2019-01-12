@@ -14,16 +14,32 @@ def parse_config_file_from_disk(path, confname="diskconf.json"):
     if not os.path.exists(json_path):
         module_print("\tPath not exists: " + str(json_path))
         return None
-    with open(json_path, "r") as f:
-        data = json.load(f)
-    module_print("config: " + str(confname) + " => " + str(data))
+    try:
+        with open(json_path, "r") as f:
+            data = json.load(f)
+        module_print("config: " + str(confname) + " => " + str(data))
+    except Exception as e:
+        module_print("Json parse error: " + str(e))
+        return None
     return data
 
 def write_state_config_file_from_disk(path, data, confname="diskconf.json"):
     json_path = str(path) + "/" + str(confname)
-    with open(json_path, "w") as f:
-        data['is_formatted'] == "True"
-        json.dump(data, f, indent=2)
+    try:
+        if os.path.exists(json_path):
+            module_print("\tWrite back format state to " + str(json_path))
+            with open(json_path, "w") as f:
+                if str(data['is_formatted']).lower() == "false":
+                    data['is_formatted'] = "True"
+                    json.dump(data, f, indent=2)
+                    module_print("\t\tSUCCESS")
+                else:
+                    module_print("State already set")
+        else:
+            module_print("diskconf not exists: " + str(json_path))
+    except Exception as e:
+        module_print("\t\tFAILED")
+        module_print("Write back format state to disk failed:" + str(e))
 
 def save_diskconf_file(path, confname="diskconf.json"):
     json_path = str(path) + "/" + str(confname)
@@ -79,6 +95,8 @@ def format_device_based_on_config_file(dev, premount_path):
             BlockDeviceHandler.format_ex4(dev, data['label'])
             module_print("\tMount formatted device")
             mount_point = BlockDeviceHandler.mount_device(dev)
+            module_print("\tRestore config file to disk after formating")
+            restore_diskconf_file(mount_point)
             module_print("\tSave back the the config file with the new state")
             write_state_config_file_from_disk(mount_point, data)
         else:
