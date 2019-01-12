@@ -145,10 +145,13 @@ def validate_configs_based_on_template(custom_cfg_obj, cfg_template_path=templat
             difference_cnt += 1
         # check options user (custom) config based on template config
         for key_in, value_in in value.items():
-            if str(key_in) in str(custom_all_dict[key]):
-                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - " + Colors.GREEN + "OK" + Colors.NC, is_active=print_is_active)
-            else:
-                validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - " + Colors.RED + "MISSING" + Colors.NC, is_active=print_is_active)
+            try:
+                if str(key_in) in str(custom_all_dict[key]):
+                    validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - " + Colors.GREEN + "OK" + Colors.NC, is_active=print_is_active)
+                else:
+                    validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - " + Colors.RED + "MISSING" + Colors.NC, is_active=print_is_active)
+                    difference_cnt += 1
+            except Exception as e:
                 difference_cnt += 1
     if difference_cnt == 0:
         sync_rpitools_version(custom_cfg_obj, cfg_tmp)
