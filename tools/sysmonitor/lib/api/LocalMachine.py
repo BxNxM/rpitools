@@ -10,9 +10,9 @@ def run_command(cmd, wait_for_done=True):
         exit_code = p.returncode
     return exit_code, stdout, stderr
 
-def run_command_safe(cmd, wait_for_done=True):
+def run_command_safe(cmd, wait_for_done=True, check_exitcode=True):
     exit_code, stdout, stderr = run_command(cmd, wait_for_done)
-    if exit_code == 0:
+    if exit_code == 0 or not check_exitcode:
         return stdout
     else:
         print("Error under execution - cmd: {}\nexit_code: {}\nstdout: {}\nstderr: {}".format(cmd, exit_code, stdout, stderr))

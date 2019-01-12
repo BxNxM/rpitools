@@ -41,9 +41,14 @@ def get_mac_addresses():
     for index, device in enumerate(devices_list):
         if device != "lo":
             cmd = "ifconfig " + device + " | grep 'HWaddr'"
-            mac_line = LocalMachine.run_command_safe(cmd)
+            mac_line = LocalMachine.run_command_safe(cmd, check_exitcode=False)
+            substring_index = -17
+            if mac_line == "":
+                cmd = "ifconfig " + device + " | grep 'ether'"
+                mac_line = LocalMachine.run_command_safe(cmd, check_exitcode=False)
+                substring_index = 13
             if str(mac_line) != "" and mac_line is not None:
-                output += " \t" + device + "\t\t" + str(mac_line)[-17:]
+                output += " \t" + device + "\t\t" + str(mac_line)[substring_index:]
                 if index < len(devices_list) - 1:
                     output += "\n"
     return output
