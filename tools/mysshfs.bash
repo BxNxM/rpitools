@@ -59,8 +59,8 @@ function info_msg() {
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u" "remount" "sshkey_sync" "history" "url")
-    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0 0 0 0 1)
+    known_args=("man" "debug" "mount" "unmount" "ip" "port" "user" "mount_point" "halpage_name" "list_halpage" "m" "u" "remount" "sshkey_sync" "history" "url" "global")
+    known_args_subs_pcs=(0 0 0 0 1 1 1 1 1 0 0 0 0 0 0 1 0)
     man_for_args=("--man\t\t::\tmanual"\
                   "--mount [m]\t::\tmount server,  ${known_args_subs_pcs[2]} par"\
                   "--unmount [u]\t::\tunmount server, ${known_args_subs_pcs[3]} par"\
@@ -73,7 +73,8 @@ function init() {
                   "--remount\t::\tunmount and mount server, ${known_args_subs_pcs[10]} par"\
                   "--sshkey_sync\t::\tsync ssh key to remote server for the passwordless connection, ${known_args_subs_pcs[11]} par"\
                   "--history\t::\tshow command mount/unmount history and select, ${known_args_subs_pcs[12]} par"\
-                  "--url\t::\t, add halpage access url [contails: host and port] ${known_args_subs_pcs[13]} par")
+                  "--url\t::\t, add halpage access url [contails: host and port] ${known_args_subs_pcs[13]} par" \
+                  "--global\t::\t, create all users available mount point ${known_args_subs_pcs[14]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -216,6 +217,19 @@ function logo() {
     fi
 }
 
+# enable allow_other function for sshfs, able to create mount point for all users
+function edit_fuse_conf_allow_others() {
+    local fuse_conf_path="/etc/fuse.conf"
+    local is_enabled="$(cat $fuse_conf_path | grep user_allow_other)"
+    if [ "$is_enabled" != "" ] && [ "$is_enabled" != "#user_allow_other" ] && [ "$is_enabled" == "user_allow_other" ]
+    then
+        info_msg "user_allow_other already enabled in $fuse_conf_path for global mount point(s)"
+    else
+        info_msg "set user_allow_other enable in $fuse_conf_path for global mount point(s)"
+        sudo bash -c "sed -i 's/#user_allow_other/user_allow_other/g' $fuse_conf_path"
+    fi
+}
+
 # functions
 function debug_param_info() {
 
@@ -312,6 +326,8 @@ function connect_with_manual_settings() {
 }
 
 function mount_sshfs() {
+    edit_fuse_conf_allow_others
+
     debug_param_info
     if [ ! -d "$mount_folder_path" ]
     then
@@ -323,8 +339,14 @@ function mount_sshfs() {
         info_msg "Mount point exists: $mount_folder_pat"
     fi
 
-    echo "MOUNT: => cmd: sshfs -p $port -o follow_symlinks $user@$host:$server_path $mount_folder_path"
-    sshfs -p $port -o follow_symlinks $user@$host:$server_path $mount_folder_path
+    if [ "$(get_arg_status "global")" -eq 1 ]
+    then
+        echo "MOUNT: => cmd: sshfs -p $port -o follow_symlinks -o allow_other $user@$host:$server_path $mount_folder_path"
+        sshfs -p $port -o follow_symlinks -o allow_other $user@$host:$server_path $mount_folder_path
+    else
+        echo "MOUNT: => cmd: sshfs -p $port -o follow_symlinks $user@$host:$server_path $mount_folder_path"
+        sshfs -p $port -o follow_symlinks $user@$host:$server_path $mount_folder_path
+    fi
     local exitcode="$?"
     if [ "$exitcode" -eq 0 ]
     then
@@ -345,7 +367,7 @@ function unmount_sshfs() {
         if [ "$exitcode" -eq 0 ]
         then
             echo -e "\t$(info_msg "${GREEN}SUCCESS${NC} [$exitcode]")"
-            rmdir "${mount_folder_path}"
+            sudo bash -c "rmdir ${mount_folder_path}"
         else
             echo -e "\t$(info_msg "${RED}FAIL${NC} [$exitcode]")"
         fi
@@ -359,9 +381,9 @@ function remount_sshfs() {
     local subcmd=""
     for cmd in "${arg_list[@]}"
     do
-        if [[ "$subcmd" != *"remount"* ]]
+        if [[ "$cmd" != *"remount"* ]]
         then
-            subcmd+="$subcmd"
+            subcmd+="$cmd"
         fi
     done
     echo -e "$($MYPATH --unmount $subcmd)"
