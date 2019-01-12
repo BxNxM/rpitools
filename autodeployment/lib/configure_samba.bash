@@ -95,10 +95,11 @@ function link_downloades_under_shared_folder() {
     fi
 }
 
+
+create_shared_folder
 if [ ! -e "$CACHE_PATH_is_set" ]
 then
     set_permissions
-    create_shared_folder
     add_configuration
     add_to_global_section
     set_user_and_restart

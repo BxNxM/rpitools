@@ -28,15 +28,22 @@ function validate_ip() {
     fi
 }
 
+function create_nfs_client_local_mount_point() {
+    if [ ! -d "$nfs_client_mount_point_path" ]
+    then
+        _msg_ "Create nfs client local mount point: $nfs_client_mount_point_path"
+        sudo mkdir -p "$nfs_client_mount_point_path"
+        sudo chown -R ${USER}:${USER} "$nfs_client_mount_point_path"
+    else
+        _msg_ "nfs client local mount point exists: $nfs_client_mount_point_path"
+    fi
+}
+
 function configure_nfs_clinet() {
     local ip="$1"
     local nfs_client_path_to_mount="$2"
     local nfs_client_mount_point_path="$3"
-    if [ ! -d "$nfs_client_mount_point_path" ]
-    then
-        sudo mkdir -p "$nfs_client_mount_point_path"
-        sudo chown -R ${USER}:${USER} "$nfs_client_mount_point_path"
-    fi
+    create_nfs_client_local_mount_point
     edit_fstab_for_automount "$ip" "$nfs_client_path_to_mount" "$nfs_client_mount_point_path"
 }
 
@@ -79,6 +86,7 @@ fi
 if [ "$nfs_client_activate" == "True" ] || [ "$nfs_client_activate" == "true" ]
 then
     _msg_ "Configure nfs client is required."
+    create_nfs_client_local_mount_point
     validate_ip "$nfs_client_host"
     if [ "$ip_is_valid" == "true" ]
     then

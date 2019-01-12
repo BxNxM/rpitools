@@ -73,10 +73,10 @@ function set_permissions(){
     sudo chmod go+w "$minidlna_conf_path"
 }
 
+create_shared_folder
 if [ ! -e "$CACHE_PATH_is_set" ]
 then
     set_permissions
-    create_shared_folder
     add_configuration
     link_downloads_folder_into_dlna_folder
     echo -e "$(date)" > "$CACHE_PATH_is_set"

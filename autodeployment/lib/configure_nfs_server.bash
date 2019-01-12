@@ -55,9 +55,9 @@ function edit_exports_file_and_permissions() {
 }
 
 _msg_ "NFS HOWTO: https://www.htpcguides.com/configure-nfs-server-and-nfs-client-raspberry-pi/"
+create_nfs_file_structure
 if [ ! -f "$CACHE_PATH_is_set" ]
 then
-    create_nfs_file_structure
     edit_exports_file_and_permissions
 else
     _msg_ "NFS was aleady set: $CACHE_PATH_is_set exists"

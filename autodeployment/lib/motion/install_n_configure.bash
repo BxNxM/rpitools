@@ -53,6 +53,18 @@ function install() {
     fi
 }
 
+function create_motion_dir() {
+    if [ ! -d "$motion_target_folder" ]
+    then
+        _msg_ "Create and set $motion_target_folder"
+        mkdir -p "$motion_target_folder"
+        sudo chgrp motion "$motion_target_folder"
+        chmod g+rwx "$motion_target_folder"
+    else
+        _msg_ "$motion_target_folder already exists."
+    fi
+}
+
 function configure() {
     if [ "$(cat "$add_modeprobe_to" | grep 'bcm2835-v4l2')" == "" ]
     then
@@ -76,15 +88,7 @@ function configure() {
     _msg_ "Edit $motion_conf_path2 conf."
     change_line "start_motion_daemon=no" "start_motion_daemon=yes" "$motion_conf_path2"
 
-    if [ ! -d "$motion_target_folder" ]
-    then
-        _msg_ "Create and set $motion_target_folder"
-        mkdir -p "$motion_target_folder"
-        sudo chgrp motion "$motion_target_folder"
-        chmod g+rwx "$motion_target_folder"
-    else
-        _msg_ "$motion_target_folder already exists."
-    fi
+    create_motion_dir
 
     sudo chmod +rw+r+r ${MYDIR}/motion.conf
     sudo chown root $motion_conf_path
@@ -132,6 +136,7 @@ function link_motionfolder_to_apache() {
 
 if [[ "$motion_activate" == "true" ]] || [[ "$motion_activate" == "True" ]]
 then
+    create_motion_dir
     _msg_ "Motion install and config required"
     if [ ! -f "$initial_config_done_indicator" ]
     then
