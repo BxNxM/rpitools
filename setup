@@ -393,11 +393,12 @@ function source_main_on_raspberrypi() {
                 sudo reboot now
             fi
         fi
-    fi
-    if [ ! -e "$instantiation_done_path" ]
-    then
-        setupmessage "rpitools Instantiation done"
-        echo "$(date)" > "$instantiation_done_path"
+
+        if [ ! -e "$instantiation_done_path" ]
+        then
+            setupmessage "rpitools Instantiation done"
+            echo "$(date)" > "$instantiation_done_path"
+        fi
     fi
 }
 

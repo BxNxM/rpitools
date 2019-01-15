@@ -31,5 +31,8 @@ function smart_connect() {
     fi
 }
 
-smart_connect "pi" "raspberrypi.local"
 smart_connect "$username" "$hostname"
+if [ "$is_avaible" -ne 0 ]
+then
+    smart_connect "pi" "raspberrypi.local"
+fi

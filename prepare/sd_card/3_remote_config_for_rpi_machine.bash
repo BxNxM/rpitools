@@ -4,13 +4,15 @@
 # install on mac: brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 # install on linux: sudo apt-get-install sshpass
 
+#set -x
+
 MYPATH_="${BASH_SOURCE[0]}"
 MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
 CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
 username="pi"
 default_pwd="raspberry"
-hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
+custom_hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
 pixel_activate="$($CONFIGAHNDLER -s INSTALL_PIXEL -o activate)"
 vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
 custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
@@ -18,15 +20,6 @@ reboot_wait_loop=8
 
 # SET timer
 SECONDS=0
-
-if [ "$pixel_activate" == "False" ] || [ "$pixel_activate" == "false" ]
-then
-    reboot_wait_loop=$((reboot_wait_loop-1))
-fi
-if [ "$vnc_activate" == "False" ] || [ "$vnc_activate" == "false" ]
-then
-    reboot_wait_loop=$((reboot_wait_loop-1))
-fi
 
 function copy_repo_to_rpi_machine() {
     local cpwith="rsync"
@@ -55,77 +48,126 @@ function copy_localmachine_ssh_pub_key_to_rpi_machine() {
 }
 
 function execute_source_setup_on_rpi_machine() {
+    echo -e "shpass -p $default_pwd ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && source setup'"
     sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && source setup'
 }
 
 function execute_source_setup_on_rpi_machine_custom_host() {
-    ssh -o StrictHostKeyChecking=no "${username}@${hostname}" 'cd rpitools && source setup'
+    echo -e "Execute: ssh -o StrictHostKeyChecking=no ${username}@${custom_hostname} 'cd rpitools && source setup'"
+    ssh -o StrictHostKeyChecking=no "${username}@${custom_hostname}" 'cd rpitools && source setup'
+}
+
+function check_host() {
+    local host="$1"
+    while true
+    do
+        check_host_exitcode=1
+        is_avaible_output="$(ping -c 2 $custom_hostname)"
+        is_avaible_exitcode="$?"
+        if [ "$is_avaible_exitcode" -eq 0 ]
+        then
+            if [ "$host" == "$custom_hostname" ]
+            then
+                echo -e "\t====> Custom hostname $custom_hostname is available"
+                check_host_exitcode=0
+            fi
+            break
+        fi
+        is_avaible_output="$(ping -c 2 raspberrypi.local)"
+        is_avaible_exitcode="$?"
+        if [ "$is_avaible_exitcode" -eq 0 ]
+        then
+            if [ "$host" == "raspberrypi.local" ]
+            then
+                echo -e "\t====> Default hostname raspberrypi.local is available"
+                check_host_exitcode=0
+            fi
+            break
+        fi
+    done
+}
+
+function check_instantiation_is_done() {
+    check_host "$custom_hostname"
+    if [ "$check_host_exitcode" -eq 0 ]
+    then
+        echo -e "ssh-keygen -R $custom_hostname"
+        ssh-keygen -R "$custom_hostname"
+        is_rpi_machine_set=$(sshpass -p "$custom_pwd" ssh -o StrictHostKeyChecking=no pi@$custom_hostname "if [ -e  ~/rpitools/cache/.instantiation_done ]; then echo 1; else echo 0; fi")
+    else
+        echo -e "ssh-keygen -R raspberrypi.local"
+        ssh-keygen -R raspberrypi.local
+        is_rpi_machine_set=$(sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.instantiation_done ]; then echo 1; else echo 0; fi")
+    fi
 }
 
 function waiting_for_up_again_after_reboot() {
-    local host="$1"
-    local retry=120
-    sleep 2
-    for ((i=0; i<${retry}; i++))
+    local timeout=120
+    while true
     do
-        is_avaible_output="$(ping -c 3 ${host})"
-        is_avaible="$?"
-        echo -e "Wait for system up again: $host"
-        if [ "$is_avaible" -eq 0 ]
+        echo -e "Wait for system up again ...[$timeout / 0]"
+        is_avaible_output="$(ping -c 2 $custom_hostname)"
+        is_avaible_exitcode="$?"
+        check_host_exitcode=1
+        if [ "$is_avaible_exitcode" -eq 0 ]
         then
-            echo -e "System is ready: $host"
             break
         fi
-        sleep 2
+        is_avaible_output="$(ping -c 2 raspberrypi.local)"
+        is_avaible_exitcode="$?"
+        if [ "$is_avaible_exitcode" -eq 0 ]
+        then
+            break
+        fi
+        timeout=$(($timeout-1))
+        if [ "$timeout" -lt 0 ] || [ "$timeout" -eq 0 ]
+        then
+            echo -e "Wait timeout.... restart raspberry pi and try again."
+            break
+        fi
     done
 }
 
-is_avaible_output="$(ping -c 2 raspberrypi.local)"
-is_avaible_exitcode="$?"
-if [ "$is_avaible_exitcode" -eq 0 ]
-then
-    echo -e "ssh-keygen -R raspberrypi.local"
-    ssh-keygen -R raspberrypi.local
-    is_rpi_machine_set=$(sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local "if [ -e  ~/rpitools/cache/.instantiation_done ]; then echo 1; else echo 0; fi")
-    custom_hostname_is_active=1
-else
-    echo -e "ssh-keygen -R $hostname"
-    ssh-keygen -R "$hostname"
-    is_rpi_machine_set=$(ssh -o StrictHostKeyChecking=no "${username}@${hostname}" "if [ -e  ~/rpitools/cache/.instantiation_done ]; then echo 1; else echo 0; fi")
-    custom_hostname_is_active=0
-fi
-
-if [ "$is_rpi_machine_set" == 0 ]
-then
-    if [ "$custom_hostname_is_active" -eq 1  ]
+function instantiate_main() {
+    check_instantiation_is_done
+    if [ "$is_rpi_machine_set" -eq 0  ]
     then
-        echo -e "remote Configure executing ;)"
-        echo -e "\tcopy local machine ssh pub key to rpi machine for pwdless login"
-        copy_localmachine_ssh_pub_key_to_rpi_machine
-        echo -e "\tcopy_repo"
-        copy_repo_to_rpi_machine
-        echo -e "\texecute source setup"
-        execute_source_setup_on_rpi_machine
-        echo -e "waiting for reboot..."
-        waiting_for_up_again_after_reboot "$hostname"
+        # FIRST: copy ssh-key and rpitools repo
+        check_host "raspberrypi.local"
+        if [ "$check_host_exitcode" -eq 0 ]
+        then
+            # custom hostname was not set:
+            echo -e "remote Configure executing ;)"
+            echo -e "\tcopy local machine ssh pub key to rpi machine for pwdless login"
+            copy_localmachine_ssh_pub_key_to_rpi_machine
+            echo -e "\tcopy_repo"
+            copy_repo_to_rpi_machine
+        fi
+
+        for ((k=0; k<${reboot_wait_loop}; k++))
+        do
+            check_instantiation_is_done
+            if [ "$is_rpi_machine_set" -ne 0  ]
+            then
+                break
+            fi
+
+            check_host "raspberrypi.local"
+            if [ "$check_host_exitcode" -eq 0 ]
+            then
+                echo -e "\texecute source setup on raspberrypi.local"
+                execute_source_setup_on_rpi_machine
+                waiting_for_up_again_after_reboot
+            else
+                echo -e "\texecute source setup on $custom_hostname"
+                execute_source_setup_on_rpi_machine_custom_host
+                waiting_for_up_again_after_reboot
+            fi
+        done
     fi
+    echo -e "\tWE ARE DONE :D"
+    echo -e "\tElapsed time $(($SECONDS/60/60)):$(($SECONDS/60%60)):$(($SECONDS%60))"
+    exit 0
+}
 
-    default_pwd="$custom_pwd"
-    echo -e "ssh-keygen -R $hostname"
-    ssh-keygen -R "$hostname"
-    # run until reboot is not happens
-    for ((k=0; k<${reboot_wait_loop}; k++))
-    do
-        echo -e "\texecute source setup"
-        execute_source_setup_on_rpi_machine_custom_host
-        waiting_for_up_again_after_reboot "$hostname"
-        sleep 1
-    done
-
-        echo -e "\tWE ARE DONE :D"
-        echo -e "\tElapsed time $(($SECONDS/60/60)):$(($SECONDS/60%60)):$(($SECONDS%60))"
-        exit 0
-else
-    echo -e "remote settings are already done _@/\""
-fi
-
+instantiate_main

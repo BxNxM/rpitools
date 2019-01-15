@@ -93,7 +93,7 @@ function configure_ufw() {
     local APP_LIST=()
     local APP=""
     local bckp_msg_title="$_msg_title"
-    local whitelist=(137 138)                   # samba ("passive ports")
+    local whitelist=(137 138 5900)                   # samba ("passive ports[0,1], vnc")
     local black_list=()                         # TODO
     _msg_title="SECURITY [ufw] SETUP"
 
