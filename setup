@@ -389,7 +389,12 @@ function source_main_on_raspberrypi() {
             if [ ! -e "${REPOROOT}/cache/.first_run_reboot_done" ]
             then
                 echo -e "First run reboot executing..."
-                echo "" > "${REPOROOT}/cache/.first_run_reboot_done"
+                echo "$(date)" > "${REPOROOT}/cache/.first_run_reboot_done"
+                sudo reboot now
+            elif [ ! -e "${REPOROOT}/cache/.reboot_before_finalise_installation" ]
+            then
+                echo -e "Last reboot before instantiation done [finalise ufw setting after boot up again]"
+                echo "$(date)" > "${REPOROOT}/cache/.reboot_before_finalise_installation"
                 sudo reboot now
             fi
         fi
