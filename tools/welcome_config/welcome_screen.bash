@@ -31,7 +31,7 @@ fi
     echo -e "${wColor}${USER}${NC}! LOCAL IP ADDRESS ${wColor}${ip}${NC}\nConnected from: ${wColor}$(~/rpitools/tools/get_connected_user_address.bash)${NC}"
     echo -e "TODAY: ${wColor}$(date)${NC}"
     echo -e "$(cal)"
-    echo -e "${wColor}HOME DISK:${NC} $(du -sh ./ --exclude=./sshfs_folder)"
+    echo -e "${wColor}HOME DISK:${NC} $(du -sh $HOME --exclude=$HOME/sshfs_folder)"
 if [ "$boot_up_msg" == "true" ]
 then
     echo -e ""
