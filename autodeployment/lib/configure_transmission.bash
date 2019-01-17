@@ -55,21 +55,7 @@ function change_line() {
     fi
 }
 
-function set_drive_permissions() {
-    local drive_path="$1"
-
-    _msg_ "Set dive permissions:"
-    _msg_ "\tsudo chgrp -R rpitools_user $drive_path"
-    sudo bash -c "sudo chgrp -R rpitools_user $drive_path"
-    _msg_ "\tsudo chmod go+w -R $drive_path"
-    sudo bash -c "sudo chmod g+w -R $drive_path"
-}
-
 function create_transmission_folders() {
-    if [ ! -e "$CACHE_PATH_is_set" ]
-    then
-        set_drive_permissions "/media"
-    fi
     # create downloads dir
     if [ ! -e "${download_path}" ]
     then
@@ -79,6 +65,8 @@ function create_transmission_folders() {
         sudo bash -c "sudo chgrp debian-transmission ${download_path}"
     else
         _msg_ "Downloads dir exists: ${download_path}"
+        sudo bash -c "sudo chmod 770 ${download_path}"
+        sudo bash -c "sudo chgrp debian-transmission ${download_path}"
     fi
 
     # create incomplete downloads dir
@@ -90,6 +78,8 @@ function create_transmission_folders() {
         sudo bash -c "sudo chgrp debian-transmission ${incomp_download_path}"
     else
         _msg_ "Incomplete downloads dir exists: ${incomp_download_path}"
+        sudo bash -c "sudo chmod 770 ${incomp_download_path}"
+        sudo bash -c "sudo chgrp debian-transmission ${incomp_download_path}"
     fi
 }
 
