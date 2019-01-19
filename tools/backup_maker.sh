@@ -99,6 +99,52 @@ function delete_obsolete_system_backups() {
     done
 }
 
+function backup_user_accounts() {
+    local time="$(date +%Y-%m-%d_%H-%M-%S)"
+    local accounts_backup_folder="${system_backups_path}/user_accounts_${time}"
+
+    echo -e "Backup passwords, gooups and so on"
+
+    echo -e "\t[backup_maker.sh] Create folder for user accounts: ${accounts_backup_folder}"
+    sudo mkdir -p "${accounts_backup_folder}"
+
+    echo -e "\tbackup: /etc/passwd /etc/shadow /etc/group /etc/gshadow to ${accounts_backup_folder}"
+    sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow "${accounts_backup_folder}"
+}
+
+function delete_obsolete_user_accounts_backup() {
+    get_files_cmd_user_accounts=($(ls -1tr ${system_backups_path} | grep "user_accounts_"))
+
+    if [ ${#get_files_cmd_user_accounts[@]} -gt $limit ]
+    then
+        echo -e "[backup_maker.sh] Delete ${get_files_cmd_user_accounts[0]}"
+        echo -e "\tDelete backup [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}]"
+        echo -e "\t - ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
+        sudo rm -r "${system_backups_path}/${get_files_cmd_user_accounts[0]}"
+        delete_obsolete_user_accounts_backup
+    else
+        echo -e "[backup_maker.sh]"
+        echo -e "\tBackup status [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}] from: $system_backups_path"
+    fi
+
+}
+
+function restore_user_accounts() {
+
+    echo -e "[backup_maker.sh] restore user accounts"
+    # cd $system_backups_path
+    # cat passwd.mig >> /etc/passwd
+    # cat group.mig >> /etc/group
+    # cat shadow.mig >> /etc/shadow
+    # /bin/cp gshadow.mig /etc/gshadow
+
+    echo -e "[backup_maker.sh] restore user homes"
+    # restore user homes
+
+    echo -e "[backup_maker.sh] reboot"
+    #reboot
+}
+
 #========================== MAIN ==========================#
 echo -e "${YELLOW}========= BACKUP MAKER ==========${NC}"
 
@@ -114,7 +160,7 @@ echo -e "${YELLOW}   --- CREATE CACHE BACKUP ---   ${NC}"
 . ${MYDIR}/cache_restore_backup.bash backup
 
 echo -e "${YELLOW}   --- CREATE USER BACKUP ---   ${NC}"
-#user backup
+# user backup
 make_backup_for_every_user
 delete_obsolete_user_backups
 
@@ -122,6 +168,10 @@ echo -e "${YELLOW}   --- CREATE SYSTEM BACKUP ---   ${NC}"
 # create other system backups
 make_system_backup
 delete_obsolete_system_backups
+
+echo -e "${YELLOW}   --- BACKUP USER ACCOUNTS ---   ${NC}"
+backup_user_accounts
+delete_obsolete_user_accounts_backup
 
 #unzip file:
 #tar -xzf rebol.tar.gz
