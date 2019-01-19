@@ -50,7 +50,7 @@ then
     echo -e "\tnetwork_monitor\t\t-> show actual network traffic"
     echo -e "\thalpage -h\t\t-> if you set extarnal (dropbox based) IP handling"
     echo -e "\tclientMemDict -h\t-> access for the internal ram memory dict structure [programs API]"
-    echo -e "\tbackupmaker\t\t-> users home(s) backup creator based on rpitools_config.cfg"
+    echo -e "\tbackuphandler\t\t-> system / users home(s) backup / restore creator based on rpitools_config.cfg"
     echo -e "\trpihelp\t\t\t-> show this help screen again :D"
 
     echo -e "${wColor}Manage GUI (X):${NC}"
