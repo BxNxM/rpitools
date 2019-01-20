@@ -229,7 +229,18 @@ function restore_user_home_folders() {
 function restore_extra_system_folders() {
     local folders_to_restore=($@)
     echo -e "[backuphandler] restore extra folders"
-    # restore extra folders, example html
+
+    for ((p=0; p<"${#folders_to_restore[@]}"; p++))
+    do
+        backup_from="${folders_to_restore[$p]}"
+        backup_to="${extra_pathes[$p]}"
+        echo -e "Retore: tar -xzf $backup_from -C $backup_to"
+        sudo bash -c "tar -xzf $backup_from -C $backup_to"
+        echo -e "cp -r $backup_to/$(basename $backup_to)/* $backup_to"
+        sudo bash -c "cp -r $backup_to/$(basename $backup_to)/* $backup_to"
+        echo -e "rm -rf $backup_to/$(basename $backup_to)"
+        sudo bash -c "rm -rf $backup_to/$(basename $backup_to)"
+    done
 }
 
 function system_restore() {
@@ -255,8 +266,8 @@ function system_restore() {
     echo -e "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
     restore_extra_system_folders "${last_extra_system_backups_list[@]}"
 
-    echo -e "[backuphandler] reboot"
-    #reboot
+    echo -e "[backuphandler] system needs a reboot now..."
+    reboot
 }
 
 function users_backup() {
