@@ -31,6 +31,7 @@ function create_backup_pathes() {
     fi
 }
 
+# BACKUP: extra folder, example html
 function make_system_backup() {
     local time="$(date +%Y-%m-%d_%H-%M-%S)"
 
@@ -44,9 +45,10 @@ function make_system_backup() {
             echo -e "CMD: $targz_cmd"
             eval "$targz_cmd"
         popd
-done
+    done
 }
 
+# BACKUP: every users home folder
 function make_backup_for_every_user() {
     local time="$(date +%Y-%m-%d_%H-%M-%S)"
 
@@ -61,9 +63,10 @@ function make_backup_for_every_user() {
             echo -e "CMD: $targz_cmd"
             eval "$targz_cmd"
         popd
-done
+    done
 }
 
+# CLEANUP: clean up user home backups
 function delete_obsolete_user_backups() {
     for ((i=0; i<${#list_users[@]}; i++))
     do
@@ -83,6 +86,7 @@ function delete_obsolete_user_backups() {
     done
 }
 
+# CLEANUP: clean up extra folder system backups
 function delete_obsolete_system_backups() {
     for ((i=0; i<${#extra_pathes[@]}; i++))
     do
@@ -101,6 +105,7 @@ function delete_obsolete_system_backups() {
     done
 }
 
+# BACKUP: backup user passwords, linux groups, and so on
 function backup_user_accounts() {
     local time="$(date +%Y-%m-%d_%H-%M-%S)"
     local accounts_backup_folder="${system_backups_path}/user_accounts_${time}"
@@ -114,6 +119,7 @@ function backup_user_accounts() {
     sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow "${accounts_backup_folder}"
 }
 
+# CLEANUP: clean up user accounts folders
 function delete_obsolete_user_accounts_backup() {
     get_files_cmd_user_accounts=($(ls -1tr ${system_backups_path} | grep "user_accounts_"))
 
@@ -131,30 +137,129 @@ function delete_obsolete_user_accounts_backup() {
 
 }
 
+# RESTORE: user accounts
 function restore_user_accounts() {
+    local backup_path="$1"
 
-    echo -e "[backuphandler] restore user accounts"
-    # cd $system_backups_path
-    # cat passwd.mig >> /etc/passwd
-    # cat group.mig >> /etc/group
-    # cat shadow.mig >> /etc/shadow
-    # /bin/cp gshadow.mig /etc/gshadow
+    if [ -d "$backup_path" ]
+    then
+        local user_accounts_backup_files=($(ls -1tr ${backup_path}))
 
+        echo -e "[backuphandler] restore user accounts:\n${user_accounts_backup_files[*]}"
+        pushd "$backup_path"
+            sudo bash -c "cat passwd >> /etc/passwd"
+            sudo bash -c "cat group >> /etc/group"
+            sudo bash -c "cat shadow >> /etc/shadow"
+            sudo bash -c "/bin/cp gshadow.mig /etc/gshadow"
+        popd
+    fi
+}
+
+# RESTORE: home folders for every user
+function restore_user_home_folders() {
+    local specific_user="$1"
+    local user_backups=($(ls -1tr ${home_backups_path}))
+
+    # get usernames list
+    username_list=()
+    for user_backup in "${user_backups[@]}"
+    do
+        username="$(echo ${user_backup} | cut -d'_' -f'1')"
+        if [[ "${username_list[*]}" != *"$username"* ]]
+        then
+            username_list+=("$username")
+        fi
+    done
+
+    echo -e "Existsing user backups: ${username_list[*]}"
+    local latest_user_backups_list=()
+    for username in "${username_list[@]}"
+    do
+        local user_backups=($(ls -1t ${home_backups_path} | grep "$username"))
+        local latest_user_backups_list+=("${user_backups[0]}")
+    done
+
+    echo -e "${latest_user_backups_list[*]}"
+
+    # restore only the selected user backup - hack username_list lsit
+    if [ "$specific_user" != "" ]
+    then
+        for username in "${username_list[@]}"
+        do
+            if [ "$username" == "$specific_user" ]
+            then
+                username_list=("$specific_user")
+                for latest_user_backup in "${latest_user_backups_list[@]}"
+                do
+                    if [[ "$latest_user_backup" == *"${specific_user}_"* ]]
+                    then
+                        latest_user_backups_list=("$latest_user_backup")
+                        break
+                    fi
+                done
+            fi
+        done
+    fi
+
+    # iterate over username_list and restore backups
     echo -e "[backuphandler] restore user homes"
-    # restore user homes
+    for ((k=0; k<${#username_list[@]}; k++))
+    do
+        backup_path="${home_backups_path}/${latest_user_backups_list[$k]}"
+        user_home_path="/home/${username_list[$k]}"
+        echo -e "$backup_path -> $user_home_path"
+        if [ -d "$user_home_path" ]
+        then
+            echo -e "User home is exists: ${username_list[$k]}"
+            echo -e "Create subfoder: ${user_home_path}/restored_$(basename $backup_path)"
+            sudo bash -c "mkdir -p ${user_home_path}/restored_$(basename $backup_path)"
+            echo -e "tar -xzf $backup_path -C ${user_home_path}/restored_$(basename $backup_path)"
+            sudo bash -c "tar -xzf $backup_path -C ${user_home_path}/restored_$(basename $backup_path)"
+            sudo bash -c "chown -R ${username_list[$k]} ${user_home_path}/restored_$(basename $backup_path)"
+        else
+            echo -e "Create home folder for ${username_list[$k]}"
+            echo -e "tar -xzf $backup_path -C /home"
+            sudo bash -c "tar -xzf $backup_path -C /home"
+            sudo bash -c "chown -R ${username_list[$k]} ${user_home_path}"
+        fi
+    done
+}
+
+# RESTORE: extra system fodlers
+function restore_extra_system_folders() {
+    local folders_to_restore=($@)
+    echo -e "[backuphandler] restore extra folders"
+    # restore extra folders, example html
+}
+
+function system_restore() {
+    local system_user_accounts_backups=($(ls -1tr ${system_backups_path} | grep "user_accounts_"))
+    local latest_user_accounts_backup_path="${system_backups_path}/${system_user_accounts_backups[$((${#system_user_accounts_backups[@]}-1))]}"
+
+    local last_extra_system_backups_list=()
+    for extra in "${extra_pathes[@]}"
+    do
+        local system_extra_pathes_backup=($(ls -1tr ${system_backups_path} | grep "$(basename ${extra})"))
+        echo -e "$system_extra_pathes_backup"
+        local last_extra_system_backup="${system_backups_path}/${system_extra_pathes_backup[$((${#system_extra_pathes_backup[@]}-1))]}"
+        last_extra_system_backups_list+=("${last_extra_system_backup}")
+    done
+
+    echo -e "=> USER ACCOUNTS LAST BACKUP: ${latest_user_accounts_backup_path}"
+    echo -e "=> EXTRA SYSTEM BACKUP(S): ${last_extra_system_backups_list[*]}"
+
+    echo -e "${YELLOW}   --- RESTORE USER ACCOUNTS ---   ${NC}"
+    restore_user_accounts "${latest_user_accounts_backup_path}"
+    echo -e "${YELLOW}   --- RESTORE USER HOME FOLDERS ---   ${NC}"
+    restore_user_home_folders
+    echo -e "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
+    restore_extra_system_folders "${last_extra_system_backups_list[@]}"
 
     echo -e "[backuphandler] reboot"
     #reboot
 }
 
 function users_backup() {
-    # create folders for backup
-    create_backup_pathes
-
-    # get actual users list
-    list_users=($(ls -1 /home | grep -v grep | grep -v "backups"))
-    extra_pathes=("/var/www/html")
-
     echo -e "${YELLOW}   --- CREATE CACHE BACKUP ---   ${NC}"
     # create cache backup
     . ${MYDIR}/cache_restore_backup.bash backup
@@ -178,8 +283,18 @@ function full_system_backup() {
     delete_obsolete_user_accounts_backup
 }
 
+function init_backup_handler() {
+    # create folders for backup
+    create_backup_pathes
+
+    # get actual users list
+    list_users=($(ls -1 /home | grep -v grep | grep -v "backups"))
+    extra_pathes=("/var/www/html")
+}
+
 function main() {
-    echo -e "${YELLOW}========= BACKUP MAKER ==========${NC}"
+    echo -e "${YELLOW}===================== BACKUP HANDLER ======================${NC}"
+    init_backup_handler
 
     if [ "${arg_list[0]}" == "system" ]
     then
@@ -189,8 +304,8 @@ function main() {
             full_system_backup
         elif [ "${arg_list[1]}" == "restore" ]
         then
-            echo -e "system restoer [contains fill system restore: users, user accounts]"
-            # TODO
+            echo -e "system restore [contains fill system restore: users, user accounts]"
+            system_restore
         else
             echo -e "Unknown argument ${arg_list[1]} use: help for more information"
         fi
@@ -200,9 +315,10 @@ function main() {
         then
             specific_user="${arg_list[1]}"
             echo -e "user restore $specific_user [create subfolder for selected user and, restore last backup]"
-            # TODO
+            restore_user_home_folders "$specific_user"
         else
             echo -e "users restore [create subfolder for every user and, restore last backup]"
+            restore_user_home_folders
         fi
     elif [ "${arg_list[0]}" == "backup" ]
     then
