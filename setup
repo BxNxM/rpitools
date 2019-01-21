@@ -13,6 +13,20 @@ function setupmessage() {
     fi
 }
 
+function instantiation_uuid_handler() {
+    if [ ! -f "$cache_instantiation_uuid_path" ]
+    then
+        setupmessage "Create instantiation UUID to detect specific installation."
+        export instantiation_UUID=$(cat /proc/sys/kernel/random/uuid)
+        echo "$instantiation_UUID" > "$cache_instantiation_uuid_path"
+        setupmessage "\tUUID: $instantiation_UUID"
+    else
+        setupmessage "Instantiation UUID already exists."
+        export instantiation_UUID=$(cat $cache_instantiation_uuid_path)
+        setupmessage "\tUUID: $instantiation_UUID"
+   fi
+}
+
 function logo() {
     local logo_text="${YELLOW}"
     logo_text+=" _____  _____  _____  _   _ ______\n"
@@ -376,15 +390,6 @@ function source_main_on_raspberrypi() {
             # craate system wide commands
             . "${REPOROOT}/prepare/system/set_system_wide_commands.bash"
 
-            # backup modification configs
-            output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
-            echo -e "$output"
-
-            # printout full elapsed time
-            echo -e "${YELLOW}"
-            elapsed_time "stop"
-            echo -e "${NC}"
-
             # first run reboot
             if [ ! -e "${REPOROOT}/cache/.first_run_reboot_done" ]
             then
@@ -397,12 +402,25 @@ function source_main_on_raspberrypi() {
                 echo "$(date)" > "${REPOROOT}/cache/.reboot_before_finalise_installation"
                 sudo reboot now
             fi
-        fi
 
-        if [ ! -e "$instantiation_done_path" ]
-        then
-            setupmessage "rpitools Instantiation done"
-            echo "$(date)" > "$instantiation_done_path"
+            # successfull instantiation indicator
+            if [ ! -e "$instantiation_done_path" ]
+            then
+                setupmessage "rpitools Instantiation done"
+                echo "$(date)" > "$instantiation_done_path"
+            fi
+
+            # create custom UUID for this specific install to identify it
+            instantiation_uuid_handler
+
+            # printout full elapsed time
+            echo -e "${YELLOW}"
+            elapsed_time "stop"
+            echo -e "${NC}"
+
+            # backup modification configs
+            output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
+            echo -e "$output"
         fi
     fi
 }
@@ -425,6 +443,8 @@ function set_rpitools_env() {
     elapsed_time "start"
 
     logo
+
+    cache_instantiation_uuid_path="${REPOROOT}/cache/.instantiation_UUID"
 }
 
 # =============================================== MAIN =============================================== #
