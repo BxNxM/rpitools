@@ -10,6 +10,7 @@ activate_backup="$($confighandler -s BACKUP -o activate)"
 home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
 system_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/system"
 limit="$($confighandler -s BACKUP -o limit)"
+instantiation_UUID="$(cat ${MYDIR}/../cache/.instantiation_UUID)"
 
 source "${MYDIR}/../prepare/colors.bash"
 
@@ -109,6 +110,7 @@ function delete_obsolete_system_backups() {
 function backup_user_accounts() {
     local time="$(date +%Y-%m-%d_%H-%M-%S)"
     local accounts_backup_folder="${system_backups_path}/user_accounts_${time}"
+    local accounts_backup_UUID="${accounts_backup_folder}/UUID"
 
     echo -e "Backup passwords, gooups and so on"
 
@@ -117,6 +119,7 @@ function backup_user_accounts() {
 
     echo -e "\tbackup: /etc/passwd /etc/shadow /etc/group /etc/gshadow to ${accounts_backup_folder}"
     sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow "${accounts_backup_folder}"
+    sudo bash -c "echo $instantiation_UUID > $accounts_backup_UUID"
 }
 
 # CLEANUP: clean up user accounts folders
@@ -143,15 +146,25 @@ function restore_user_accounts() {
 
     if [ -d "$backup_path" ]
     then
-        local user_accounts_backup_files=($(ls -1tr ${backup_path}))
+        local backup_UUID="$(cat ${backup_path}/UUID)"
+        if [ "$backup_UUID" != "$instantiation_UUID" ]
+        then
+            echo -e "[backuphandler] UUID validate OK: $backup_UUID, user migartion"
+            local user_accounts_backup_files=($(ls -1tr ${backup_path}))
 
-        echo -e "[backuphandler] restore user accounts:\n${user_accounts_backup_files[*]}"
-        pushd "$backup_path"
-            sudo bash -c "cat passwd >> /etc/passwd"
-            sudo bash -c "cat group >> /etc/group"
-            sudo bash -c "cat shadow >> /etc/shadow"
-            sudo bash -c "/bin/cp gshadow.mig /etc/gshadow"
-        popd
+            echo -e "[backuphandler] restore user accounts:\n${user_accounts_backup_files[*]}"
+            # TODO: smart migration: check files content, restore only the differences
+            pushd "$backup_path"
+                sudo bash -c "cat passwd >> /etc/passwd"
+                sudo bash -c "cat group >> /etc/group"
+                sudo bash -c "cat shadow >> /etc/shadow"
+                sudo bash -c "/bin/cp gshadow.mig /etc/gshadow"
+            popd
+        else
+            echo -e "UUID $backup_UUID == $instantiation_UUID"
+            echo -e "User migration in the same system is not supported (UUID: $instantiation_UUID), pls restore elements manually"
+            echo -e "FROM PATH: $backup_path\n$(ls -lath $backup_path)"
+        fi
     fi
 }
 
