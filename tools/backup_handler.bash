@@ -193,8 +193,8 @@ function restore_user_accounts() {
                                 echo -e "\tKey have to be restore: $key"
                                 echo -e "\tLine for key: $line"
                                 echo -e "\tfrom: $backup_file"
-                                echo -e "\tto: $file"
-                                sudo bash -c "echo "$line >> $file""
+                                echo -e "\tto: $acconts_orig_path"
+                                sudo bash -c "echo "$line >> $acconts_orig_path""
                                 account_restore_action=$(($account_restore_action+1))
                             else
                                 progress_indicator
