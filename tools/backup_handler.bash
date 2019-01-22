@@ -48,14 +48,19 @@ function make_system_backup() {
 
     for ((i=0; i<${#extra_pathes[@]}; i++))
     do
-        echo -e "[backuphandler][$(($i+1)) / ${#extra_pathes[@]}] - Create system backup: ${extra_pathes[$i]} -> ${system_backups_path}"
-        pushd "$(dirname ${extra_pathes[$i]})"
-            comp_name="$(basename ${extra_pathes[$i]})"
-            comp_bckp_name="${comp_name}_${time}.tar.gz"
-            targz_cmd="sudo tar czf ${system_backups_path}/${comp_bckp_name} ${comp_name}"
-            echo -e "CMD: $targz_cmd"
-            eval "$targz_cmd"
-        popd
+        if [ -e "${extra_pathes[$i]}" ]
+        then
+            echo -e "[backuphandler][$(($i+1)) / ${#extra_pathes[@]}] - Create system backup: ${extra_pathes[$i]} -> ${system_backups_path}"
+            pushd "$(dirname ${extra_pathes[$i]})"
+                comp_name="$(basename ${extra_pathes[$i]})"
+                comp_bckp_name="${comp_name}_${time}.tar.gz"
+                targz_cmd="sudo tar czf ${system_backups_path}/${comp_bckp_name} ${comp_name}"
+                echo -e "CMD: $targz_cmd"
+                eval "$targz_cmd"
+            popd
+        else
+            echo -e "[backuphandler] path not exists: ${extra_pathes[$i]} can't backup"
+        fi
     done
 }
 
@@ -174,7 +179,7 @@ function restore_user_accounts() {
             local user_accounts_backup_files=($(ls -1tr ${backup_path}))
 
             echo -e "[backuphandler] restore user accounts:\n${user_accounts_backup_files[*]}"
-            for file in ${user_accounts_backup_files[@]}
+            for file in "${user_accounts_backup_files[@]}"
             do
                 # get backup file full path
                 local backup_file="${backup_path}/$file"
@@ -382,7 +387,7 @@ function init_backup_handler() {
 
     # get actual users list
     list_users=($(ls -1 /home | grep -v grep | grep -v "backups"))
-    extra_pathes=("/var/www/html")
+    extra_pathes=("/var/www/html" "/var/lib/transmission-daemon/.config/transmission-daemon/torrents/")
 }
 
 function main() {
