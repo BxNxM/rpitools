@@ -21,6 +21,16 @@ then
     exit 1
 fi
 
+function progress_indicator() {
+    local spin=("-" "\\" "|" "/")
+    for sign in "${spin[@]}"
+    do
+        echo -ne "\b${sign}"
+        sleep .1
+    done
+    echo -ne "\b"
+}
+
 function create_backup_pathes() {
     if [ ! -d "$home_backups_path" ]
     then
@@ -143,27 +153,80 @@ function delete_obsolete_user_accounts_backup() {
 # RESTORE: user accounts
 function restore_user_accounts() {
     local backup_path="$1"
+    local force="$2"               # 1- true, 0 - false
+    if [ -z "$force" ] || [ "$force" == "" ]
+    then
+        force=0
+    fi
+    local accounts_orig_path_list=("/etc/passwd" "/etc/group" "/etc/shadow" "/etc/gshadow")
+    account_restore_action=0
 
     if [ -d "$backup_path" ]
     then
+        sudo bash -c "chmod -R o+r ${backup_path}"
+
+        # check instantiation UUID - migration or not...
         local backup_UUID="$(cat ${backup_path}/UUID)"
-        if [ "$backup_UUID" != "$instantiation_UUID" ]
+        if [ "$backup_UUID" != "$instantiation_UUID" ] || [ "$force" -eq 1 ]
         then
             echo -e "[backuphandler] UUID validate OK: $backup_UUID, user migartion"
+            # get backup file list
             local user_accounts_backup_files=($(ls -1tr ${backup_path}))
 
             echo -e "[backuphandler] restore user accounts:\n${user_accounts_backup_files[*]}"
-            # TODO: smart migration: check files content, restore only the differences
-            pushd "$backup_path"
-                sudo bash -c "cat passwd >> /etc/passwd"
-                sudo bash -c "cat group >> /etc/group"
-                sudo bash -c "cat shadow >> /etc/shadow"
-                sudo bash -c "/bin/cp gshadow.mig /etc/gshadow"
-            popd
+            for file in ${user_accounts_backup_files[@]}
+            do
+                # get backup file full path
+                local backup_file="${backup_path}/$file"
+                for acconts_orig_path in "${accounts_orig_path_list[@]}"
+                do
+                    if [ "$file" == "$(basename ${acconts_orig_path})" ]
+                    then
+                        echo -e "Attempt to Restore backup: $backup_file -> ${acconts_orig_path}"
+                        while read -r line
+                        do
+                            local key="$(echo "$line" | cut -d':' -f'1')"
+                            local orig_is_contains_key="$(sudo bash -c "cat ${acconts_orig_path} | grep ${key}")"
+                            if [ "$orig_is_contains_key" == "" ]
+                            then
+                                echo -e "[i] RESTORE REQUIRED:"
+                                echo -e "\tKey have to be restore: $key"
+                                echo -e "\tLine for key: $line"
+                                echo -e "\tfrom: $backup_file"
+                                echo -e "\tto: $file"
+                                sudo bash -c "echo "$line >> $file""
+                                account_restore_action=$(($account_restore_action+1))
+                            else
+                                progress_indicator
+                            fi
+                        done < "$backup_file"
+                    fi
+                done
+            done
+            sudo bash -c "chmod -R o-r ${backup_path}"
+
+            if [ "$account_restore_action" -ne 0 ]
+            then
+                echo -e "Restore was successful, restored elements: $account_restore_action"
+            else
+                echo -e "Restore was not necessarry, your system is up and running"
+            fi
+            # original migration restore method [TODO: remove]
+            #pushd "$backup_path"
+            #    sudo bash -c "cat passwd >> /etc/passwd"
+            #    sudo bash -c "cat group >> /etc/group"
+            #    sudo bash -c "cat shadow >> /etc/shadow"
+            #    sudo bash -c "/bin/cp gshadow.mig /etc/gshadow"
+            #popd
         else
             echo -e "UUID $backup_UUID == $instantiation_UUID"
-            echo -e "User migration in the same system is not supported (UUID: $instantiation_UUID), pls restore elements manually"
             echo -e "FROM PATH: $backup_path\n$(ls -lath $backup_path)"
+            echo -e "[WARNING] User migration in the same system is risky (UUID: $instantiation_UUID)"
+            read -p "Are you sure, you want to restore user accounts?[yes|no] " answer
+            if [ "$answer" == "yes" ]
+            then
+                restore_user_accounts "$backup_path" "1"
+            fi
         fi
     fi
 }
@@ -279,8 +342,11 @@ function system_restore() {
     echo -e "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
     restore_extra_system_folders "${last_extra_system_backups_list[@]}"
 
-    echo -e "[backuphandler] system needs a reboot now..."
-    reboot
+    if [ "$account_restore_action" -ne 0 ]
+    then
+        echo -e "[backuphandler] system needs a reboot now..."
+        reboot
+    fi
 }
 
 function users_backup() {
@@ -350,8 +416,8 @@ function main() {
         users_backup
     else
         echo -e "========================== backup_handler ===================================="
-        echo -e "system backup\t\t- backup system, with all users home, and users account"
-        echo -e "system restore\t\t- restore system, with all users home, and user accounts"
+        echo -e "system backup\t\t- backup system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders"
+        echo -e "system restore\t\t- restore system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders"
         echo -e "backup\t\t\t- backup home folders"
         echo -e "restore\t\t\t- restores every users last backup in subfolder under its own home dir"
         echo -e "restore <username>\t- restore a selected user last backup in subfolder under its own home dir"
