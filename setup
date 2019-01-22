@@ -413,6 +413,9 @@ function source_main_on_raspberrypi() {
             # create custom UUID for this specific install to identify it
             instantiation_uuid_handler
 
+            # comfort function for storage access
+            link_storage_under_rpitools_home
+
             # printout full elapsed time
             echo -e "${YELLOW}"
             elapsed_time "stop"
@@ -422,6 +425,18 @@ function source_main_on_raspberrypi() {
             output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
             echo -e "$output"
         fi
+    fi
+}
+
+function link_storage_under_rpitools_home() {
+    local storage_conf_path="${REPOROOT}/cache/storage_path_structure"
+    if [ -f "$storage_conf_path" ]
+    then
+        setupmessage "LINK STORAGE FOLDERS UNDER $HOME"
+        source "$storage_conf_path"
+        ln -sf "${USERSPACE}" "${HOME}/$(basename ${USERSPACE})"
+        ln -sf "${SHAREDSPACE}" "${HOME}/$(basename ${SHAREDSPACE})"
+        ln -sf "${OTHERSPACE}" "${HOME}/$(basename ${OTHERSPACE})"
     fi
 }
 
