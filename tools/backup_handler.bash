@@ -194,7 +194,9 @@ function restore_user_accounts() {
                                 echo -e "\tLine for key: $line"
                                 echo -e "\tfrom: $backup_file"
                                 echo -e "\tto: $acconts_orig_path"
-                                sudo bash -c "echo "$line >> $acconts_orig_path""
+                                sudo bash -c "echo $line > /tmp/catitto"
+                                sudo bash -c "sudo cat /tmp/catitto >> $acconts_orig_path"
+                                sudo bash -c "rm -f /tmp/catitto"
                                 account_restore_action=$(($account_restore_action+1))
                             else
                                 progress_indicator
@@ -212,6 +214,7 @@ function restore_user_accounts() {
                 echo -e "Restore was not necessarry, your system is up and running"
             fi
             # original migration restore method [TODO: remove]
+            # https://www.cyberciti.biz/faq/howto-move-migrate-user-accounts-old-to-new-server/
             #pushd "$backup_path"
             #    sudo bash -c "cat passwd >> /etc/passwd"
             #    sudo bash -c "cat group >> /etc/group"
@@ -345,7 +348,7 @@ function system_restore() {
     if [ "$account_restore_action" -ne 0 ]
     then
         echo -e "[backuphandler] system needs a reboot now..."
-        reboot
+        sudo reboot
     fi
 }
 
