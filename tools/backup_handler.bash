@@ -210,6 +210,8 @@ function restore_user_accounts() {
                     fi
                 done
             done
+
+            useraccounts_manual_merge "${backup_path}"
             sudo bash -c "chmod -R o-r ${backup_path}"
 
             if [ "$account_restore_action" -ne 0 ]
@@ -218,14 +220,6 @@ function restore_user_accounts() {
             else
                 echo -e "Restore was not necessarry, your system is up and running"
             fi
-            # original migration restore method [TODO: remove]
-            # https://www.cyberciti.biz/faq/howto-move-migrate-user-accounts-old-to-new-server/
-            #pushd "$backup_path"
-            #    sudo bash -c "cat passwd >> /etc/passwd"
-            #    sudo bash -c "cat group >> /etc/group"
-            #    sudo bash -c "cat shadow >> /etc/shadow"
-            #    sudo bash -c "/bin/cp gshadow.mig /etc/gshadow"
-            #popd
         else
             echo -e "UUID $backup_UUID == $instantiation_UUID"
             echo -e "FROM PATH: $backup_path\n$(ls -lath $backup_path)"
@@ -237,6 +231,38 @@ function restore_user_accounts() {
             fi
         fi
     fi
+}
+
+function useraccounts_manual_merge() {
+    local last_sysbackup_path="$1"
+    local backup_accout_files_list=($(ls -1 "$last_sysbackup_path"))
+    read_timeout_sec=30
+    echo -ne "Do you want to merge user accounts manually, for the more efficiat result? [Y|N]"
+    read -t $read_timeout_sec answer
+    case "$answer" in
+        [yY])
+            echo -e "Merge manually, mergetool vimdiff"
+            sleep 2
+            for accfile in "${backup_accout_files_list[@]}"
+            do
+                if [ "$accfile" != "UUID" ]
+                then
+                    local backup_file_path="${last_sysbackup_path}/${accfile}"
+                    local system_acc_file="/etc/${accfile}"
+                    echo -e "Diff files: $backup_file_path <-> $system_acc_file"
+                    sleep 2
+                    sudo vimdiff "$backup_file_path" "$system_acc_file"
+                    account_restore_action=$(($account_restore_action+1))
+                fi
+            done
+            ;;
+        [nN])
+            echo -e "Then, goodbye"
+            ;;
+        *)
+            echo -e "Timeout exceeded [$read_timeout_sec]"
+            ;;
+    esac
 }
 
 # RESTORE: home folders for every user
@@ -353,6 +379,7 @@ function system_restore() {
     if [ "$account_restore_action" -ne 0 ]
     then
         echo -e "[backuphandler] system needs a reboot now..."
+        sleep 1
         sudo reboot
     fi
 }
