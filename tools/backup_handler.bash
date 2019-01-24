@@ -199,7 +199,7 @@ function restore_user_accounts() {
                                 echo -e "\tLine for key: $line"
                                 echo -e "\tfrom: $backup_file"
                                 echo -e "\tto: $acconts_orig_path"
-                                sudo bash -c "echo $line > /tmp/catitto"
+                                echo "$line" > /tmp/catitto
                                 sudo bash -c "sudo cat /tmp/catitto >> $acconts_orig_path"
                                 sudo bash -c "rm -f /tmp/catitto"
                                 account_restore_action=$(($account_restore_action+1))
