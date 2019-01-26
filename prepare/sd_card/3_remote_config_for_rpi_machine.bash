@@ -130,7 +130,7 @@ function waiting_for_up_again_after_reboot() {
 
 function instantiate_main() {
     check_instantiation_is_done
-    if [ "$is_rpi_machine_set" -eq 0  ]
+    if [ "$is_rpi_machine_set" == "0"  ] || [ "$is_rpi_machine_set" -eq 0  ]
     then
         # FIRST: copy ssh-key and rpitools repo
         check_host "raspberrypi.local"
