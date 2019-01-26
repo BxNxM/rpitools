@@ -74,8 +74,15 @@ function make_backup_for_every_user() {
         echo -e "\t - Create user home backup: ${list_users[$i]} -> ${home_backups_path}"
         pushd /home
             user="${list_users[$i]}"
+            local exclude_restored_folders=($(ls -1 "${user}" | grep "restored_"))
+            local exclude_parameters=""
+            echo -e "exclude folders in ${user}: ${exclude_restored_folders[*]}"
+            for exclude in "${exclude_restored_folders[@]}"
+            do
+                exclude_parameters+="--exclude ./${user}/${exclude} "
+            done
             user_bckp_name="${user}_${time}.tar.gz"
-            targz_cmd="sudo tar czf ${home_backups_path}/${user_bckp_name} ${user}"
+            targz_cmd="sudo tar czf ${home_backups_path}/${user_bckp_name} ${exclude_parameters} ${user}"
             echo -e "CMD: $targz_cmd"
             eval "$targz_cmd"
         popd
@@ -236,7 +243,7 @@ function restore_user_accounts() {
 function useraccounts_manual_merge() {
     local last_sysbackup_path="$1"
     local backup_accout_files_list=($(ls -1 "$last_sysbackup_path"))
-    read_timeout_sec=30
+    read_timeout_sec=60
     echo -ne "Do you want to merge user accounts manually, for the more efficiat result? [Y|N]"
     read -t $read_timeout_sec answer
     case "$answer" in
@@ -371,10 +378,13 @@ function system_restore() {
 
     echo -e "${YELLOW}   --- RESTORE USER ACCOUNTS ---   ${NC}"
     restore_user_accounts "${latest_user_accounts_backup_path}"
-    echo -e "${YELLOW}   --- RESTORE USER HOME FOLDERS ---   ${NC}"
-    restore_user_home_folders
-    echo -e "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
-    restore_extra_system_folders "${last_extra_system_backups_list[@]}"
+    if [ -z "$ACCOUNTS_RESTORE_ONLY" ] || [ "$ACCOUNTS_RESTORE_ONLY" -eq 0 ]
+    then
+        echo -e "${YELLOW}   --- RESTORE USER HOME FOLDERS ---   ${NC}"
+        restore_user_home_folders
+        echo -e "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
+        restore_extra_system_folders "${last_extra_system_backups_list[@]}"
+    fi
 
     if [ "$account_restore_action" -ne 0 ]
     then
@@ -415,11 +425,21 @@ function init_backup_handler() {
     # get actual users list
     list_users=($(ls -1 /home | grep -v grep | grep -v "backups"))
     extra_pathes=("/var/www/html" "/var/lib/transmission-daemon/.config/transmission-daemon/torrents/")
+
+    sudo bash -c "chmod -R o+r $(dirname $system_backups_path)"
 }
 
 function main() {
     echo -e "${YELLOW}===================== BACKUP HANDLER ======================${NC}"
     init_backup_handler
+
+    # handle extra parameters, swithches
+    if [[ "${arg_list[*]}" == *"--onlyaccounts"* ]]
+    then
+        ACCOUNTS_RESTORE_ONLY=1
+    else
+        ACCOUNTS_RESTORE_ONLY=0
+    fi
 
     if [ "${arg_list[0]}" == "system" ]
     then
@@ -429,21 +449,31 @@ function main() {
             full_system_backup
         elif [ "${arg_list[1]}" == "restore" ]
         then
-            echo -e "system restore [contains fill system restore: users, user accounts]"
-            system_restore
+            if [ "$(ls -1 $home_backups_path)" != "" ] && [ "$(ls -1 $system_backups_path)" != "" ]
+            then
+                echo -e "system restore [contains fill system restore: users, user accounts]"
+                system_restore
+            else
+                echo -e "Backup files not found: $home_backups_path and/or $system_backups_path"
+            fi
         else
             echo -e "Unknown argument ${arg_list[1]} use: help for more information"
         fi
     elif [ "${arg_list[0]}" == "restore" ]
     then
-        if [ "${arg_list[1]}" != "" ]
+        if [ "$(ls -1 $home_backups_path)" != "" ]
         then
-            specific_user="${arg_list[1]}"
-            echo -e "user restore $specific_user [create subfolder for selected user and, restore last backup]"
-            restore_user_home_folders "$specific_user"
+            if [ "${arg_list[1]}" != "" ]
+            then
+                specific_user="${arg_list[1]}"
+                echo -e "user restore $specific_user [create subfolder for selected user and, restore last backup]"
+                restore_user_home_folders "$specific_user"
+            else
+                echo -e "users restore [create subfolder for every user and, restore last backup]"
+                restore_user_home_folders
+            fi
         else
-            echo -e "users restore [create subfolder for every user and, restore last backup]"
-            restore_user_home_folders
+            echo -e "Backup not found: $home_backups_path"
         fi
     elif [ "${arg_list[0]}" == "backup" ]
     then
@@ -452,7 +482,7 @@ function main() {
     else
         echo -e "========================== backup_handler ===================================="
         echo -e "system backup\t\t- backup system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders"
-        echo -e "system restore\t\t- restore system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders"
+        echo -e "system restore\t\t- restore system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders, optional parameter: --onlyaccounts"
         echo -e "backup\t\t\t- backup home folders"
         echo -e "restore\t\t\t- restores every users last backup in subfolder under its own home dir"
         echo -e "restore <username>\t- restore a selected user last backup in subfolder under its own home dir"
