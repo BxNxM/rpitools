@@ -424,7 +424,7 @@ function init_backup_handler() {
 
     # get actual users list
     list_users=($(ls -1 /home | grep -v grep | grep -v "backups"))
-    extra_pathes=("/var/www/html" "/var/lib/transmission-daemon/.config/transmission-daemon/torrents/")
+    extra_pathes=("/var/www/html" "/var/lib/transmission-daemon/.config/transmission-daemon/torrents/" "/var/spool/cron/")
 
     sudo bash -c "chmod -R o+r $(dirname $system_backups_path)"
 }
