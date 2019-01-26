@@ -434,9 +434,12 @@ function link_storage_under_rpitools_home() {
     then
         setupmessage "LINK STORAGE FOLDERS UNDER $HOME"
         source "$storage_conf_path"
-        ln -sf "${USERSPACE}" "${HOME}/$(basename ${USERSPACE})"
-        ln -sf "${SHAREDSPACE}" "${HOME}/$(basename ${SHAREDSPACE})"
-        ln -sf "${OTHERSPACE}" "${HOME}/$(basename ${OTHERSPACE})"
+        echo -e "Link: ${USERSPACE} -> ${HOME}/$(basename ${USERSPACE})"
+        sudo ln -sf "${USERSPACE}" "${HOME}/$(basename ${USERSPACE})"
+        echo -e "Link: ${SHAREDSPACE} -> ${HOME}/$(basename ${SHAREDSPACE})"
+        sudo ln -sf "${SHAREDSPACE}" "${HOME}/$(basename ${SHAREDSPACE})"
+        echo -e "Link: ${OTHERSPACE} -> ${HOME}/$(basename ${OTHERSPACE})"
+        sudo ln -sf "${OTHERSPACE}" "${HOME}/$(basename ${OTHERSPACE})"
     fi
 }
 
