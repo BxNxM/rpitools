@@ -95,6 +95,7 @@ then
             message "SUCCESS"
             echo -e "Remove temporary image file: $img_path"
             rm -f "$img_path"
+            echo "$drive" > "${MYDIR_}/.drive"
         else
             message "FAILED"
         fi

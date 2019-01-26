@@ -111,7 +111,6 @@ function set_boot_config() {
         wpa_conf_templ+='}'
         echo -e "$wpa_conf_templ" > "$wpa_supplicant_path"
     fi
-    message "Unmount sd card and put it to the raspberry pi."
 
     is_added=$(grep -rnw "$cmdline_path" -e "init=/usr/lib/raspi-config/init_resize.sh")
     if [ "$is_added" == "" ]
@@ -119,6 +118,23 @@ function set_boot_config() {
         message "WARNING: don't forget to resize root partition with raspy-config"
     else
         message "Initial partition resize is enable :)"
+    fi
+
+    if [ -e "${MYDIR_}/.drive" ]
+    then
+        drive="$(cat ${MYDIR_}/.drive)"
+        rm -f "${MYDIR_}/.drive"
+
+        if [ "$OS" == "Darwin" ]
+        then
+            message "Unmount drive: diskutil unmountDisk $drive"
+            diskutil unmountDisk "$drive"
+        else
+            message "Unmount drive: umount $drive"
+            umount "$drive"
+        fi
+    else
+        message "Unmount disk manually, before unconnect [${MYDIR_}/.drive disk info not exists, for auto-unmount]"
     fi
 
     message "[!!!] ONLY DO THESE STEP ONCE BEFORE FIRST BOOT [!!!]"
