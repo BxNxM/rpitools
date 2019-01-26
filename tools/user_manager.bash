@@ -6,6 +6,7 @@ source "${MYDIR_}/../prepare/colors.bash"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
+home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
 
 storage_path_structure="${MYDIR_}/../cache/storage_path_structure"
 if [ -f "$storage_path_structure" ]
@@ -171,7 +172,7 @@ function ARGPARSE() {
     if [ "$(get_arg_status "adduser")" -eq 1 ]
     then
         # get required arg values
-        echo -e "adduser was called with parameters: ->|$(get_arg_value "adduser")|<-"
+        #echo -e "adduser was called with parameters: ->|$(get_arg_value "adduser")|<-"
         adduser_arglist=($(get_arg_value "adduser"))
         create_custom_user "${adduser_arglist[0]}" "${adduser_arglist[1]}"
     fi
@@ -179,14 +180,14 @@ function ARGPARSE() {
     if [ "$(get_arg_status "removeuser")" -eq 1 ]
     then
         # get required arg values
-        echo -e "removeuser was called with parameters: ->|$(get_arg_value "removeuser")|<-"
+        #echo -e "removeuser was called with parameters: ->|$(get_arg_value "removeuser")|<-"
         remove_user "$(get_arg_value 'removeuser')"
     fi
     # check arg was called
     if [ "$(get_arg_status "changepasswd")" -eq 1 ]
     then
         # get required arg values
-        echo -e "changepasswd was called with parameters: ->|$(get_arg_value "changepasswd")|<-"
+        #echo -e "changepasswd was called with parameters: ->|$(get_arg_value "changepasswd")|<-"
         changepwd_arglist=($(get_arg_value "changepasswd"))
         set_user_password "${changepwd_arglist[0]}" "${changepwd_arglist[1]}"
     fi
@@ -271,11 +272,22 @@ function remove_user() {
     _msg_ "REMOVE USER WITH HOME DIR: sudo deluser --remove-home $username"
     sudo deluser --remove-home "$username"
 
+    # remove user storgae on disk
     if [ -e "${USERSPACE}/${username}" ]
     then
         _msg_ "Remove ${USERSPACE}/${username}"
         sudo bash -c "rm -rf ${USERSPACE}/${username}"
     fi
+
+    # remove user backups
+    sudo chmod go+r "$home_backups_path"
+    user_backups=($(ls -1 "$home_backups_path" | grep "${username}_"))
+    for userbackup in "${user_backups[@]}"
+    do
+        echo -e "Remove backup for user $username: $userbackup"
+        sudo rm -f "${home_backups_path}/${userbackup}"
+    done
+    sudo chmod go-r "$home_backups_path"
 }
 
 function show_users_stat() {
