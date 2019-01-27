@@ -5,8 +5,10 @@ MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source "${MYDIR_}/../prepare/colors.bash"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
+transmission_is_active="$($confighandler -s TRANSMISSION -o activate)"
 transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
 home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
+rpitools_user="$($confighandler -s GENERAL -o user_name_on_os)"
 
 storage_path_structure="${MYDIR_}/../cache/storage_path_structure"
 if [ -f "$storage_path_structure" ]
@@ -31,14 +33,15 @@ MY_NAME="`basename \"$0\"`"
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "adduser" "removeuser" "changepasswd" "userstat" "logoff")                             # valid arg list - add new args - call with -- expl: --man
-    known_args_subs_pcs=(0 0 2 1 2 0 0)                                               # values for args - expl: --man -> 0, --example -> 1 etc.
+    known_args=("man" "debug" "adduser" "removeuser" "changepasswd" "userstat" "logoff" "fixusergroups")   # valid arg list - add new args - call with -- expl: --man
+    known_args_subs_pcs=(0 0 2 1 2 0 0 0)                                       # values for args - expl: --man -> 0, --example -> 1 etc.
     man_for_args=("--man\t\t::\tmanual"\                                        # add help text here
                   "--adduser\t::\tAdd new user with settings, <username> <userpasswd> ${known_args_subs_pcs[2]} par"\
                   "--removeuser\t::\tRemove user, <username> ${known_args_subs_pcs[3]} par"\
                   "--changepasswd\t::\tChange user password, <username> <userpasswd> ${known_args_subs_pcs[4]} par"\
                   "--userstat\t::\tShow users list and used disk space ${known_args_subs_pcs[5]} par"\
-                  "--logoff\t::\tLog off user - select after execute ${known_args_subs_pcs[6]} par")
+                  "--logoff\t::\tLog off user - select after execute ${known_args_subs_pcs[6]} par"\
+                  "--fixusergroups\t::\tFix user groups for every user, except rpitools user ${known_args_subs_pcs[7]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -203,6 +206,11 @@ function ARGPARSE() {
         LogOffUser
     fi
 
+    if [ "$(get_arg_status "fixusergroups")" -eq 1 ]
+    then
+        fix_user_groups_and_privileges
+    fi
+
     if [ "$args_pcs" -eq 0 ]
     then
         bash "$MYPATH_" --man
@@ -247,13 +255,37 @@ function create_custom_user() {
         _msg_ "SET DEFAULT SHELL TO BASH FOR USER $username"
         sudo chsh -s /bin/bash "$username"
 
-        _msg_ "Add new user to group: rpitools_user"
-        sudo bash -c "sudo usermod -a -G rpitools_user $username"
+        set_user_groups "$username"
 
         __copy_user_temaplete "$username"
 
         create_user_storage "$username"
     fi
+}
+
+function set_user_groups() {
+    local username="$1"
+
+    _msg_ "Add new user to group: rpitools_user"
+    sudo bash -c "sudo usermod -a -G rpitools_user $username"
+
+    if [ "$transmission_is_active" == "True" ] || [ "$transmission_is_active" == "true" ]
+    then
+        _msg_ "Add new user to group: debian-transmission"
+         sudo bash -c "usermod -a -G debian-transmission $username"
+    fi
+}
+
+function fix_user_groups_and_privileges() {
+    local users_list=($(ls -1 /home))
+    for user in "${users_list[@]}"
+    do
+        if [ "$user" != "$rpitools_user" ]
+        then
+            _msg_ "Fix user groups and privileges: $user"
+            set_user_groups "$user"
+        fi
+    done
 }
 
 function set_user_password() {
@@ -334,7 +366,7 @@ function LogOffUser {
 	ps aux | egrep "sshd: [a-zA-Z]+@"
 	echo -e "${LIGHT_RED}Kill User [PID]:${NC}"
 	read PID
-	sudo kill -9 $PID
+	sudo kill -9 "$PID"
 	echo -e "${LIGHT_RED}$PID KILLED!${NC}"
 }
 
