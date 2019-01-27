@@ -21,3 +21,4 @@ autodeployment/lib/apache_setup/h5ai*
 autodeployment/lib/apache_setup/_h5ai*
 autodeployment/lib/retropie/RetroPie-Setup
 autodeployment/config/diskconf.json
+gpio/fan_controll/lib/logs/fancontroll.log

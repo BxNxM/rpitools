@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-#GPIO USAGE: §https://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
+#GPIO USAGE: https://sourceforge.net/p/raspberry-gpio-python/wiki/BasicUsage/
 #GPIO PINOUT: https://www.raspberrypi-spy.co.uk/2012/06/simple-guide-to-the-rpi-gpio-header-and-pins/
 try:
     import RPi.GPIO as GPIO
@@ -9,13 +9,37 @@ import LogHandler
 fancontroll = LogHandler.LogHandler("fancontroll")
 import LocalMachine
 import time
+import os
+import sys
+myfolder = os.path.dirname(os.path.abspath(__file__))
+
+try:
+    confighandler_path = myfolder + os.sep + "../../../autodeployment/bin/ConfigHandlerInterface.py"
+
+    cmd = "{} -s {} -o {}".format(confighandler_path, "TEMP_CONTROLL_FAN", "activate")
+    exit_code, stdout, stderr = LocalMachine.run_command(cmd)
+    is_activated = stdout.decode("utf-8")
+
+    cmd = "{} -s {} -o {}".format(confighandler_path, "TEMP_CONTROLL_FAN", "temperature_trigger_celsius")
+    exit_code, stdout, stderr = LocalMachine.run_command(cmd)
+    temperature_trigger_celsius = stdout.decode("utf-8")
+
+    cmd = "{} -s {} -o {}".format(confighandler_path, "TEMP_CONTROLL_FAN", "temperature_inertia_celsius")
+    exit_code, stdout, stderr = LocalMachine.run_command(cmd)
+    temperature_inertia_celsius = stdout.decode("utf-8")
+
+    cmd = "{} -s {} -o {}".format(confighandler_path, "TEMP_CONTROLL_FAN", "pin_channel")
+    exit_code, stdout, stderr = LocalMachine.run_command(cmd)
+    pin_channel = stdout.decode("utf-8")
+except Exception as e:
+    fancontroll.logger.warn("Import config handler failed: " + str(e))
 
 #################################
 #       Configuration           #
 #################################
-channel=40
-temperature_trigger_celsius = 45
-temperature_inertia_celsius = 3
+channel = int(pin_channel)
+temperature_trigger_celsius = int(temperature_trigger_celsius)
+temperature_inertia_celsius = int(temperature_inertia_celsius)
 
 #################################
 #           Functions           #
@@ -105,5 +129,8 @@ def main():
     clean_gpio_pin(channel=channel)
 
 if __name__ == "__main__":
-    main()
+    if is_activated.lower() == "true":
+        main()
+    else:
+        fancontroll.logger.warn("Fan controll was not activated in: confeditor")
 
