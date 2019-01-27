@@ -218,9 +218,6 @@ function restore_user_accounts() {
                 done
             done
 
-            # fix user groups automaticly
-            . "${MYDIR}/user_manager.bash" "--fixusergroups"
-
             # manual merge for user accounts
             useraccounts_manual_merge "${backup_path}"
             sudo bash -c "chmod -R o-r ${backup_path}"
@@ -389,6 +386,10 @@ function system_restore() {
         echo -e "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
         restore_extra_system_folders "${last_extra_system_backups_list[@]}"
     fi
+
+    # fix user groups automaticly
+    echo -e "${YELLOW}Restore user groups from code, with${NC} usermanager --fixusergroups"
+    . "${MYDIR}/user_manager.bash" "--fixusergroups"
 
     if [ "$account_restore_action" -ne 0 ]
     then
