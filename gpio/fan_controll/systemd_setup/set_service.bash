@@ -38,8 +38,8 @@ function change_parameter() {
 
 function create_service() {
     local service_description="cpu temperature, fan controll"
-    local exec_cmd="/bin/bash fan_controller.bash"
-    local working_dir="/home/${rpitools_linux_user}/rpitools/gpio/fan_controll/bin"
+    local exec_cmd="/usr/bin/python3 -u fan_controller_core.py"
+    local working_dir="/home/${rpitools_linux_user}/rpitools/gpio/fan_controll/lib"
     local syslog_idf="fan_controll"
     local user="${rpitools_linux_user}"
 
