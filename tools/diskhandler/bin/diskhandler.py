@@ -30,6 +30,7 @@ parser.add_argument("-l", "--listdevs",  action='store_true', help="List connect
 parser.add_argument("-t", "--storage_structure",  action='store_true', help="Set storage folder structure")
 parser.add_argument("-w", "--show_storage_structure",  action='store_true', help="Show storage folder structure")
 parser.add_argument("-p", "--prepare_disks",  action='store_true', help="Prepare disks whick contains diskconf.json")
+parser.add_argument("-c", "--change_dev_name",  action='store_true', help="Change disk label name")
 
 args = parser.parse_args()
 sge = args.search_get_edit
@@ -39,6 +40,7 @@ listdev = args.listdevs
 storage = args.storage_structure
 show_storage_structure = args.show_storage_structure
 prepare_disks = args.prepare_disks
+change_dev_name =args.change_dev_name
 
 def pre_check(info="CKECK"):
     state, msg = BlockDeviceHandler.is_any_device_avaible()
@@ -80,6 +82,12 @@ def main():
             prepare_and_format_blockdevice.prepare_block_device()
         else:
             print("For automatic disk format based on diskconf.json switch STORAGE -> external True in rpitools_config.conf")
+    if change_dev_name:
+        pre_check("change_dev_name")
+        format_disk.hum_readable_list_devices()
+        device = raw_input("Select device path:\t/dev/sdaX: ")
+        name = raw_input("New disk label name: ")
+        mount_connected_disks.set_get_device_name(device, name)
 
 if __name__ == "__main__":
     main()
