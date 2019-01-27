@@ -6,8 +6,8 @@ service_template_path="/home/$USER/rpitools/template/general_template.service"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 rpitools_linux_user="$($confighandler -s GENERAL -o user_name_on_os)"
-set_service_conf="$($confighandler -s RGB_CONTROLLER -o set_service)"
-service_name="rgb_led_controller.service"
+set_service_conf="$($confighandler -s TEMP_CONTROLL_FAN -o activate)"
+service_name="temp_controll_fan.service"
 
 function message() {
     local msg="$1"
@@ -37,10 +37,10 @@ function change_parameter() {
 }
 
 function create_service() {
-    local service_description="rgb LED cotroller service"
-    local exec_cmd="/usr/bin/python3 rgb_led_controller.py"
-    local working_dir="/home/${rpitools_linux_user}/rpitools/gpio/rgb_led/bin/"
-    local syslog_idf="rgb_led_controller"
+    local service_description="cpu temperature, fan controll"
+    local exec_cmd="/bin/bash fan_controller.bash"
+    local working_dir="/home/${rpitools_linux_user}/rpitools/gpio/fan_controll/bin"
+    local syslog_idf="fan_controll"
     local user="${rpitools_linux_user}"
 
     message "Copy service template ${service_template_path} -> ${MYDIR}/${service_name}"

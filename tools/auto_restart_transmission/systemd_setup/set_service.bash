@@ -95,20 +95,20 @@ then
 
     if [ "$(systemctl is-active ${service_name})" == "inactive" ]
     then
-        message "START SERICE: sudo systemctl start ${service_name}"
+        message "START SERVICE: sudo systemctl start ${service_name}"
         sudo systemctl start "${service_name}"
         check_exitcode "$?"
     else
-        message "ALREADY RUNNING SERICE: ${service_name}"
+        message "ALREADY RUNNING SERVICE: ${service_name}"
     fi
 
     if [ "$(systemctl is-enabled ${service_name})" == "disabled" ]
     then
-        message "ENABLE SERICE: sudo systemctl enable ${service_name}"
+        message "ENABLE SERVICE: sudo systemctl enable ${service_name}"
         sudo systemctl enable "${service_name}"
         check_exitcode "$?"
     else
-        message "SERICE IS ALREADY ENABLED: ${service_name}"
+        message "SERVICE IS ALREADY ENABLED: ${service_name}"
     fi
 
 elif [ "$set_service_conf" == "False" ] || [ "$set_service_conf" == "false" ]
@@ -128,20 +128,20 @@ then
 
     if [ "$(systemctl is-active ${service_name})" == "active" ]
     then
-        message "STOP SERICE: sudo systemctl stop ${service_name}"
+        message "STOP SERVICE: sudo systemctl stop ${service_name}"
         sudo systemctl stop "${service_name}"
         check_exitcode "$?"
     else
-        message "SERICE NOT RUNNING: ${service_name}"
+        message "SERVICE NOT RUNNING: ${service_name}"
     fi
 
     if [ "$(systemctl is-enabled ${service_name})" == "enabled" ]
     then
-        message "DISABLE SERICE: sudo systemctl disable ${service_name}"
+        message "DISABLE SERVICE: sudo systemctl disable ${service_name}"
         sudo systemctl disable "${service_name}"
         check_exitcode "$?"
     else
-        message "SERICE IS ALREADY DISBALED: ${service_name}"
+        message "SERVICE IS ALREADY DISBALED: ${service_name}"
     fi
 else
     echo -e "dropbox halpage service is not requested"

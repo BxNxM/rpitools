@@ -119,6 +119,10 @@ _msg_ "RUN: motion video stream forwarding"
 # Set status file under cache
 post_config_actions_done
 
+# run fancontroll if required
+_msg_ "RUN: fan_controller based on cpu temperature"
+("/home/$USER/rpitools/gpio/fan_controll/bin/fan_controller.bash")
+
 # ||||||||||||||||| #
 #  RUN USER SCRIPT  #
 # ||||||||||||||||| #
