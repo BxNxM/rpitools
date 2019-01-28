@@ -111,7 +111,7 @@ def fan_pin_controll(channel=40, state=True):
                 print("\tTurn on temperature: " + str(temperature_trigger_celsius))
                 # negate (trun off) the fan
                 GPIO.output(channel, not state)
-        time.sleep(2)
+        time.sleep(5)
 
 #################################
 #           Main core           #
