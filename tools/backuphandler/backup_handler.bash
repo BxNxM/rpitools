@@ -10,9 +10,9 @@ activate_backup="$($confighandler -s BACKUP -o activate)"
 home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
 system_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/system"
 limit="$($confighandler -s BACKUP -o limit)"
-instantiation_UUID="$(cat ${MYDIR}/../cache/.instantiation_UUID)"
+instantiation_UUID="$(cat ${MYDIR}/../../cache/.instantiation_UUID)"
 
-source "${MYDIR}/../prepare/colors.bash"
+source "${MYDIR}/../../prepare/colors.bash"
 
 if [[ "$activate_backup" != "True" ]] && [[ "$activate_backup" != "true" ]]
 then
