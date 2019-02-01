@@ -10,7 +10,7 @@ activate_backup="$($confighandler -s BACKUP -o activate)"
 schedule="$($confighandler -s BACKUP -oschedule)"
 backuphandler_full_path="${MYDIR}/backup_handler.bash"
 actual_cron_content="$(crontab -l)"
-new_command="${schedule} ${backuphandler_full_path}"
+new_command="${schedule} ${backuphandler_full_path} system backup"
 
 echo -e "Actual crontab content:"
 echo -e "$actual_cron_content"
