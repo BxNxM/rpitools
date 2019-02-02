@@ -389,7 +389,7 @@ function system_restore() {
 
     # fix user groups automaticly
     echo -e "${YELLOW}Restore user groups from code, with${NC} usermanager --fixusergroups"
-    . "${MYDIR}/user_manager.bash" "--fixusergroups"
+    . "${MYDIR}/../user_manager.bash" "--fixusergroups"
 
     if [ "$account_restore_action" -ne 0 ]
     then
@@ -402,7 +402,7 @@ function system_restore() {
 function users_backup() {
     echo -e "${YELLOW}   --- CREATE CACHE BACKUP ---   ${NC}"
     # create cache backup
-    . ${MYDIR}/cache_restore_backup.bash backup
+    . "${MYDIR}/../cache_restore_backup.bash" "backup"
 
     echo -e "${YELLOW}   --- CREATE USER BACKUP ---   ${NC}"
     # user backup
