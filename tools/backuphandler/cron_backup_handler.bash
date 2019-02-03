@@ -24,6 +24,30 @@ then
     exit 1
 fi
 
+function check_servive() {
+    local restart_needed="$1"
+    local is_active="$(sudo systemctl is-active cron)"
+    local is_enabled="$(sudo systemctl is-enabled cron)"
+
+    if [ "$is_enabled" != "enabled" ]
+    then
+        echo -e "=> enable cron"
+        sudo systemctl enable cron
+    fi
+    if [ "$is_active" != "active" ]
+    then
+        echo -e "=> activate cron"
+        sudo systemctl start cron
+    fi
+
+    if [ "$restart_needed" -ne 0 ]
+    then
+        echo -e "=> reload and restart cron, new entry was added"
+        #sudo systemctl reload cron
+        sudo systemctl restart cron
+    fi
+}
+
 if [ "$schedule" == "@daily" ] || [ "$schedule" == "@weekly" ] || [ "$schedule" == "@monthly" ]
 then
     echo -e "${YELLOW}schedule $schedule is valid${NC}"
@@ -32,6 +56,7 @@ else
     exit 2
 fi
 
+is_changed=0
 if [[ "$actual_cron_content" == *"$new_command"* ]]
 then
     echo -e "${YELLOW}$new_command${NC} is already exists in crontab -l"
@@ -42,13 +67,17 @@ else
         crontab -l > "${MYDIR}/crontab.swp"
             sed -i 's|.*'"${backuphandler_full_path}"'.*|'"${new_command}"'|g' "${MYDIR}/crontab.swp"
         crontab "${MYDIR}/crontab.swp"
+        is_changed=1
     else
         echo -e "Add backuphandler to crontab ${YELLOW}$new_command${NC}"
         crontab -l > "${MYDIR}/crontab.swp"
             echo "${new_command}" >> "${MYDIR}/crontab.swp"
         crontab "${MYDIR}/crontab.swp"
+        is_changed=1
     fi
 fi
+
+check_servive "$is_changed"
 exit 0
 
 
