@@ -11,6 +11,7 @@ home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
 system_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/system"
 limit="$($confighandler -s BACKUP -o limit)"
 instantiation_UUID="$(cat ${MYDIR}/../../cache/.instantiation_UUID)"
+sshfs_mount_point_name="$(basename $($confighandler -s SSHFS -o mount_folder_path))"
 
 source "${MYDIR}/../../prepare/colors.bash"
 
@@ -75,9 +76,14 @@ function make_backup_for_every_user() {
         pushd /home
             user="${list_users[$i]}"
             local exclude_restored_folders=($(ls -1 "${user}" | grep "restored_"))
+            local exclude_restored_folders2=($(ls -1 "${user}" | grep "$sshfs_mount_point_name"))
             local exclude_parameters=""
             echo -e "exclude folders in ${user}: ${exclude_restored_folders[*]}"
             for exclude in "${exclude_restored_folders[@]}"
+            do
+                exclude_parameters+="--exclude ./${user}/${exclude} "
+            done
+            for exclude in "${exclude_restored_folders2[@]}"
             do
                 exclude_parameters+="--exclude ./${user}/${exclude} "
             done
