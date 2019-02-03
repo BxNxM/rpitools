@@ -433,8 +433,19 @@ http://www.pdfonline.com/convert-pdf-to-html/
 | ----------- Hour (0 - 23)
 ------------- Minute (0 - 59)
 
-crontab -e
-crontab -l
+string         meaning
+------         -------
+@reboot        Run once, at startup.
+@yearly        Run once a year, "0 0 1 1 *".
+@annually      (same as @yearly)
+@monthly       Run once a month, "0 0 1 * *".
+@weekly        Run once a week, "0 0 * * 0".
+@daily         Run once a day, "0 0 * * *".
+@midnight      (same as @daily)
+@hourly        Run once an hour, "0 * * * *".
+
+crontab -e     edit crontab
+crontab -l     list crontab settings
 
 https://www.cyberciti.biz/faq/how-do-i-add-jobs-to-cron-under-linux-or-unix-oses/
 ```
