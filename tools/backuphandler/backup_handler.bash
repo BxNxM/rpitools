@@ -146,7 +146,7 @@ function backup_user_accounts() {
     sudo mkdir -p "${accounts_backup_folder}"
 
     echo -e "\tbackup: /etc/passwd /etc/shadow /etc/group /etc/gshadow to ${accounts_backup_folder}"
-    sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow "${accounts_backup_folder}"
+    sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/sudoers "${accounts_backup_folder}"
     sudo bash -c "echo $instantiation_UUID > $accounts_backup_UUID"
 }
 
@@ -223,6 +223,15 @@ function restore_user_accounts() {
                     fi
                 done
             done
+
+            # restore sudoers file if different
+            if [ "$(sudo bash -c "diff -q /etc/sudoers ${backup_path}/sudoers")" != "" ]
+            then
+                echo -e "Restore sudoers file: ${backup_path}/sudoers -> ${backup_path}/sudoers"
+                sudo bash -c "cat ${backup_path}/sudoers > ${backup_path}/sudoers"
+            else
+                echo -e "/etc/sudoers not changed, restore is not necesarry."
+            fi
 
             # manual merge for user accounts
             useraccounts_manual_merge "${backup_path}"
