@@ -114,6 +114,7 @@ class SimpleConfig(ConfigParser.ConfigParser):
         parameter = parameter.replace("$USER", USER)
         parameter = parameter.replace("~/", "/home/{}".format(USER))
         parameter = parameter.replace("$HOME", "/home/{}".format(USER))
+        parameter = parameter.replace("$HOSTNAME", "{}".format(self.get("GENERAL", "custom_hostname")))
 
         # Set storage_path_structure parameters
         if os.path.exists(storage_path_structure_path):
