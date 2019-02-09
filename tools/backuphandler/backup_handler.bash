@@ -229,10 +229,11 @@ function restore_user_accounts() {
             # restore sudoers file if different
             if [ "$(sudo bash -c "sudo diff -q /etc/sudoers ${backup_path}/sudoers")" != "" ]
             then
-                echo -e "Restore sudoers file: ${backup_path}/sudoers -> ${backup_path}/sudoers"
-                sudo bash -c "cat ${backup_path}/sudoers > ${backup_path}/sudoers"
+                echo -e "Attempt to Restore backup: ${backup_path}/sudoers -> /etc/sudoers"
+                sudo bash -c "cat ${backup_path}/sudoers > /etc/sudoers"
+                account_restore_action=$(($account_restore_action+1))
             else
-                echo -e "/etc/sudoers not changed, restore is not necesarry."
+                echo -e "Restore backup is not necesarry /etc/sudoers not changed"
             fi
 
             # manual merge for user accounts
