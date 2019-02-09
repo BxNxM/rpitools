@@ -13,7 +13,7 @@ class SimpleConfig(ConfigParser.ConfigParser):
 
     def __init__(self, cfg_path):
         self.cfg_path = cfg_path
-        ConfigParser.ConfigParser.__init__(self)
+        ConfigParser.ConfigParser.__init__(self, allow_no_value=True)
         self.config_dict = None
         self.__parse_config()
 
@@ -125,7 +125,7 @@ class SimpleConfig(ConfigParser.ConfigParser):
                         parameter = parameter.replace("$"+str(key), value)
         return parameter
 
-def validate_configs_based_on_template_printout(msg, is_active):
+def validate_configs_based_on_template_printout(msg, is_active=True):
     if is_active:
         print(msg)
 
@@ -135,42 +135,122 @@ def validate_configs_based_on_template(custom_cfg_obj, cfg_template_path=templat
     custom_all_dict = custom_cfg_obj.get_full()
     template_all_dict = cfg_tmp.get_full()
 
-    validate_configs_based_on_template_printout("VALIDATE CUSTOM (USER) CONFIG FILE: {} WITH {}".format(config_path, template_config_path), is_active=print_is_active)
+    validate_configs_based_on_template_printout("VALIDATE CUSTOM (USER) CONFIG FILE: {} WITH {}"\
+                                                .format(config_path, template_config_path), is_active=print_is_active)
     for key, value in template_all_dict.items():
         # check sections - user (custom) config based on template config
         if key in custom_all_dict.keys():
-            validate_configs_based_on_template_printout(str(key) + " - section exists - " + Colors.GREEN + "OK" + Colors.NC, is_active=print_is_active)
+            validate_configs_based_on_template_printout(str(key) + " - section exists - " + Colors.GREEN\
+                                                        + "OK" + Colors.NC, is_active=print_is_active)
         else:
-            validate_configs_based_on_template_printout(str(key) + " - section not exits - " + Colors.RED + "MISSING" + Colors.NC, is_active=print_is_active)
+            validate_configs_based_on_template_printout(str(key) + " - section not exits - " + Colors.RED\
+                                                        + "MISSING" + Colors.NC, is_active=print_is_active)
             difference_cnt += 1
         # check options user (custom) config based on template config
         for key_in, value_in in value.items():
             try:
                 if str(key_in) in str(custom_all_dict[key]):
-                    validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - " + Colors.GREEN + "OK" + Colors.NC, is_active=print_is_active)
+                    validate_configs_based_on_template_printout("\t" + str(key_in) + " - key exists - " + Colors.GREEN\
+                                                                + "OK" + Colors.NC, is_active=print_is_active)
                 else:
-                    validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - " + Colors.RED + "MISSING" + Colors.NC, is_active=print_is_active)
+                    validate_configs_based_on_template_printout("\t" + str(key_in) + " - key not exits - " + Colors.RED\
+                                                               + "MISSING" + Colors.NC, is_active=print_is_active)
                     difference_cnt += 1
             except Exception as e:
                 difference_cnt += 1
     if difference_cnt == 0:
-        sync_rpitools_version(custom_cfg_obj, cfg_tmp)
+        sync_rpitools_version(custom_cfg_obj, cfg_tmp, is_active=print_is_active)
         return True
     else:
         return False
 
-def sync_rpitools_version(custom_cfg_obj, template_config_path):
+def sync_rpitools_version(custom_cfg_obj, template_config_obj, is_active):
+    global config_path, template_config_path
     option = "GENERAL"
     section = "rpitools_version"
     try:
-        version = float(template_config_path.get(option, section))
+        version = float(template_config_obj.get(option, section))
         version_actual = float(custom_cfg_obj.get(option, section))
         if version != version_actual:
+            validate_configs_based_on_template_printout("Update rpitools config version from {} to {}".format(version_actual, version), is_active)
             if not custom_cfg_obj.add(option, section, str(version)):
                 print("Fail to update rpitools version: " + str(version_actual) + " -> " + str(version))
+            reformat_custom_config_based_on_template(config_path, template_config_path, is_active)
     except Exception as e:
-        print("Verison jumber update failed: " + str(e))
+        print("Verison number update failed: " + str(e))
 
+def reformat_custom_config_based_on_template(config_path, template_config_path, is_active):
+    print("REGENERATE RPITOOLS CONFIG FILE STRUCTURE WITH COMMENTS")
+    error = 0
+    try:
+        print("\t[1] Copy template and fill with custom values")
+        import shutil
+        template_config_path_swp = template_config_path + ".swp"
+        shutil.copyfile(template_config_path, template_config_path_swp)
+
+        custom_config_obj = SimpleConfig(cfg_path = config_path)
+        template_conf_swp_obj = SimpleConfig(cfg_path = template_config_path_swp)
+        custom_full = custom_config_obj.get_full()
+
+        # fill template swp with custom values
+        for section, option_value in custom_full.items():
+            for option, value in option_value.items():
+                template_conf_swp_obj.add(section, option, value, reparse=False)
+                validate_configs_based_on_template_printout("\t\tSet {}:{}={}".format(section, option, value), is_active)
+    except Exception as e:
+        print("Regenerate config file failed: " + str(e))
+        error = 1
+
+    try:
+        if error == 0:
+            print("\t[2] Backup previous rpitools config, and write out the new :)")
+            # create custom config backup
+            shutil.copyfile(config_path, config_path + ".bak")
+            # override custom config file with reformatted version
+            shutil.move(template_config_path_swp, config_path)
+    except Exception as e:
+        print("Overwrite custom config file failed, check {} config backup, error: {}".format(config_path, config_path + ".bak", e))
+        error = 1
+
+    if error == 0:
+        try:
+            print("\t[3] Merge comments from template to the new custom config")
+            final_formatted_config_with_comments = ""
+            with open(template_config_path, 'r') as f:
+                template_config_content = f.read()
+                template_config_content_lines = template_config_content.split("\n")
+            with open(config_path, 'r') as f:
+                custom_config_content = f.read()
+                custom_config_content_lines = custom_config_content.split("\n")
+
+            comment_lines_index_cnt = 0
+            end_comment_block = True
+            for index, template_line in enumerate(template_config_content_lines):
+                if len(template_line) > 0 and template_line[0] == ";":
+                    final_formatted_config_with_comments += template_line + "\n"
+                    end_comment_block = False
+                    validate_configs_based_on_template_printout("{}[TEMP][ix:{}] {}{}".format(Colors.LIGHT_BLUE, comment_lines_index_cnt, template_line,\
+                                                                Colors.NC), is_active)
+                    comment_lines_index_cnt += 1
+                else:
+                    end_comment_block = True
+                if end_comment_block:
+                    if len(custom_config_content_lines) > index - comment_lines_index_cnt:
+                        validate_configs_based_on_template_printout("{}[CUST][ix:{}] {}{}".format(Colors.LIGHT_GREEN, index - comment_lines_index_cnt,\
+                               custom_config_content_lines[index - comment_lines_index_cnt], Colors.NC), is_active)
+                        final_formatted_config_with_comments += custom_config_content_lines[index - comment_lines_index_cnt] + "\n"
+            # Custom config file user space script longer then default, write the rest out
+            if len(custom_config_content_lines) > index - comment_lines_index_cnt:
+                for newindex in range(index - comment_lines_index_cnt, len(custom_config_content_lines) -1):
+                    validate_configs_based_on_template_printout("{}[CUST][ix:{}] {}{}".format(Colors.LIGHT_GREEN, newindex, custom_config_content_lines[newindex],\
+                                                                Colors.NC), is_active)
+                    final_formatted_config_with_comments += custom_config_content_lines[newindex] + "\n"
+
+            # Write merged config to rpitools config
+            with open(config_path, 'w') as f:
+                f.write(final_formatted_config_with_comments)
+        except Exception as e:
+            print("Merge comments to custom rpitools template failed: " + str(e))
 
 def init(validate_print=False):
     cfg = SimpleConfig(cfg_path=config_path)
