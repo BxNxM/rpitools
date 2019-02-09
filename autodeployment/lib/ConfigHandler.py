@@ -11,10 +11,11 @@ storage_path_structure_path = os.path.join(myfolder, "../../cache/storage_path_s
 
 class SimpleConfig(ConfigParser.ConfigParser):
 
-    def __init__(self, cfg_path):
+    def __init__(self, cfg_path, magic_var_resolve=True):
         self.cfg_path = cfg_path
         ConfigParser.ConfigParser.__init__(self, allow_no_value=True)
         self.config_dict = None
+        self.magic_var_resolve = magic_var_resolve
         self.__parse_config()
 
     def __parse_config(self, reparse=False):
@@ -27,7 +28,10 @@ class SimpleConfig(ConfigParser.ConfigParser):
                 self.config_dict[section] = {}
                 options_list = self.options(section)
                 for option in options_list:
-                    parameter = self.__replace_magic_variables(ConfigParser.ConfigParser.get(self, section, option))
+                    if self.magic_var_resolve:
+                        parameter = self.__replace_magic_variables(ConfigParser.ConfigParser.get(self, section, option))
+                    else:
+                        parameter = ConfigParser.ConfigParser.get(self, section, option)
                     self.config_dict[section][option] = parameter
         return self.config_dict
 
@@ -188,8 +192,8 @@ def reformat_custom_config_based_on_template(config_path, template_config_path, 
         template_config_path_swp = template_config_path + ".swp"
         shutil.copyfile(template_config_path, template_config_path_swp)
 
-        custom_config_obj = SimpleConfig(cfg_path = config_path)
-        template_conf_swp_obj = SimpleConfig(cfg_path = template_config_path_swp)
+        custom_config_obj = SimpleConfig(cfg_path = config_path, magic_var_resolve=False)
+        template_conf_swp_obj = SimpleConfig(cfg_path = template_config_path_swp, magic_var_resolve=False)
         custom_full = custom_config_obj.get_full()
 
         # fill template swp with custom values
