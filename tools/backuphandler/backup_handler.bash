@@ -140,13 +140,15 @@ function backup_user_accounts() {
     local accounts_backup_folder="${system_backups_path}/user_accounts_${time}"
     local accounts_backup_UUID="${accounts_backup_folder}/UUID"
 
-    echo -e "Backup passwords, gooups and so on"
+    echo -e "Backup passwords, goups and so on"
 
     echo -e "\t[backuphandler] Create folder for user accounts: ${accounts_backup_folder}"
     sudo mkdir -p "${accounts_backup_folder}"
 
     echo -e "\tbackup: /etc/passwd /etc/shadow /etc/group /etc/gshadow to ${accounts_backup_folder}"
-    sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow /etc/sudoers "${accounts_backup_folder}"
+    sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow "${accounts_backup_folder}"
+    echo -e "\tbackup /etc/sudoers -> ${accounts_backup_folder}/sudoers"
+    sudo bash -c "cat /etc/sudoers > ${accounts_backup_folder}/sudoers"
     sudo bash -c "echo $instantiation_UUID > $accounts_backup_UUID"
 }
 
@@ -225,7 +227,7 @@ function restore_user_accounts() {
             done
 
             # restore sudoers file if different
-            if [ "$(sudo bash -c "diff -q /etc/sudoers ${backup_path}/sudoers")" != "" ]
+            if [ "$(sudo bash -c "sudo diff -q /etc/sudoers ${backup_path}/sudoers")" != "" ]
             then
                 echo -e "Restore sudoers file: ${backup_path}/sudoers -> ${backup_path}/sudoers"
                 sudo bash -c "cat ${backup_path}/sudoers > ${backup_path}/sudoers"
