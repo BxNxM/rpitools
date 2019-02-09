@@ -9,7 +9,9 @@ source "${MYDIR_}/../colors.bash"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 ssh_passed_state="$($confighandler -s SECURITY -o password_authentication)"
+ssh_passed_state_ignore_global="$($confighandler -s SECURITY -o password_access_ignore_global)"
 ssh_id_rsa_pub="$($confighandler -s SECURITY -o id_rsa_pub)"
+user="$($confighandler -s GENERAL -o user_name_on_os)"
 sshd_config_path="/etc/ssh/sshd_config"
 authorized_keys_path="/home/$USER/.ssh/authorized_keys"
 default_id_rsa_pub_value_in_conf="write_you_id_rsa_pub_here"
@@ -136,7 +138,7 @@ function create_linux_groups_for_rpitools() {
     local existsing_groups="/etc/group"
     local rpitools_admin_group="rpitools_admin"
     local rpitools_user_group="rpitools_user"
-    local rpitools_user="$USER"
+    local rpitools_user="$user"
     local groups_settings_is_done_cache_indicator="${cache_path}/rpitools_groups_are_done."
     if [ ! -e "$groups_settings_is_done_cache_indicator" ]
     then
@@ -276,20 +278,34 @@ if [[ "$ssh_passed_state" == "True" ]] || [[ "$ssh_passed_state" == "true" ]]
 then
     if [ "$get_ssh_passwd_state_is_yes" == "" ]
     then
-        _msg_ "Set PasswordAuthentication yes ..."
-        change_line "PasswordAuthentication no" "PasswordAuthentication yes" "$sshd_config_path"
-        _msg_ "Restart ssh service: sudo systemctl restart ssh"
-        sudo systemctl restart ssh
+        if [[ "$ssh_passed_state_ignore_global" = "True" ]] || [[ "$ssh_passed_state_ignore_global" = "true" ]]
+        then
+            _msg_ "Set PasswordAuthentication yes -> system wide"
+            change_line "PasswordAuthentication no" "PasswordAuthentication yes" "$sshd_config_path"
+            _msg_ "Restart ssh service: sudo systemctl restart ssh"
+            sudo systemctl restart ssh
+        else
+            _msg_ "Set PasswordAuthentication yes -> only for $user\n TODO"
+            #Match User "$user"
+            #    PasswordAuthentication yes
+        fi
     else
         _msg_ "Already set [PasswordAuthentication yes]: $get_ssh_passwd_state_is_yes"
     fi
 else
     if [ "$get_ssh_passwd_state_is_no" == "" ]
     then
-        _msg_ "Set PasswordAuthentication no ..."
-        change_line "PasswordAuthentication yes" "PasswordAuthentication no" "$sshd_config_path"
-        _msg_ "Restart ssh service: sudo systemctl restart ssh"
-        sudo systemctl restart ssh
+        if [[ "$ssh_passed_state_ignore_global" = "True" ]] || [[ "$ssh_passed_state_ignore_global" = "true" ]]
+        then
+            _msg_ "Set PasswordAuthentication no -> system wide"
+            change_line "PasswordAuthentication yes" "PasswordAuthentication no" "$sshd_config_path"
+            _msg_ "Restart ssh service: sudo systemctl restart ssh"
+            sudo systemctl restart ssh
+        else
+            _msg_ "Set PasswordAuthentication no -> only for $user\n TODO"
+            #Match User "$user"
+            #    PasswordAuthentication no
+        fi
     else
         _msg_ "Already set [PasswordAuthentication no]: $get_ssh_passwd_state_is_no"
     fi
