@@ -18,7 +18,10 @@ ports_internal=(22 80)
 ports_external=(62830 80)
 
 config_out_path="${MYDIR_}/../config/router_conf.txt"
-rm -f "$config_out_path"
+if [ "${arg_list[0]}" == "-r" ]
+then
+    rm -f "$config_out_path"
+fi
 function config_out() {
     local msg="$*"
     echo -e "$msg"
@@ -87,7 +90,7 @@ external ip: $external_ip"
     echo -e "You can access to the router config file:\n$config_out_path"
 }
 
-if [ -f "$config_out_path" ] || [ "${arg_list[0]}" == "-r" ]
+if [ ! -f "$config_out_path" ] || [ "${arg_list[0]}" == "-r" ]
 then
     echo -e "Generate router config file..."
     create_config_description
