@@ -33,15 +33,16 @@ MY_NAME="`basename \"$0\"`"
 function init() {
     #__________________________!!!!!!!!!___________________________#
     ########################## SET THESE ###########################
-    known_args=("man" "debug" "adduser" "removeuser" "changepasswd" "userstat" "logoff" "fixusergroups")   # valid arg list - add new args - call with -- expl: --man
-    known_args_subs_pcs=(0 0 2 1 2 0 0 0)                                       # values for args - expl: --man -> 0, --example -> 1 etc.
+    known_args=("man" "debug" "adduser" "removeuser" "changepasswd" "userstat" "logoff" "fixusergroups" "addapacheuser")   # valid arg list - add new args - call with -- expl: --man
+    known_args_subs_pcs=(0 0 2 1 2 0 0 0 2)                                       # values for args - expl: --man -> 0, --example -> 1 etc.
     man_for_args=("--man\t\t::\tmanual"\                                        # add help text here
                   "--adduser\t::\tAdd new user with settings, <username> <userpasswd> ${known_args_subs_pcs[2]} par"\
                   "--removeuser\t::\tRemove user, <username> ${known_args_subs_pcs[3]} par"\
                   "--changepasswd\t::\tChange user password, <username> <userpasswd> ${known_args_subs_pcs[4]} par"\
                   "--userstat\t::\tShow users list and used disk space ${known_args_subs_pcs[5]} par"\
                   "--logoff\t::\tLog off user - select after execute ${known_args_subs_pcs[6]} par"\
-                  "--fixusergroups\t::\tFix user groups for every user, except rpitools user ${known_args_subs_pcs[7]} par")
+                  "--fixusergroups\t::\tFix user groups for every user, except rpitools user ${known_args_subs_pcs[7]} par"\
+                  "--addapacheuser\t::\tAdd user for apache - private cloud <username> <userpasswd> ${known_args_subs_pcs[8]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -211,6 +212,12 @@ function ARGPARSE() {
         fix_user_groups_and_privileges
     fi
 
+    if [ "$(get_arg_status "addapacheuser")" -eq 1 ]
+    then
+        addapacheuser_arglist=($(get_arg_value "addapacheuser"))
+        add_apache_user_with_passwd "${addapacheuser_arglist[0]}" "${addapacheuser_arglist[1]}"
+    fi
+
     if [ "$args_pcs" -eq 0 ]
     then
         bash "$MYPATH_" --man
@@ -368,6 +375,40 @@ function LogOffUser {
 	read PID
 	sudo kill -9 "$PID"
 	echo -e "${LIGHT_RED}$PID KILLED!${NC}"
+}
+
+function add_apache_user_with_passwd() {
+    local user="$1"
+    local password="$2"
+    local apache_env_path="${MYDIR_}/../autodeployment/lib/apache_setup/apache.env"
+    local apasswords_path="/home/$USER/.secure/apasswords"
+    local new_user=0
+    if [ -f "$apache_env_path" ]
+    then
+        source "$apache_env_path"
+        htaccess_path="${APACHE_PRIVATE_SHARED_FOLDER}/.htaccess"
+
+        if [ "$(cat $apasswords_path | grep ${user}:)" == "" ]
+        then
+            _msg_ "Create password for user: htpasswd -c $apasswords_path $user"
+            htpasswd -cb "$apasswords_path" "$user" "$password"
+            new_user=1
+        else
+            _msg_ "User $user already exists in $apasswords_path"
+        fi
+
+        user_line_in_htaccess="$(cat $htaccess_path | grep 'Require user')"
+        if [[ "$user_line_in_htaccess" != *"$user"* ]]
+        then
+            new_user_line="$user_line_in_htaccess $user"
+            _msg_ "Change line: $user_line_in_htaccess -> $new_user_line in $htaccess_path"
+            sudo bash -c "sed -i 's/$user_line_in_htaccess/$new_user_line/g' $htaccess_path"
+        else
+            _msg_ "User $user already in $htaccess_path"
+        fi
+    else
+        _msg_ "ERROR: Apache env not found... $apache_env_path"
+    fi
 }
 
 function cleanup_history() {

@@ -55,7 +55,7 @@ then
 
     echo -e "${wColor}Manage GUI (X):${NC}"
     echo -e "\tstartxbg\t\t-> start gui in the background"
-    echo -e "\tpkill x \t\t-> stop gui"
+    echo -e "\tpkill X \t\t-> stop gui"
     echo -e "\tstartvnc\t\t-> start vnc service"
     echo -e "\tkodibg\t\t\t-> start kodi media center"
 
@@ -68,8 +68,6 @@ then
     echo -e "\tsudo visudo\t\t-> show sudoers file"
 
     echo -e "${wColor}Other commands:${NC}"
-    echo -e "\tAdd new user for\n\t\
-apache webshared dir:\thtpasswd -cb /home/$USER/.secure/apasswords user_name user_pwd"
     echo -e "\tAdd new samba user:\tsudo smbpasswd -a samba_user"
     echo -e "\tGlances system monitor: http://$(hostname).local:61208"
     echo -e "\tRetropie wrapper:\tretropie"
