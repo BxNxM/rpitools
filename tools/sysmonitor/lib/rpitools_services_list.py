@@ -30,10 +30,10 @@ def get_rpitools_services(color=Colors.CYAN):
     return data
 
 def get_other_monitored_processes(color=Colors.CYAN):
-    process_name_list=["Xorg", "vncserver"]
+    process_name_list=["Xorg", "vncserver", "kodi"]
     data = color + " MONITORED PROCESSES:\n" + Colors.NC
     for process in process_name_list:
-        process_state = LocalMachine.run_command("ps aux | grep -v grep | grep '" + str(process) + "'")
+        exitcode, process_state, stderr = LocalMachine.run_command("ps aux | grep -v grep | grep '" + str(process) + "'")
         if process_state == "":
             process_state = "inactive"
         else:
