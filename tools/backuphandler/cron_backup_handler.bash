@@ -7,10 +7,11 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 activate_backup="$($confighandler -s BACKUP -o activate)"
-schedule="$($confighandler -s BACKUP -oschedule)"
+schedule="$($confighandler -s BACKUP -o schedule)"
+username= "$($confighandler -s GENERAL -o user_name_on_os)"
 backuphandler_full_path="${MYDIR}/backup_handler.bash"
 actual_cron_content="$(crontab -l)"
-new_command="${schedule} ${backuphandler_full_path} system backup"
+new_command="${schedule} ${backuphandler_full_path} system backup >> /home/${username}/rpitools/cache/backuphandler.log"
 
 echo -e "Actual crontab content:"
 echo -e "$actual_cron_content"
