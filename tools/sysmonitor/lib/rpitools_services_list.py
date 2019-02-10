@@ -69,7 +69,9 @@ def state_coloring(isactive, isenabled=None):
 
 def calculate_health_multipayer():
     global health_error_code, health_all_monitored
-    text = " {}OVERALL HEALTH:{}\n\t:) {}0{}{}...{}{}{} :( [exit code]: {}".format(Colors.CYAN, Colors.NC, Colors.GREEN, Colors.NC, Colors.YELLOW, Colors.RED, health_all_monitored, Colors.NC, health_error_code)
+    health_index = 100 - round((float(health_error_code) / health_all_monitored) * 100, 1)
+    text = " {}OVERALL HEALTH{} [{}%]:\n\t:) {}0{}{}...{}{}{} :( exit code: {}".format(Colors.CYAN, Colors.NC, health_index, Colors.GREEN, \
+            Colors.NC, Colors.YELLOW, Colors.RED, health_all_monitored, Colors.NC, health_error_code)
     return text
 
 def create_printout(separator="|", char_width=80, color=Colors.CYAN):
