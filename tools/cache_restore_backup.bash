@@ -51,9 +51,18 @@ then
             echo -e "\t${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup not present in the system."
         fi
 
+        if [ -e "${REPOROOT}/tools/gotop/gotop" ]
+        then
+            # Gotop script
+            echo -e "\tbackup: ${REPOROOT}/tools/gotop/gotop" "$backup_path"
+            sudo cp -r "${REPOROOT}/tools/gotop/gotop" "$backup_path"
+        else
+            echo -e "\t${REPOROOT}/tools/gotop/gotop not present in the system."
+        fi
+
         # cache
         echo -e "\tbackup: ${REPOROOT}/cache -> $backup_path"
-        cp -r "${REPOROOT}/cache" "$backup_path"
+        sudo bash -c "cp -ra "${REPOROOT}/cache" "$backup_path""
         cache_exitcode="$?"
 
         # backup config
@@ -66,6 +75,7 @@ then
         else
             echo -e "Create backup FAIL"
         fi
+
 
     elif [ "${arg_list[0]}" == "restore" ]
     then
@@ -95,9 +105,18 @@ then
                 echo -e "\trestore: ${backup_path}/RetroPie-Setup not present in the system."
             fi
 
+            if [ -e "${backup_path}/gotop" ]
+            then
+                # gotoop script
+                echo -e "\trestore: ${backup_path}/gotop -> ${REPOROOT}/tools/gotop/"
+                sudo cp -r "${backup_path}/gotop" "${REPOROOT}/tools/gotop/"
+            else
+                echo -e "\trestore: ${backup_path}/gotop not present in the system."
+            fi
+
             # cache
             echo -e "\trestore: ${backup_path}/cache -> ${REPOROOT}"
-            cp -r "${backup_path}/cache" "${REPOROOT}"
+            sudo bash -c "cp -ra "${backup_path}/cache" "${REPOROOT}""
             cache_exitcode="$?"
 
             # restore config
