@@ -10,6 +10,12 @@ function _msg_() {
     echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ $_msg_title ]${NC} - $msg"
 }
 
+function add_repo_keys() {
+    _msg_ "Add repo keys for the propare usage"
+    sudo gpg --keyserver pgpkeys.mit.edu --recv-key CCD91D6111A06851
+    sudo gpg --armor --export CCD91D6111A06851 | apt-key add -
+}
+
 function extend_apt_source_list() {
     local mirror="deb http://repozytorium.mati75.eu/raspbian jessie-backports main contrib non-free"
     (grep "$mirror" /etc/apt/sources.list)
@@ -23,4 +29,8 @@ function extend_apt_source_list() {
     fi
 }
 
+_msg_ "$(echo 'mati75s private repository: http://repozytorium.mati75.eu' | lolcat)"
 extend_apt_source_list
+# add repo keys with timeout
+#add_repo_keys &; pid="$!"
+#sleep 120; kill $pid
