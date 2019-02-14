@@ -24,6 +24,7 @@ function extend_apt_source_list() {
         _msg_ "add $mirror to /etc/apt/sources.list"
         sudo bash -c "echo -e $mirror >> /etc/apt/sources.list"
         sudo apt-get update
+        add_repo_keys
     else
         _msg_ "$mirror already exists in /etc/apt/sources.list"
     fi
