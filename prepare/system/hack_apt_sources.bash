@@ -31,6 +31,4 @@ function extend_apt_source_list() {
 
 _msg_ "$(echo 'mati75s private repository: http://repozytorium.mati75.eu' | lolcat)"
 extend_apt_source_list
-# add repo keys with timeout
-#add_repo_keys &; pid="$!"
-#sleep 120; kill $pid
+#add_repo_keys
