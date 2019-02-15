@@ -12,6 +12,7 @@ system_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/system"
 limit="$($confighandler -s BACKUP -o limit)"
 instantiation_UUID="$(cat ${MYDIR}/../../cache/.instantiation_UUID)"
 sshfs_mount_point_name="$(basename $($confighandler -s SSHFS -o mount_folder_path))"
+touched_configs_path="${MYDIR}/../../config/"
 
 source "${MYDIR}/../../prepare/colors.bash"
 
@@ -43,6 +44,9 @@ function create_backup_pathes() {
     fi
 }
 
+# ======================================================================================================================= #
+# =========================================================== BACKUP ==================================================== #
+# ======================================================================================================================= #
 # BACKUP: extra folder, example html
 function make_system_backup() {
     local time="$(date +%Y-%m-%d_%H-%M-%S)"
@@ -63,6 +67,8 @@ function make_system_backup() {
             echo -e "[backuphandler] path not exists: ${extra_pathes[$i]} can't backup"
         fi
     done
+
+    backup_touched_system_configs
 }
 
 # BACKUP: every users home folder
@@ -167,9 +173,51 @@ function delete_obsolete_user_accounts_backup() {
         echo -e "[backuphandler]"
         echo -e "\tBackup status [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}] from: $system_backups_path"
     fi
-
 }
 
+# BACKUP: backup all touched config files
+function backup_touched_system_configs() {
+    local time="$(date +%Y-%m-%d_%H-%M-%S)"
+    local touched_configs_backup_folder="${system_backups_path}/touched_configs_${time}"
+    local touched_conigs_list=($(ls -1 $touched_configs_path))
+
+    # backup
+    echo -e "Backup touched system config files, !!! not restoring automaticly !!!"
+    sudo mkdir -p "${touched_configs_backup_folder}"
+
+    for conf in "${touched_conigs_list[@]}"
+    do
+        local config_path="${touched_configs_path}/${conf}"
+        if [ -f "$config_path" ]
+        then
+            echo -e "Backup touched system config: $config_path -> $touched_configs_backup_folder"
+            sudo bash -c "cp --preserve=links $config_path $touched_configs_backup_folder"
+        fi
+    done
+
+    delete_obsolete_touched_config_backup
+}
+
+# CLEANUP: clean up touched config files folder
+function delete_obsolete_touched_config_backup() {
+    get_files_cmd_user_accounts=($(ls -1tr ${system_backups_path} | grep "touched_configs_"))
+
+    if [ ${#get_files_cmd_user_accounts[@]} -gt $limit ]
+    then
+        echo -e "[backuphandler] Delete ${get_files_cmd_user_accounts[0]}"
+        echo -e "\tDelete backup [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}]"
+        echo -e "\t - ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
+        sudo rm -r "${system_backups_path}/${get_files_cmd_user_accounts[0]}"
+        delete_obsolete_touched_config_backup
+    else
+        echo -e "[backuphandler]"
+        echo -e "\tBackup status [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}] from: $system_backups_path"
+    fi
+
+}
+# ======================================================================================================================= #
+# ========================================================== RESTORE ==================================================== #
+# ======================================================================================================================= #
 # RESTORE: user accounts
 function restore_user_accounts() {
     local backup_path="$1"
@@ -397,7 +445,7 @@ function system_restore() {
 
     echo -e "${YELLOW}   --- RESTORE USER ACCOUNTS ---   ${NC}"
     restore_user_accounts "${latest_user_accounts_backup_path}"
-    if [ -z "$ACCOUNTS_RESTORE_ONLY" ] || [ "$ACCOUNTS_RESTORE_ONLY" -eq 0 ]
+    if [ -z "$SKIPHOMEDIRS" ] || [ "$SKIPHOMEDIRS" -eq 0 ]
     then
         echo -e "${YELLOW}   --- RESTORE USER HOME FOLDERS ---   ${NC}"
         restore_user_home_folders
@@ -429,7 +477,12 @@ function users_backup() {
 }
 
 function full_system_backup() {
-    users_backup
+    if [ "$SKIPHOMEDIRS" == 0 ]
+    then
+        users_backup
+    else
+        echo -e "Skip user home folders backup --skiphomedirs parameter detected"
+    fi
 
     echo -e "${YELLOW}   --- CREATE SYSTEM BACKUP ---   ${NC}"
     # create other system backups
@@ -441,6 +494,17 @@ function full_system_backup() {
     delete_obsolete_user_accounts_backup
 }
 
+function show_backup_struct() {
+    local backup_root_path="$(dirname $system_backups_path)"
+    echo -e "[backuphandler] backups root path: $backup_root_path"
+    echo -e "[backuphandler] actual content:"
+    tree -L 2 "$backup_root_path"
+    echo -e "All backups size: $(du -sh $backup_root_path)"
+}
+
+# ======================================================================================================================= #
+# ================================================== BACKUPHANDLER CORE ================================================= #
+# ======================================================================================================================= #
 function init_backup_handler() {
     # create folders for backup
     create_backup_pathes
@@ -457,11 +521,11 @@ function main() {
     init_backup_handler
 
     # handle extra parameters, swithches
-    if [[ "${arg_list[*]}" == *"--onlyaccounts"* ]]
+    if [[ "${arg_list[*]}" == *"--skiphomedirs"* ]]
     then
-        ACCOUNTS_RESTORE_ONLY=1
+        SKIPHOMEDIRS=1
     else
-        ACCOUNTS_RESTORE_ONLY=0
+        SKIPHOMEDIRS=0
     fi
 
     if [ "${arg_list[0]}" == "system" ]
@@ -502,13 +566,17 @@ function main() {
     then
         echo -e "users backup [ create users (home) backup ]"
         users_backup
+    elif [ "${arg_list[0]}" == "struct" ]
+    then
+        show_backup_struct
     else
         echo -e "========================== backup_handler ===================================="
-        echo -e "system backup\t\t- backup system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders"
-        echo -e "system restore\t\t- restore system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders, optional parameter: --onlyaccounts"
+        echo -e "system backup\t\t- backup system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders, optional parameter: --skiphomedirs"
+        echo -e "system restore\t\t- restore system [for migration]\n\t\t\twith all user homes, user accounts and ${extra_pathes[*]} extra folders, optional parameter: --skiphomedirs"
         echo -e "backup\t\t\t- backup home folders"
         echo -e "restore\t\t\t- restores every users last backup in subfolder under its own home dir"
         echo -e "restore <username>\t- restore a selected user last backup in subfolder under its own home dir"
+        echo -e "struct\t\t\t-show actual backup archive structure"
     fi
 }
 
