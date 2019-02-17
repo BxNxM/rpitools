@@ -419,7 +419,10 @@ function source_main_on_raspberrypi() {
             link_storage_under_rpitools_home
 
             setupmessage "Router config:"
-            ${REPOROOT}/tools/create_router_setup.bash
+            "${REPOROOT}"/tools/create_router_setup.bash
+
+            setupmessage "Set system backup scheduling:"
+            "${REPOROOT}"/tools/backuphandler/cron_backup_handler.bash
 
             # printout full elapsed time
             echo -e "${YELLOW}"
