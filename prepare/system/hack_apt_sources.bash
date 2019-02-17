@@ -30,6 +30,8 @@ function extend_apt_source_list() {
     fi
 }
 
-_msg_ "$(echo 'mati75s private repository: http://repozytorium.mati75.eu' | lolcat)"
-extend_apt_source_list
-#add_repo_keys
+# This following hack for _h5ai php7 install not necesarry anymore :)
+#_msg_ "$(echo 'mati75s private repository: http://repozytorium.mati75.eu' | lolcat)"
+#extend_apt_source_list
+
+# add apt-get repo-s here under instantiation
