@@ -3,11 +3,11 @@ import sys
 from thread import *
 import time
 import LogHandler
-mylogger = LogHandler.LogHandler("dictSocketHandlerCore")
+mylogger = LogHandler.LogHandler("clasterCoreSocketServer")
 
 class SocketServer():
 
-    def __init__(self, host='', port=8888, silentmode=False, only_internal_mode=True):
+    def __init__(self, host='', port=1602, silentmode=False, only_internal_mode=False):
         self.silentmode = silentmode
         self.prompt = "> "
         self.host = host
