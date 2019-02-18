@@ -18,6 +18,7 @@ sshfs
 nfs
 kodi
 arp-scan
+nbtscan
 samba
 apache2
 php
