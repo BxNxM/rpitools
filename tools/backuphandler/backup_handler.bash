@@ -18,9 +18,11 @@ source "${MYDIR}/../../prepare/colors.bash"
 
 if [[ "$activate_backup" != "True" ]] && [[ "$activate_backup" != "true" ]]
 then
-    echo -e "Backup creator for users home folder was not activated [$activate_backup] in rpi_config.cfg"
-    echo -e "To activate, use: confeditor -> Y and edit [BACKUP] section"
+    echo -e "[$(date)] Backup creator for users home folder was not activated [$activate_backup] in rpi_config.cfg"
+    echo -e "[$(date)] To activate, use: confeditor edit and edit [BACKUP] section"
     exit 1
+else
+    echo -e "[$(date)] Backup creator for users home folder was activated [$activate_backup] in rpi_config.cfg"
 fi
 
 function progress_indicator() {
