@@ -343,6 +343,15 @@ function useraccounts_manual_merge() {
 function restore_user_home_folders() {
     local specific_user="$1"
     local user_backups=($(ls -1tr ${home_backups_path}))
+    local existing_user_raw_accounts_list=()
+
+    # get existing user accounts name (usernames)
+    echo -e "Get existsing user accounts raw data - before restoring home folders"
+    while read -r line
+    do
+        progress_indicator
+        existing_user_raw_accounts_list+=("$(echo "$line" | cut -d':' -f'1')")
+    done < /etc/passwd
 
     # get usernames list
     username_list=()
@@ -351,7 +360,14 @@ function restore_user_home_folders() {
         username="$(echo ${user_backup} | cut -d'_' -f'1')"
         if [[ "${username_list[*]}" != *"$username"* ]]
         then
-            username_list+=("$username")
+            if [[ "${existing_user_raw_accounts_list[*]}" == *"$username"* ]]
+            then
+                echo -e "=> Add user to restore: $username"
+                username_list+=("$username")
+            else
+                echo -e "=> Skip user to restore: $username"
+                echo -e "   => account not found, only home folder..."
+            fi
         fi
     done
 
