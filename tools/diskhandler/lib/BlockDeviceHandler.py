@@ -88,6 +88,10 @@ def premount_device(dev):
         module_printer("premount device " + str(dev_info_dict['path']))
         cmd = "sudo mount -t {} {} {}".format(dev_info_dict['filesystem'], dev_info_dict['path'], premount_path)
         exitcode, stdout, stderr = LocalMachine.run_command(cmd)
+        if exitcode != 0:
+            # retry without explicit filesystem parameter
+            cmd = "sudo mount {} {}".format(dev_info_dict['path'], premount_path)
+            exitcode, stdout, stderr = LocalMachine.run_command(cmd)
         check_exitcode(cmd, exitcode, stderr)
     else:
         module_printer("already mounted " + str(dev_info_dict['path']))
