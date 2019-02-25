@@ -16,7 +16,15 @@ function _msg_() {
 }
 
 _msg_ "Setup network interfaces\nPatch $etc_interfaces_path"
-(exec "$smart_patch" "$etc_interfaces_path" "$local_patch_path")
+stdout=$(exec "$smart_patch" "$etc_interfaces_path" "$local_patch_path")
+if [[ "$stdout" != *"Skipping"* ]] || [[ "$stdout" != *"FAILED"* ]]
+then
+    _msg_ "Modification in progress."
+    _msg_ "... restart networking service ..."
+    #sudo systemctl restart networking.service
+else
+    _msg_ "Skipping, no modified."
+fi
 _msg_ "$etc_interfaces_path content:"
 sudo cat "$etc_interfaces_path"
 _msg_ "Interfaces and IPs"
