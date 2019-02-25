@@ -19,7 +19,7 @@ def get_rpitools_services(color=Colors.CYAN):
         data += "\t" + color + str(service) + Colors.NC + " active status: " + str(is_active) + "\n"
 
         data += "\t" + str(service) + " enabled status: " + str(is_enabled) + "\n"
-    services=["apache2", "transmission-daemon", "motion", "smbd", "minidlna", "ssh", "nfs-kernel-server", "glances", "cron"]
+    services=["apache2", "transmission-daemon", "motion", "smbd", "minidlna", "ssh", "nfs-kernel-server", "glances", "cron", "networking"]
     data += color + " LINUX SERVICES:\n" + Colors.NC
     for service in services:
         is_active = LocalMachine.run_command("systemctl is-active " + str(service))[1]
