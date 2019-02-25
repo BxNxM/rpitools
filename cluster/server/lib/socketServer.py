@@ -20,9 +20,10 @@ class ClasterSocketServer(socketHandler.SocketServer):
         text = "text"
         cmd = "cmd"
         print("{}\n{}\n{}".format(data, cmd, text))
-        data = self.__handshake(data)
-        if data != "echooo":
-            data = self.__auth_by_claster_UUID(data)
+        # AUTHORIZE
+        #data = self.__handshake(data)
+        #if data != "echooo":
+        #    data = self.__auth_by_claster_UUID(data)
         return cmd, data, silentmode_text
 
     def __handshake(self, data):

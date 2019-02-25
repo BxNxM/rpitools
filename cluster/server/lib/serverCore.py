@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import sys
 import re
 sys.path.append('cluster_api')
@@ -8,12 +9,13 @@ class ClasterCoreService():
 
     def __init__(self):
         self.data_handlers = {}
+        self.devices_on_network_data = {}
         self.__create_data_json("cluster_detected_devices")
         self.__network_device_scanner()
 
     def __network_device_scanner(self):
         discover_obj = LocalNetworkHandler.ClusterMemberDiscover()
-        devices_on_network_data = discover_obj.get_devices_on_network_data()
+        self.devices_on_network_data = discover_obj.get_devices_on_network_data()
         self.__write_config_file("cluster_detected_devices", devices_on_network_data)
 
     def __create_data_json(self, data_name):

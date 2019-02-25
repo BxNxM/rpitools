@@ -50,13 +50,13 @@ function list_and_execute() {
     # get command line arguments
     if [ "${#ARG_LIST[@]}" -gt 0  ]
     then
-        _msg_ " Filter commands with command line argument: ${ARG_LIST[*]}"
-        if [[ "${commands_path_list[*]}" == *"${ARG_LIST[*]}"* ]]
+        _msg_ " Filter commands with command line argument: ${ARG_LIST[0]}"
+        if [[ "${commands_path_list[*]}" == *"${ARG_LIST[0]}"* ]]
         then
             for ((k=0; k<${#commands_path_list[@]}; k++))
             do
                 cmd="${commands_path_list[$k]}"
-                if [[ "$cmd" == *"${ARG_LIST[*]}"* ]]
+                if [[ "$cmd" == *"${ARG_LIST[0]}"* ]]
                 then
                     new_commands_path_list+=("$cmd")
                 fi
