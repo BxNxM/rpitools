@@ -286,8 +286,12 @@ then
             sudo systemctl restart ssh
         else
             _msg_ "Set PasswordAuthentication yes -> only for $user\n TODO"
-            #Match User "$user"
-            #    PasswordAuthentication yes
+            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
+            _msg_ "Change line in $sshd_config_path"
+            _msg_ "From: PasswordAuthentication yes"
+            _msg_ "Match User $user"
+            _msg_ "   PasswordAuthentication yes"
+            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
         fi
     else
         _msg_ "Already set [PasswordAuthentication yes]: $get_ssh_passwd_state_is_yes"
@@ -302,9 +306,13 @@ else
             _msg_ "Restart ssh service: sudo systemctl restart ssh"
             sudo systemctl restart ssh
         else
+            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
             _msg_ "Set PasswordAuthentication no -> only for $user\n TODO"
-            #Match User "$user"
-            #    PasswordAuthentication no
+            _msg_ "Change line in $sshd_config_path"
+            _msg_ "From: PasswordAuthentication no"
+            _msg_ "Match User $user"
+            _msg_ "   PasswordAuthentication no"
+            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
         fi
     else
         _msg_ "Already set [PasswordAuthentication no]: $get_ssh_passwd_state_is_no"
