@@ -16,7 +16,7 @@ class ClasterCoreService():
     def __network_device_scanner(self):
         discover_obj = LocalNetworkHandler.ClusterMemberDiscover()
         self.devices_on_network_data = discover_obj.get_devices_on_network_data()
-        self.__write_config_file("cluster_detected_devices", devices_on_network_data)
+        self.__write_config_file("cluster_detected_devices", self.devices_on_network_data)
 
     def __create_data_json(self, data_name):
         self.data_handlers[str(data_name).upper()] = jsonHandler.jsonHandler(data_name)
