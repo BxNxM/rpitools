@@ -45,9 +45,9 @@ _services = args.services
 
 def logo():
     text=Colors.RED + '''
- _____    _____    _____   _                     _       
-|  __ \  |  __ \  |_   _| | |                   | |      
-| |__) | | |__) |   | |   | |_    ___     ___   | |  ___ 
+ _____    _____    _____   _                     _
+|  __ \  |  __ \  |_   _| | |                   | |
+| |__) | | |__) |   | |   | |_    ___     ___   | |  ___
 ''' + Colors.YELLOW + '''|  _  /  |  ___/    | |   | __|  / _ \   / _ \  | | / __|
 ''' + Colors.GREEN + '''| | \ \  | |       _| |_  | |_  | (_) | | (_) | | | \__ \\
 |_|  \_\ |_|      |_____|  \__|  \___/   \___/  |_| |___/system monitor
@@ -59,19 +59,40 @@ def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services):
     output = ""
     try:
         if _temp or _all:
-            output += temp.main() + components_separator
+            try:
+                output += temp.main() + components_separator
+            except Exception as e:
+                output += "temp request error: " + str(e)
         if _cpu or _all:
-            output += cpu_usage.main() + components_separator
+            try:
+                output += cpu_usage.main() + components_separator
+            except Exception as e:
+                output += "cpu usage request error: " + str(e)
         if _memory or _all:
-            output += mem_usage.main() + components_separator
+            try:
+                output += mem_usage.main() + components_separator
+            except Exception as e:
+                output += "mem usage request error: " + str(e)
         if _disk or _all:
-            output += disk_usage.main() + components_separator
+            try:
+                output += disk_usage.main() + components_separator
+            except Exception as e:
+                output += "disk usage request error: " + str(e)
         if _loggedin or _all:
-            output += logged_in_users.main() + components_separator
+            try:
+                output += logged_in_users.main() + components_separator
+            except Exception as e:
+                output += "logged-in in users list request error: " + str(e)
         if _general or _all:
-            output += general_infos.main() + components_separator
+            try:
+                output += general_infos.main() + components_separator
+            except Exception as e:
+                output += "general network and system info request error: " + str(e)
         if _services or _all:
-            output += rpitools_services_list.main() + components_separator
+            try:
+                output += rpitools_services_list.main() + components_separator
+            except Exception as e:
+                output += "rpitools services list request error: " + str(e)
         if output != "":
             header = HeaderTimeDateUser.main()
             output = header + "\n" + output.rstrip()

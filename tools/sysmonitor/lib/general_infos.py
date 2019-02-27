@@ -70,6 +70,29 @@ def get_device_version():
     dev_version = LocalMachine.run_command_safe("cat /sys/firmware/devicetree/base/model")
     return dev_version.rstrip()
 
+def ip_default_route():
+    # get ip route command output and hughlight device
+    formatted_ip_route = ""
+    color = ""
+    highlighted_word = ""
+
+    ip_route = LocalMachine.run_command_safe("ip route")
+    ip_route_lines = ip_route.split("\n")
+    for line in ip_route_lines:
+        formatted_ip_route += "\t\t\t"
+        for index, word in enumerate(line.split(" ")):
+            if word == "dev":
+                highlighted_word = line.split(" ")[index + 1]
+                color = Colors.DARK_GRAY
+            if highlighted_word != ""  and highlighted_word == word:
+                color = Colors.DARK_GRAY
+                highlighted_word = ""
+            else:
+                color = ""
+            formatted_ip_route += "{}{}{} ".format(color, word, Colors.NC)
+        formatted_ip_route += "\n"
+    return formatted_ip_route
+
 def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" GENERAL ", char_width, separator, color_name=Colors.DARK_GRAY)
     version = get_pi_version()
@@ -85,7 +108,9 @@ def create_printout(separator="|", char_width=80):
     text += " DEVICE version:\t{}\n".format(get_device_version())
     text += " RPITOOLS version:\t{}\n".format(get_rpitools_version())
     text += " MAC addresses:\n{}\n".format(get_mac_addresses())
+    text += " DEFAULT ROUTE:\n{}".format(ip_default_route())
     text += " {}".format(version)
+
     return text
 
 def main():
