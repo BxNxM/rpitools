@@ -9,9 +9,11 @@ source-directory /etc/network/interfaces.d
 auto lo
 iface lo inet loopback
 
-auto eth0
-iface eth0 inet dhcp
+#auto eth0
+#iface eth0 inet dhcp
+#iface eth0 inet manual
 
 allow-hotplug wlan0
-iface wlan0 inet dhcp
+#iface wlan0 inet dhcp
+iface wlan0 inet manual
     wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf

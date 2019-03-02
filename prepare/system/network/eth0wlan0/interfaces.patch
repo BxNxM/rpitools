@@ -1,0 +1,18 @@
+--- interfaces.orig	2019-03-02 17:55:01.176358560 +0000
++++ interfaces.final	2019-03-02 17:55:01.176358560 +0000
+@@ -5,3 +5,15 @@
+ 
+ # Include files from /etc/network/interfaces.d:
+ source-directory /etc/network/interfaces.d
++
++auto lo
++iface lo inet loopback
++
++auto eth0
++#iface eth0 inet dhcp
++iface eth0 inet manual
++
++allow-hotplug wlan0
++#iface wlan0 inet dhcp
++iface wlan0 inet manual
++    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
