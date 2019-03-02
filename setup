@@ -307,7 +307,7 @@ function source_main_on_raspberrypi() {
             fi
 
             #setupmessage "Set network interfaces for the expected behaviour"
-            #. "${REPOROOT}/prepare/system/network/setup_network_interfaces.bash"
+            #echo -e $(. "${REPOROOT}/prepare/system/network/setup_network_interfaces.bash")
 
             . "${REPOROOT}/prepare/system/hack_apt_sources.bash"
             # update once (first run ever) before install apps
