@@ -17,12 +17,12 @@ function instantiation_uuid_handler() {
     if [ ! -f "$cache_instantiation_uuid_path" ]
     then
         setupmessage "Create instantiation UUID to detect specific installation."
-        export instantiation_UUID=$(cat /proc/sys/kernel/random/uuid)
+        export instantiation_UUID="$(cat /proc/sys/kernel/random/uuid)"
         echo "$instantiation_UUID" > "$cache_instantiation_uuid_path"
         setupmessage "\tUUID: $instantiation_UUID"
     else
         setupmessage "Instantiation UUID already exists."
-        export instantiation_UUID=$(cat $cache_instantiation_uuid_path)
+        export instantiation_UUID="$(cat "$cache_instantiation_uuid_path")"
         setupmessage "\tUUID: $instantiation_UUID"
    fi
 }
@@ -78,13 +78,13 @@ function set_rpiconfig_permissions() {
 
 function set_requirements_on_host_side() {
     echo -e "DETECTED DEVICE: ${DEVICE}"
-    local raspbian_lite_image_s=($(ls -1 ${HOME}/Downloads/ | grep raspbian-stretch-lite.img))
+    local raspbian_lite_image_s=($(ls -1 "${HOME}/Downloads/" | grep raspbian-stretch-lite.img))
     if [ "$DEVICE" == "LINUX" ]
     then
         if [ "${#raspbian_lite_image_s[@]}" -eq 0 ]                             # raspbian lite image not exists in Downloads folder
 	then
 	    setupmessage "Linux rpitools requirements installing..."
-            . "${MYDIR}/prepare/hostprepare/linux/prepare_sytem_for_rpitools.bash"
+            "${MYDIR}/prepare/hostprepare/linux/prepare_sytem_for_rpitools.bash"
 	else
 	    setupmessage "Linux rpitools requirements already installed."
 	fi
@@ -93,7 +93,7 @@ function set_requirements_on_host_side() {
         if [ "${#raspbian_lite_image_s[@]}" -eq 0 ]                             # raspbian lite image not exists in Downloads folder
 	then
 	    setupmessage "macOS rpitools requirements installing..."
-            . "${MYDIR}/prepare/hostprepare/macos/prepare_sytem_for_rpitools.bash"
+            "${MYDIR}/prepare/hostprepare/macos/prepare_sytem_for_rpitools.bash"
 	else
 	    setupmessage "macOS rpitools requirements already installed."
 	fi
@@ -139,7 +139,7 @@ function run_source_FALSE_if_are_NOT_on_raspberrypi() {
     fi
 }
 
-function source_main_on_raspberrypi() {
+function setup_main_on_raspberrypi() {
     # raspberry pi side of configuration
     if [ -z "$run_source" ] && [ "$run_source" != "false" ]
     then
@@ -160,7 +160,7 @@ function source_main_on_raspberrypi() {
         set_rpiconfig_permissions
 
         # Run configurations on the system
-        . ${REPOROOT}/prepare/system/configure_wpasupplient_and_configtxt_and_cmdlinetxt.bash
+        "${REPOROOT}/prepare/system/configure_wpasupplient_and_configtxt_and_cmdlinetxt.bash"
 
         # config files list
         file_to_link_list=("/etc/wpa_supplicant/wpa_supplicant.conf" \
@@ -233,7 +233,7 @@ function source_main_on_raspberrypi() {
         done
 
         # validate custom - user config based on template
-        /home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py -v
+        "${REPOROOT}/autodeployment/bin/ConfigHandlerInterface.py" -v
         exit_code="$?"
         if [ "$exit_code" -ne 0 ]
         then
@@ -306,8 +306,8 @@ function source_main_on_raspberrypi() {
                 fi
             fi
 
-            #setupmessage "Set network interfaces for the expected behaviour"
-            #echo -e $(. "${REPOROOT}/prepare/system/network/setup_network_interfaces.bash")
+            setupmessage "Set network interfaces for the expected behaviour"
+            echo -e $(. "${REPOROOT}/prepare/system/network/setup_network_interfaces.bash")
 
             . "${REPOROOT}/prepare/system/hack_apt_sources.bash"
             # update once (first run ever) before install apps
@@ -426,6 +426,10 @@ function source_main_on_raspberrypi() {
             "${REPOROOT}"/tools/create_router_setup.bash
 
             setupmessage "Set system backup scheduling:"
+            # workaround for crontab get activate data
+            local backup_handler_activate="$(${REPOROOT}/autodeployment/bin/ConfigHandlerInterface.py -s BACKUP -o activate)"
+            echo "$backup_handler_activate" > "${REPOROOT}"/tools/backuphandler/.backup_handler_activate
+            # set backup in crontab
             "${REPOROOT}"/tools/backuphandler/cron_backup_handler.bash
 
             # printout full elapsed time
@@ -495,4 +499,4 @@ set_deploy_mode_aliases_and_install_requirements
 
 # RASPBERRY PI SIDE OPERATIONS
 run_source_FALSE_if_are_NOT_on_raspberrypi
-source_main_on_raspberrypi
+setup_main_on_raspberrypi

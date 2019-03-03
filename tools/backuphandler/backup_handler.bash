@@ -16,6 +16,14 @@ touched_configs_path="${MYDIR}/../../config/"
 
 source "${MYDIR}/../../prepare/colors.bash"
 
+# crontab - rpitools config get activate fix
+if [ "$activate_backup" == "" ]
+then
+    echo -e "Fix backup activate data get with crontab: cat ${MYDIR}/.backup_handler_activate"
+    activate_backup="$(cat ${MYDIR}/.backup_handler_activate)"
+fi
+
+# check backup activate status
 if [[ "$activate_backup" != "True" ]] && [[ "$activate_backup" != "true" ]]
 then
     echo -e "[$(date)] Backup creator for users home folder was not activated [$activate_backup] in rpi_config.cfg"
