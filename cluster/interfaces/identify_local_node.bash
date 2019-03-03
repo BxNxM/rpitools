@@ -67,9 +67,8 @@ function restore_factory_settings() {
     else
         echo -e "Use raspberry pi zero settings"
 
-        # Disable the ACT LED on the Pi Zero.
-        dtparam=act_led_trigger=none
-        dtparam=act_led_activelow=on
+        # Revert the PWR LED back to 'under-voltage detect' mode.
+        echo mmc0 | sudo tee /sys/class/leds/led0/trigger
     fi
 }
 
