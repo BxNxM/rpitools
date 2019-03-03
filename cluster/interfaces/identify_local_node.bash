@@ -13,31 +13,64 @@ function progress_indicator() {
 }
 
 function show_heartbeat() {
-    # Set the PWR LED to GPIO mode (set 'off' by default).
-    echo gpio | sudo tee /sys/class/leds/led1/trigger
+    if [ -e /sys/class/leds/led1/trigger ]
+    then
+        echo -e "Use raspberry pi 3 settings"
 
-    # Set the ACT LED to trigger on cpu0 instead of mmc0 (SD card access).
-    echo cpu0 | sudo tee /sys/class/leds/led0/trigger
+        # Set the PWR LED to GPIO mode (set 'off' by default).
+        echo gpio | sudo tee /sys/class/leds/led1/trigger
 
-    while true
-    do
-        # (Optional) Turn on (1) or off (0) the PWR LED.
-        echo 1 | sudo tee /sys/class/leds/led1/brightness > /dev/null
-        sleep .4
-        echo 0 | sudo tee /sys/class/leds/led1/brightness > /dev/null
-        progress_indicator &
-        sleep .2
-    done
+        # Set the ACT LED to trigger on cpu0 instead of mmc0 (SD card access).
+        echo cpu0 | sudo tee /sys/class/leds/led0/trigger
+
+        while true
+        do
+            # (Optional) Turn on (1) or off (0) the PWR LED.
+            echo 1 | sudo tee /sys/class/leds/led1/brightness > /dev/null
+            sleep .4
+            echo 0 | sudo tee /sys/class/leds/led1/brightness > /dev/null
+            progress_indicator &
+            sleep .2
+        done
+    else
+        echo -e "Use raspberry pi zero settings"
+
+        # Set the Pi Zero ACT LED trigger to 'none'.
+        echo none | sudo tee /sys/class/leds/led0/trigger
+
+        while true
+        do
+            # (Optional) Turn on (1) or off (0) the PWR LED.
+            # Turn off the Pi Zero ACT LED.
+            echo 1 | sudo tee /sys/class/leds/led0/brightness > /dev/null
+            sleep .4
+            echo 0 | sudo tee /sys/class/leds/led0/brightness > /dev/null
+            progress_indicator &
+            sleep .2
+        done
+    fi
 }
 
 function restore_factory_settings() {
     echo -e "Restore factory setting"
 
-    # Revert the PWR LED back to 'under-voltage detect' mode.
-    echo input | sudo tee /sys/class/leds/led1/trigger
 
-    # Set the ACT LED to trigger on cpu0 instead of mmc0 (SD card access).
-    echo mmc0 | sudo tee /sys/class/leds/led0/trigger
+    if [ -e /sys/class/leds/led1/trigger ]
+    then
+        echo -e "Use raspberry pi 3 settings"
+
+        # Revert the PWR LED back to 'under-voltage detect' mode.
+        echo input | sudo tee /sys/class/leds/led1/trigger
+
+        # Set the ACT LED to trigger on cpu0 instead of mmc0 (SD card access).
+        echo mmc0 | sudo tee /sys/class/leds/led0/trigger
+    else
+        echo -e "Use raspberry pi zero settings"
+
+        # Disable the ACT LED on the Pi Zero.
+        dtparam=act_led_trigger=none
+        dtparam=act_led_activelow=on
+    fi
 }
 
 # trap ctrl-c and call ctrl_c()
