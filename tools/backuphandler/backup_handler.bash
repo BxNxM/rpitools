@@ -19,8 +19,14 @@ source "${MYDIR}/../../prepare/colors.bash"
 # crontab - rpitools config get activate fix
 if [ "$activate_backup" == "" ]
 then
-    echo -e "Fix backup activate data get with crontab: cat ${MYDIR}/.backup_handler_activate"
-    activate_backup="$(cat ${MYDIR}/.backup_handler_activate)"
+    if [ -f "${MYDIR}/.backuphandler_cron_data" ]
+    then
+        echo -e "Fix backup config data for cron job, read from: ${MYDIR}/.backuphandler_cron_data"
+        source "${MYDIR}/.backuphandler_cron_data"
+    else
+        echo -e "${MYDIR}/.backuphandler_cron_data file for cron job NOT EXISTS! EXIT"
+        exit 1
+    fi
 fi
 
 # check backup activate status

@@ -426,9 +426,8 @@ function setup_main_on_raspberrypi() {
             "${REPOROOT}"/tools/create_router_setup.bash
 
             setupmessage "Set system backup scheduling:"
-            # workaround for crontab get activate data
-            local backup_handler_activate="$(${REPOROOT}/autodeployment/bin/ConfigHandlerInterface.py -s BACKUP -o activate)"
-            echo "$backup_handler_activate" > "${REPOROOT}"/tools/backuphandler/.backup_handler_activate
+            # workaround for crontab get backup config data
+            ("${REPOROOT}/tools/backuphandler/create_data_for_cron.bash")
             # set backup in crontab
             "${REPOROOT}"/tools/backuphandler/cron_backup_handler.bash
 
