@@ -45,6 +45,7 @@ alias ttyecho='/home/$USER/rpitools/tools/ttyecho/ttyecho_wrapper.bash'
 alias smartpatch='/home/$USER/rpitools/tools/smart_patch_applier.bash'
 alias gotop='/home/$USER/rpitools/tools/gotop/gotop.bash'
 alias cluster='/home/$USER/rpitools/cluster/cluster.bash'
+alias speedtest='speedtest --bytes'
 
 alias gitlog='git log --all --decorate --oneline --graph'
 alias gitbranch='git branch -av'
