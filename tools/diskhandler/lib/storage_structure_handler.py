@@ -82,7 +82,11 @@ def get_user_and_group(path):
     gid = stat_info.st_gid
 
     user = pwd.getpwuid(uid)[0]
-    group = grp.getgrgid(gid)[0]
+    try:
+        group = grp.getgrgid(gid)[0]
+    except Exception as e:
+        print("Warning!!! " + str(e))
+        group = "None"
     return user, group
 
 def get_storage_structure_folders(set_extarnal_storage, external_storage_label):
