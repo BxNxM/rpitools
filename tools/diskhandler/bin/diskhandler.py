@@ -75,7 +75,6 @@ def main():
             set_extarnal_storage = False
         external_storage_label = str(cfg.get(section="STORAGE", option="label")).rstrip()
         text = storage_structure_handler.get_storage_structure_folders(set_extarnal_storage, external_storage_label)
-        print(text)
     if prepare_disks:
         pre_check("prepare_block_device")
         if str(cfg.get(section="STORAGE", option="external")).lower() == "true":
