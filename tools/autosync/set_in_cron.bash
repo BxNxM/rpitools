@@ -7,7 +7,7 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 activate_sync="$($confighandler -s AUTOSYNC -o activate)"
-schedule='*/1 * * * *'
+schedule='*/4 * * * *'
 username="$($confighandler -s GENERAL -o user_name_on_os)"
 autosync_full_path="${MYDIR}/autorync.bash"
 actual_cron_content="$(crontab -l)"

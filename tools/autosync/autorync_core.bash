@@ -47,7 +47,7 @@ function remote_sync() {
 }
 
 function sync_ssh_key() {
-   local authorized_keys=$(sshpass -p "${REMOTE_SERVER_PASSWD}" ssh "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}" 'cat ~/.ssh/authorized_keys')
+   local authorized_keys=$(sshpass -p "${REMOTE_SERVER_PASSWD}" ssh -o StrictHostKeyChecking=no "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}" 'cat ~/.ssh/authorized_keys')
     local pub_key=$(cat $HOME/.ssh/id_rsa.pub)
 
     if [[ "$authorized_keys" == *"$pub_key"*  ]]
@@ -55,7 +55,7 @@ function sync_ssh_key() {
         msg "ssh pub key already synced"
     else
         msg "sync ssh pub key"
-        sshpass -p "${REMOTE_SERVER_PASSWD}" ssh "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}" 'echo '"${pub_key}"' >> /home/'${REMOTE_SERVER_USER}'/.ssh/authorized_keys'
+        sshpass -p "${REMOTE_SERVER_PASSWD}" ssh -o StrictHostKeyChecking=no "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}" 'echo '"${pub_key}"' >> /home/'${REMOTE_SERVER_USER}'/.ssh/authorized_keys'
         EXITCODE="$?"
     fi
 }

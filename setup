@@ -432,6 +432,9 @@ function setup_main_on_raspberrypi() {
             # set backup in crontab
             "${REPOROOT}"/tools/backuphandler/cron_backup_handler.bash
 
+            setupmessage "Set autosync function if required"
+            echo -e $("${REPOROOT}/tools/autosync/set_in_cron.bash")
+
             # printout full elapsed time
             echo -e "${YELLOW}"
             elapsed_time "stop"
