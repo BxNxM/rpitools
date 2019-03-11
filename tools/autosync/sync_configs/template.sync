@@ -1,0 +1,10 @@
+#===================== config =====================#
+FROM_PATH=/home/pi/foo
+TO_PATH=/home/pi/foo_synced
+# optional parameters:
+# if REMOTE_SERVER_USER: None
+# section diactivated, local sync enabled
+REMOTE_SERVER_USER=None
+REMOTE_SERVER_PASSWD=remotepassword
+REMOTE_SERVER_HOST=hostname_or_ip
+#==================================================#
