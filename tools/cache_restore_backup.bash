@@ -127,8 +127,8 @@ then
             if [ -d "${backup_path}/sync_configs" ]
             then
                 # autosync sync_configs
-                echo -e "\trestore: ${backup_path}/sync_configs/ -> ${REPOROOT}/tools/autosync/sync_configs/"
-                sudo bash -c "cp -ra "${backup_path}/sync_configs/" "${REPOROOT}/tools/autosync/sync_configs/""
+                echo -e "\trestore: ${backup_path}/sync_configs/ -> ${REPOROOT}/tools/autosync/"
+                sudo bash -c "cp -ra "${backup_path}/sync_configs/" "${REPOROOT}/tools/autosync/""
                 cache_exitcode="$?"
             else
                 echo -e "\trestore: ${backup_path}/sync_configs not present in the system."

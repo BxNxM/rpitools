@@ -11,7 +11,8 @@ autorync_core="${MYDIR}/autorync_core.bash"
 autorync_log_path="${MYDIR}/sync.log"
 
 sync_config_list=($(find "$sync_configs_path" -type f -iname "*.sync" | grep -v "template"))
-echo -e "${sync_config_list[*]}"
+echo -e "_____________________________________"
+echo -e "AUTOSYNC EXECUTED: $(date)"
 for config in ${sync_config_list[@]}
 do
     echo -e "SYNC based on: $config"
