@@ -25,3 +25,5 @@ gpio/fan_controll/lib/logs/fancontroll.log
 autodeployment/config/rpitools_config.cfg.bak
 tools/gotop/gotop
 tools/backuphandler/.backup_handler_activate
+tools/autosync/sync.log
+tools/autosync/crontab.swp

@@ -16,6 +16,16 @@ for config in ${sync_config_list[@]}
 do
     echo -e "SYNC based on: $config"
     log="$($autorync_core "$config")"
-    echo -e "$log" >> "$autorync_log_path"
+    exitcode="$?"
+    if [ "$exitcode" -ne 0 ]
+    then
+        echo -e "$log" >> "$autorync_log_path"
+    else
+        echo -e "$config sync OK"
+    fi
 done
 
+if [ "${#sync_config_list[@]}" -eq 0 ]
+then
+    echo -e "AUTOSYNC: modules are not available in $sync_configs_path"
+fi

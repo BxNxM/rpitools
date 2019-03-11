@@ -35,6 +35,7 @@ function local_sync() {
     cmd="rsync -avzh ${FROM_PATH} ${TO_PATH}"
     msg "$cmd"
     rsync -avzh "${FROM_PATH}" "${TO_PATH}"
+    EXITCODE="$?"
 }
 
 function remote_sync() {
@@ -42,6 +43,7 @@ function remote_sync() {
     cmd="rsync -avzh ${FROM_PATH} ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:${TO_PATH}"
     msg "$cmd"
     rsync -avzh "${FROM_PATH}" "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}":"${TO_PATH}"
+    EXITCODE="$?"
 }
 
 function sync_ssh_key() {
@@ -54,6 +56,7 @@ function sync_ssh_key() {
     else
         msg "sync ssh pub key"
         sshpass -p "${REMOTE_SERVER_PASSWD}" ssh "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}" 'echo '"${pub_key}"' >> /home/'${REMOTE_SERVER_USER}'/.ssh/authorized_keys'
+        EXITCODE="$?"
     fi
 }
 
@@ -66,9 +69,8 @@ function autosync() {
         sync_ssh_key
         remote_sync
     fi
-    exit 0
 }
 
 #==================== MAIN ======================#
 autosync
-
+exit "$EXITCODE"

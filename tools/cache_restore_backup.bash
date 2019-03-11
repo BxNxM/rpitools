@@ -60,6 +60,16 @@ then
             echo -e "\t${REPOROOT}/tools/gotop/gotop not present in the system."
         fi
 
+        if [ -d "${REPOROOT}/tools/autosync/sync_configs/" ]
+        then
+            # autosync sync_configs
+            echo -e "\tbackup: ${REPOROOT}/tools/autosync/sync_configs/ -> $backup_path"
+            sudo bash -c "cp -ra "${REPOROOT}/tools/autosync/sync_configs/" "$backup_path""
+            cache_exitcode="$?"
+        else
+             echo -e "${REPOROOT}/tools/autosync/sync_configs/not present in the system."
+        fi
+
         # cache
         echo -e "\tbackup: ${REPOROOT}/cache -> $backup_path"
         sudo bash -c "cp -ra "${REPOROOT}/cache" "$backup_path""
@@ -112,6 +122,16 @@ then
                 sudo cp -r "${backup_path}/gotop" "${REPOROOT}/tools/gotop/"
             else
                 echo -e "\trestore: ${backup_path}/gotop not present in the system."
+            fi
+
+            if [ -d "${backup_path}/sync_configs" ]
+            then
+                # autosync sync_configs
+                echo -e "\trestore: ${backup_path}/sync_configs/ -> ${REPOROOT}/tools/autosync/sync_configs/"
+                sudo bash -c "cp -ra "${backup_path}/sync_configs/" "${REPOROOT}/tools/autosync/sync_configs/""
+                cache_exitcode="$?"
+            else
+                echo -e "\trestore: ${backup_path}/sync_configs not present in the system."
             fi
 
             # cache
