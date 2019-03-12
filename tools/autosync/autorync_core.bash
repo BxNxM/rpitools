@@ -30,6 +30,43 @@ function msg() {
     echo -e "[ autosync ] - $msg"
 }
 
+function sync_lock() {
+    local sync_from_path="$1"
+    local operation="$2"                # lock | unlock | status
+    local locks_folder="${MYDIR}/.locks"
+    local actual_lock_path="${locks_folder}/$(basename ${sync_from_path})_$(basename ${ARG_LIST[0]}).lock"
+    LOCK_STATUS=-1
+
+    if [ ! -d "$locks_folder" ]
+    then
+        mkdir "$locks_folder"
+    fi
+
+    if [ "$operation" == "lock" ]
+    then
+        msg "\tCreate lock under sync in progress: $actual_lock_path"
+        echo -e "$(date)" > "$actual_lock_path"
+        LOCK_STATUS=1
+    elif [ "$operation" == "unlock" ]
+    then
+        msg "\tRemove lock, sync finished: $actual_lock_path"
+        rm -f "$actual_lock_path"
+        LOCK_STATUS=0
+    elif [ "$operation" == "status" ]
+    then
+        if [ -f "$actual_lock_path" ]
+        then
+            msg "\tLOCKED, sync already in progress: $actual_lock_path"
+            LOCK_STATUS=1
+        else
+            LOCK_STATUS=0
+            msg "\tUNLOCKED, start sync progress: $actual_lock_path"
+        fi
+    else
+        msg "\tUnknown operation: $operation"
+    fi
+}
+
 function local_sync() {
     msg "Sync locally"
     cmd="rsync -avzh ${FROM_PATH} ${TO_PATH}"
@@ -61,13 +98,21 @@ function sync_ssh_key() {
 }
 
 function autosync() {
-    local cmd=""
-    if [ "$REMOTE_SERVER_USER" == "None" ] || [ "$REMOTE_SERVER_USER" == "none" ]
+    sync_lock "${FROM_PATH}" "status"
+    if [ "$LOCK_STATUS" -eq 0 ]
     then
-        local_sync
+        sync_lock "${FROM_PATH}" "lock"
+        if [ "$REMOTE_SERVER_USER" == "None" ] || [ "$REMOTE_SERVER_USER" == "none" ]
+        then
+            local_sync
+        else
+            sync_ssh_key
+            remote_sync
+        fi
+        sync_lock "${FROM_PATH}" "unlock"
     else
-        sync_ssh_key
-        remote_sync
+        EXITCODE=245
+        echo -e "$EXITCODE"
     fi
 }
 
