@@ -21,13 +21,22 @@ fi
 # script path n name
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-# source configuration
-source "${ARG_LIST[0]}"
+CONF_TEMPLATE="${MYDIR}/sync_configs/template.sync "
 
 function msg() {
     local msg="$*"
     echo -e "[ autosync ] - $msg"
+}
+
+function base_validate_by_template_lines() {
+    local template_line_number="$(cat $CONF_TEMPLATE | wc -l)"
+    local config_line_number="$(cat ${ARG_LIST[0]} | wc -l)"
+    if [ "$template_line_number" -ne "$config_line_number" ]
+    then
+        msg "Custom sync config is invalid:"
+        msg "$CONF_TEMPLATE [$template_line_numbe] vs. ${ARG_LIST[0]} [$config_line_number]"
+        exit 1
+    fi
 }
 
 function sync_lock() {
@@ -68,24 +77,82 @@ function sync_lock() {
 }
 
 function local_sync() {
-    msg "Sync locally"
-    cmd="rsync -avzh ${FROM_PATH} ${TO_PATH}"
-    msg "$cmd"
-    rsync -avzh "${FROM_PATH}" "${TO_PATH}"
-    EXITCODE="$?"
+    if [ "${MODE}" == "copy" ]
+    then
+        msg "Sync locally, MODE: ${MODE}"
+        cmd="rsync -avzh ${FROM_PATH} ${TO_PATH}"
+        msg "$cmd"
+        (rsync -avzh "${FROM_PATH}" "${TO_PATH}")
+        EXITCODE="$?"
+    elif [ "${MODE}" == "move" ]
+    then
+        msg "Sync locally, MODE: ${MODE}"
+        cmd="rsync -avzh ${FROM_PATH} ${TO_PATH}"
+        msg "$cmd"
+        (rsync -avzh "${FROM_PATH}" "${TO_PATH}")
+        EXITCODE="$?"
+        if [ "$EXITCODE" -eq 0 ]
+        then
+            msg "Remove content from ${FROM_PATH}"
+            rm -rf "${FROM_PATH}/"*
+        else
+            msg "Remove FAILED: ${FROM_PATH}"
+            EXITCODE=1
+        fi
+    elif [ "${MODE}" == "mirror" ]
+    then
+        msg "Sync locally, MODE: ${MODE}"
+        cmd="rsync -avzh --del ${FROM_PATH} ${TO_PATH}"
+        msg "$cmd"
+        (rsync -avzh --del "${FROM_PATH}" "${TO_PATH}")
+        EXITCODE="$?"
+    else
+        msg "Unknown MODE option: ${MODE}"
+        EXITCODE=1
+    fi
 }
 
 function remote_sync() {
-    msg "Sync with remote"
-    cmd="rsync -avzh ${FROM_PATH} ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:${TO_PATH}"
-    msg "$cmd"
-    rsync -avzh "${FROM_PATH}" "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}":"${TO_PATH}"
-    EXITCODE="$?"
+    if [ "${MODE}" == "copy" ]
+    then
+        msg "Sync with remote, MODE: ${MODE}"
+        cmd="rsync -avzh ${FROM_PATH} ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:${TO_PATH}"
+        msg "$cmd"
+        (rsync -avzh "${FROM_PATH}" "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}":"${TO_PATH}")
+        EXITCODE="$?"
+    elif [ "${MODE}" == "move" ]
+    then
+        msg "Sync with remote, MODE: ${MODE}"
+        msg "Sync with remote"
+        cmd="rsync -avzh ${FROM_PATH} ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:${TO_PATH}"
+        msg "$cmd"
+        (rsync -avzh "${FROM_PATH}" "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}":"${TO_PATH}")
+        EXITCODE="$?"
+        if [ "$EXITCODE" -eq 0 ]
+        then
+            msg "Remove content from ${FROM_PATH}"
+            rm -rf "${FROM_PATH}/"*
+        else
+            msg "Remove FAILED: ${FROM_PATH}"
+            EXITCODE=1
+        fi
+    elif [ "${MODE}" == "mirror" ]
+    then
+        msg "Sync with remote, MODE: ${MODE}"
+        cmd="rsync -avzh --del ${FROM_PATH} ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:${TO_PATH}"
+        msg "$cmd"
+        (rsync -avzh --del "${FROM_PATH}" "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}":"${TO_PATH}")
+        EXITCODE="$?"
+    else
+        msg "Unknown MODE option: ${MODE}"
+        EXITCODE=1
+    fi
 }
 
 function sync_ssh_key() {
    local authorized_keys=$(sshpass -p "${REMOTE_SERVER_PASSWD}" ssh -o StrictHostKeyChecking=no "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}" 'cat ~/.ssh/authorized_keys')
     local pub_key=$(cat $HOME/.ssh/id_rsa.pub)
+    EXITCODE=0
 
     if [[ "$authorized_keys" == *"$pub_key"*  ]]
     then
@@ -95,9 +162,20 @@ function sync_ssh_key() {
         sshpass -p "${REMOTE_SERVER_PASSWD}" ssh -o StrictHostKeyChecking=no "${REMOTE_SERVER_USER}"@"${REMOTE_SERVER_HOST}" 'echo '"${pub_key}"' >> /home/'${REMOTE_SERVER_USER}'/.ssh/authorized_keys'
         EXITCODE="$?"
     fi
+    if [ "$TMP_PASSWORD_DELETE" == "true" ] || [ "$TMP_PASSWORD_DELETE" == "True" ]
+    then
+        if [ "$EXITCODE" -eq 0 ]
+        then
+            msg "Remove password from ${ARG_LIST[0]}"
+            sed -i 's/REMOTE_SERVER_PASSWD=.*/REMOTE_SERVER_PASSWD=removed/g' "${ARG_LIST[0]}"
+        fi
+    else
+        msg "Please consider to set TMP_PASSWORD_DELETE=True to improve security!"
+    fi
 }
 
 function autosync() {
+    base_validate_by_template_lines
     sync_lock "${FROM_PATH}" "status"
     if [ "$LOCK_STATUS" -eq 0 ]
     then
@@ -117,5 +195,14 @@ function autosync() {
 }
 
 #==================== MAIN ======================#
+msg "_________________$(date)____________________"
+if [ -f "${ARG_LIST[0]}" ]
+then
+    # source configuration
+    source "${ARG_LIST[0]}"
+else
+    msg "${ARG_LIST[0]} NOT A FILE"
+    exit 1
+fi
 autosync
 exit "$EXITCODE"
