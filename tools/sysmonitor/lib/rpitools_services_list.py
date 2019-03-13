@@ -67,6 +67,18 @@ def state_coloring(isactive, isenabled=None):
             is_active = isactive
     return is_active, isenabled
 
+def get_autosync_status(color=Colors.CYAN):
+    autosync_status = LocalMachine.run_command("cat ~/rpitools/tools/autosync/.status")[1]
+    if "ok" in autosync_status:
+        autosync_status = Colors.GREEN + str(autosync_status) + Colors.NC
+    elif "warning" in autosync_status:
+        autosync_status = Colors.YELLOW + str(autosync_status) + Colors.NC
+    elif "fail" in autosync_status:
+        autosync_status = Colors.RED + str(autosync_status) + Colors.NC
+    else:
+        autosync_status = "inactive"
+    return color + "\tautosync state: " + Colors.NC + str(autosync_status) + "\n"
+
 def calculate_health_multipayer():
     global health_error_code, health_all_monitored
     health_index = 100 - round((float(health_error_code) / health_all_monitored) * 100, 1)
@@ -78,6 +90,7 @@ def create_printout(separator="|", char_width=80, color=Colors.CYAN):
     text = GeneralElements.header_bar(" SERVICES ", char_width, separator, color_name=color)
     text += get_rpitools_services()
     text += get_other_monitored_processes()
+    text += get_autosync_status()
     text += calculate_health_multipayer()
     return text
 
