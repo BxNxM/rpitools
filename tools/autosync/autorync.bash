@@ -21,7 +21,6 @@ function write_status() {
     local log_slice=""
     local status_file_path="${MYDIR}/.status"
     get_lines=$((${#SYNC_CONFIG_LIST[@]}*${one_execution_log_lines}))
-    get_lines=$(($get_lines-${one_execution_log_lines}))
     log_slice="$(tail -n "$get_lines" "/home/${username}/rpitools/cache/cron_autosync.log")"
     if [[ "$log_slice" == *"FAILED"* ]]
     then
