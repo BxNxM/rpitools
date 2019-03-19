@@ -245,6 +245,8 @@ then
     echo -e "$(date)" > "$CACHE_indicator_done_path"
 else
     _msg_ "\talready done: $CACHE_indicator_done_path exists."
+    _msg_ "\tcheck wpa_supplient data"
+    set_wifi_wpa_data "$($CONFIGAHNDLER -s NETWORK -o ssid)" "$($CONFIGAHNDLER -s NETWORK -o pwd)"
 fi
 
 set_swap_file
