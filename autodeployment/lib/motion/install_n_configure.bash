@@ -53,15 +53,20 @@ function install() {
     fi
 }
 
+function set_motion_permissions() {
+    sudo chgrp motion "$motion_target_folder"
+    chmod g+rwx "$motion_target_folder"
+}
+
 function create_motion_dir() {
     if [ ! -d "$motion_target_folder" ]
     then
         _msg_ "Create and set $motion_target_folder"
         mkdir -p "$motion_target_folder"
-        sudo chgrp motion "$motion_target_folder"
-        chmod g+rwx "$motion_target_folder"
+        set_motion_permissions
     else
         _msg_ "$motion_target_folder already exists."
+        set_motion_permissions
     fi
 }
 

@@ -75,6 +75,8 @@ def get_autosync_status(color=Colors.CYAN):
         autosync_status = Colors.YELLOW + str(autosync_status) + Colors.NC
     elif "fail" in autosync_status:
         autosync_status = Colors.RED + str(autosync_status) + Colors.NC
+    elif "unknown" in autosync_status:
+        autosync_status = Colors.YELLOW + str(autosync_status) + Colors.NC
     else:
         autosync_status = "inactive"
     return color + "\tautosync state: " + Colors.NC + str(autosync_status) + "\n"

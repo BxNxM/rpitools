@@ -15,11 +15,22 @@ SYNC_CONFIG_LIST=($(find "$sync_configs_path" -type f -iname "*.sync" | grep -v 
 echo -e "_____________________________________"
 echo -e "AUTOSYNC EXECUTED: $(date)"
 
+# WORKAROUND FOR CRONJOB
+if [ "$username" == "" ]
+then
+    if [ -f "${MYDIR}/.env" ]
+    then
+        source "${MYDIR}/.env"
+    fi
+    username="$USERNAME"
+fi
+
 function write_status() {
-    local one_execution_log_lines=3
+    local one_execution_log_lines=4
     local get_lines=0
     local log_slice=""
     local status_file_path="${MYDIR}/.status"
+
     get_lines=$((${#SYNC_CONFIG_LIST[@]}*${one_execution_log_lines}))
     log_slice="$(tail -n "$get_lines" "/home/${username}/rpitools/cache/cron_autosync.log")"
     if [[ "$log_slice" == *"FAILED"* ]]
@@ -31,6 +42,15 @@ function write_status() {
     elif [[ "$log_slice" == *"OK"* ]]
     then
         echo "ok" > "$status_file_path"
+    else
+        echo "unknown" > "$status_file_path"
+    fi
+
+    if [ -f "$status_file_path" ]
+    then
+        echo -e "UPDATE AUTOSYNC STATUS SUCCESS: $status_file_path"
+    else
+        echo -e "UPDATE AUTOSYNC STATUS ERROR: $status_file_path"
     fi
 }
 

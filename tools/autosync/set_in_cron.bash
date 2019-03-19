@@ -71,6 +71,8 @@ else
 fi
 
 check_servive "$is_changed"
+echo -e "Set ${MYDIR}/.env file: USERNAME=$username"
+echo "USERNAME=$username" > "${MYDIR}/.env"
 exit 0
 
 

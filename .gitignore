@@ -30,3 +30,4 @@ tools/autosync/crontab.swp
 tools/autosync/.status
 tools/autosync/sync_configs/*.sync
 ^tools/autosync/sync_configs/template.sync
+tools/autosync/.env
