@@ -58,7 +58,7 @@ function run() {
     for config in "${SYNC_CONFIG_LIST[@]}"
     do
         echo -e "SYNC based on: $config"
-        log="$($autorync_core "$config")"
+        log="$(sudo bash -c "$autorync_core $config")"
         exitcode="$?"
         if [ "$exitcode" -ne 0 ] || [ "${ARG_LIST[0]}" == "debug" ]
         then
