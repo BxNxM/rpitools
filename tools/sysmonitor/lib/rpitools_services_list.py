@@ -15,7 +15,7 @@ def get_rpitools_services(color=Colors.CYAN):
     for service in services:
         is_active = LocalMachine.run_command("systemctl is-active " + str(service))[1]
         is_enabled = LocalMachine.run_command("systemctl is-enabled " + str(service))[1]
-        is_active, is_enabled = state_coloring(isactive=is_active, isenabled=is_enabled)
+        is_active, is_enabled = service_state_coloring(isactive=is_active, isenabled=is_enabled)
         data += "\t" + color + str(service) + Colors.NC + " active status: " + str(is_active) + "\n"
 
         data += "\t" + str(service) + " enabled status: " + str(is_enabled) + "\n"
@@ -24,7 +24,7 @@ def get_rpitools_services(color=Colors.CYAN):
     for service in services:
         is_active = LocalMachine.run_command("systemctl is-active " + str(service))[1]
         is_enabled = LocalMachine.run_command("systemctl is-enabled " + str(service))[1]
-        is_active, is_enabled = state_coloring(isactive=is_active, isenabled=is_enabled)
+        is_active, is_enabled = service_state_coloring(isactive=is_active, isenabled=is_enabled)
         data += "\t" + color + str(service) + Colors.NC + " active status: " + str(is_active) + "\n"
         data += "\t" + str(service) + " enabled status: " + str(is_enabled) + "\n"
     return data
@@ -38,11 +38,11 @@ def get_other_monitored_processes(color=Colors.CYAN):
             process_state = "inactive"
         else:
             process_state = "active"
-        process_state, is_enabled = state_coloring(isactive=process_state)
+        process_state, is_enabled = service_state_coloring(isactive=process_state)
         data += "\t" + color + str(process) + Colors.NC + " state: " + str(process_state) + "\n"
     return data
 
-def state_coloring(isactive, isenabled=None):
+def service_state_coloring(isactive, isenabled=None):
     global health_error_code, health_all_monitored
     health_all_monitored += 1
     if isenabled is not None:
@@ -67,19 +67,31 @@ def state_coloring(isactive, isenabled=None):
             is_active = isactive
     return is_active, isenabled
 
-def get_autosync_status(color=Colors.CYAN):
-    autosync_status = LocalMachine.run_command("cat ~/rpitools/tools/autosync/.status")[1]
-    if "ok" in autosync_status:
-        autosync_status = Colors.GREEN + str(autosync_status) + Colors.NC
-    elif "warning" in autosync_status:
-        autosync_status = Colors.YELLOW + str(autosync_status) + Colors.NC
-    elif "fail" in autosync_status:
-        autosync_status = Colors.RED + str(autosync_status) + Colors.NC
-    elif "unknown" in autosync_status:
-        autosync_status = Colors.YELLOW + str(autosync_status) + Colors.NC
+def process_state_coloring(status, title, color=Colors.CYAN):
+    global health_error_code, health_all_monitored
+    health_all_monitored += 1
+    if "ok" in status:
+        autosync_status = Colors.GREEN + str(status) + Colors.NC
+    elif "warning" in status:
+        autosync_status = Colors.YELLOW + str(status) + Colors.NC
+        health_error_code += 0.1
+    elif "fail" in status:
+        autosync_status = Colors.RED + str(status) + Colors.NC
+        health_error_code += 1
+    elif "unknown" in status:
+        autosync_status = Colors.YELLOW + str(status) + Colors.NC
+        health_error_code += 0.1
     else:
         autosync_status = "inactive"
-    return color + "\tautosync state: " + Colors.NC + str(autosync_status) + "\n"
+    return color + "\t" + str(title) + " state: " + Colors.NC + str(autosync_status) + "\n"
+
+def get_autosync_status(color=Colors.CYAN):
+    autosync_status = LocalMachine.run_command("cat ~/rpitools/tools/autosync/.status")[1]
+    return process_state_coloring(autosync_status, "autosync")
+
+def get_backuphandler_status(color=Colors.CYAN):
+    backuphandler_status = LocalMachine.run_command("cat ~/rpitools/tools/backuphandler/.status")[1]
+    return process_state_coloring(backuphandler_status, "backuphandler")
 
 def calculate_health_multipayer():
     global health_error_code, health_all_monitored
@@ -93,6 +105,7 @@ def create_printout(separator="|", char_width=80, color=Colors.CYAN):
     text += get_rpitools_services()
     text += get_other_monitored_processes()
     text += get_autosync_status()
+    text += get_backuphandler_status()
     text += calculate_health_multipayer()
     return text
 
