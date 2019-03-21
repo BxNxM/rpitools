@@ -13,18 +13,25 @@ limit="$($confighandler -s BACKUP -o limit)"
 instantiation_UUID="$(cat ${MYDIR}/../../cache/.instantiation_UUID)"
 sshfs_mount_point_name="$(basename $($confighandler -s SSHFS -o mount_folder_path))"
 touched_configs_path="${MYDIR}/../../config/"
+ERRORS=0
 
 source "${MYDIR}/../../prepare/colors.bash"
+
+function _msg_ () {
+    local msg="$*"
+    echo -e "[$(date)][backuphandler] $msg"
+}
 
 # crontab - rpitools config get activate fix
 if [ "$activate_backup" == "" ]
 then
     if [ -f "${MYDIR}/.backuphandler_cron_data" ]
     then
-        echo -e "Fix backup config data for cron job, read from: ${MYDIR}/.backuphandler_cron_data"
+        _msg_ "Fix backup config data for cron job, read from: ${MYDIR}/.backuphandler_cron_data"
         source "${MYDIR}/.backuphandler_cron_data"
     else
-        echo -e "${MYDIR}/.backuphandler_cron_data file for cron job NOT EXISTS! EXIT"
+        _msg_ "${MYDIR}/.backuphandler_cron_data file for cron job NOT EXISTS! EXIT"
+        write_status_file 1
         exit 1
     fi
 fi
@@ -32,11 +39,12 @@ fi
 # check backup activate status
 if [[ "$activate_backup" != "True" ]] && [[ "$activate_backup" != "true" ]]
 then
-    echo -e "[$(date)] Backup creator for users home folder was not activated [$activate_backup] in rpi_config.cfg"
-    echo -e "[$(date)] To activate, use: confeditor edit and edit [BACKUP] section"
+    _msg_ "Backup creator for users home folder was not activated [$activate_backup] in rpi_config.cfg"
+    _msg_ "To activate, use: confeditor edit and edit [BACKUP] section"
+    write_status_file 1
     exit 1
 else
-    echo -e "[$(date)] Backup creator for users home folder was activated [$activate_backup] in rpi_config.cfg"
+    _msg_ "Backup creator for users home folder was activated [$activate_backup] in rpi_config.cfg"
 fi
 
 function progress_indicator() {
@@ -53,10 +61,32 @@ function create_backup_pathes() {
     if [ ! -d "$home_backups_path" ]
     then
         sudo mkdir -p "$home_backups_path"
+        ERRORS=$(($ERRORS+$?))
     fi
     if [ ! -d "$system_backups_path" ]
     then
         sudo mkdir -p "$system_backups_path"
+        ERRORS=$(($ERRORS+$?))
+    fi
+}
+
+function write_status_file() {
+    local errors="$1"
+    if [ "$errors" == "" ]
+    then
+        ERRORS="$ERRORS"
+    else
+        ERRORS="$errors"
+    fi
+    local status_path="${MYDIR}/.status"
+    if [ "$ERRORS" -eq 0 ]
+    then
+        echo "ok" > "$status_path"
+    elif [ "$ERRORS" -gt 0 ] && [ "$errors" != "" ]
+    then
+        echo "fails" > "$status_path"
+    else
+        echo "warning" > "$status_path"
     fi
 }
 
@@ -71,19 +101,20 @@ function make_system_backup() {
     do
         if [ -e "${extra_pathes[$i]}" ]
         then
-            echo -e "[backuphandler][$(($i+1)) / ${#extra_pathes[@]}] - Create system backup: ${extra_pathes[$i]} -> ${system_backups_path}"
+            _msg_ "[$(($i+1)) / ${#extra_pathes[@]}] - Create system backup: ${extra_pathes[$i]} -> ${system_backups_path}"
             pushd "$(dirname ${extra_pathes[$i]})"
                 comp_name="$(basename ${extra_pathes[$i]})"
                 comp_bckp_name="${comp_name}_${time}.tar.gz"
                 targz_cmd="sudo tar czf ${system_backups_path}/${comp_bckp_name} ${comp_name}"
-                echo -e "CMD: $targz_cmd"
+                _msg_ "CMD: $targz_cmd"
                 eval "$targz_cmd"
+                ERRORS=$(($ERRORS+$?))
             popd
         else
-            echo -e "[backuphandler] path not exists: ${extra_pathes[$i]} can't backup"
+            _msg_ "path not exists: ${extra_pathes[$i]} can't backup"
+            ERRORS=$(($ERRORS+1))
         fi
     done
-
     backup_touched_system_configs
 }
 
@@ -93,14 +124,14 @@ function make_backup_for_every_user() {
 
     for ((i=0; i<${#list_users[@]}; i++))
     do
-        echo -e "[backuphandler][$(($i+1)) / ${#list_users[@]}]"
-        echo -e "\t - Create user home backup: ${list_users[$i]} -> ${home_backups_path}"
+        _msg_ "[$(($i+1)) / ${#list_users[@]}]"
+        _msg_ "\t - Create user home backup: ${list_users[$i]} -> ${home_backups_path}"
         pushd /home
             user="${list_users[$i]}"
             local exclude_restored_folders=($(ls -1 "${user}" | grep "restored_"))
             local exclude_restored_folders2=($(ls -1 "${user}" | grep "$sshfs_mount_point_name"))
             local exclude_parameters=""
-            echo -e "exclude folders in ${user}: ${exclude_restored_folders[*]}"
+            _msg_ "exclude folders in ${user}: ${exclude_restored_folders[*]}"
             for exclude in "${exclude_restored_folders[@]}"
             do
                 exclude_parameters+="--exclude ./${user}/${exclude} "
@@ -111,8 +142,9 @@ function make_backup_for_every_user() {
             done
             user_bckp_name="${user}_${time}.tar.gz"
             targz_cmd="sudo tar czf ${home_backups_path}/${user_bckp_name} ${exclude_parameters} ${user}"
-            echo -e "CMD: $targz_cmd"
+            _msg_ "CMD: $targz_cmd"
             eval "$targz_cmd"
+            ERRORS=$(($ERRORS+$?))
         popd
     done
 }
@@ -125,14 +157,15 @@ function delete_obsolete_user_backups() {
         fies_p_user=${#get_files_cmd_by_user[@]}
         if [ $fies_p_user -gt $limit ]
         then
-            echo -e "[backuphandler] - ${list_users[$i]}"
-            echo -e "\tDelete backup [limit: $((limit)) actual: ${fies_p_user}]"
-            echo -e "\t - ${home_backups_path}${get_files_cmd_by_user[0]} from: ${home_backups_path}"
+            _msg_ "- ${list_users[$i]}"
+            _msg_ "\tDelete backup [limit: $((limit)) actual: ${fies_p_user}]"
+            _msg_ "\t - ${home_backups_path}${get_files_cmd_by_user[0]} from: ${home_backups_path}"
             sudo rm -r ${home_backups_path}/${get_files_cmd_by_user[0]}
+            ERRORS=$(($ERRORS+$?))
             delete_obsolete_user_backups
         else
-            echo -e "[backuphandler] -  ${list_users[$i]}"
-            echo -e "\tBackup status [limit: $((limit)) actual: ${fies_p_user}] from: ${home_backups_path}"
+            _msg_ "-  ${list_users[$i]}"
+            _msg_ "\tBackup status [limit: $((limit)) actual: ${fies_p_user}] from: ${home_backups_path}"
         fi
     done
 }
@@ -144,14 +177,15 @@ function delete_obsolete_system_backups() {
         get_files_cmd_by_systembackup=($(ls -1tr ${system_backups_path} | grep "$(basename ${extra_pathes[$i]})"))
         if [ ${#get_files_cmd_by_systembackup[@]} -gt $limit ]
         then
-            echo -e "[backuphandler] - $(basename ${extra_pathes[$i]})"
-            echo -e "\tDelete backup [limit: $limit actual: ${#get_files_cmd_by_systembackup[@]}]"
-            echo -e "\t - ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
+            _msg_ "- $(basename ${extra_pathes[$i]})"
+            _msg_ "\tDelete backup [limit: $limit actual: ${#get_files_cmd_by_systembackup[@]}]"
+            _msg_ "\t- ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
             sudo rm -r "${system_backups_path}/${get_files_cmd_by_systembackup[0]}"
+            ERRORS=$(($ERRORS+$?))
             delete_obsolete_system_backups
         else
-            echo -e "[backuphandler] - $(basename ${extra_pathes[$i]})"
-            echo -e "\tBackup status [limit: $limit actual: ${#get_files_cmd_by_systembackup[@]}] from: $system_backups_path"
+            _msg_ " - $(basename ${extra_pathes[$i]})"
+            _msg_ "\tBackup status [limit: $limit actual: ${#get_files_cmd_by_systembackup[@]}] from: $system_backups_path"
         fi
     done
 }
@@ -162,14 +196,16 @@ function backup_user_accounts() {
     local accounts_backup_folder="${system_backups_path}/user_accounts_${time}"
     local accounts_backup_UUID="${accounts_backup_folder}/UUID"
 
-    echo -e "Backup passwords, goups and so on"
+    _msg_ "Backup passwords, goups and so on"
 
-    echo -e "\t[backuphandler] Create folder for user accounts: ${accounts_backup_folder}"
+    _msg_ "\tCreate folder for user accounts: ${accounts_backup_folder}"
     sudo mkdir -p "${accounts_backup_folder}"
+    ERRORS=$(($ERRORS+$?))
 
-    echo -e "\tbackup: /etc/passwd /etc/shadow /etc/group /etc/gshadow to ${accounts_backup_folder}"
+    _msg_ "\tbackup: /etc/passwd /etc/shadow /etc/group /etc/gshadow to ${accounts_backup_folder}"
     sudo cp /etc/passwd /etc/shadow /etc/group /etc/gshadow "${accounts_backup_folder}"
-    echo -e "\tbackup /etc/sudoers -> ${accounts_backup_folder}/sudoers"
+    ERRORS=$(($ERRORS+$?))
+    _msg_ "\tbackup /etc/sudoers -> ${accounts_backup_folder}/sudoers"
     sudo bash -c "cat /etc/sudoers > ${accounts_backup_folder}/sudoers"
     sudo bash -c "echo $instantiation_UUID > $accounts_backup_UUID"
 }
@@ -180,14 +216,15 @@ function delete_obsolete_user_accounts_backup() {
 
     if [ ${#get_files_cmd_user_accounts[@]} -gt $limit ]
     then
-        echo -e "[backuphandler] Delete ${get_files_cmd_user_accounts[0]}"
-        echo -e "\tDelete backup [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}]"
-        echo -e "\t - ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
+        _msg_ "Delete ${get_files_cmd_user_accounts[0]}"
+        _msg_ "\tDelete backup [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}]"
+        _msg_ "\t - ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
         sudo rm -r "${system_backups_path}/${get_files_cmd_user_accounts[0]}"
+        ERRORS=$(($ERRORS+$?))
         delete_obsolete_user_accounts_backup
     else
-        echo -e "[backuphandler]"
-        echo -e "\tBackup status [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}] from: $system_backups_path"
+        _msg_ ""
+        _msg_ "\tBackup status [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}] from: $system_backups_path"
     fi
 }
 
@@ -198,19 +235,20 @@ function backup_touched_system_configs() {
     local touched_conigs_list=($(ls -1 $touched_configs_path))
 
     # backup
-    echo -e "Backup touched system config files, !!! not restoring automaticly !!!"
+    _msg_ "Backup touched system config files, !!! not restoring automaticly !!!"
     sudo mkdir -p "${touched_configs_backup_folder}"
+    ERRORS=$(($ERRORS+$?))
 
     for conf in "${touched_conigs_list[@]}"
     do
         local config_path="${touched_configs_path}/${conf}"
         if [ -f "$config_path" ]
         then
-            echo -e "Backup touched system config: $config_path -> $touched_configs_backup_folder"
+            _msg_ "Backup touched system config: $config_path -> $touched_configs_backup_folder"
             sudo bash -c "cp --preserve=links $config_path $touched_configs_backup_folder"
+            ERRORS=$(($ERRORS+$?))
         fi
     done
-
     delete_obsolete_touched_config_backup
 }
 
@@ -220,14 +258,15 @@ function delete_obsolete_touched_config_backup() {
 
     if [ ${#get_files_cmd_user_accounts[@]} -gt $limit ]
     then
-        echo -e "[backuphandler] Delete ${get_files_cmd_user_accounts[0]}"
-        echo -e "\tDelete backup [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}]"
-        echo -e "\t - ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
+        _msg_ "Delete ${get_files_cmd_user_accounts[0]}"
+        _msg_ "\tDelete backup [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}]"
+        _msg_ "\t - ${get_files_cmd_by_systembackup[0]} from: ${system_backups_path}"
         sudo rm -r "${system_backups_path}/${get_files_cmd_user_accounts[0]}"
+        ERRORS=$(($ERRORS+$?))
         delete_obsolete_touched_config_backup
     else
-        echo -e "[backuphandler]"
-        echo -e "\tBackup status [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}] from: $system_backups_path"
+        _msg_ ""
+        _msg_ "\tBackup status [limit: $limit actual: ${#get_files_cmd_user_accounts[@]}] from: $system_backups_path"
     fi
 
 }
@@ -253,11 +292,11 @@ function restore_user_accounts() {
         local backup_UUID="$(cat ${backup_path}/UUID)"
         if [ "$backup_UUID" != "$instantiation_UUID" ] || [ "$force" -eq 1 ]
         then
-            echo -e "[backuphandler] UUID validate OK: $backup_UUID, user migartion"
+            _msg_ "UUID validate OK: $backup_UUID, user migartion"
             # get backup file list
             local user_accounts_backup_files=($(ls -1tr ${backup_path}))
 
-            echo -e "[backuphandler] restore user accounts:\n${user_accounts_backup_files[*]}"
+            _msg_ "restore user accounts:\n${user_accounts_backup_files[*]}"
             for file in "${user_accounts_backup_files[@]}"
             do
                 # get backup file full path
@@ -266,20 +305,21 @@ function restore_user_accounts() {
                 do
                     if [ "$file" == "$(basename ${acconts_orig_path})" ]
                     then
-                        echo -e "Attempt to Restore backup: $backup_file -> ${acconts_orig_path}"
+                        _msg_ "Attempt to Restore backup: $backup_file -> ${acconts_orig_path}"
                         while read -r line
                         do
                             local key="$(echo "$line" | cut -d':' -f'1')"
                             local orig_is_contains_key="$(sudo bash -c "cat ${acconts_orig_path} | grep ${key}")"
                             if [ "$orig_is_contains_key" == "" ]
                             then
-                                echo -e "[i] RESTORE REQUIRED:"
-                                echo -e "\tKey have to be restore: $key"
-                                echo -e "\tLine for key: $line"
-                                echo -e "\tfrom: $backup_file"
-                                echo -e "\tto: $acconts_orig_path"
+                                _msg_ "[i] RESTORE REQUIRED:"
+                                _msg_ "\tKey have to be restore: $key"
+                                _msg_ "\tLine for key: $line"
+                                _msg_ "\tfrom: $backup_file"
+                                _msg_ "\tto: $acconts_orig_path"
                                 echo "$line" > /tmp/catitto
                                 sudo bash -c "sudo cat /tmp/catitto >> $acconts_orig_path"
+                                ERRORS=$(($ERRORS+$?))
                                 sudo bash -c "rm -f /tmp/catitto"
                                 account_restore_action=$(($account_restore_action+1))
                             else
@@ -293,27 +333,29 @@ function restore_user_accounts() {
             # restore sudoers file if different
             if [ "$(sudo bash -c "sudo diff -q /etc/sudoers ${backup_path}/sudoers")" != "" ]
             then
-                echo -e "Attempt to Restore backup: ${backup_path}/sudoers -> /etc/sudoers"
+                _msg_ "Attempt to Restore backup: ${backup_path}/sudoers -> /etc/sudoers"
                 sudo bash -c "cat ${backup_path}/sudoers > /etc/sudoers"
+                ERRORS=$(($ERRORS+$?))
                 account_restore_action=$(($account_restore_action+1))
             else
-                echo -e "Restore backup is not necesarry /etc/sudoers not changed"
+                _msg_ "Restore backup is not necesarry /etc/sudoers not changed"
             fi
 
             # manual merge for user accounts
             useraccounts_manual_merge "${backup_path}"
             sudo bash -c "chmod -R o-r ${backup_path}"
+            ERRORS=$(($ERRORS+$?))
 
             if [ "$account_restore_action" -ne 0 ]
             then
-                echo -e "Restore was successful, restored elements: $account_restore_action"
+                _msg_ "Restore was successful, restored elements: $account_restore_action"
             else
-                echo -e "Restore was not necessarry, your system is up and running"
+                _msg_ "Restore was not necessarry, your system is up and running"
             fi
         else
-            echo -e "UUID $backup_UUID == $instantiation_UUID"
-            echo -e "FROM PATH: $backup_path\n$(ls -lath $backup_path)"
-            echo -e "[WARNING] User migration in the same system is risky (UUID: $instantiation_UUID)"
+            _msg_ "UUID $backup_UUID == $instantiation_UUID"
+            _msg_ "FROM PATH: $backup_path\n$(ls -lath $backup_path)"
+            _msg_ "[WARNING] User migration in the same system is risky (UUID: $instantiation_UUID)"
             read -p "Are you sure, you want to restore user accounts?[yes|no] " answer
             if [ "$answer" == "yes" ]
             then
@@ -331,7 +373,7 @@ function useraccounts_manual_merge() {
     read -t $read_timeout_sec answer
     case "$answer" in
         [yY])
-            echo -e "Merge manually, mergetool vimdiff"
+            _msg_ "Merge manually, mergetool vimdiff"
             sleep 2
             for accfile in "${backup_accout_files_list[@]}"
             do
@@ -339,7 +381,7 @@ function useraccounts_manual_merge() {
                 then
                     local backup_file_path="${last_sysbackup_path}/${accfile}"
                     local system_acc_file="/etc/${accfile}"
-                    echo -e "Diff files: $backup_file_path <-> $system_acc_file"
+                    _msg_ "Diff files: $backup_file_path <-> $system_acc_file"
                     sleep 2
                     sudo vimdiff "$backup_file_path" "$system_acc_file"
                     account_restore_action=$(($account_restore_action+1))
@@ -347,10 +389,10 @@ function useraccounts_manual_merge() {
             done
             ;;
         [nN])
-            echo -e "Then, goodbye"
+            _msg_ "Then, goodbye"
             ;;
         *)
-            echo -e "Timeout exceeded [$read_timeout_sec]"
+            _msg_ "Timeout exceeded [$read_timeout_sec]"
             ;;
     esac
 }
@@ -362,7 +404,7 @@ function restore_user_home_folders() {
     local existing_user_raw_accounts_list=()
 
     # get existing user accounts name (usernames)
-    echo -e "Get existsing user accounts raw data - before restoring home folders"
+    _msg_ "Get existsing user accounts raw data - before restoring home folders"
     while read -r line
     do
         progress_indicator
@@ -378,16 +420,16 @@ function restore_user_home_folders() {
         then
             if [[ "${existing_user_raw_accounts_list[*]}" == *"$username"* ]]
             then
-                echo -e "=> Add user to restore: $username"
+                _msg_ "=> Add user to restore: $username"
                 username_list+=("$username")
             else
-                echo -e "=> Skip user to restore: $username"
-                echo -e "   => account not found, only home folder..."
+                _msg_ "=> Skip user to restore: $username"
+                _msg_ "   => account not found, only home folder..."
             fi
         fi
     done
 
-    echo -e "Existsing user backups: ${username_list[*]}"
+    _msg_ "Existsing user backups: ${username_list[*]}"
     local latest_user_backups_list=()
     for username in "${username_list[@]}"
     do
@@ -395,7 +437,7 @@ function restore_user_home_folders() {
         local latest_user_backups_list+=("${user_backups[0]}")
     done
 
-    echo -e "${latest_user_backups_list[*]}"
+    _msg_ "${latest_user_backups_list[*]}"
 
     # restore only the selected user backup - hack username_list lsit
     if [ "$specific_user" != "" ]
@@ -418,25 +460,30 @@ function restore_user_home_folders() {
     fi
 
     # iterate over username_list and restore backups
-    echo -e "[backuphandler] restore user homes"
+    _msg_ "restore user homes"
     for ((k=0; k<${#username_list[@]}; k++))
     do
         backup_path="${home_backups_path}/${latest_user_backups_list[$k]}"
         user_home_path="/home/${username_list[$k]}"
-        echo -e "$backup_path -> $user_home_path"
+        _msg_ "$backup_path -> $user_home_path"
         if [ -d "$user_home_path" ]
         then
-            echo -e "User home is exists: ${username_list[$k]}"
-            echo -e "Create subfoder: ${user_home_path}/restored_$(basename $backup_path)"
+            _msg_ "User home is exists: ${username_list[$k]}"
+            _msg_ "Create subfoder: ${user_home_path}/restored_$(basename $backup_path)"
             sudo bash -c "mkdir -p ${user_home_path}/restored_$(basename $backup_path)"
-            echo -e "tar -xzf $backup_path -C ${user_home_path}/restored_$(basename $backup_path)"
+            ERRORS=$(($ERRORS+$?))
+            _msg_ "tar -xzf $backup_path -C ${user_home_path}/restored_$(basename $backup_path)"
             sudo bash -c "tar -xzf $backup_path -C ${user_home_path}/restored_$(basename $backup_path)"
+            ERRORS=$(($ERRORS+$?))
             sudo bash -c "chown -R ${username_list[$k]} ${user_home_path}/restored_$(basename $backup_path)"
+            ERRORS=$(($ERRORS+$?))
         else
-            echo -e "Create home folder for ${username_list[$k]}"
-            echo -e "tar -xzf $backup_path -C /home"
+            _msg_ "Create home folder for ${username_list[$k]}"
+            _msg_ "tar -xzf $backup_path -C /home"
             sudo bash -c "tar -xzf $backup_path -C /home"
+            ERRORS=$(($ERRORS+$?))
             sudo bash -c "chown -R ${username_list[$k]} ${user_home_path}"
+            ERRORS=$(($ERRORS+$?))
         fi
     done
 }
@@ -444,18 +491,21 @@ function restore_user_home_folders() {
 # RESTORE: extra system fodlers
 function restore_extra_system_folders() {
     local folders_to_restore=($@)
-    echo -e "[backuphandler] restore extra folders"
+    _msg_ "restore extra folders"
 
     for ((p=0; p<"${#folders_to_restore[@]}"; p++))
     do
         backup_from="${folders_to_restore[$p]}"
         backup_to="${extra_pathes[$p]}"
-        echo -e "Retore: tar -xzf $backup_from -C $backup_to"
+        _msg_ "Retore: tar -xzf $backup_from -C $backup_to"
         sudo bash -c "tar -xzf $backup_from -C $backup_to"
-        echo -e "cp -r $backup_to/$(basename $backup_to)/* $backup_to"
+        ERRORS=$(($ERRORS+$?))
+        _msg_ "cp -r $backup_to/$(basename $backup_to)/* $backup_to"
         sudo bash -c "cp -r $backup_to/$(basename $backup_to)/* $backup_to"
-        echo -e "rm -rf $backup_to/$(basename $backup_to)"
+        ERRORS=$(($ERRORS+$?))
+        _msg_ "rm -rf $backup_to/$(basename $backup_to)"
         sudo bash -c "rm -rf $backup_to/$(basename $backup_to)"
+        ERRORS=$(($ERRORS+$?))
     done
 }
 
@@ -467,42 +517,42 @@ function system_restore() {
     for extra in "${extra_pathes[@]}"
     do
         local system_extra_pathes_backup=($(ls -1tr ${system_backups_path} | grep "$(basename ${extra})"))
-        echo -e "$system_extra_pathes_backup"
+        _msg_ "$system_extra_pathes_backup"
         local last_extra_system_backup="${system_backups_path}/${system_extra_pathes_backup[$((${#system_extra_pathes_backup[@]}-1))]}"
         last_extra_system_backups_list+=("${last_extra_system_backup}")
     done
 
-    echo -e "=> USER ACCOUNTS LAST BACKUP: ${latest_user_accounts_backup_path}"
-    echo -e "=> EXTRA SYSTEM BACKUP(S): ${last_extra_system_backups_list[*]}"
+    _msg_ "=> USER ACCOUNTS LAST BACKUP: ${latest_user_accounts_backup_path}"
+    _msg_ "=> EXTRA SYSTEM BACKUP(S): ${last_extra_system_backups_list[*]}"
 
-    echo -e "${YELLOW}   --- RESTORE USER ACCOUNTS ---   ${NC}"
+    _msg_ "${YELLOW}   --- RESTORE USER ACCOUNTS ---   ${NC}"
     restore_user_accounts "${latest_user_accounts_backup_path}"
     if [ -z "$SKIPHOMEDIRS" ] || [ "$SKIPHOMEDIRS" -eq 0 ]
     then
-        echo -e "${YELLOW}   --- RESTORE USER HOME FOLDERS ---   ${NC}"
+        _msg_ "${YELLOW}   --- RESTORE USER HOME FOLDERS ---   ${NC}"
         restore_user_home_folders
-        echo -e "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
+        _msg_ "${YELLOW}   --- RESTORE EXTRA SYSTEM FOLDERS ---   ${NC}"
         restore_extra_system_folders "${last_extra_system_backups_list[@]}"
     fi
 
     # fix user groups automaticly
-    echo -e "${YELLOW}Restore user groups from code, with${NC} usermanager --fixusergroups"
+    _msg_ "${YELLOW}Restore user groups from code, with${NC} usermanager --fixusergroups"
     . "${MYDIR}/../user_manager.bash" "--fixusergroups"
 
     if [ "$account_restore_action" -ne 0 ]
     then
-        echo -e "[backuphandler] system needs a reboot now..."
+        _msg_ "system needs a reboot now..."
         sleep 1
         sudo reboot
     fi
 }
 
 function users_backup() {
-    echo -e "${YELLOW}   --- CREATE CACHE BACKUP ---   ${NC}"
+    _msg_ "${YELLOW}   --- CREATE CACHE BACKUP ---   ${NC}"
     # create cache backup
     . "${MYDIR}/../cache_restore_backup.bash" "backup"
 
-    echo -e "${YELLOW}   --- CREATE USER BACKUP ---   ${NC}"
+    _msg_ "${YELLOW}   --- CREATE USER BACKUP ---   ${NC}"
     # user backup
     make_backup_for_every_user
     delete_obsolete_user_backups
@@ -513,25 +563,25 @@ function full_system_backup() {
     then
         users_backup
     else
-        echo -e "Skip user home folders backup --skiphomedirs parameter detected"
+        _msg_ "Skip user home folders backup --skiphomedirs parameter detected"
     fi
 
-    echo -e "${YELLOW}   --- CREATE SYSTEM BACKUP ---   ${NC}"
+    _msg_ "${YELLOW}   --- CREATE SYSTEM BACKUP ---   ${NC}"
     # create other system backups
     make_system_backup
     delete_obsolete_system_backups
 
-    echo -e "${YELLOW}   --- BACKUP USER ACCOUNTS ---   ${NC}"
+    _msg_ "${YELLOW}   --- BACKUP USER ACCOUNTS ---   ${NC}"
     backup_user_accounts
     delete_obsolete_user_accounts_backup
 }
 
 function show_backup_struct() {
     local backup_root_path="$(dirname $system_backups_path)"
-    echo -e "[backuphandler] backups root path: $backup_root_path"
-    echo -e "[backuphandler] actual content:"
+    _msg_ "backups root path: $backup_root_path"
+    _msg_ "actual content:"
     tree -L 2 "$backup_root_path"
-    echo -e "All backups size: $(du -sh $backup_root_path)"
+    _msg_ "All backups size: $(du -sh $backup_root_path)"
 }
 
 # ======================================================================================================================= #
@@ -546,10 +596,11 @@ function init_backup_handler() {
     extra_pathes=("/var/www/html" "/var/lib/transmission-daemon/.config/transmission-daemon/torrents/" "/var/spool/cron/")
 
     sudo bash -c "chmod -R o+r $(dirname $system_backups_path)"
+    ERRORS=$(($ERRORS+$?))
 }
 
 function main() {
-    echo -e "${YELLOW}===================== BACKUP HANDLER ======================${NC}"
+    _msg_ "${YELLOW}===================== BACKUP HANDLER ======================${NC}"
     init_backup_handler
 
     # handle extra parameters, swithches
@@ -564,19 +615,19 @@ function main() {
     then
         if [ "${arg_list[1]}" == "backup" ]
         then
-            echo -e "system backup [contains full system backup: users, user accounts]"
+            _msg_ "system backup [contains full system backup: users, user accounts]"
             full_system_backup
         elif [ "${arg_list[1]}" == "restore" ]
         then
             if [ "$(ls -1 $home_backups_path)" != "" ] && [ "$(ls -1 $system_backups_path)" != "" ]
             then
-                echo -e "system restore [contains fill system restore: users, user accounts]"
+                _msg_ "system restore [contains fill system restore: users, user accounts]"
                 system_restore
             else
-                echo -e "Backup files not found: $home_backups_path and/or $system_backups_path"
+                _msg_ "Backup files not found: $home_backups_path and/or $system_backups_path"
             fi
         else
-            echo -e "Unknown argument ${arg_list[1]} use: help for more information"
+            _msg_ "Unknown argument ${arg_list[1]} use: help for more information"
         fi
     elif [ "${arg_list[0]}" == "restore" ]
     then
@@ -585,18 +636,18 @@ function main() {
             if [ "${arg_list[1]}" != "" ]
             then
                 specific_user="${arg_list[1]}"
-                echo -e "user restore $specific_user [create subfolder for selected user and, restore last backup]"
+                _msg_ "user restore $specific_user [create subfolder for selected user and, restore last backup]"
                 restore_user_home_folders "$specific_user"
             else
-                echo -e "users restore [create subfolder for every user and, restore last backup]"
+                _msg_ "users restore [create subfolder for every user and, restore last backup]"
                 restore_user_home_folders
             fi
         else
-            echo -e "Backup not found: $home_backups_path"
+            _msg_ "Backup not found: $home_backups_path"
         fi
     elif [ "${arg_list[0]}" == "backup" ]
     then
-        echo -e "users backup [ create users (home) backup ]"
+        _msg_ "users backup [ create users (home) backup ]"
         users_backup
     elif [ "${arg_list[0]}" == "struct" ]
     then
@@ -614,6 +665,9 @@ function main() {
 
 #========================== MAIN ==========================#
 main
+write_status_file
+
+exit "$ERRORS"
 
 #unzip file:
 #tar -xzf rebol.tar.gz

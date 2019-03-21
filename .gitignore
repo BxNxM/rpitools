@@ -31,3 +31,5 @@ tools/autosync/.status
 tools/autosync/sync_configs/*.sync
 ^tools/autosync/sync_configs/template.sync
 tools/autosync/.env
+tools/backuphandler/.status
+tools/autosync/.locks/
