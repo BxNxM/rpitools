@@ -63,6 +63,12 @@ function run() {
         echo -e "SYNC based on: $config"
         log="$(sudo -H -u "$username" bash -c "$autorync_core $config")"
         exitcode="$?"
+        if [ "$exitcode" -eq 23 ]
+        then
+            echo -e "Exitcode with user($username) exitcoe: $exitcode maybe permission issues, try as root"
+            log="$(sudo bash -c "$autorync_core $config")"
+            exitcode="$?"
+        fi
         if [ "$exitcode" -ne 0 ] || [ "${ARG_LIST[0]}" == "debug" ]
         then
             echo -e "$log" >> "$autorync_log_path"
