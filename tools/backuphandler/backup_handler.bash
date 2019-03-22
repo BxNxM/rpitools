@@ -19,7 +19,7 @@ source "${MYDIR}/../../prepare/colors.bash"
 
 function _msg_ () {
     local msg="$*"
-    echo -e "[$(date)][backuphandler] $msg"
+    echo -e "[$(date)]${BLUE}[backuphandler]${NC} $msg"
 }
 
 # crontab - rpitools config get activate fix
@@ -143,8 +143,14 @@ function make_backup_for_every_user() {
             user_bckp_name="${user}_${time}.tar.gz"
             targz_cmd="sudo tar czf ${home_backups_path}/${user_bckp_name} ${exclude_parameters} ${user}"
             _msg_ "CMD: $targz_cmd"
-            eval "$targz_cmd"
-            ERRORS=$(($ERRORS+$?))
+            output=$(eval "$targz_cmd 2>&1")
+            exitc_="$?"
+            if [ "$exitc_" -ne 0 ] && [[ "$output" == *"file changed as we read it"* ]]
+            then
+                exitc_=0
+            fi
+            ERRORS=$(($ERRORS+$exitc_))
+            _msg_ "$output"
         popd
     done
 }
