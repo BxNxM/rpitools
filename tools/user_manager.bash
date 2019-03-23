@@ -290,6 +290,7 @@ function fix_user_groups_and_privileges() {
         if [ "$user" != "$rpitools_user" ]
         then
             _msg_ "Fix user groups and privileges: $user"
+            sync_user_default_aliases_for_every_user "$user"
             set_user_groups "$user"
         fi
     done
@@ -367,6 +368,13 @@ function __copy_user_temaplete() {
         _msg_ "Add $username to the debian-transmission group."
         sudo usermod -a -G debian-transmission "$username"
     fi
+}
+
+function sync_user_default_aliases_for_every_user() {
+    local user="$1"
+    local file="/home/$USER/rpitools/template/user_home_template/user_default_aliases"
+    _msg_ "Sync user_default_aliases to every user: USER: $user"
+    sudo cp "$file" "/home/${user}/.$(basename $file)"
 }
 
 function LogOffUser {
