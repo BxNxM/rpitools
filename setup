@@ -250,9 +250,6 @@ function setup_main_on_raspberrypi() {
             # set custom hostname
             . ${REPOROOT}/autodeployment/lib/set_custom_hostname.bash
 
-            # set up security stuffs
-            . ${REPOROOT}/prepare/system/security.bash
-
             # set custom password for the linux user
             . ${REPOROOT}/prepare/system/custom_user.bash                   # default user - custom hostname
 
@@ -330,6 +327,9 @@ function setup_main_on_raspberrypi() {
             # install tools apps
             setupmessage "Install requested programs from list ${MYDIR}/template/programs.dat:"
             . ${MYDIR}/prepare/system/install_apps.bash
+
+            # set up security stuffs
+            . ${REPOROOT}/prepare/system/security.bash
 
             # automaticly mount connected devices -  add to fstab - and mount it
             setupmessage "PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON"
