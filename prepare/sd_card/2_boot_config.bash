@@ -20,6 +20,14 @@ function message() {
     fi
 }
 
+# validate config:
+config_stdout="$($CONFIGAHNDLER -v)"
+if [ "$?" -ne 0 ]
+then
+    message "Config is invalid, to fix use: confeditor d"
+    exit 1
+fi
+
 OS=$(uname)
 if [ "$OS" == "Darwin" ]
 then

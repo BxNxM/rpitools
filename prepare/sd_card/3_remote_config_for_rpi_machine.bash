@@ -18,6 +18,14 @@ vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
 custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
 reboot_wait_loop=8
 
+# validate config:
+config_stdout="$($CONFIGAHNDLER -v)"
+if [ "$?" -ne 0 ]
+then
+    message "Config is invalid, to fix use: confeditor d"
+    exit 1
+fi
+
 # SET timer
 SECONDS=0
 
