@@ -9,7 +9,7 @@ source "${MYDIR_}/../colors.bash"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 ssh_passed_state="$($confighandler -s SECURITY -o password_authentication)"
-ssh_passed_state_ignore_global="$($confighandler -s SECURITY -o password_access_ignore_global)"
+password_auth_for_rpitools_admin="$($confighandler -s SECURITY -o password_auth_for_rpitools_admin)"
 ssh_id_rsa_pub="$($confighandler -s SECURITY -o id_rsa_pub)"
 user="$($confighandler -s GENERAL -o user_name_on_os)"
 sshd_config_path="/etc/ssh/sshd_config"
@@ -23,6 +23,21 @@ _msg_title="SECURITY [SSH|UFW|GROUPS] SETUP"
 function _msg_() {
     local msg="$1"
     echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${RED}[ $_msg_title ]${NC} - $msg"
+}
+
+function change_multi_2line() {
+    local from_l1="$1"
+    local from_l2="$2"
+    local to_l1="$3"
+    local to_l2="$4"
+    local where="$5"
+
+    if [ ! -z "$from_l1" ] && [ ! -z "$from_l2" ]
+    then
+        sudo sed -i '/'"${from_l1}"'/ {N; s/'"${from_l1}"'\(.*\n.*\)'"${from_l2}"'/'"${to_l1}"'\1'"${to_l2}"'/;}' "$where"
+    else
+        _msg_ "2 input parameters needed - NOT PASSED"
+    fi
 }
 
 function change_line() {
@@ -272,50 +287,71 @@ else
 fi
 
 # SET PasswordAuthentication FOR PASSWORD LIGIN OVER SSH ON | OFF
-get_ssh_passwd_state_is_yes=$(cat $sshd_config_path | grep -v grep | grep "PasswordAuthentication yes")
-get_ssh_passwd_state_is_no=$(cat $sshd_config_path | grep -v grep | grep "PasswordAuthentication no")
+rpitools_comment_tag="# configured by rpitools"
+get_ssh_passwd_state_is_yes=$(cat $sshd_config_path | pcregrep -M "$rpitools_comment_tag.*\n.*PasswordAuthentication yes")
+get_ssh_passwd_state_is_no=$(cat $sshd_config_path | pcregrep -M "$rpitools_comment_tag.*\n.*PasswordAuthentication no")
+get_ssh_passwd_state_user_set_is_no=$(cat $sshd_config_path | pcregrep -M "Match User $user.*\n.*PasswordAuthentication no")
+get_ssh_passwd_state_user_set_is_yes=$(cat $sshd_config_path | pcregrep -M "Match User $user.*\n.*PasswordAuthentication yes")
+initial_sshd_config="\n$rpitools_comment_tag\nPasswordAuthentication yes\n\nMatch User $user\nPasswordAuthentication yes"
+# Initial sshd configuration
+if [ "$(cat "$sshd_config_path" | grep "$rpitools_comment_tag")"  == "" ]
+then
+    _msg_ "Add rpitools initial sshd config for $sshd_config_path"
+    echo -e "$initial_sshd_config" > /tmp/sshdconfrpitools
+    sudo bash -c "cat /tmp/sshdconfrpitools >> $sshd_config_path"
+else
+    _msg_ "Initial rpitools sshd config already added for $sshd_config_path"
+fi
+# sshd password state handling - global
 if [[ "$ssh_passed_state" == "True" ]] || [[ "$ssh_passed_state" == "true" ]]
 then
     if [ "$get_ssh_passwd_state_is_yes" == "" ]
     then
-        if [[ "$ssh_passed_state_ignore_global" = "True" ]] || [[ "$ssh_passed_state_ignore_global" = "true" ]]
-        then
-            _msg_ "Set PasswordAuthentication yes -> system wide"
-            change_line "PasswordAuthentication no" "PasswordAuthentication yes" "$sshd_config_path"
-            _msg_ "Restart ssh service: sudo systemctl restart ssh"
-            sudo systemctl restart ssh
-        else
-            _msg_ "Set PasswordAuthentication yes -> only for $user\n TODO"
-            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
-            _msg_ "Change line in $sshd_config_path"
-            _msg_ "From: PasswordAuthentication yes"
-            _msg_ "Match User $user"
-            _msg_ "   PasswordAuthentication yes"
-            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
-        fi
+        _msg_ "Set PasswordAuthentication yes -> system wide"
+        change_multi_2line "$rpitools_comment_tag" "PasswordAuthentication no" "$rpitools_comment_tag" "PasswordAuthentication yes" "$sshd_config_path"
+        _msg_ "Restart ssh service: sudo systemctl restart ssh"
+        sudo systemctl restart ssh
+        _msg_ "SSH status [$?]: $(systemctl is-active ssh)"
     else
-        _msg_ "Already set [PasswordAuthentication yes]: $get_ssh_passwd_state_is_yes"
+        _msg_ "Already set [PasswordAuthentication yes] -> system wide: $get_ssh_passwd_state_is_yes"
     fi
 else
+    # global password setup
     if [ "$get_ssh_passwd_state_is_no" == "" ]
     then
-        if [[ "$ssh_passed_state_ignore_global" = "True" ]] || [[ "$ssh_passed_state_ignore_global" = "true" ]]
-        then
-            _msg_ "Set PasswordAuthentication no -> system wide"
-            change_line "PasswordAuthentication yes" "PasswordAuthentication no" "$sshd_config_path"
-            _msg_ "Restart ssh service: sudo systemctl restart ssh"
-            sudo systemctl restart ssh
-        else
-            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
-            _msg_ "Set PasswordAuthentication no -> only for $user\n TODO"
-            _msg_ "Change line in $sshd_config_path"
-            _msg_ "From: PasswordAuthentication no"
-            _msg_ "Match User $user"
-            _msg_ "   PasswordAuthentication no"
-            _msg_ "iiiiiiiiiiiiiiiiiiiiii [info] iiiiiiiiiiiiiiiiiiiiiiiii"
-        fi
+        _msg_ "Set PasswordAuthentication no -> system wide"
+        change_multi_2line "$rpitools_comment_tag" "PasswordAuthentication yes" "$rpitools_comment_tag" "PasswordAuthentication no" "$sshd_config_path"
+        _msg_ "Restart ssh service: sudo systemctl restart ssh"
+        sudo systemctl restart ssh
+        _msg_ "SSH status [$?]: $(systemctl is-active ssh)"
     else
         _msg_ "Already set [PasswordAuthentication no]: $get_ssh_passwd_state_is_no"
+    fi
+fi
+
+# sshd password state handling - user password setup
+if [[ "$password_auth_for_rpitools_admin" == "False" ]] || [[ "$password_auth_for_rpitools_admin" = "false" ]]
+then
+    if [ "$get_ssh_passwd_state_user_set_is_no" == "" ]
+    then
+        _msg_ "Set PasswordAuthentication no -> only for $user"
+        change_multi_2line "Match User $user" "PasswordAuthentication yes" "Match User $user" "PasswordAuthentication no" "$sshd_config_path"
+        _msg_ "Restart ssh service: sudo systemctl restart ssh"
+        sudo systemctl restart ssh
+        _msg_ "SSH status [$?]: $(systemctl is-active ssh)"
+    else
+        _msg_ "Already set PasswordAuthentication no -> only for $user"
+    fi
+else
+    if [ "$get_ssh_passwd_state_user_set_is_yes" == "" ]
+    then
+        _msg_ "Set PasswordAuthentication yes -> only for $user"
+        change_multi_2line "Match User $user" "PasswordAuthentication no" "Match User $user" "PasswordAuthentication yes" "$sshd_config_path"
+        _msg_ "Restart ssh service: sudo systemctl restart ssh"
+        sudo systemctl restart ssh
+        _msg_ "SSH status [$?]: $(systemctl is-active ssh)"
+    else
+        _msg_ "Already set PasswordAuthentication yes -> only for $user"
     fi
 fi
 
