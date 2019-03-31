@@ -12,3 +12,4 @@ alias rpihelp='export WELCOME_TEXT_ENV="true"; /home/${RPITOOLSUSER}/rpitools/to
 alias gitlog='git log --all --decorate --oneline --graph'
 alias gitbranch='git branch -av'
 alias configure_rpitools='su - ${RPITOOLSUSER}'
+alias gotop='/home/$RPITOOLSUSER/rpitools/tools/gotop/gotop.bash'
