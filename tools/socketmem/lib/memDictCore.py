@@ -21,7 +21,8 @@ class dictHandler(socketHandler.SocketServer):
         self.serverside_printout("Init state: " + str(self.dict_backup_handler.write_cfg_file(self.MEM_DICT)))
         self.serverside_printout("Full dict: " + str(self.MEM_DICT))
 
-    def input_data_handler(self, data):
+    def input_data_handler(self, data, conn=None):
+        self.serverside_printout("\t\t=> Run input_data_handler conn: " + str(conn))
         silentmode_text = ""
         cmd, text, silentmode_text = socketHandler.SocketServer.input_data_handler(self, data)
         self.serverside_printout("Toplvl script active")
