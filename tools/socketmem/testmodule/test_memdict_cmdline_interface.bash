@@ -112,7 +112,7 @@ function run_thread_get_data() {
             break
         fi
     done
-    console "\tREAD TEST: $cnt / $time_query_sec sec"
+    console "\tREAD TEST: $cnt answer / $time_query_sec sec"
 }
 
 function test_get_data_parallel_silence_True() {
@@ -178,7 +178,10 @@ function main() {
     console "----  PARALLEL DATA QUERY FROM MEMDICT  -----"
     console "---------------------------------------------"
     # sample time, threads
-    test_get_data_parallel_silence_True 10 10
+    console "SAMPLE TIME: 1, THREADS: 100"
+    test_get_data_parallel_silence_True 1 100
+    console "SAMPLE TIME: 5, THREADS: 50"
+    test_get_data_parallel_silence_True 5 50
 }
 
 main
