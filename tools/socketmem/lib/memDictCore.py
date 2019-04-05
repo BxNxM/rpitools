@@ -17,7 +17,7 @@ class dictHandler(socketHandler.SocketServer):
         self.dict_backup_handler = jsonHandler.jsonHandler()
         self.MEM_DICT = self.dict_backup_handler.read_cfg_file()
         self.MEM_DICT["general"] = { "service": "rpitools",
-                                     "born": "around 2018",
+                                     "born": "around2018",
                                      "metadata": { "last_update": str(datetime.datetime.now())}
                                    }
         self.serverside_printout("Init state: " + str(self.dict_backup_handler.write_cfg_file(self.MEM_DICT)))
