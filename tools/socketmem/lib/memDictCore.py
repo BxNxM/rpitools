@@ -2,6 +2,7 @@ import socketHandler
 import jsonHandler
 import LogHandler
 mylogger = LogHandler.LogHandler("dictSocketHandlerCore")
+import datetime
 
 class dictHandler(socketHandler.SocketServer):
 
@@ -16,7 +17,8 @@ class dictHandler(socketHandler.SocketServer):
         self.dict_backup_handler = jsonHandler.jsonHandler()
         self.MEM_DICT = self.dict_backup_handler.read_cfg_file()
         self.MEM_DICT["general"] = { "service": "rpitools",
-                                     "born": "around 2018"
+                                     "born": "around 2018",
+                                     "metadata": { "last_update": str(datetime.datetime.now())}
                                    }
         self.serverside_printout("Init state: " + str(self.dict_backup_handler.write_cfg_file(self.MEM_DICT)))
         self.serverside_printout("Full dict: " + str(self.MEM_DICT))
@@ -165,6 +167,7 @@ class dictHandler(socketHandler.SocketServer):
                     output_text += "OVERRIDE VALUE [{}][{}][{}] -> [{}][{}][{}]\n".format(namespace_in, key_in, value,\
                                                                                         namespace_in, key_in, value_in)
                     self.MEM_DICT[namespace_in][key_in] = value_in
+                    self.MEM_DICT[namespace_in]["metadata"]["last_update"] = str(datetime.datetime.now())
                     if self.dict_backup_handler.write_cfg_file(self.MEM_DICT):
                         output_text += "\tSUCCESS"
                         silentmode_text = True

@@ -5,6 +5,7 @@ import time
 myfolder = os.path.dirname(os.path.abspath(__file__))
 backupfilepath = os.path.join(myfolder, ".dictbackup.json")
 INITED = False
+import datetime
 
 class jsonHandler():
     def __init__(self, cfg_path = backupfilepath):
@@ -96,7 +97,8 @@ def __init__RGB_schema():
                             "GREEN": 55,
                             "LED": "OFF",
                             "RED": 65,
-                            "SERVICE": "OFF"
+                            "SERVICE": "OFF",
+                            "metadata": { "last_update": str(datetime.datetime.now())}
                           }
                   }
     if dict_backup.inject_schema(test_schema):
@@ -109,7 +111,8 @@ def __init__oledBUTTONS_schema():
 
     # inject_schema
     test_schema = {"oled": { "sysbuttons": None,
-                            "joystick": None
+                            "joystick": None,
+                            "metadata": { "last_update": str(datetime.datetime.now())}
                           }
                   }
     if dict_backup.inject_schema(test_schema):
@@ -131,7 +134,8 @@ if __name__ == "__main__":
                             "GREEN": 55,
                             "LED": "OFF",
                             "RED": 65,
-                            "SERVICE": "OFF"
+                            "SERVICE": "OFF",
+                            "metadata": { "last_update": str(datetime.datetime.now())}
                           }
                    }
     print(dict_backup.inject_schema(test_schema))

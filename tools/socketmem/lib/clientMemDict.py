@@ -7,9 +7,11 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(myfolder)
 import ast
 import select
+import LocalMachine
+dumped_dotdictbackup_json_path = myfolder + os.sep + ".dictbackup.json"
 
-print('Number of arguments: ' + str(len(sys.argv)) + ' arguments.')
-print('Argument List: ' + str(sys.argv))
+#print('Number of arguments: ' + str(len(sys.argv)) + ' arguments.')
+#print('Argument List: ' + str(sys.argv))
 
 class SocketDictClient():
 
@@ -72,13 +74,39 @@ class SocketDictClient():
     def close_connection(self):
         self.run_command("exit")
 
+def reset_dumped_database_and_restart_service():
+    global dumped_dotdictbackup_json_path
+    cmd = "rm -f " + str(dumped_dotdictbackup_json_path)
+    exit_code, stdout, stderr = LocalMachine.run_command(cmd, wait_for_done=True)
+    if exit_code == 0:
+        cmd = "sudo systemctl restart memDictCore"
+        exit_code, stdout, stderr = LocalMachine.run_command(cmd, wait_for_done=True)
+        if exit_code == 0:
+            print("Reset memDictCore databse was SUCCESSFUL")
+        else:
+            print("Reset memDictCore databse FAILED: " + str(stderr))
+    else:
+        print("Reset memDictCore databse FAILED: " + str(stderr))
+    return exit_code
+
 if __name__ == "__main__":
     try:
         socketdictclient = SocketDictClient()
     except KeyboardInterrupt:
         pass
+    except Exception as e:
+        print("FAILED TO START: " + str(e))
 
     # handle argumentum list
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "-h" or sys.argv[1] == "--help":
+            print("(1) RUN COMMAND: clientMemDict -md -n xx -k yy -v zz\n\tOR: clientMemDict --memDict --namespace xx --key yy --value zz")
+            print("(2) RUN INTERACTIVE MODE: clientMemDict")
+        if sys.argv[1] == "-r" or sys.argv[1] == "--reset":
+            print("Reset memory dict core")
+            exit_code = reset_dumped_database_and_restart_service()
+            sys.exit(exit_code)
+
     if len(sys.argv) > 1:
         arg_list = sys.argv[1:]
         cmd = ""
@@ -86,11 +114,6 @@ if __name__ == "__main__":
             cmd += " " + str(par)
         socketdictclient.receive_data()
         print(socketdictclient.run_command(cmd))
-
-    if len(sys.argv) == 2:
-        if sys.argv[1] == "-h" or sys.argv[1] == "--help":
-            print("(1) RUN COMMAND: clientMemDict -md -n xx -k yy -v zz\n\tOR: clientMemDict --memDict --namespace xx --key yy --value zz")
-            print("(2) RUN INTERACTIVE MODE: clientMemDict")
 
     if len(sys.argv) == 1:
         try:
