@@ -82,7 +82,12 @@ def reset_dumped_database_and_restart_service():
         cmd = "sudo systemctl restart memDictCore"
         exit_code, stdout, stderr = LocalMachine.run_command(cmd, wait_for_done=True)
         if exit_code == 0:
-            print("Reset memDictCore databse was SUCCESSFUL")
+            cmd = "sudo systemctl is-active memDictCore"
+            exit_code, stdout, stderr = LocalMachine.run_command(cmd, wait_for_done=True)
+            if stdout == "active":
+                print("Reset memDictCore databse was SUCCESSFUL")
+            else:
+                print("Reset memDictCore databse FAILED: " + str(stdout))
         else:
             print("Reset memDictCore databse FAILED: " + str(stderr))
     else:
