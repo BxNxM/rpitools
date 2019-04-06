@@ -80,7 +80,7 @@ function check_output_substring() {
 function test_get_data_silence_False() {
     local substring="$1"
     local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k born -s False"
-    console "[test_get_data_silence_False] CMD: $cmd"
+    console "${YELLOW}[test_get_data_silence_False]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
     check_output_line_numbers_match "1+" "$output"
@@ -93,7 +93,7 @@ function test_get_data_silence_False() {
 function test_get_data_silence_True() {
     local substring="$*"
     local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k born -s True"
-    console "[test_get_data_silence_True] CMD: $cmd"
+    console "${YELLOW}[test_get_data_silence_True]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
     check_output_line_numbers_match "1" "$output"
@@ -175,7 +175,7 @@ function test_write_data_silence_False() {
     default_value=$($cmd)
     console "Default value: $default_value"
     local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k service -v $substring -s False"
-    console "[test_write_data_silence_False] CMD: $cmd"
+    console "${YELLOW}[test_write_data_silence_False]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
     check_output_line_numbers_match "1+" "$output"
@@ -193,7 +193,7 @@ function test_write_data_silence_True() {
     default_value=$($cmd)
     console "Default value: $default_value"
     local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k service -v $substring -s True"
-    console "[test_write_data_silence_False] CMD: $cmd"
+    console "${YELLOW}[test_write_data_silence_False]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
     check_output_line_numbers_match "1" "$output"

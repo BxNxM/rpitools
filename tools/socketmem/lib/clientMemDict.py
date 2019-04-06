@@ -107,9 +107,18 @@ if __name__ == "__main__":
         if sys.argv[1] == "-h" or sys.argv[1] == "--help":
             print("(1) RUN COMMAND: clientMemDict -md -n xx -k yy -v zz\n\tOR: clientMemDict --memDict --namespace xx --key yy --value zz")
             print("(2) RUN INTERACTIVE MODE: clientMemDict")
+            print("TOOLS: RESET AND RESTART MEMDICT SERVICE: clientMemDict -r | --reset")
+            print("TOOLS: RUN TEST MODULE: clientMemDict -tm | --testmodule")
+            sys.exit(0)
         if sys.argv[1] == "-r" or sys.argv[1] == "--reset":
             print("Reset memory dict core")
             exit_code = reset_dumped_database_and_restart_service()
+            sys.exit(exit_code)
+        if sys.argv[1] == "-tm" or sys.argv[1] == "--testmodule":
+            print("Run service test module, pls wait...")
+            print("CMD: " + str(myfolder) + "/../testmodule/test_memdict_cmdline_interface.bash")
+            exit_code, stdout, stderr = LocalMachine.run_command(str(myfolder) + "/../testmodule/test_memdict_cmdline_interface.bash")
+            print(stdout)
             sys.exit(exit_code)
 
     if len(sys.argv) > 1:
