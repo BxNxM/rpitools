@@ -6,6 +6,8 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 backupfilepath = os.path.join(myfolder, ".dictbackup.json")
 INITED = False
 import datetime
+import inspect
+import default_fragments
 
 class jsonHandler():
     def __init__(self, cfg_path = backupfilepath):
@@ -89,53 +91,24 @@ class jsonHandler():
         except:
             return False
 
-def __init__RGB_schema():
+    def load_default_json_fragments(self):
+         all_functions = inspect.getmembers(default_fragments, inspect.isfunction)
+         for function in all_functions:
+            schema_name = function[0]
+            default_schema_frgmt = getattr(default_fragments, schema_name)()
+            if self.inject_schema(default_schema_frgmt):
+                print("\tSchema RGB injected successfully.")
+            else:
+                print("\tSchema injection failed RGB")
+
+def __init__ALL_schema():
     dict_backup = jsonHandler(backupfilepath)
-
-    # inject_schema
-    test_schema = {"rgb": { "BLUE": 55,
-                            "GREEN": 55,
-                            "LED": "OFF",
-                            "RED": 65,
-                            "SERVICE": "OFF",
-                            "metadata": { "last_update": str(datetime.datetime.now())}
-                          }
-                  }
-    if dict_backup.inject_schema(test_schema):
-        print("\tSchema RGB injected successfully.")
-    else:
-        print("\tSchema injection failed RGB")
-
-def __init__oledBUTTONS_schema():
-    dict_backup = jsonHandler(backupfilepath)
-
-    # inject_schema
-    test_schema = {"oled": { "sysbuttons": None,
-                            "joystick": None,
-                            "metadata": { "last_update": str(datetime.datetime.now())}
-                          }
-                  }
-    if dict_backup.inject_schema(test_schema):
-        print("\tSchema oledBUTTONS injected successfully.")
-    else:
-        print("\tSchema injection failed oledBUTTONS")
+    dict_backup.load_default_json_fragments()
 
 if "jsonHandler" in __name__:
     if INITED is False:
-        __init__RGB_schema()
-        __init__oledBUTTONS_schema()
+        __init__ALL_schema()
         INITED = True
 
 if __name__ == "__main__":
-    dict_backup = jsonHandler(backupfilepath)
-
-    # inject_schema
-    test_schema = {"rgb": { "BLUE": 55,
-                            "GREEN": 55,
-                            "LED": "OFF",
-                            "RED": 65,
-                            "SERVICE": "OFF",
-                            "metadata": { "last_update": str(datetime.datetime.now())}
-                          }
-                   }
-    print(dict_backup.inject_schema(test_schema))
+    __init__ALL_schema()
