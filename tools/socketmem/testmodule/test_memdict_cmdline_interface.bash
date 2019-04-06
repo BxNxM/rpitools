@@ -184,6 +184,7 @@ function test_write_data_silence_False() {
         check_output_substring "$output" "$substring"
     fi
     console "Restore default value: $default_value"
+    "${MEMDICT_CLIENT}" -md -n "${NAMESPACE}" -k service -v "$default_value" -s True
 }
 
 function test_write_data_silence_True() {
@@ -201,6 +202,7 @@ function test_write_data_silence_True() {
         check_output_substring "$output" "True"
     fi
     console "Restore default value: $default_value"
+    "${MEMDICT_CLIENT}" -md -n "${NAMESPACE}" -k service -v "$default_value" -s True
 }
 
 function run_thread_write_data() {
