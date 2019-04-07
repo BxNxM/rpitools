@@ -6,25 +6,30 @@ import LocalMachine
 import GeneralElements
 import ConsoleParameters
 from Colors import Colors
+import MemDictHandler
 health_error_code = 0
 health_all_monitored = 0
+rpitools_services = ["oled_gui_core", "dropbox_halpage", "auto_restart_transmission", "rpitools_logrotate", "memDictCore", "rgb_led_controller", "temp_controll_fan"]
+linux_services = ["apache2", "transmission-daemon", "motion", "smbd", "minidlna", "ssh", "nfs-kernel-server", "glances", "cron", "networking"]
+health_sub_states={"rpitoos_services_si": [0, ""], "linux_services_si": [0, ""], "processes_si": [0, ""]}
 
 def get_rpitools_services(color=Colors.CYAN):
-    services=["oled_gui_core", "dropbox_halpage", "auto_restart_transmission", "rpitools_logrotate", "memDictCore", "rgb_led_controller", "temp_controll_fan"]
+    global rpitools_services, linux_services
+    services = rpitools_services
     data = color + " RPITOOLS SERVICES:\n" + Colors.NC
     for service in services:
         is_active = LocalMachine.run_command("systemctl is-active " + str(service))[1]
         is_enabled = LocalMachine.run_command("systemctl is-enabled " + str(service))[1]
-        is_active, is_enabled = service_state_coloring(isactive=is_active, isenabled=is_enabled)
+        is_active, is_enabled = service_state_coloring(isactive=is_active, isenabled=is_enabled, service_name=service)
         data += "\t" + color + str(service) + Colors.NC + " active status: " + str(is_active) + "\n"
 
         data += "\t" + str(service) + " enabled status: " + str(is_enabled) + "\n"
-    services=["apache2", "transmission-daemon", "motion", "smbd", "minidlna", "ssh", "nfs-kernel-server", "glances", "cron", "networking"]
+    services = linux_services
     data += color + " LINUX SERVICES:\n" + Colors.NC
     for service in services:
         is_active = LocalMachine.run_command("systemctl is-active " + str(service))[1]
         is_enabled = LocalMachine.run_command("systemctl is-enabled " + str(service))[1]
-        is_active, is_enabled = service_state_coloring(isactive=is_active, isenabled=is_enabled)
+        is_active, is_enabled = service_state_coloring(isactive=is_active, isenabled=is_enabled, service_name=service)
         data += "\t" + color + str(service) + Colors.NC + " active status: " + str(is_active) + "\n"
         data += "\t" + str(service) + " enabled status: " + str(is_enabled) + "\n"
     return data
@@ -38,11 +43,11 @@ def get_other_monitored_processes(color=Colors.CYAN):
             process_state = "inactive"
         else:
             process_state = "active"
-        process_state, is_enabled = service_state_coloring(isactive=process_state)
+        process_state, is_enabled = service_state_coloring(isactive=process_state, service_name=process)
         data += "\t" + color + str(process) + Colors.NC + " state: " + str(process_state) + "\n"
     return data
 
-def service_state_coloring(isactive, isenabled=None):
+def service_state_coloring(isactive, isenabled=None, service_name=""):
     global health_error_code, health_all_monitored
     health_all_monitored += 1
     if isenabled is not None:
@@ -52,10 +57,22 @@ def service_state_coloring(isactive, isenabled=None):
             else:
                 is_active = Colors.RED + isactive + Colors.NC
                 health_error_code += 1
+                if service_name in rpitools_services:
+                    health_sub_states["rpitools_services_si"][0] += 1
+                    health_sub_states["rpitools_services_si"][1] += str(service_name).replace("-", "") + ": ERROR =="
+                elif service_name in linux_services:
+                    health_sub_states["linux_services_si"][0] += 1
+                    health_sub_states["linux_services_si"][1] += str(service_name).replace("-", "") + ": ERROR =="
         elif isenabled == "disabled":
             if isactive == "active":
                 is_active = Colors.YELLOW + isactive + Colors.NC
                 health_error_code += 0.1
+                if service_name in rpitools_logrotate:
+                    health_sub_states["rpitools_services_si"][0] += 0.1
+                    health_sub_states["rpitools_services_si"][1] += str(service_name).replace("-", "") + ": WARNING =="
+                elif service_name in linux_services:
+                    health_sub_states["linux_services_si"][0] += 0.1
+                    health_sub_states["linux_services_si"][1] += str(service_name).replace("-", "") + ": WARNING =="
             else:
                 is_active = Colors.GREEN + isactive + Colors.NC
         else:
@@ -75,12 +92,17 @@ def process_state_coloring(status, title, color=Colors.CYAN):
     elif "warning" in status:
         autosync_status = Colors.YELLOW + str(status) + Colors.NC
         health_error_code += 0.1
+        health_sub_states["processes_si"][0] += 0.1
+        health_sub_states["processes_si"][1] += str(title) + " process WARNING =="
     elif "fail" in status:
         autosync_status = Colors.RED + str(status) + Colors.NC
         health_error_code += 1
+        health_sub_states["processes_si"][0] += 1
+        health_sub_states["processes_si"][1] += str(title) + " process ERROR =="
     elif "unknown" in status:
         autosync_status = Colors.YELLOW + str(status) + Colors.NC
         health_error_code += 0.1
+        health_sub_states["processes_si"][1] += str(title) + " process UNKNOWN =="
     else:
         autosync_status = "inactive"
     return color + "\t" + str(title) + " state: " + Colors.NC + str(autosync_status) + "\n"
@@ -100,13 +122,67 @@ def calculate_health_multipayer():
             Colors.NC, Colors.YELLOW, Colors.RED, health_all_monitored, Colors.NC, health_error_code)
     return text
 
+def system_health_data_handler(rpitools_services_si=None, linux_services_si=None, processes_si=None):
+    if rpitools_services_si is not None:
+        state = rpitools_services_si[0]
+        info_text = rpitools_services_si[1]
+        try:
+            MemDictHandler.set_value_MemDict(key="rpitools_services", value=state)
+            if info_text != "":
+                existing_text = MemDictHandler.get_value_metadata_info()
+                MemDictHandler.set_value_metadata_info(str(existing_text) + str(info_text))
+        except Exception as e:
+            print("Write rpitools_services to memdict failed: " + str(e))
+
+    if linux_services_si is not None:
+        state = linux_services_si[0]
+        info_text = linux_services_si[1]
+        try:
+            MemDictHandler.set_value_MemDict(key="linux_services", value=state)
+            if info_text != "":
+                existing_text = MemDictHandler.get_value_metadata_info()
+                MemDictHandler.set_value_metadata_info(str(existing_text) + str(info_text))
+        except Exception as e:
+            print("Write linux_services to memdict failed: " + str(e))
+
+    if processes_si is not None:
+        state = processes_si[0]
+        info_text = processes_si[1]
+        try:
+            MemDictHandler.set_value_MemDict(key="processes", value=state)
+            if info_text != "":
+                existing_text = MemDictHandler.get_value_metadata_info()
+                MemDictHandler.set_value_metadata_info(str(existing_text) + str(info_text))
+        except Exception as e:
+            print("Write processes to memdict failed: " + str(e))
+
+def update_system_health_data_with_services_state():
+    global health_sub_states
+    if health_sub_states["rpitoos_services_si"][0] == 0:
+        health_sub_states["rpitoos_services_si"][0] = "ok"
+    else:
+        health_sub_states["rpitoos_services_si"][0] = "alarm"
+
+    if health_sub_states["linux_services_si"][0] == 0:
+        health_sub_states["linux_services_si"][0] = "ok"
+    else:
+        health_sub_states["linux_services_si"][0] = "alarm"
+
+    if health_sub_states["processes_si"][0] == 0:
+        health_sub_states["processes_si"][0] = "ok"
+    else:
+        health_sub_states["processes_si"][0] = "alarm"
+    system_health_data_handler(health_sub_states["rpitoos_services_si"], health_sub_states["linux_services_si"], health_sub_states["processes_si"])
+
 def create_printout(separator="|", char_width=80, color=Colors.CYAN):
+    global health_sub_states
     text = GeneralElements.header_bar(" SERVICES ", char_width, separator, color_name=color)
     text += get_rpitools_services()
     text += get_other_monitored_processes()
     text += get_autosync_status()
     text += get_backuphandler_status()
     text += calculate_health_multipayer()
+    update_system_health_data_with_services_state()
     return text
 
 def main():

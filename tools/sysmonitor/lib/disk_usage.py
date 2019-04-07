@@ -46,7 +46,7 @@ def __check_disk_size_health(data, general_max_percentage):
     for key_disk, value_disk in vol_info_dict.items():
         if int(value_disk[:-1]) >= general_max_percentage:
             disk_state += 1
-            info_field += "[ALARM] {} disk, use more then {}%, actual: {}!".format(key_disk, general_max_percentage, value_disk)
+            info_field += "=== [ALARM] {} disk, use more then {}%, actual: {}!".format(key_disk, general_max_percentage, value_disk)
 
     if disk_state == 0:
         disk_state_result = "ok"

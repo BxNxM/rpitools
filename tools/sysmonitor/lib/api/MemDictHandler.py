@@ -4,12 +4,17 @@ myfolder = os.path.dirname(os.path.abspath(__file__))
 clientMemDict_path = os.path.join(myfolder, "../../../socketmem/lib/clientMemDict.py")
 import LocalMachine
 
+def __debug_print(cmd, activate=False):
+    if activate:
+        print(cmd)
+
 def get_value_MemDict(key, namespace="system", field=None):
     global clientMemDict_path
     if field is not None:
-        cmd = "{} -md -n {} -f {} -k {}".format(clientMemDict_path, namespace, field, key)
+        cmd = "{} -md -n {} -f {} -k {} -s True".format(clientMemDict_path, namespace, field, key)
     else:
-        cmd = "{} -md -n {} -k {}".format(clientMemDict_path, namespace, key)
+        cmd = "{} -md -n {} -k {} -s True".format(clientMemDict_path, namespace, key)
+    __debug_print(cmd)
     exitcode, stdout, stderr = LocalMachine.run_command(cmd, wait_for_done=True)
     if exitcode == 0:
         value = stdout
@@ -21,9 +26,10 @@ def get_value_MemDict(key, namespace="system", field=None):
 def set_value_MemDict(key, value, namespace="system", field=None):
     global clientMemDict_path
     if field is not None:
-        cmd = "{} -md -n {} -f {} -k {} -v {}".format(clientMemDict_path, namespace, field, key, value)
+        cmd = "{} -md -n {} -f {} -k {} -v {} -s True".format(clientMemDict_path, namespace, field, key, value)
     else:
-        cmd = "{} -md -n {} -k {} -v {}".format(clientMemDict_path, namespace, key, value)
+        cmd = "{} -md -n {} -k {} -v {} -s True".format(clientMemDict_path, namespace, key, value)
+    __debug_print(cmd)
     exitcode, stdout, stderr = LocalMachine.run_command(cmd, wait_for_done=True)
     if exitcode == 0:
         state = stdout

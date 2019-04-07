@@ -17,6 +17,11 @@ import rpitools_services_list
 import LocalMachine
 import HeaderTimeDateUser
 from Colors import Colors
+import MemDictHandler
+try:
+    MemDictHandler.set_value_metadata_info("=== ")
+except:
+    pass
 
 components_separator="\n"
 is_interrupted = False
