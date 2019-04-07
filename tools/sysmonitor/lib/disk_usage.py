@@ -49,9 +49,9 @@ def __check_disk_size_health(data, general_max_percentage):
             info_field += "=== [ALARM] {} disk, use more then {}%, actual: {}!".format(key_disk, general_max_percentage, value_disk)
 
     if disk_state == 0:
-        disk_state_result = "ok"
+        disk_state_result = "OK"
     else:
-        disk_state_result = "alarm"
+        disk_state_result = "ALARM"
     return disk_state_result, info_field
 
 def disk_health_mapper(data, general_max_percentage=90):

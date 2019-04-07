@@ -9,9 +9,9 @@ from Colors import Colors
 import MemDictHandler
 health_error_code = 0
 health_all_monitored = 0
-rpitools_services = ["oled_gui_core", "dropbox_halpage", "auto_restart_transmission", "rpitools_logrotate", "memDictCore", "rgb_led_controller", "temp_controll_fan"]
+rpitools_services = ["oled_gui_core", "dropbox_halpage", "auto_restart_transmission", "rpitools_logrotate", "memDictCore", "rgb_led_controller", "temp_controll_fan", "hAlarm"]
 linux_services = ["apache2", "transmission-daemon", "motion", "smbd", "minidlna", "ssh", "nfs-kernel-server", "glances", "cron", "networking"]
-health_sub_states={"rpitoos_services_si": [0, ""], "linux_services_si": [0, ""], "processes_si": [0, ""]}
+health_sub_states={"rpitools_services_si": [0, ""], "linux_services_si": [0, ""], "processes_si": [0, ""]}
 
 def get_rpitools_services(color=Colors.CYAN):
     global rpitools_services, linux_services
@@ -158,21 +158,21 @@ def system_health_data_handler(rpitools_services_si=None, linux_services_si=None
 
 def update_system_health_data_with_services_state():
     global health_sub_states
-    if health_sub_states["rpitoos_services_si"][0] == 0:
-        health_sub_states["rpitoos_services_si"][0] = "ok"
+    if health_sub_states["rpitools_services_si"][0] == 0:
+        health_sub_states["rpitools_services_si"][0] = "OK"
     else:
-        health_sub_states["rpitoos_services_si"][0] = "alarm"
+        health_sub_states["rpitools_services_si"][0] = "ALARM"
 
     if health_sub_states["linux_services_si"][0] == 0:
-        health_sub_states["linux_services_si"][0] = "ok"
+        health_sub_states["linux_services_si"][0] = "OK"
     else:
-        health_sub_states["linux_services_si"][0] = "alarm"
+        health_sub_states["linux_services_si"][0] = "ALARM"
 
     if health_sub_states["processes_si"][0] == 0:
-        health_sub_states["processes_si"][0] = "ok"
+        health_sub_states["processes_si"][0] = "OK"
     else:
-        health_sub_states["processes_si"][0] = "alarm"
-    system_health_data_handler(health_sub_states["rpitoos_services_si"], health_sub_states["linux_services_si"], health_sub_states["processes_si"])
+        health_sub_states["processes_si"][0] = "ALARM"
+    system_health_data_handler(health_sub_states["rpitools_services_si"], health_sub_states["linux_services_si"], health_sub_states["processes_si"])
 
 def create_printout(separator="|", char_width=80, color=Colors.CYAN):
     global health_sub_states
