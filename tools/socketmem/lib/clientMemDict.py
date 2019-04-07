@@ -55,13 +55,19 @@ class SocketDictClient():
                     self.close_connection()
                     sys.exit(0)
 
-    def get_parameter(self, namespace, key):
-        cmd = "-md -s True -n {} -k {}".format(namespace, key)
+    def get_parameter(self, namespace, key, field=None):
+        if field is not None:
+            cmd = "-md -s True -n {} -f {} -k {}".format(namespace, field, key)
+        else:
+            cmd = "-md -s True -n {} -k {}".format(namespace, key)
         msg = self.run_command(cmd)
         return msg
 
-    def set_parameter(self, namespace, key, value):
-        cmd = "-md -s True -n {} -k {} -v {}".format(namespace, key, value)
+    def set_parameter(self, namespace, key, value, field=None):
+        if field is not None:
+            cmd = "-md -s True -n {} -f {} -k {} -v {}".format(namespace, field, key, value)
+        else:
+            cmd = "-md -s True -n {} -k {} -v {}".format(namespace, key, value)
         msg = self.run_command(cmd)
         return msg
 
@@ -105,8 +111,9 @@ if __name__ == "__main__":
     # handle argumentum list
     if len(sys.argv) == 2:
         if sys.argv[1] == "-h" or sys.argv[1] == "--help":
-            print("(1) RUN COMMAND: clientMemDict -md -n xx -k yy -v zz\n\tOR: clientMemDict --memDict --namespace xx --key yy --value zz")
-            print("(2) RUN INTERACTIVE MODE: clientMemDict")
+            print("(1) RUN COMMAND: clientMemDict -md -n xx -k yy -v zz\n\tOR: clientMemDict --memdict --namespace xx --key yy --value zz")
+            print("(2) RUN COMMAND: clientMemDict -md -n xx -f mm -k yy -v zz\n\tOR: clientMemDict --memdict --namespace xx --field mm --key yy --value zz")
+            print("(3) RUN INTERACTIVE MODE: clientMemDict")
             print("TOOLS: RESET AND RESTART MEMDICT SERVICE: clientMemDict -r | --reset")
             print("TOOLS: RUN TEST MODULE: clientMemDict -tm | --testmodule")
             sys.exit(0)
@@ -117,8 +124,11 @@ if __name__ == "__main__":
         if sys.argv[1] == "-tm" or sys.argv[1] == "--testmodule":
             print("Run service test module, pls wait...")
             print("CMD: " + str(myfolder) + "/../testmodule/test_memdict_cmdline_interface.bash")
-            exit_code, stdout, stderr = LocalMachine.run_command(str(myfolder) + "/../testmodule/test_memdict_cmdline_interface.bash")
-            print(stdout)
+            if str(raw_input("RUN? Y|N > ")).lower() == "y":
+                exit_code, stdout, stderr = LocalMachine.run_command(str(myfolder) + "/../testmodule/test_memdict_cmdline_interface.bash")
+                print(stdout)
+            else:
+                exit_code = 0
             sys.exit(exit_code)
 
     if len(sys.argv) > 1:

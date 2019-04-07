@@ -16,10 +16,6 @@ class dictHandler(socketHandler.SocketServer):
     def init_MEM_DICT(self):
         self.dict_backup_handler = jsonHandler.jsonHandler()
         self.MEM_DICT = self.dict_backup_handler.read_cfg_file()
-        self.MEM_DICT["general"] = { "service": "rpitools",
-                                     "born": "around2018",
-                                     "metadata": { "last_update": str(datetime.datetime.now())}
-                                   }
         self.serverside_printout("Init state: " + str(self.dict_backup_handler.write_cfg_file(self.MEM_DICT)))
         self.serverside_printout("Full dict: " + str(self.MEM_DICT))
 
@@ -89,6 +85,8 @@ class dictHandler(socketHandler.SocketServer):
                 output_text += "\tDETAILS:\n"
                 output_text += "\t-sh [--show]\t-\tshow dictionary ( ram ) content.\n"
                 output_text += "\t-md [--memdict]\t-\tmemory dict handler -n [--namespace] | -k [--key] | -v [--value]\n"
+                output_text += "\tOR:"
+                output_text += "\t-md [--memdict]\t-\tmemory dict handler -n [--namespace] | -f [--field] | -k [--key] | -v [--value]\n"
                 output_text += "\t-s [--silent]\t-\tsilent mode.\n"
                 output_text += "\t-st [--statistic]\t-\tshows usage statistic.\n"
                 output_text += "\t-h [--help]\t-\tthis help msg.\n"
@@ -110,7 +108,12 @@ class dictHandler(socketHandler.SocketServer):
             for namespace, appdict in self.MEM_DICT.iteritems():
                 formatteddict += str(namespace) + "\n"
                 for appdict_key, appdict_value in appdict.iteritems():
-                    formatteddict += "\t" + str(appdict_key) + " : " + str(appdict_value) + "\n"
+                    if type(appdict_value) is not dict:
+                        formatteddict += "\t" + str(appdict_key) + " : " + str(appdict_value) + "\n"
+                    else:
+                        formatteddict += "\t" + str(appdict_key) + ":\n"
+                        for field_key, field_value in appdict_value.iteritems():
+                            formatteddict += "\t\t" + str(field_key) + " : " + str(field_value) + "\n"
         except:
             formatteddict = str(self.MEM_DICT)
         return formatteddict
@@ -130,12 +133,16 @@ class dictHandler(socketHandler.SocketServer):
         namespace_in = None
         key_in = None
         value_in = None
+        field_in = None
         output_text = ""
         try:
             for index, value in enumerate(data_list):
                 if value == "-n" or value == "--namespace":
                     if "-" not in data_list[index+1] and "--" not in data_list[index+1]:
                             namespace_in = data_list[index+1]
+                if value == "-f" or value == "--field":
+                    if "-" not in data_list[index+1] and "--" not in data_list[index+1]:
+                        field_in = data_list[index+1]
                 if value == "-k" or value == "--key":
                     if "-" not in data_list[index+1] and "--" not in data_list[index+1]:
                         key_in = data_list[index+1]
@@ -145,7 +152,7 @@ class dictHandler(socketHandler.SocketServer):
         except:
             output_text += "Missing argument - index out of range"
 
-        mylogger.logger.info("NAMSEPACEin: {}\nKEYin: {}\nVALUEin: {}\n".format(namespace_in, key_in, value_in))
+        mylogger.logger.info("NAMSEPACEin: {}\nFIELDin:{}\nKEYin: {}\nVALUEin: {}\n".format(namespace_in, field_in, key_in, value_in))
 
         if namespace_in is None:
             output_text += "SET DEFAULT NAMESPACE [general]\n"
@@ -161,12 +168,21 @@ class dictHandler(socketHandler.SocketServer):
                 # new value - override
                 try:
                     try:
-                        value = self.MEM_DICT[namespace_in][key_in]
+                        if field_in is not None:
+                            value = self.MEM_DICT[namespace_in][field_in][key_in]
+                        else:
+                            value = self.MEM_DICT[namespace_in][key_in]
                     except:
                         value=None
-                    output_text += "OVERRIDE VALUE [{}][{}][{}] -> [{}][{}][{}]\n".format(namespace_in, key_in, value,\
-                                                                                        namespace_in, key_in, value_in)
-                    self.MEM_DICT[namespace_in][key_in] = value_in
+                    if field_in is not None:
+                        output_text += "OVERRIDE VALUE [{}][{}][{}][{}] -> [{}][{}][{}][{}]\n".format(namespace_in, field_in, key_in, value,\
+                                                                                                      namespace_in, field_in, key_in, value_in)
+                        self.MEM_DICT[namespace_in][field_in][key_in] = value_in
+                    else:
+                        output_text += "OVERRIDE VALUE [{}][{}][{}] -> [{}][{}][{}]\n".format(namespace_in, key_in, value,\
+                                                                                              namespace_in, key_in, value_in)
+                        self.MEM_DICT[namespace_in][key_in] = value_in
+
                     self.MEM_DICT[namespace_in]["metadata"]["last_update"] = str(datetime.datetime.now())
                     if self.dict_backup_handler.write_cfg_file(self.MEM_DICT):
                         output_text += "\tSUCCESS"
@@ -179,9 +195,14 @@ class dictHandler(socketHandler.SocketServer):
             else:
                 # we have namespace and key
                 try:
-                    output_text += "GET VALUE [{}][{}]\n".format(namespace_in, key_in)
-                    output_text += str(self.MEM_DICT[namespace_in][key_in])
-                    silentmode_text = str(self.MEM_DICT[namespace_in][key_in])
+                    if field_in is not None:
+                        output_text += "GET VALUE [{}][{}][{}]\n".format(namespace_in, field_in, key_in)
+                        output_text += str(self.MEM_DICT[namespace_in][field_in][key_in])
+                        silentmode_text = str(self.MEM_DICT[namespace_in][field_in][key_in])
+                    else:
+                        output_text += "GET VALUE [{}][{}]\n".format(namespace_in, key_in)
+                        output_text += str(self.MEM_DICT[namespace_in][key_in])
+                        silentmode_text = str(self.MEM_DICT[namespace_in][key_in])
                 except Exception as e:
                     output_text += "Get value error: " + str(e)
         else:

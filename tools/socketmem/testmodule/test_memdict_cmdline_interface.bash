@@ -4,6 +4,7 @@ MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MEMDICT_CLIENT="${MYDIR}/../lib/clientMemDict.py"
 NAMESPACE="general"
+FIELD="metadata"
 HEALTH=0
 
 source "${MYDIR}/colors.bash"
@@ -271,25 +272,68 @@ function test_write_data_parallel_silence_True() {
     done
 }
 
+function test_get_field_data_silence_True() {
+    local substring="$*"
+    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -s True"
+    console "${YELLOW}[test_get_field_data_silence_True]${NC} CMD: $cmd"
+    output=$($cmd)
+    console "[output]\n|$output|"
+    check_output_line_numbers_match "1" "$output"
+    if [ "$substring" != "" ]
+    then
+        check_output_substring "$output" "$substring"
+    fi
+}
+
+function test_write_field_data_silence_True() {
+    local substring="$1"
+    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -s True"
+    default_value=$($cmd)
+    console "Default value: $default_value"
+    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -v $substring -s True"
+    console "${YELLOW}[test_write_field_data_silence_True]${NC} CMD: $cmd"
+    output=$($cmd)
+    console "[output]\n|$output|"
+    check_output_line_numbers_match "1" "$output"
+    if [ "$substring" != "" ]
+    then
+        check_output_substring "$output" "True"
+    fi
+    console "Restore default value: $default_value"
+    "${MEMDICT_CLIENT}" -md -n "${NAMESPACE}" -f ${FIELD} -k dummykey -v "$default_value" -s True
+}
+
 function main() {
 
-    console "---------------------------------------------"
-    console "------  ${PURPLE}SIMPLE DATA QUERY FROM MEMDICT${NC}  -----"
-    console "---------------------------------------------"
+    console "-------------------------------------------------"
+    console "--------  ${PURPLE}SIMPLE DATA QUERY FROM MEMDICT${NC}  -------"
+    console "-------------------------------------------------"
     test_get_data_silence_False "around2018"
     console "---------------------------------------------"
     test_get_data_silence_True "around2018"
 
-    console "---------------------------------------------"
-    console "------  ${PURPLE}SIMPLE DATA WRITE TO MEMDICT${NC}  -----"
-    console "---------------------------------------------"
+
+    console "-------------------------------------------------"
+    console "--------  ${PURPLE}SIMPLE DATA WRITE TO MEMDICT${NC}  -------"
+    console "-------------------------------------------------"
     test_write_data_silence_False "rpitools_write_testX"
     console "---------------------------------------------"
     test_write_data_silence_True "rpitools_write_testY"
 
-    console "---------------------------------------------"
-    console "----  ${PURPLE}PARALLEL DATA QUERY FROM MEMDICT${NC}  -----"
-    console "---------------------------------------------"
+
+    console "-------------------------------------------------"
+    console "-  ${PURPLE}SIMPLE DATA READ FROM MEMDICT FIELD (metadata)${NC}  -"
+    console "-------------------------------------------------"
+    test_get_field_data_silence_True "dummyvalue"
+
+    console "-------------------------------------------------"
+    console "-  ${PURPLE}SIMPLE DATA WRITE FROM MEMDICT FIELD (metadata)${NC}  -"
+    console "-------------------------------------------------"
+    test_write_field_data_silence_True "dummyvalue_new"
+
+    console "-------------------------------------------------"
+    console "------  ${PURPLE}PARALLEL DATA QUERY FROM MEMDICT${NC}  -------"
+    console "-------------------------------------------------"
     # sample time, threads
     console "${YELLOW}[READ] SAMPLE TIME: 1, THREADS: 100${NC}"
     test_get_data_parallel_silence_True 1 100
@@ -300,9 +344,10 @@ function main() {
     console "${YELLOW}[READ] SAMPLE TIME: 1, THREADS: 6${NC}"
     test_get_data_parallel_silence_True 1 6
 
-    console "---------------------------------------------"
-    console "----  ${PURPLE}PARALLEL DATA WRITE FROM MEMDICT${NC}  -----"
-    console "---------------------------------------------"
+
+    console "-------------------------------------------------"
+    console "------  ${PURPLE}PARALLEL DATA WRITE FROM MEMDICT${NC}  -------"
+    console "-------------------------------------------------"
     console "${YELLOW}[WRITE] SAMPLE TIME: 5, THREADS: 3${NC}"
     test_write_data_parallel_silence_True 5 3
     console "---------------------------------------------"
@@ -312,9 +357,9 @@ function main() {
 
 main
 
-console "---------------------------------------------"
-console "----  ${PURPLE}=========== SUMMARY =========${NC}  -----"
-console "---------------------------------------------"
+console "-------------------------------------------------"
+console "------  ${PURPLE}=========== SUMMARY =========${NC}  -------"
+console "-------------------------------------------------"
 if [ "$HEALTH" -eq 0 ]
 then
     console "${YELLOW}OVERALL HEALTH ${GREEN}GOOD${NC} [$HEALTH]"
