@@ -39,7 +39,7 @@ def set_memdict_memory_health(percent_av, av_percent_alarm=20):
         info_field = "== MEM ALARM: {}%, actual: {}%".format(av_percent_alarm, percent_av)
 
     try:
-        MemDictHandler.set_value_MemDict(key="mem", value=state)
+        MemDictHandler.set_value_MemDict(key="memory", value=state)
         if info_field != "":
             existing_text = MemDictHandler.get_value_metadata_info()
             MemDictHandler.set_value_metadata_info(str(info_field))
