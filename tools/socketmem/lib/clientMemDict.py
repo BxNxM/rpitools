@@ -37,7 +37,7 @@ class SocketDictClient():
         return data.strip()
 
     def receive_data(self):
-        if select.select([self.conn], [], [], 1)[0]:
+        if select.select([self.conn], [], [], 0.3)[0]:
             data = self.conn.recv(self.bufsize)
         else:
             data = ""

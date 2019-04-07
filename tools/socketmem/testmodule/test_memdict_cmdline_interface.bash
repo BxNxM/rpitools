@@ -1,5 +1,18 @@
 #!/bin/bash
 
+ARG_LIST=($@)
+
+# SETTINGS
+STAB_CAP_TEST=0
+if [[ "$ARG_LIST[*]" == *"-h"* ]] || [[ "$ARG_LIST[*]" == *"--help"* ]]
+then
+    echo -e "-s | --stab\t run capacity and stability tests too"
+    exit 0
+elif [[ "$ARG_LIST[*]" == *"-s"* ]] || [[ "$ARG_LIST[*]" == *"--stab"* ]]
+then
+    STAB_CAP_TEST=1
+fi
+
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 MEMDICT_CLIENT="${MYDIR}/../lib/clientMemDict.py"
@@ -331,28 +344,31 @@ function main() {
     console "-------------------------------------------------"
     test_write_field_data_silence_True "dummyvalue_new"
 
-    console "-------------------------------------------------"
-    console "------  ${PURPLE}PARALLEL DATA QUERY FROM MEMDICT${NC}  -------"
-    console "-------------------------------------------------"
-    # sample time, threads
-    console "${YELLOW}[READ] SAMPLE TIME: 1, THREADS: 100${NC}"
-    test_get_data_parallel_silence_True 1 100
-    console "---------------------------------------------"
-    console "${YELLOW}[READ] SAMPLE TIME: 5, THREADS: 50${NC}"
-    test_get_data_parallel_silence_True 5 50
-    console "---------------------------------------------"
-    console "${YELLOW}[READ] SAMPLE TIME: 1, THREADS: 6${NC}"
-    test_get_data_parallel_silence_True 1 6
+    if [ "$STAB_CAP_TEST" == "1" ]
+    then
+        console "-------------------------------------------------"
+        console "------  ${PURPLE}PARALLEL DATA QUERY FROM MEMDICT${NC}  -------"
+        console "-------------------------------------------------"
+        # sample time, threads
+        console "${YELLOW}[READ] SAMPLE TIME: 1, THREADS: 100${NC}"
+        test_get_data_parallel_silence_True 1 100
+        console "---------------------------------------------"
+        console "${YELLOW}[READ] SAMPLE TIME: 5, THREADS: 50${NC}"
+        test_get_data_parallel_silence_True 5 50
+        console "---------------------------------------------"
+        console "${YELLOW}[READ] SAMPLE TIME: 1, THREADS: 6${NC}"
+        test_get_data_parallel_silence_True 1 6
 
 
-    console "-------------------------------------------------"
-    console "------  ${PURPLE}PARALLEL DATA WRITE FROM MEMDICT${NC}  -------"
-    console "-------------------------------------------------"
-    console "${YELLOW}[WRITE] SAMPLE TIME: 5, THREADS: 3${NC}"
-    test_write_data_parallel_silence_True 5 3
-    console "---------------------------------------------"
-    console "${YELLOW}[WRITE] SAMPLE TIME: 5, THREADS: 10${NC}"
-    test_write_data_parallel_silence_True 5 10
+        console "-------------------------------------------------"
+        console "------  ${PURPLE}PARALLEL DATA WRITE FROM MEMDICT${NC}  -------"
+        console "-------------------------------------------------"
+        console "${YELLOW}[WRITE] SAMPLE TIME: 5, THREADS: 3${NC}"
+        test_write_data_parallel_silence_True 5 3
+        console "---------------------------------------------"
+        console "${YELLOW}[WRITE] SAMPLE TIME: 5, THREADS: 10${NC}"
+        test_write_data_parallel_silence_True 5 10
+    fi
 }
 
 main

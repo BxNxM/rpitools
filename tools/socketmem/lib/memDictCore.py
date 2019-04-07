@@ -153,6 +153,8 @@ class dictHandler(socketHandler.SocketServer):
                             arg = data_list[index+arg_index]
                             if "-" not in arg and "--" not in arg:
                                 value_in += str(arg) + " "
+                            else:
+                                break
                         value_in = value_in.strip()
         except:
             output_text += "Missing argument - index out of range"
