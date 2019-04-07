@@ -6,6 +6,7 @@ import LocalMachine
 import GeneralElements
 import ConsoleParameters
 from Colors import Colors
+import MemDictHandler
 
 def get_cpu_temp():
     data = LocalMachine.run_command_safe("/opt/vc/bin/vcgencmd measure_temp")
@@ -25,7 +26,29 @@ def create_printout(separator="|", char_width=80):
 
     text += GeneralElements.indicator_bar(cpu_temp, dim="'C", pre_text="CPU", char_width=char_width)
     text += GeneralElements.indicator_bar(gpu_temp, dim="'C", pre_text="GPU", char_width=char_width)
+    text += set_memdict_temp_health(cpu_temp)
     return text
+
+def set_memdict_temp_health(temp, temp_alarm_at_celsius=65):
+    temp = int(temp)
+    state = "OK"
+    info_field = ""
+    if temp >= temp_alarm_at_celsius:
+        state = "ALARM"
+        info_field = "== HEAT ALARM: {}'C, actual: {}'C".format(temp_alarm_at_celsius, temp)
+
+    try:
+        MemDictHandler.set_value_MemDict(key="temp", value=state)
+        if info_field != "":
+            existing_text = MemDictHandler.get_value_metadata_info()
+            MemDictHandler.set_value_metadata_info(str(info_field))
+    except Exception as e:
+        print("Write temp to memdict failed: " + str(e))
+
+    if info_field != "":
+        return " HEALTH: {}{}{}\n INFO:\n{}".format(Colors.RED, str(state).upper(), Colors.NC, info_field)
+    else:
+        return " HEALTH: {}{}{}".format(Colors.GREEN, str(state).upper(), Colors.NC)
 
 def main():
     rowcol = ConsoleParameters.console_rows_columns()

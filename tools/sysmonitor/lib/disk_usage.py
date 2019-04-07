@@ -71,9 +71,9 @@ def disk_health_mapper(data, general_max_percentage=90):
         print("Write disk to memdict failed: " + str(e))
 
     if info_field != "":
-        return " HEALTH: {}\n INFO:\n{}".format(str(state).upper(), info_field)
+        return " HEALTH: {}{}{}\n INFO:\n{}".format(Colors.RED, str(state).upper(), Colors.NC, info_field)
     else:
-        return " HEALTH: {}".format(str(state).upper())
+        return " HEALTH: {}{}{}".format(Colors.GREEN, str(state).upper(), Colors.NC)
 
 def create_printout(separator="|", char_width=80):
     text = GeneralElements.header_bar(" DISK USAGE ", char_width, separator, color_name=Colors.BROWN)

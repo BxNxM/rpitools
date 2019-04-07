@@ -136,11 +136,17 @@ if __name__ == "__main__":
         cmd = ""
         for par in arg_list:
             cmd += " " + str(par)
-        socketdictclient.receive_data()
-        print(socketdictclient.run_command(cmd))
+        try:
+            socketdictclient.receive_data()
+            print(socketdictclient.run_command(cmd))
+        except Exception as e:
+            print("memDictCore service not accessable, please fix before query: sysmonitor -s or sudo systemctl restart memDictCore")
+            print(e)
+            sys.exit(1)
 
     if len(sys.argv) == 1:
         try:
             socketdictclient.interactive_core()
         except KeyboardInterrupt:
             socketdictclient.close_connection()
+    sys.exit(0)

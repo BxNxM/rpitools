@@ -6,6 +6,7 @@ import LocalMachine
 import GeneralElements
 import ConsoleParameters
 from Colors import Colors
+import MemDictHandler
 
 def get_cpu_usage():
     data = LocalMachine.run_command_safe("/home/$USER/rpitools/tools/proc_stat.sh")
@@ -27,8 +28,30 @@ def create_printout(separator="|", char_width=80):
 
     text += GeneralElements.indicator_bar(cpu_usage, dim="%", pre_text="CPU", char_width=char_width, col_scale=[0.75, 0.90])
     text += get_top_processes(char_width)
+    text += set_memdict_cpu_health(cpu_usage)
 
     return text
+
+def set_memdict_cpu_health(percent, percent_alarm=70):
+    percent = int(percent)
+    state = "OK"
+    info_field = ""
+    if percent >= percent_alarm:
+        state = "ALARM"
+        info_field = "== CPU ALARM: {}%, actual: {}%".format(percent_alarm, percent)
+
+    try:
+        MemDictHandler.set_value_MemDict(key="cpu", value=state)
+        if info_field != "":
+            existing_text = MemDictHandler.get_value_metadata_info()
+            MemDictHandler.set_value_metadata_info(str(info_field))
+    except Exception as e:
+        print("Write CPU to memdict failed: " + str(e))
+
+    if info_field != "":
+        return " HEALTH: {}{}{}\n INFO:\n{}".format(Colors.RED, str(state).upper(), Colors.NC, info_field)
+    else:
+        return " HEALTH: {}{}{}".format(Colors.GREEN, str(state).upper(), Colors.NC)
 
 def main():
     rowcol = ConsoleParameters.console_rows_columns()

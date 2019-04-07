@@ -6,6 +6,7 @@ import LocalMachine
 import GeneralElements
 import ConsoleParameters
 from Colors import Colors
+import MemDictHandler
 
 def get_mem_usage():
     mem_total = LocalMachine.run_command_safe("sudo cat /proc/meminfo | grep 'MemTotal' | tr -dc '0-9'")
@@ -26,7 +27,29 @@ def create_printout(separator="|", char_width=80):
     text += " Total: {} Mb Available: {} Mb Free: {} Mb\n".format(int(total)/1024, int(available)/1024, int(free)/1024)
     text += GeneralElements.indicator_bar(mem_usage_av_percent, dim="%", pre_text="MEM AV. ", char_width=char_width)
     text += GeneralElements.indicator_bar(mem_usage_free_percent, dim="%", pre_text="MEM FREE", char_width=char_width)
+    text += set_memdict_memory_health(mem_usage_av_percent)
     return text
+
+def set_memdict_memory_health(percent_av, av_percent_alarm=20):
+    percent = int(percent_av)
+    state = "OK"
+    info_field = ""
+    if av_percent_alarm >= percent_av:
+        state = "ALARM"
+        info_field = "== MEM ALARM: {}%, actual: {}%".format(av_percent_alarm, percent_av)
+
+    try:
+        MemDictHandler.set_value_MemDict(key="mem", value=state)
+        if info_field != "":
+            existing_text = MemDictHandler.get_value_metadata_info()
+            MemDictHandler.set_value_metadata_info(str(info_field))
+    except Exception as e:
+        print("Write MEM to memdict failed: " + str(e))
+
+    if info_field != "":
+        return " HEALTH: {}{}{}\n INFO:\n{}".format(Colors.RED, str(state).upper(), Colors.NC, info_field)
+    else:
+        return " HEALTH: {}{}{}".format(Colors.GREEN, str(state).upper(), Colors.NC)
 
 def main():
     rowcol = ConsoleParameters.console_rows_columns()

@@ -33,3 +33,4 @@ tools/autosync/sync_configs/*.sync
 tools/autosync/.env
 tools/backuphandler/.status
 tools/autosync/.locks/
+tools/HA_AlarmSystem/sysmonitor_last.log

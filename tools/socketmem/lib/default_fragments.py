@@ -40,6 +40,9 @@ def __init__systemHEALTH_schema():
                                "rpitools_services": "unknown",
                                "processes": "unknown",
                                "disk": "unknown",
+                               "temp": "unknown",
+                               "cpu": "unknown",
+                               "memory": "unknown",
                                "metadata": { "last_update": str(datetime.datetime.now()),
                                               "description": "SYSTEM HEALTH DATA collection for rpitools managed system.",
                                               "info": "" }
