@@ -10,6 +10,9 @@ then
     echo -e "==== QUICK COMANDS ===="
     echo -e "edit | e\t- edit configuration"
     echo -e "diff | d\t- diff configuration with template config"
+    echo -e "save | s\t- save all rpitools system related configs to cache backup folder"
+    echo -e "restore | r \t- restore all rpitools system related configs from cache backup folder"
+    echo -e "import | i\t- [not on raspberry!] import existing configuration for deployment"
     echo -e "OR RUN WITHOUT PARAMETERS, AND FOLLOW THE INSTRUCTIONS (RECOMMENDED)"
     exit 0
 fi
@@ -122,6 +125,21 @@ then
 else
     echo -e "$custom_config EXISTS"
 
+    # INPUT ARGS LIST: s [save], e [edit], d [diff], i [import], r [restore], h [help]
+    # save (backup) / restore config - manually
+    if [[ "${arg_list[*]}" == *"s"* ]] || [[ "${arg_list[*]}" == *"save"* ]]
+    then
+        echo -e "SAVE CONFIGS..."
+        /home/"$USER"/rpitools/tools/cache_restore_backup.bash "backup"
+        exit 0
+    fi
+    if [[ "${arg_list[*]}" == *"r"* ]] || [[ "${arg_list[*]}" == *"restore"* ]]
+    then
+        echo -e "SAVE CONFIGS..."
+        /home/"$USER"/rpitools/tools/cache_restore_backup.bash "restore"
+        exit 0
+    fi
+    # quick args
     if [[ "${arg_list[*]}" == *"e"* ]] || [[ "${arg_list[*]}" == *"edit"* ]]
     then
         echo -e "QUICK ARG OPTION: edit"

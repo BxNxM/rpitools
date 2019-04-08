@@ -30,6 +30,17 @@ else:
 
 if section is not None and option is not None:
     print(cfg.get(section, option))
+elif section is not None:
+    section_json = cfg.get_full()[section]
+    column_len_base = 0
+    for opt, val in section_json.items():
+        if column_len_base < len(opt):
+            column_len_base = len(opt)
+    print("[ {} ]".format(section))
+    for opt, val in section_json.items():
+        column_len = " " * (column_len_base+1-len(opt))
+        print("\t{}:{}{}".format(opt, column_len, val))
+    print("")
 
 if listconfig:
     print(cfg.get_full())
