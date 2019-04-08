@@ -138,7 +138,14 @@ if __name__ == "__main__":
             cmd += " " + str(par)
         try:
             socketdictclient.receive_data()
-            print(socketdictclient.run_command(cmd))
+            console_output_raw = socketdictclient.run_command(cmd)
+            try:
+                import json
+                import ast
+                parsed = ast.literal_eval(console_output_raw)
+                print json.dumps(parsed, indent=2, sort_keys=True)
+            except Exception as e:
+                print(socketdictclient.run_command(cmd))
         except Exception as e:
             print("memDictCore service not accessable, please fix before query: sysmonitor -s or sudo systemctl restart memDictCore")
             print(e)
