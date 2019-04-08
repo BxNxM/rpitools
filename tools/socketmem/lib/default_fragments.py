@@ -39,7 +39,7 @@ def __init__systemHEALTH_schema():
     test_schema = {"system": { "linux_services": "unknown",
                                "rpitools_services": "unknown",
                                "processes": "unknown",
-                               "disk": "unknown",
+                               "disks": "unknown",
                                "temp": "unknown",
                                "cpu": "unknown",
                                "memory": "unknown",
