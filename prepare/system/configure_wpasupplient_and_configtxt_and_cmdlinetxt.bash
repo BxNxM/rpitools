@@ -246,7 +246,12 @@ then
 else
     _msg_ "\talready done: $CACHE_indicator_done_path exists."
     _msg_ "\tcheck wpa_supplient data"
-    set_wifi_wpa_data "$($CONFIGAHNDLER -s NETWORK -o ssid)" "$($CONFIGAHNDLER -s NETWORK -o pwd)"
+    if [[ "$($CONFIGAHNDLER -s NETWORK -o ssid)" != *"CUSTOM CONFIG FILE IS INVALID"* ]]
+    then
+        set_wifi_wpa_data "$($CONFIGAHNDLER -s NETWORK -o ssid)" "$($CONFIGAHNDLER -s NETWORK -o pwd)"
+    else
+        echo -e "rpitools_config.cfg invalid, pls fix!"
+    fi
 fi
 
 set_swap_file

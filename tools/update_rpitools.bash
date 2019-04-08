@@ -2,6 +2,16 @@
 
 arg_len="$#"
 option="$1"
+
+# STOP: SERVICE LIST
+service_list_orig=("hAlarm" "oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller" "temp_controll_fan" "memDictCore")
+# START SERVICE LIST
+service_list_rev=()
+for ((i=$((${#service_list_orig[@]}-1)); i>=0; i--))
+do
+    service_list_rev+=(${service_list_orig[$i]})
+done
+
 if [ "$arg_len" -eq 1 ]
 then
     if [ "$option" != "start" ] && [ "$option" != "stop" ]
@@ -34,7 +44,7 @@ function config_is_changed_on_HEAD() {
 }
 
 function stop_running_services() {
-    service_list=("oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller" "memDictCore")
+    service_list=(${service_list_orig[@]})
     for service in "${service_list[@]}"
     do
         is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$service")
@@ -48,7 +58,7 @@ function stop_running_services() {
 }
 
 function start_running_services() {
-    service_list=("memDictCore" "oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller")
+    service_list=(${service_list_rev[@]})
     for service in "${service_list[@]}"
     do
         is_exists=$(ls -1 /lib/systemd/system | grep -v grep | grep "$service")

@@ -143,7 +143,9 @@ if __name__ == "__main__":
                 import json
                 import ast
                 parsed = ast.literal_eval(console_output_raw)
-                print json.dumps(parsed, indent=2, sort_keys=True)
+                formatted_data = json.dumps(parsed, indent=2, sort_keys=True)
+                formatted_data = formatted_data.replace("null", "None")
+                print(formatted_data)
             except Exception as e:
                 print(socketdictclient.run_command(cmd))
         except Exception as e:
