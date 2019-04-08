@@ -174,7 +174,7 @@ def update_system_health_data_with_services_state():
         health_sub_states["processes_si"][0] = "ALARM"
     system_health_data_handler(health_sub_states["rpitools_services_si"], health_sub_states["linux_services_si"], health_sub_states["processes_si"])
 
-def create_printout(separator="|", char_width=80, color=Colors.CYAN):
+def create_printout(separator="|", char_width=80, color=Colors.CYAN, export=None):
     global health_sub_states
     text = GeneralElements.header_bar(" SERVICES ", char_width, separator, color_name=color)
     text += get_rpitools_services()
@@ -182,12 +182,13 @@ def create_printout(separator="|", char_width=80, color=Colors.CYAN):
     text += get_autosync_status()
     text += get_backuphandler_status()
     text += calculate_health_multipayer()
-    update_system_health_data_with_services_state()
+    if export is not None and export:
+        update_system_health_data_with_services_state()
     return text
 
-def main():
+def main(export=True):
     rowcol = ConsoleParameters.console_rows_columns()
-    return create_printout(char_width=rowcol[1])
+    return create_printout(char_width=rowcol[1], export=export)
 
 if __name__ == "__main__":
     print(main())

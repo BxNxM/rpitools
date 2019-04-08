@@ -97,7 +97,7 @@ def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services):
                 output += "general network and system info request error: " + str(e)
         if _services or _all:
             try:
-                output += rpitools_services_list.main() + components_separator
+                output += rpitools_services_list.main(_export) + components_separator
             except Exception as e:
                 output += "rpitools services list request error: " + str(e)
         if output != "":
