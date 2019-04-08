@@ -6,7 +6,7 @@ service_template_path="/home/$USER/rpitools/template/general_template.service"
 
 confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 rpitools_linux_user="$($confighandler -s GENERAL -o user_name_on_os)"
-set_service_conf="True"
+set_service_conf="$($confighandler -s HALARM -o activate)"
 service_name="hAlarm.service"
 
 function message() {

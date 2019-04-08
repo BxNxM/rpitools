@@ -7,6 +7,7 @@ import GeneralElements
 import ConsoleParameters
 from Colors import Colors
 import MemDictHandler
+import ConfigHandlerInterface
 
 def get_cpu_temp():
     data = LocalMachine.run_command_safe("/opt/vc/bin/vcgencmd measure_temp")
@@ -19,17 +20,20 @@ def get_gpu_temp():
     data = '%.1f' % data
     return float(data)
 
-def create_printout(separator="|", char_width=80):
+def create_printout(separator="|", char_width=80, export=None):
     text = GeneralElements.header_bar(" TEMPERATURE ", char_width, separator, color_name=Colors.LIGHT_GRAY)
     cpu_temp = get_cpu_temp()
     gpu_temp = get_gpu_temp()
 
     text += GeneralElements.indicator_bar(cpu_temp, dim="'C", pre_text="CPU", char_width=char_width)
     text += GeneralElements.indicator_bar(gpu_temp, dim="'C", pre_text="GPU", char_width=char_width)
-    text += set_memdict_temp_health(cpu_temp)
+    if export is not None and export:
+        text += set_memdict_temp_health(cpu_temp)
     return text
 
-def set_memdict_temp_health(temp, temp_alarm_at_celsius=65):
+def set_memdict_temp_health(temp, temp_alarm_at_celsius=None):
+    if temp_alarm_at_celsius is None:
+        temp_alarm_at_celsius = ConfigHandlerInterface.get_HALARM_value_by_key("cpu_max_temp_alarm_celsius")
     temp = int(temp)
     state = "OK"
     info_field = ""
@@ -48,11 +52,11 @@ def set_memdict_temp_health(temp, temp_alarm_at_celsius=65):
     if info_field != "":
         return " HEALTH: {}{}{}\n INFO:\n{}".format(Colors.RED, str(state).upper(), Colors.NC, info_field)
     else:
-        return " HEALTH: {}{}{}".format(Colors.GREEN, str(state).upper(), Colors.NC)
+        return " HEALTH: {}{}{} limit: {} 'C".format(Colors.GREEN, str(state).upper(), Colors.NC, temp_alarm_at_celsius)
 
-def main():
+def main(export=True):
     rowcol = ConsoleParameters.console_rows_columns()
-    return create_printout(char_width=rowcol[1])
+    return create_printout(char_width=rowcol[1], export=export)
 
 if __name__ == "__main__":
     print(main())

@@ -8,7 +8,7 @@ cycle_sleep_time=20
 while true
 do
     echo -e "QUERY SYSTEM HEALTH DATA [CYCLE $cycle_sleep_time SEC]"
-    sysmonitor > "${MYDIR}/sysmonitor_last.log"
+    sysmonitor "-e" > "${MYDIR}/sysmonitor_last.log"
     if [ "$?" -eq 0 ]
     then
         echo -e "\tsuccessful execution... wait $cycle_sleep_time sec"

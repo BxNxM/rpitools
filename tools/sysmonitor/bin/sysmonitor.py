@@ -36,6 +36,7 @@ parser.add_argument("-l", "--loggedin",  action='store_true', help="show logged 
 parser.add_argument("-g", "--general",  action='store_true', help="show general informations")
 parser.add_argument("-o", "--loop",  action='store_true', help="show informations in loop")
 parser.add_argument("-s", "--services",  action='store_true', help="show rpitools services")
+parser.add_argument("-e", "--export",  action='store_true', help="save measured health data to memdict")
 
 args = parser.parse_args()
 _all = args.all
@@ -47,6 +48,7 @@ _loggedin = args.loggedin
 _general = args.general
 _loop = args.loop
 _services = args.services
+_export = args.export
 
 def logo():
     text=Colors.RED + '''
@@ -60,27 +62,27 @@ def logo():
     print(text)
 
 def main(_all, _temp, _cpu, _memory, _disk, _loggedin, _general, _services):
-    global is_interrupted
+    global is_interrupted, _export
     output = ""
     try:
         if _temp or _all:
             try:
-                output += temp.main() + components_separator
+                output += temp.main(_export) + components_separator
             except Exception as e:
                 output += "temp request error: " + str(e)
         if _cpu or _all:
             try:
-                output += cpu_usage.main() + components_separator
+                output += cpu_usage.main(_export) + components_separator
             except Exception as e:
                 output += "cpu usage request error: " + str(e)
         if _memory or _all:
             try:
-                output += mem_usage.main() + components_separator
+                output += mem_usage.main(_export) + components_separator
             except Exception as e:
                 output += "mem usage request error: " + str(e)
         if _disk or _all:
             try:
-                output += disk_usage.main() + components_separator
+                output += disk_usage.main(_export) + components_separator
             except Exception as e:
                 output += "disk usage request error: " + str(e)
         if _loggedin or _all:

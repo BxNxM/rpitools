@@ -7,6 +7,7 @@ import GeneralElements
 import ConsoleParameters
 from Colors import Colors
 import MemDictHandler
+import ConfigHandlerInterface
 
 def get_disk_usage():
     device_is_connected = LocalMachine.run_command_safe("echo /dev/sd*")
@@ -20,7 +21,7 @@ def get_disk_usage():
         data += " " + line + "\n"
     return data
 
-def __check_disk_size_health(data, general_max_percentage):
+def __check_disk_size_health(data, disk_max_percentage):
     info_field = ""
     disk_state = 0
     disk_state_result = "unknown"
@@ -44,9 +45,9 @@ def __check_disk_size_health(data, general_max_percentage):
             pass
 
     for key_disk, value_disk in vol_info_dict.items():
-        if int(value_disk[:-1]) >= general_max_percentage:
+        if int(value_disk[:-1]) >= disk_max_percentage:
             disk_state += 1
-            info_field += "=== [ALARM] {} disk, use more then {}%, actual: {}!".format(key_disk, general_max_percentage, value_disk)
+            info_field += "=== [ALARM] {} disk, use more then {}%, actual: {}!".format(key_disk, disk_max_percentage, value_disk)
 
     if disk_state == 0:
         disk_state_result = "OK"
@@ -54,16 +55,18 @@ def __check_disk_size_health(data, general_max_percentage):
         disk_state_result = "ALARM"
     return disk_state_result, info_field
 
-def disk_health_mapper(data, general_max_percentage=90):
+def disk_health_mapper(data, disk_max_percentage=None):
+    if disk_max_percentage is None:
+        disk_max_percentage = ConfigHandlerInterface.get_HALARM_value_by_key("disks_usage_alarm_percent")
     try:
-        state, info_field = __check_disk_size_health(data, general_max_percentage)
+        state, info_field = __check_disk_size_health(data, disk_max_percentage)
     except Exception as e:
         print("disk_health_mapper fails: " + str(e))
         state = "unknown"
         info_field = "DISK: query fail"
 
     try:
-        MemDictHandler.set_value_MemDict(key="disk", value=state)
+        MemDictHandler.set_value_MemDict(key="disks", value=state)
         if info_field != "":
             existing_text = MemDictHandler.get_value_metadata_info()
             MemDictHandler.set_value_metadata_info(str(info_field))
@@ -73,18 +76,19 @@ def disk_health_mapper(data, general_max_percentage=90):
     if info_field != "":
         return " HEALTH: {}{}{}\n INFO:\n{}".format(Colors.RED, str(state).upper(), Colors.NC, info_field)
     else:
-        return " HEALTH: {}{}{}".format(Colors.GREEN, str(state).upper(), Colors.NC)
+        return " HEALTH: {}{}{} limit: {}%".format(Colors.GREEN, str(state).upper(), Colors.NC, disk_max_percentage)
 
-def create_printout(separator="|", char_width=80):
+def create_printout(separator="|", char_width=80, export=None):
     text = GeneralElements.header_bar(" DISK USAGE ", char_width, separator, color_name=Colors.BROWN)
     data_tmp =  get_disk_usage()
     text += data_tmp
-    text += disk_health_mapper(data_tmp)
+    if export is not None and export:
+        text += disk_health_mapper(data_tmp)
     return text
 
-def main():
+def main(export=True):
     rowcol = ConsoleParameters.console_rows_columns()
-    return create_printout(char_width=rowcol[1])
+    return create_printout(char_width=rowcol[1], export=export)
 
 if __name__ == "__main__":
     print(main())
