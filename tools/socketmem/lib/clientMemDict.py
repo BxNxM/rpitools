@@ -144,7 +144,10 @@ if __name__ == "__main__":
                 import ast
                 parsed = ast.literal_eval(console_output_raw)
                 formatted_data = json.dumps(parsed, indent=2, sort_keys=True)
+                # python | json output dump correction
                 formatted_data = formatted_data.replace("null", "None")
+                formatted_data = formatted_data.replace("true", "True")
+                formatted_data = formatted_data.replace("false", "False")
                 print(formatted_data)
             except Exception as e:
                 print(socketdictclient.run_command(cmd))

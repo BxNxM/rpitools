@@ -207,7 +207,7 @@ function test_write_data_silence_True() {
     default_value=$($cmd)
     console "Default value: $default_value"
     local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k service -v $substring -s True"
-    console "${YELLOW}[test_write_data_silence_False]${NC} CMD: $cmd"
+    console "${YELLOW}[test_write_data_silence_True]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
     check_output_line_numbers_match "1" "$output"
