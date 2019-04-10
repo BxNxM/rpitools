@@ -27,10 +27,12 @@ function create_nfs_file_structure() {
         _msg_ "Add permissions: chmod -R ${nfs_shared_folder_permissions} ${nfs_shared_folder}"
         sudo bash -c "chmod -R ${nfs_shared_folder_permissions} ${nfs_shared_folder}"
 
-        action=true
     else
         _msg_ "Shared folder: ${nfs_shared_folder} already was set"
     fi
+    action=true
+    _msg_ "Set permissions: chmod ${nfs_shared_folder_permissions} ${nfs_shared_folder}"
+    sudo bash -c "chmod ${nfs_shared_folder_permissions} ${nfs_shared_folder}"
 }
 
 function edit_exports_file_and_permissions() {
@@ -56,6 +58,15 @@ function edit_exports_file_and_permissions() {
     fi
 }
 
+function start_nfs_server_if_required() {
+    local nfs_server_service_name="nfs-kernel-server"
+    if [ "$(systemctl is-active $nfs_server_service_name)" == "inactive" ]
+    then
+        _msg_ "Start NFS SERVER: $nfs_server_service_nam"
+        _msg_ "$(sudo systemctl start $nfs_server_service_name)"
+    fi
+}
+
 # =============================================================== #
 #                        TEST CLIENT SETUP                        #
 # =============================================================== #
@@ -74,7 +85,7 @@ function mount_nfs_server() {
     local ip="$1"
     local nfs_client_path_to_mount="$2"
     local nfs_client_mount_point_path="$3"
-    _msg_ "Manual mount: sudo mount ${ip} ${nfs_client_path_to_mount} ${nfs_client_mount_point_path}"
+    _msg_ "Manual mount: sudo mount ${ip}:${nfs_client_path_to_mount} ${nfs_client_mount_point_path}"
     sudo mount ${ip}:${nfs_client_path_to_mount} ${nfs_client_mount_point_path}
 }
 function edit_fstab_for_automount() {
@@ -117,4 +128,5 @@ then
 else
     _msg_ "NFS was aleady set: $CACHE_PATH_is_set exists"
 fi
+start_nfs_server_if_required
 create_test_mount_point
