@@ -127,6 +127,7 @@ then
     edit_exports_file_and_permissions
 else
     _msg_ "NFS was aleady set: $CACHE_PATH_is_set exists"
+    _msg_ "Indicator file exists: $CACHE_PATH_is_set, remove fom reconfigure."
 fi
 start_nfs_server_if_required
 create_test_mount_point
