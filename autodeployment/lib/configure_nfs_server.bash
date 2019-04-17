@@ -111,7 +111,7 @@ function edit_fstab_for_automount() {
     mount_nfs_server "$ip" "$nfs_client_path_to_mount" "$nfs_client_mount_point_path"
 }
 function create_test_mount_point() {
-    local nfs_client_mount_point_path="/media/.local_nfs_client"
+    local nfs_client_mount_point_path="/media/.local_nfs_client/$(basename $nfs_shared_folder)"
     _msg_ "Test client mount point: $nfs_client_mount_point_path"
     create_nfs_client_local_mount_point "$nfs_client_mount_point_path"
     edit_fstab_for_automount "localhost" "$nfs_shared_folder" "$nfs_client_mount_point_path"
