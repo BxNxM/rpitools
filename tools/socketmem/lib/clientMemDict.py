@@ -47,11 +47,17 @@ class SocketDictClient():
         sys.stdout.write(self.receive_data())
         sys.stdout.flush()
         while True:
+            # write client prompt
+            sys.stdout.write('> ')
+            # wait for command
             cmd = raw_input()
             if cmd != "":
-                sys.stdout.write(self.run_command(cmd))
-                sys.stdout.flush()
+                # run command and write printout
+                print(self.run_command(cmd))
+                #sys.stdout.write(self.run_command(cmd))
+                #sys.stdout.flush()
                 if cmd.rstrip() == "exit":
+                    # case of exit, close connection
                     self.close_connection()
                     sys.exit(0)
 
@@ -101,6 +107,7 @@ def reset_dumped_database_and_restart_service():
     return exit_code
 
 if __name__ == "__main__":
+    # instantiate socket client
     try:
         socketdictclient = SocketDictClient()
     except KeyboardInterrupt:
@@ -131,6 +138,7 @@ if __name__ == "__main__":
                 exit_code = 0
             sys.exit(exit_code)
 
+    # handle command line arhuments - non interactive mode
     if len(sys.argv) > 1:
         arg_list = sys.argv[1:]
         cmd = ""
@@ -156,6 +164,7 @@ if __name__ == "__main__":
             print(e)
             sys.exit(1)
 
+    # no input arguments - interactive mode
     if len(sys.argv) == 1:
         try:
             socketdictclient.interactive_core()
