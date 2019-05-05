@@ -133,10 +133,10 @@ your whole system.
 
 ***WIRING***
 
-######If you have our - offcial shild - just connect it to your raspberrypi.
-######Otherwase if you want, build your own shield for your pi, wiring is down below.
+###### If you have our - offcial shild - just connect it to your raspberrypi.
+###### Otherwase if you want, build your own shield for your pi, wiring is down below.
 
-#####RPITOOLS EXTENSION SHILED WIRING 1.0
+##### RPITOOLS EXTENSION SHILED WIRING 1.0
 
 ![page_welcome](https://github.com/BxNxM/rpitools/blob/master/gpio/RPITOOLS_1.0_GPIO_PINOUT.png?raw=true)
 
