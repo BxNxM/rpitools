@@ -9,27 +9,29 @@
  |_|  \_\ |_|      |_____|    |_|     \____/   \____/  |______| |_____/ 
 ```
 ## WHAT IS RPITOOLS [HomeCloud]?
-* RPITOOLS is an installation and configuration (deployment) system for the raspberry pi family. It deploys the official raspbain lite operating system and many useful programs, and set the complete system to a tiny low cost perfectly configured server.
+* RPITOOLS is an installation and configuration (deployment) system for the raspberry pi family. It deploys the official raspbain lite operating system and many useful programs(1), and set the complete system to a tiny low cost perfectly configured server.
 * Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional), website(http), camera stream support (motion)
-* Sets an optinal GUI (PIXEL) for graphical usage
+* Sets an optional GUI (PIXEL) for graphical usage
 * Supports a UNIQUE extension shiled with many periphery (Oled, led, buttons, etc.).
-* LIST OF FUNCTIONALITIES:
+* LIST OF MAIN FUNCTIONALITIES:
 	* torrent client - transmission (with http client, port: 9091)
 	* network drive - samba (smb), web UI (h5ai)
 	* OLED (128x64) display support on extension shield
 	* extarnal ip deepnet clinet access (dropbox - external ip sync)
 	* description for duckdns installation (get your free web domain)
-	* disks handling: autoformat, automount, with command line interface
-	* user management (permissions, groups, seperated disk space, shared disk space)
-	* terminal/command line set for easy usage - aliases and so on
+	* disks handling: autoformat, automount, with commandline interface
+	* user management (permissions, groups, seperated disk space, shared disk space) with commandline interface
+	* terminal/command line set for easy usage - aliases and so on ...
 	* vim, xdotool, scrot, python (with many modules), kodi etc.
 	* custom ```rpitools/autodeployment/config/rpitools_config.cfg``` user configuration based on ```rpitools/autodeployment/config/rpitools_config_template.cfg```
 	* security: ufw, fail2ban
 	* backup handling - system, user - backup, restore
 	* autosync based on rsync: remote, local sync with modes: copy, move, mirror
-	* complete system monitoring system - sysmonitor
+	* complete system monitoring solution - sysmonitor
 	* embedded multiprocess communication memdict with commandline interface
 	* easy update: ```update_rpitools```
+
+(1) Installing many linux apps and serices, furthermore creates several custom services.
 
 ***More detailed informations coming soon for every function***
 
@@ -355,6 +357,66 @@ sysmonitor -h
   -o, --loop      show informations in loop
   -s, --services  show rpitools services
   -e, --export    save measured health data to memdict
+
+EXAMPLE: sysmonitor --services
+ _____    _____    _____   _                     _
+|  __ \  |  __ \  |_   _| | |                   | |
+| |__) | | |__) |   | |   | |_    ___     ___   | |  ___
+|  _  /  |  ___/    | |   | __|  / _ \   / _ \  | | / __|
+| | \ \  | |       _| |_  | |_  | (_) | | (_) | | | \__ \
+|_|  \_\ |_|      |_____|  \__|  \___/   \___/  |_| |___/system monitor
+
+ ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| Sun May  5 09:55:22 BST 2019 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| RPItools monitor |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| Hi, USER! Have a GOO:D time! ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+ ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||| SERVICES |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ RPITOOLS SERVICES:
+	oled_gui_core active status: inactive
+	oled_gui_core enabled status: disabled
+	dropbox_halpage active status: active
+	dropbox_halpage enabled status: enabled
+	auto_restart_transmission active status: inactive
+	auto_restart_transmission enabled status: disabled
+	rpitools_logrotate active status: active
+	rpitools_logrotate enabled status: enabled
+	memDictCore active status: active
+	memDictCore enabled status: enabled
+	rgb_led_controller active status: inactive
+	rgb_led_controller enabled status: disabled
+	temp_controll_fan active status: inactive
+	temp_controll_fan enabled status: disabled
+	hAlarm active status: active
+	hAlarm enabled status: enabled
+ LINUX SERVICES:
+	apache2 active status: active
+	apache2 enabled status: enabled
+	transmission-daemon active status: active
+	transmission-daemon enabled status: enabled
+	motion active status: 
+	motion enabled status: 
+	smbd active status: active
+	smbd enabled status: enabled
+	minidlna active status: active
+	minidlna enabled status: enabled
+	ssh active status: active
+	ssh enabled status: enabled
+	nfs-kernel-server active status: active
+	nfs-kernel-server enabled status: enabled
+	glances active status: active
+	glances enabled status: enabled
+	cron active status: active
+	cron enabled status: enabled
+	networking active status: active
+	networking enabled status: enabled
+ MONITORED PROCESSES:
+	Xorg state: inactive
+	vncserver state: inactive
+	kodi state: inactive
+	autosync state: ok
+	backuphandler state: ok
+ OVERALL HEALTH [100.0%]:
+	:) 0...23 :( exit code: 0
 ```
 
 # RPITOOLs custom configuration access
