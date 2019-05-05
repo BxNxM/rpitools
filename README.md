@@ -9,21 +9,29 @@
  |_|  \_\ |_|      |_____|    |_|     \____/   \____/  |______| |_____/ 
 ```
 ## WHAT IS RPITOOLS [HomeCloud]?
-* RPITOOLS is an installation and configuration (deployment) system for the raspberry pi (Zero, and 3). It deploys the official raspbain lite operating system and many useful programs, and set the complete system to a tiny playground and procreate your HomeCloud. 
-* Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional), website(http)
+* RPITOOLS is an installation and configuration (deployment) system for the raspberry pi family. It deploys the official raspbain lite operating system and many useful programs, and set the complete system to a tiny low cost perfectly configured server.
+* Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional), website(http), camera stream support (motion)
 * Sets an optinal GUI (PIXEL) for graphical usage
-* Supports a UNIQUE extension shiled with many periphery.
-* LIST OF FUNCTIONS:
+* Supports a UNIQUE extension shiled with many periphery (Oled, led, buttons, etc.).
+* LIST OF FUNCTIONALITIES:
 	* torrent client - transmission (with http client, port: 9091)
-	* network drive - samba (smb)
+	* network drive - samba (smb), web UI (h5ai)
 	* OLED (128x64) display support on extension shield
 	* extarnal ip deepnet clinet access (dropbox - external ip sync)
-	* disks automount, and command line interface
-	* git config
+	* description for duckdns installation (get your free web domain)
+	* disks handling: autoformat, automount, with command line interface
+	* user management (permissions, groups, seperated disk space, shared disk space)
 	* terminal/command line set for easy usage - aliases and so on
 	* vim, xdotool, scrot, python (with many modules), kodi etc.
 	* custom ```rpitools/autodeployment/config/rpitools_config.cfg``` user configuration based on ```rpitools/autodeployment/config/rpitools_config_template.cfg```
+	* security: ufw, fail2ban
+	* backup handling - system, user - backup, restore
+	* autosync based on rsync: remote, local sync with modes: copy, move, mirror
+	* complete system monitoring system - sysmonitor
+	* embedded multiprocess communication memdict with commandline interface
 	* easy update: ```update_rpitools```
+
+***More detailed informations coming soon for every function***
 
 ## How to install:
  
@@ -55,6 +63,9 @@ source setup
 ```
 Follow the instructions.
 
+***Note***: First you need to set up your custom configuration with confeditor. It will use vim editor, commands cheetsheet for vim:
+
+
 ## VIM - command line text editor
 
 ESC MODE
@@ -80,6 +91,7 @@ p			- type - paste copied area
 ```
 
 ## Deployment
+When your custom configuration (confeditor) is ready and validated, you can start to deploy your system.
 
 * Execute deployment scripts:
 
@@ -120,6 +132,7 @@ your whole system.
 ***WIRING***
 
 ######If you have our - offcial shild - just connect it to your raspberrypi.
+######Otherwase if you want, build your own shield for your pi, wiring is down below.
 
 #####RPITOOLS EXTENSION SHILED WIRING 1.0
 
@@ -298,6 +311,65 @@ optional arguments:
   -sn, --snooze     HapticEngine SNOOZE signel
 ```
 
+# USER MANAGEMENT interface
+```
+usermanager --man
+
+--man		::	manual 
+--adduser	::	Add new user with settings, <username> <userpasswd> 2 par
+--removeuser	::	Remove user, <username> 1 par
+--changepasswd	::	Change user password, <username> <userpasswd> 2 par
+--userstat	::	Show users list and used disk space 0 par
+--logoff	::	Log off user - select after execute 0 par
+--fixusergroups	::	Fix user groups for every user, except rpitools user 0 par
+--addapacheuser	::	Add user for apache - private cloud <username> <userpasswd> 2 par
+```
+
+# BACKUPHANDLER interface
+```
+backuphandler --man
+
+========================== backup_handler ====================================
+system backup		- backup system [for migration]
+			with all user homes, user accounts and /var/www/html /var/lib/transmission-daemon/.config/transmission-daemon/torrents/ /var/spool/cron/ extra folders, optional parameter: --skiphomedirs
+system restore		- restore system [for migration]
+			with all user homes, user accounts and /var/www/html /var/lib/transmission-daemon/.config/transmission-daemon/torrents/ /var/spool/cron/ extra folders, optional parameter: --skiphomedirs
+backup			- backup home folders
+restore			- restores every users last backup in subfolder under its own home dir
+restore <username>	- restore a selected user last backup in subfolder under its own home dir
+struct			-show actual backup archive structure
+```
+
+# Custom System monitoring
+```
+sysmonitor -h
+
+  -h, --help      show this help message and exit
+  -a, --all       show all implemented informations
+  -t, --temp      show cpu and gpu temerature
+  -c, --cpu       show cpu usage
+  -d, --disk      show disk usage
+  -m, --memory    show memory usage
+  -l, --loggedin  show logged in users
+  -g, --general   show general informations
+  -o, --loop      show informations in loop
+  -s, --services  show rpitools services
+  -e, --export    save measured health data to memdict
+```
+
+# RPITOOLs custom configuration access
+```
+confeditor -h
+
+==== QUICK COMANDS ====
+edit | e	- edit configuration
+diff | d	- diff configuration with template config
+save | s	- save all rpitools system related configs to cache backup folder
+restore | r 	- restore all rpitools system related configs from cache backup folder
+import | i	- [not on raspberry!] import existing configuration for deployment
+OR RUN WITHOUT PARAMETERS, AND FOLLOW THE INSTRUCTIONS (RECOMMENDED)
+```
+
 # Your website
 You have a custom website, with protected files web folder - like custom dropbox (cloud) on a private drive at home.
 Get your internal or extarnal ip address and copy-paste it to your browser.
@@ -352,7 +424,7 @@ sudo service keyboard status
 
 That's it. Now whenever you turn your Bluetooth keyboard on, it'll be connected to your Linux automatically.
 
-# Useful links for basics
+# Useful links for Debian/Raspbain:
 * RaspberryPi GPIO usage:
 
 ```
@@ -506,6 +578,12 @@ https://www.ostechnix.com/monitor-user-activity-linux/
 
 ```
 https://github.com/feo-cz/win-sshfs/releases
+```
+
+* Learn git usage interactively
+
+```
+https://learngitbranching.js.org
 ```
 
 ## GIT
