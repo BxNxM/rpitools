@@ -115,6 +115,15 @@ def get_backuphandler_status(color=Colors.CYAN):
     backuphandler_status = LocalMachine.run_command("cat ~/rpitools/tools/backuphandler/.status")[1]
     return process_state_coloring(backuphandler_status, "backuphandler")
 
+def get_rpienv_status(color=Colors.CYAN):
+    rpienv_log = LocalMachine.run_command("if [ -f /var/log/rpienv ]; then cat /var/log/rpienv; else echo ''; fi")[1]
+    print(rpienv_log)
+    if "[ ENV ERROR ]" in rpienv_log:
+        rpienv_status = 'warning'
+    else:
+        rpienv_status = 'ok'
+    return process_state_coloring(rpienv_status, "rpienv_log")
+
 def calculate_health_multipayer():
     global health_error_code, health_all_monitored
     health_index = 100 - round((float(health_error_code) / health_all_monitored) * 100, 1)
@@ -181,6 +190,7 @@ def create_printout(separator="|", char_width=80, color=Colors.CYAN, export=None
     text += get_other_monitored_processes()
     text += get_autosync_status()
     text += get_backuphandler_status()
+    text += get_rpienv_status()
     text += calculate_health_multipayer()
     if export is not None and export:
         update_system_health_data_with_services_state()

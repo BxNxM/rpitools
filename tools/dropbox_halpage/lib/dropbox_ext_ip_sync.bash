@@ -6,22 +6,38 @@ then
     debugmsg=true
 fi
 
-MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
 dropbox_uploader="${MYDIR}/Dropbox-Uploader/dropbox_uploader.sh"
 local_cache_folder="${MYDIR}/local_cache/"
 logfile="${MYDIR}/logs/extiphandler.log"
 
 . ${MYDIR}/clone_n_configure.bash
 
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-uid_name="$($confighandler -s EXTIPHANDLER -o uid_name)"
+uid_name="$($CONFIGHANDLER -s EXTIPHANDLER -o uid_name)"
 uid_name_hum="${uid_name}_hum.md"
-ssh_port="$($confighandler -s EXTIPHANDLER -o ssh_port)"
-transmission_port="$($confighandler -s EXTIPHANDLER -o transmission_port)"
-http_port="$($confighandler -s EXTIPHANDLER -o http_port)"
-refresh_time="$($confighandler -s EXTIPHANDLER -o refresh_time)"
-action="$($confighandler -s EXTIPHANDLER -o activate)"
+ssh_port="$($CONFIGHANDLER -s EXTIPHANDLER -o ssh_port)"
+transmission_port="$($CONFIGHANDLER -s EXTIPHANDLER -o transmission_port)"
+http_port="$($CONFIGHANDLER -s EXTIPHANDLER -o http_port)"
+refresh_time="$($CONFIGHANDLER -s EXTIPHANDLER -o refresh_time)"
+action="$($CONFIGHANDLER -s EXTIPHANDLER -o activate)"
 
 local_cache_myextaddr="${local_cache_folder}${uid_name}"
 local_cache_myextaddr_hum="${local_cache_folder}${uid_name_hum}"

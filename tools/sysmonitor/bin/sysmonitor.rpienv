@@ -1,0 +1,2 @@
+SCRIPT=sysmonitor.py
+PROP=("env" "alias")

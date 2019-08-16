@@ -1,0 +1,3 @@
+TITLE="DROPBOX HALPAGE service setup"
+SCRIPT="main.bash"
+RUN_DEPENDENCY=("socketmem_setup")

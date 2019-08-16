@@ -1,0 +1,3 @@
+TITLE="TRANSMISSION CONFIGURATION"
+SCRIPT="configure_transmission.bash"
+RUN_DEPENDENCY=("socketmem_setup")

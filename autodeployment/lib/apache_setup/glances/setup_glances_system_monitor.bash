@@ -1,22 +1,40 @@
 #!/bin/bash
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CACHE_PATH_is_set="/home/$USER/rpitools/cache/.apache_glance_set_done"
-source "${MYDIR_}/../../../../prepare/colors.bash"
-source "${MYDIR_}/../apache.env"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+    exit 1
+fi
+
+source "$TERMINALCOLORS"
+source "${MYDIR}/../apache.env"
+
+CACHE_PATH_is_set="$REPOROOT/cache/.apache_glance_set_done"
 html_folder_path="$APACHE_HTML_ROOT_FOLDER"
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-is_install_glances="$($confighandler -s APACHE -o glances_service)"
-glances_username="$($confighandler -s APACHE -o glances_username)"
-glances_password="$($confighandler -s APACHE -o glances_password)"
-glanes_icon_status="$($confighandler -s APACHE -o glances_icon)"
+is_install_glances="$($CONFIGHANDLER -s APACHE -o glances_service)"
+glances_username="$($CONFIGHANDLER -s APACHE -o glances_username)"
+glances_password="$($CONFIGHANDLER -s APACHE -o glances_password)"
+glanes_icon_status="$($CONFIGHANDLER -s APACHE -o glances_icon)"
 # parameters
 glance_stream_hostname="glances"
 glance_stream_port="61208"
 apache2_conf_path="/etc/apache2/apache2.conf"
 
-source "${MYDIR_}/../../message.bash"
+source "${MYDIR}/../../message.bash"
 _msg_title="Setup glances system monitor"
 
 function change_line() {
@@ -125,4 +143,4 @@ else
     _msg_ "Glances install is not required."
 fi
 
-"${MYDIR_}"/systemd_setup/set_service.bash
+"${MYDIR}"/systemd_setup/set_service.bash

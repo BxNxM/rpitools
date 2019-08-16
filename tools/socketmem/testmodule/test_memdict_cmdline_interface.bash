@@ -15,12 +15,29 @@ fi
 
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-MEMDICT_CLIENT="${MYDIR}/../lib/clientMemDict.py"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
 NAMESPACE="general"
 FIELD="metadata"
 HEALTH=0
 
-source "${MYDIR}/colors.bash"
+source "${TERMINALCOLORS}"
 
 # ================================= TOOLS ====================================#
 progress_status=0
@@ -93,7 +110,7 @@ function check_output_substring() {
 # ================================= TESTS ====================================#
 function test_get_data_silence_False() {
     local substring="$1"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k born -s False"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -k born -s False"
     console "${YELLOW}[test_get_data_silence_False]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
@@ -106,7 +123,7 @@ function test_get_data_silence_False() {
 
 function test_get_data_silence_True() {
     local substring="$*"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k born -s True"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -k born -s True"
     console "${YELLOW}[test_get_data_silence_True]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
@@ -185,10 +202,10 @@ function test_get_data_parallel_silence_True() {
 
 function test_write_data_silence_False() {
     local substring="$1"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k service -s True"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -k service -s True"
     default_value=$($cmd)
     console "Default value: $default_value"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k service -v $substring -s False"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -k service -v $substring -s False"
     console "${YELLOW}[test_write_data_silence_False]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
@@ -198,15 +215,15 @@ function test_write_data_silence_False() {
         check_output_substring "$output" "$substring"
     fi
     console "Restore default value: $default_value"
-    "${MEMDICT_CLIENT}" -md -n "${NAMESPACE}" -k service -v "$default_value" -s True
+    "${CLIENTMEMDICT}" -md -n "${NAMESPACE}" -k service -v "$default_value" -s True
 }
 
 function test_write_data_silence_True() {
     local substring="$1"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k service -s True"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -k service -s True"
     default_value=$($cmd)
     console "Default value: $default_value"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -k service -v $substring -s True"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -k service -v $substring -s True"
     console "${YELLOW}[test_write_data_silence_True]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
@@ -216,7 +233,7 @@ function test_write_data_silence_True() {
         check_output_substring "$output" "True"
     fi
     console "Restore default value: $default_value"
-    "${MEMDICT_CLIENT}" -md -n "${NAMESPACE}" -k service -v "$default_value" -s True
+    "${CLIENTMEMDICT}" -md -n "${NAMESPACE}" -k service -v "$default_value" -s True
 }
 
 function run_thread_write_data() {
@@ -287,7 +304,7 @@ function test_write_data_parallel_silence_True() {
 
 function test_get_field_data_silence_True() {
     local substring="$*"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -s True"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -s True"
     console "${YELLOW}[test_get_field_data_silence_True]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
@@ -300,10 +317,10 @@ function test_get_field_data_silence_True() {
 
 function test_write_field_data_silence_True() {
     local substring="$1"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -s True"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -s True"
     default_value=$($cmd)
     console "Default value: $default_value"
-    local cmd="${MEMDICT_CLIENT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -v $substring -s True"
+    local cmd="${CLIENTMEMDICT} -md -n ${NAMESPACE} -f ${FIELD} -k dummykey -v $substring -s True"
     console "${YELLOW}[test_write_field_data_silence_True]${NC} CMD: $cmd"
     output=$($cmd)
     console "[output]\n|$output|"
@@ -313,7 +330,7 @@ function test_write_field_data_silence_True() {
         check_output_substring "$output" "True"
     fi
     console "Restore default value: $default_value"
-    "${MEMDICT_CLIENT}" -md -n "${NAMESPACE}" -f ${FIELD} -k dummykey -v "$default_value" -s True
+    "${CLIENTMEMDICT}" -md -n "${NAMESPACE}" -f ${FIELD} -k dummykey -v "$default_value" -s True
 }
 
 function main() {
@@ -384,8 +401,8 @@ else
 fi
 
 console "${YELLOW}SHOW MEMDICT CONTENT${NC}"
-${MEMDICT_CLIENT} -sh -s True
+${CLIENTMEMDICT} -sh -s True
 console "${YELLOW}SHOW MEMDICT STATISTIC${NC}"
-${MEMDICT_CLIENT} -st -s True
+${CLIENTMEMDICT} -st -s True
 
 exit "$HEALTH"

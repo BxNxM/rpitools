@@ -44,8 +44,8 @@ def list_connected_devices():
             if digit.isdigit():
                 devices.append(line[0])
     else:
-        error_msg("Command: {} return with error code: {}".format(cmd, exitcode))
-        error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+        module_printer("Command: {} return with error code: {}".format(cmd, exitcode))
+        module_printer("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
         sys.exit(1)
     return devices
 
@@ -207,12 +207,12 @@ def mount_all_devices():
                 elif exitcode == 1:
                     print("Fail to mount - may device is not found")
                 else:
-                    error_msg("EXITCODE: {}\nSTDOUT: {}\nSTDERR:{}".format(exitcode, stdout, stderr))
+                    module_printer("EXITCODE: {}\nSTDOUT: {}\nSTDERR:{}".format(exitcode, stdout, stderr))
             else:
-                error_msg("Mount failed!")
-                error_msg("Command: {} return with error code: {}".format(mount_cmd, exitcode))
-                error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+                module_printer("Mount failed!")
+                module_printer("Command: {} return with error code: {}".format(mount_cmd, exitcode))
+                module_printer("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
         else:
-            error_msg("Unexpected error!")
-            error_msg("Command: {} return with error code: {}".format(is_mounted_cmd, exitcode))
-            error_msg("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))
+            module_printer("Unexpected error!")
+            module_printer("Command: {} return with error code: {}".format(is_mounted_cmd, exitcode))
+            module_printer("STDOUT: {}\nSTDERR:{}".format(stdout, stderr))

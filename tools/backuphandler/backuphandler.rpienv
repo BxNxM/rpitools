@@ -1,0 +1,2 @@
+SCRIPT=backup_handler.bash
+PROP=("env" "alias")

@@ -6,20 +6,36 @@
 
 #set -x
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
-CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+CUSTOM_CONFIG="${REPOROOT}/autodeployment/config/rpitools_config.cfg"
 username="pi"
 default_pwd="raspberry"
-custom_hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
-pixel_activate="$($CONFIGAHNDLER -s INSTALL_PIXEL -o activate)"
-vnc_activate="$($CONFIGAHNDLER -s INSTALL_VNC -o activate)"
-custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
+custom_hostname="$($CONFIGHANDLER -s GENERAL -o custom_hostname).local"
+pixel_activate="$($CONFIGHANDLER -s INSTALL_PIXEL -o activate)"
+vnc_activate="$($CONFIGHANDLER -s INSTALL_VNC -o activate)"
+custom_pwd="$($CONFIGHANDLER -s SECURITY -o os_user_passwd)"
 reboot_wait_loop=8
 
 # validate config:
-config_stdout="$($CONFIGAHNDLER -v)"
+config_stdout="$($CONFIGHANDLER -v)"
 if [ "$?" -ne 0 ]
 then
     message "Config is invalid, to fix use: confeditor d"
@@ -31,7 +47,7 @@ SECONDS=0
 
 function copy_repo_to_rpi_machine() {
     local cpwith="rsync"
-    rpitools_path="${MYDIR_}/../../../rpitools"
+    rpitools_path="${REPOROOT}"
     if [ -d "$rpitools_path" ]
     then
         if [ "$cpwith" == "scp" ]
@@ -56,13 +72,13 @@ function copy_localmachine_ssh_pub_key_to_rpi_machine() {
 }
 
 function execute_source_setup_on_rpi_machine() {
-    echo -e "shpass -p $default_pwd ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && source setup'"
-    sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && source setup'
+    echo -e "shpass -p $default_pwd ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && ./setup.bash'"
+    sshpass -p "$default_pwd" ssh -o StrictHostKeyChecking=no pi@raspberrypi.local 'cd rpitools && ./setup.bash'
 }
 
 function execute_source_setup_on_rpi_machine_custom_host() {
-    echo -e "Execute: ssh -o StrictHostKeyChecking=no ${username}@${custom_hostname} 'cd rpitools && source setup'"
-    ssh -o StrictHostKeyChecking=no "${username}@${custom_hostname}" 'cd rpitools && source setup'
+    echo -e "Execute: ssh -o StrictHostKeyChecking=no ${username}@${custom_hostname} 'cd rpitools && ./setup.bash'"
+    ssh -o StrictHostKeyChecking=no "${username}@${custom_hostname}" 'cd rpitools && ./setup.bash'
 }
 
 function check_host() {
@@ -163,11 +179,11 @@ function instantiate_main() {
             check_host "raspberrypi.local"
             if [ "$check_host_exitcode" -eq 0 ]
             then
-                echo -e "\texecute source setup on raspberrypi.local"
+                echo -e "\texecute ./setup.bash on raspberrypi.local"
                 execute_source_setup_on_rpi_machine
                 waiting_for_up_again_after_reboot
             else
-                echo -e "\texecute source setup on $custom_hostname"
+                echo -e "\texecute ./setup.bash on $custom_hostname"
                 execute_source_setup_on_rpi_machine_custom_host
                 waiting_for_up_again_after_reboot
             fi

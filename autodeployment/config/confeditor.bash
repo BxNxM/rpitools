@@ -1,10 +1,27 @@
 #!/bin/bash
 
+arg_list=($@)
+
 MYPATH_CONF="${BASH_SOURCE[0]}"
 MYDIR_CONF="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-confighandler="${MYDIR_CONF}/../bin/ConfigHandlerInterface.py"
 
-arg_list=($@)
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR_CONF}/.rpienv" ]
+then
+    source "${MYDIR_CONF}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR_CONF}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR_CONF}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
 if [[ "${arg_list[*]}" == *"h"* ]] || [[ "${arg_list[*]}" == *"help"* ]]
 then
     echo -e "==== QUICK COMANDS ===="
@@ -17,18 +34,18 @@ then
     exit 0
 fi
 
-template_config="${MYDIR_CONF}/rpitools_config_template.cfg"
-custom_config="${MYDIR_CONF}/rpitools_config.cfg"
-source "${MYDIR_CONF}/../../prepare/colors.bash"
+template_config="${RPITOOLS_CONFIG_TEMPLATE}"
+custom_config="${RPITOOLS_CONFIG}"
+source "${TERMINALCOLORS}"
 
 function question() {
     echo -e "${YELLOW}$1${NC}"
 }
 
 function validate_conf() {
-    if [ -f "${MYDIR_CONF}/rpitools_config.cfg" ]
+    if [ -f "${custom_config}" ]
     then
-        local validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
+        local validate_msg=$($CONFIGHANDLER -v)
         local exitcode="$?"
         if [[ "$validate_msg" == *"MISSING"* ]]
         then
@@ -47,8 +64,8 @@ function validate_conf() {
 function export_diskconf_config_file() {
     local diskconf_template_path="${MYDIR_CONF}/diskconf.json.template"
     local diskconf_path="${MYDIR_CONF}/diskconf.json"
-    local external_disk_state="$($confighandler  -s STORAGE -o external)"
-    local disk_label="$($confighandler  -s STORAGE -o label)"
+    local external_disk_state="$($CONFIGHANDLER  -s STORAGE -o external)"
+    local disk_label="$($CONFIGHANDLER  -s STORAGE -o label)"
     if [ "$external_disk_state" == "True" ] || [ "$external_disk_state" == "true" ]
     then
         echo -e "External disk required - > create config file: $diskconf_path"
@@ -84,7 +101,7 @@ function import_configuration() {
         cp "$existing_config_path" "$custom_config"
         if [ -f "$custom_config" ]
         then
-            local validate_msg=$(${MYDIR_CONF}/../bin/ConfigHandlerInterface.py -v)
+            local validate_msg=$($CONFIGHANDLER -v)
             local exitcode="$?"
             if [[ "$validate_msg" == *"MISSING"* ]]
             then
@@ -192,18 +209,18 @@ then
         if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
         then
             (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
-            question "APPLY MODIFICATIONS (source setup)? [Y] | [N]"
+            question "APPLY MODIFICATIONS ($REPOROOT/setup.bash)? [Y] | [N]"
             read option_resource
             if [ "$option_resource" == "Y" ] || [ "$option_resource" == "y" ]
             then
-                pushd ~/rpitools
-                source setup
+                pushd "${REPOROOT}"
+                "${REPOROOT}/setup.bash"
                 popd
             fi
         fi
     fi
 fi
-if [ -f "${MYDIR_CONF}/rpitools_config.cfg" ]
+if [ -f "${custom_config}" ]
 then
     export_diskconf_config_file
 fi

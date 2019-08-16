@@ -4,25 +4,42 @@ arg_len="$#"
 arg="$1"
 force="False"
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CACHE_PATH_is_set="/home/$USER/rpitools/cache/.apache_set_done"
-source "${MYDIR_}/../../../prepare/colors.bash"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "$TERMINALCOLORS"
+
+CACHE_PATH_is_set="$REPOROOT/cache/.apache_set_done"
 
 html_folder_path="/var/www/html/"
 webshared_root_folder_name="cloud"
 apache_webshared_root_folder="${html_folder_path}/${webshared_root_folder_name}"
-template_folder_path="${MYDIR_}/template/"
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-apache_default_website_creation="$($confighandler -s APACHE -o activate)"
-html_folder_link_to="$($confighandler -s APACHE -o html_folder_link_to)"
-html_shared_default_user="$($confighandler -s APACHE -o http_user)"
-html_shared_default_user_password="$($confighandler -s APACHE -o http_passwd)"
+template_folder_path="${MYDIR}/template/"
+apache_default_website_creation="$($CONFIGHANDLER -s APACHE -o activate)"
+html_folder_link_to="$($CONFIGHANDLER -s APACHE -o html_folder_link_to)"
+html_shared_default_user="$($CONFIGHANDLER -s APACHE -o http_user)"
+html_shared_default_user_password="$($CONFIGHANDLER -s APACHE -o http_passwd)"
 html_shared_folder_private="${apache_webshared_root_folder}/private_cloud"
 html_shared_folder_public="${apache_webshared_root_folder}/public_cloud"
-transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
-motion_video_stream_is_activated="$($confighandler -s APACHE_MOTION_STREAM_FORWARDING -o activate)"
-motion_video_stream_proxy_point="$($confighandler -s APACHE_MOTION_STREAM_FORWARDING -o proxy_point)"
+transmission_downloads_path="$($CONFIGHANDLER -s TRANSMISSION -o download_path)"
+motion_video_stream_is_activated="$($CONFIGHANDLER -s APACHE_MOTION_STREAM_FORWARDING -o activate)"
+motion_video_stream_proxy_point="$($CONFIGHANDLER -s APACHE_MOTION_STREAM_FORWARDING -o proxy_point)"
 apache2_conf_path="/etc/apache2/apache2.conf"
 
 
@@ -31,9 +48,9 @@ export_env="export APACHE_WEBSHARED_ROOT_FOLDER=${apache_webshared_root_folder}\
 export_env+="export APACHE_HTML_ROOT_FOLDER=${html_folder_path}\n"
 export_env+="export APACHE_PRIVATE_SHARED_FOLDER=${html_shared_folder_private}\n"
 export_env+="export APACHE_PUBLIC_SHARED_FOLDER=${html_shared_folder_public}"
-echo -e "${export_env}" > ${MYDIR_}/apache.env
+echo -e "${export_env}" > ${MYDIR}/apache.env
 
-source "${MYDIR_}/../message.bash"
+source "${MYDIR}/../message.bash"
 _msg_title="APACHE SETUP"
 
 if [ "$arg_len" -eq 1 ]
@@ -110,20 +127,20 @@ function set_shared_folder_password_protected() {
         _msg_ "$apache2_conf_path already configured with <Directory /var/www/html>"
     fi
 
-    if [ ! -e "/home/$USER/.secure/" ]
+    if [ ! -e "$HOME/.secure/" ]
     then
-        _msg_ "Create password folder: mkdir -p /home/$USER/.secure/"
-        mkdir -p /home/$USER/.secure/
+        _msg_ "Create password folder: mkdir -p $HOME/.secure/"
+        mkdir -p $HOME/.secure/
     else
-        _msg_ "/home/$USER/.secure/ already exists"
+        _msg_ "$HOME/.secure/ already exists"
     fi
 
-    if [ ! -e "/home/$USER/.secure/apasswords" ]
+    if [ ! -e "$HOME/.secure/apasswords" ]
     then
-        _msg_ "Create password for user: htpasswd -c /home/$USER/.secure/apasswords $html_shared_default_user"
-        htpasswd -cb /home/$USER/.secure/apasswords "$html_shared_default_user" "$html_shared_default_user_password"
+        _msg_ "Create password for user: htpasswd -c $HOME/.secure/apasswords $html_shared_default_user"
+        htpasswd -cb $HOME/.secure/apasswords "$html_shared_default_user" "$html_shared_default_user_password"
     else
-        _msg_ "/home/$USER/.secure/apasswords already exists"
+        _msg_ "$HOME/.secure/apasswords already exists"
     fi
 
     if [ ! -e "${html_shared_folder_private}/.htaccess" ]
@@ -131,7 +148,7 @@ function set_shared_folder_password_protected() {
         _msg_ "Create ${html_shared_folder_private}/.htaccess"
         htaccess_config="AuthType Basic\n"
         htaccess_config+="AuthName \"Restricted Access\"\n"
-        htaccess_config+="AuthUserFile /home/$USER/.secure/apasswords\n"
+        htaccess_config+="AuthUserFile $HOME/.secure/apasswords\n"
         htaccess_config+="Require user $html_shared_default_user\n"
         (sudo touch "${html_shared_folder_private}/.htaccess")
         sudo chmod go+rw "${html_shared_folder_private}/.htaccess"
@@ -216,7 +233,7 @@ function motion_stream_forwarding_apache_link_icon() {
 function sites_enabled_000-defaultconf_patch() {
     # https://www.thegeekstuff.com/2014/12/patch-command-examples/
     local apache2_sites_available_000_default_conf_path="/etc/apache2/sites-available/000-default.conf"
-    local patch_file_path="${MYDIR_}/patches/000-default_patch.conf"
+    local patch_file_path="${MYDIR}/patches/000-default_patch.conf"
 
     # CREATE PATH FILE
     #diff -u ORIGINAL FINAL > PATCH
@@ -296,7 +313,7 @@ function restore_backup_cloud_storage_content() {
 }
 
 function generate_project_structure() {
-    folder="/home/$USER/rpitools"; tree "$folder" -T "RPITOOLS FILE STRUCURE" -H rpitools -C > "${MYDIR_}/template/htmls/$(basename ${folder})_file_structure.html"; sed -i 's|href=".*"||g' "${MYDIR_}/template/htmls/$(basename ${folder})_file_structure.html"
+    folder="$REPOROOT"; tree "$folder" -T "RPITOOLS FILE STRUCURE" -H rpitools -C > "${MYDIR}/template/htmls/$(basename ${folder})_file_structure.html"; sed -i 's|href=".*"||g' "${MYDIR}/template/htmls/$(basename ${folder})_file_structure.html"
 }
 
 function create_apache_default_website() {
@@ -322,9 +339,9 @@ function create_apache_default_website() {
 
     motion_stream_forwarding_apache_link_icon
 
-    . "${MYDIR_}/setup_h5ai.bash"
+    . "${MYDIR}/setup_h5ai.bash"
 
-    . "$MYDIR_/glances/setup_glances_system_monitor.bash"
+    . "$MYDIR/glances/setup_glances_system_monitor.bash"
 }
 
 if [ "$apache_default_website_creation" == "True" ] || [ "$apache_default_website_creation" == "true" ]

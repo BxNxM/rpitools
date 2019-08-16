@@ -1,8 +1,25 @@
 #!/bin/bash
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "${MYDIR_}/../../../prepare/colors.bash"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "${TERMINALCOLORS}"
 
 html_folder_path="/var/www/html/"
 webshared_root_folder_name="cloud"
@@ -13,11 +30,11 @@ h5ai_folder_name="_h5ai"
 apache2_conf_path="/etc/apache2/apache2.conf"
 restart_required=0
 
-source "${MYDIR_}/../message.bash"
+source "${MYDIR}/../message.bash"
 _msg_title="h5ai SETUP"
 
 function download_and_prepare_h5ai() {
-    pushd "$MYDIR_"
+    pushd "$MYDIR"
 
     if [ ! -d "$h5ai_folder_name" ]
     then
@@ -42,8 +59,8 @@ function copy_h5ai_to() {
     local to="$1"
     if [ ! -d "${to}/${h5ai_folder_name}" ]
     then
-        _msg_ "copy ${MYDIR_}/${h5ai_folder_name} to ${to}/${h5ai_folder_name} "
-        sudo cp -rp "${MYDIR_}/${h5ai_folder_name}" "${to}/${h5ai_folder_name}"
+        _msg_ "copy ${MYDIR}/${h5ai_folder_name} to ${to}/${h5ai_folder_name} "
+        sudo cp -rp "${MYDIR}/${h5ai_folder_name}" "${to}/${h5ai_folder_name}"
         restart_required=$((restart_required+1))
     else
         _msg_ " ${to}/${h5ai_folder_name} already exists."

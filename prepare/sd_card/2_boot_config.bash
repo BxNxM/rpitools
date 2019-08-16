@@ -1,34 +1,49 @@
 #!/bin/bash
 
 #source colors
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
-CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
-source ${MYDIR_}/../colors.bash
-source ${MYDIR_}/../sub_elapsed_time.bash
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "$TERMINALCOLORS"
+source ${MYDIR}/../sub_elapsed_time.bash
+
+CUSTOM_CONFIG="${REPOROOT}/autodeployment/config/rpitools_config.cfg"
 
 # message handler function
 function message() {
-    local rpitools_log_path="${MYDIR_}/../../cache/rpitools.log"
-
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${BROWN}[ boot config ]${NC} $msg"
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${BROWN}[ boot config ]${NC} $msg" >> "$rpitools_log_path"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${BROWN}[ boot config ]${NC} $msg" >> "${RRPITOOLS_LOG}"
     fi
 }
 
 # validate config:
-config_stdout="$($CONFIGAHNDLER -v)"
+config_stdout="$($CONFIGHANDLER -v)"
 if [ "$?" -ne 0 ]
 then
+    message "$config_stdout"
     message "Config is invalid, to fix use: confeditor d"
     exit 1
 fi
 
-OS=$(uname)
 if [ "$OS" == "Darwin" ]
 then
     message "Use MacOS settings."
@@ -46,7 +61,7 @@ function config_is_avaible() {
     if [ ! -e "$CUSTOM_CONFIG" ]
     then
         echo -e "Create custom config file - before run this script!"
-        echo -e "cp ${MYDIR_}/../../autodeployment/config/rpitools_config_template.cfg  ${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
+        echo -e "cp ${REPOROOT}/autodeployment/config/rpitools_config_template.cfg  ${REPOROOT}/autodeployment/config/rpitools_config.cfg"
         echo -e "And edit this file!"
     fi
 }
@@ -101,8 +116,8 @@ function set_boot_config() {
     fi
 
     # set wifi access
-    ssid="$($CONFIGAHNDLER -s NETWORK -o ssid)"
-    passwd="$($CONFIGAHNDLER -s NETWORK -o pwd)"
+    ssid="$($CONFIGHANDLER -s NETWORK -o ssid)"
+    passwd="$($CONFIGHANDLER -s NETWORK -o pwd)"
     if [ -e "$wpa_supplicant_path" ]
     then
         message "$wpa_supplicant_path is alredy set."
@@ -128,10 +143,10 @@ function set_boot_config() {
         message "Initial partition resize is enable :)"
     fi
 
-    if [ -e "${MYDIR_}/.drive" ]
+    if [ -e "${MYDIR}/.drive" ]
     then
-        drive="$(cat ${MYDIR_}/.drive)"
-        rm -f "${MYDIR_}/.drive"
+        drive="$(cat ${MYDIR}/.drive)"
+        rm -f "${MYDIR}/.drive"
 
         if [ "$OS" == "Darwin" ]
         then
@@ -142,7 +157,7 @@ function set_boot_config() {
             umount "$drive"
         fi
     else
-        message "Unmount disk manually, before unconnect [${MYDIR_}/.drive disk info not exists, for auto-unmount]"
+        message "Unmount disk manually, before unconnect [${MYDIR}/.drive disk info not exists, for auto-unmount]"
     fi
 
     message "[!!!] ONLY DO THESE STEP ONCE BEFORE FIRST BOOT [!!!]"

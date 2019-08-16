@@ -1,21 +1,31 @@
 #!/bin/bash
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "${MYDIR_}/../prepare/colors.bash"
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-transmission_is_active="$($confighandler -s TRANSMISSION -o activate)"
-transmission_downloads_path="$($confighandler -s TRANSMISSION -o download_path)"
-home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
-rpitools_user="$($confighandler -s GENERAL -o user_name_on_os)"
-
-storage_path_structure="${MYDIR_}/../cache/storage_path_structure"
-if [ -f "$storage_path_structure" ]
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
 then
-    source "$storage_path_structure"
-    # get USERSPACE variable
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
 fi
+
+source "${TERMINALCOLORS}"
+
+transmission_is_active="$($CONFIGHANDLER -s TRANSMISSION -o activate)"
+transmission_downloads_path="$($CONFIGHANDLER -s TRANSMISSION -o download_path)"
+home_backups_path="$($CONFIGHANDLER -s BACKUP -o backups_path)/backups/users"
+rpitools_user="$($CONFIGHANDLER -s GENERAL -o user_name_on_os)"
 
 #########################################################################################
 #                                 ARGUMENTUM HANDLER                                    #
@@ -220,7 +230,7 @@ function ARGPARSE() {
 
     if [ "$args_pcs" -eq 0 ]
     then
-        bash "$MYPATH_" --man
+        bash "$MYPATH" --man
     fi
 }
 
@@ -388,8 +398,8 @@ function LogOffUser {
 function add_apache_user_with_passwd() {
     local user="$1"
     local password="$2"
-    local apache_env_path="${MYDIR_}/../autodeployment/lib/apache_setup/apache.env"
-    local apasswords_path="/home/$USER/.secure/apasswords"
+    local apache_env_path="${REPOROOT}/autodeployment/lib/apache_setup/apache.env"
+    local apasswords_path="${HOME}/.secure/apasswords"
     local new_user=0
     if [ -f "$apache_env_path" ]
     then

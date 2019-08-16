@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# RPIENV IMPORT ALIASES
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${MYDIR}/.rpienv > /dev/null
+source "$ALIAS_CACHE_PATH"
+
 export VISUAL="vim"             # set editors for git and others
 export EDITOR="$VISUAL"         # -||-
 export LC_ALL=C                 # fix: setlocale: No such file or directory
@@ -8,43 +14,29 @@ alias ll='ls -lh'
 alias servicelist='systemctl list-unit-files | grep enabled'
 alias disk='df -h'
 alias startvnc='sudo systemctl start vncserver-x11-serviced.service; systemctl status vncserver-x11-serviced.service'
-alias rgbinterface='/home/$USER/rpitools/gpio/rgb_led/bin/rgb_interface.py'
-alias oledinterface='/home/$USER/rpitools/gpio/oled_128x64/bin/oled_interface.py'
-alias hapticinterface='/home/$USER/rpitools/gpio/haptic_engine/bin/hapticenginge_interface.py'
 alias cpm='/home/$USER/rpitools/tools/cpmonitor/cprocess_monitor.bash'
 alias cleanuplogs='pushd /home/$USER/rpitools/tools/ && ./clear_logs.sh && popd'
 alias omxplayer_gui='/home/$USER/rpitools/tools/omxplayer_gui/omx_gui.py'
 alias startxbg='startx &'
 alias startconky='/home/$USER/rpitools/tools/set_conky/conky.bash'
 alias weather_wttr='curl wttr.in/Budapest'
-alias update_rpitools='cd ~/rpitools; is_needed=$(git fetch 2>&1 | wc -l); if [[ "$is_needed" -eq 0 ]] && [[ -z "$FORCEUPDATE" ]]; then echo "rpitools is up-to-date :D"; else /home/$USER/rpitools/tools/update_rpitools.bash stop; git --git-dir /home/$USER/rpitools/.git pull --rebase; if [ "$?" -ne 0 ]; then git --git-dir /home/$USER/rpitools/.git stash && git --git-dir /home/$USER/rpitools/.git pull --rebase; fi; source setup && source template/aliases && /home/$USER/rpitools/tools/update_rpitools.bash start; fi'
-alias mysshfs='/home/$USER/rpitools/tools/mysshfs.bash'
-alias confighandler='/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py'
-alias confeditor='/home/$USER/rpitools/autodeployment/config/confeditor.bash'
+alias update_rpitools='cd ~/rpitools; is_needed=$(git fetch 2>&1 | wc -l); if [[ "$is_needed" -eq 0 ]] && [[ -z "$FORCEUPDATE" ]]; then echo "rpitools is up-to-date :D"; else /home/$USER/rpitools/tools/update_rpitools.bash stop; git --git-dir /home/$USER/rpitools/.git pull --rebase; if [ "$?" -ne 0 ]; then git --git-dir /home/$USER/rpitools/.git stash && git --git-dir /home/$USER/rpitools/.git pull --rebase; fi; ./setup.bash && source template/aliases && /home/$USER/rpitools/tools/update_rpitools.bash start; fi'
 alias cd..='cd ..'
 alias i2cdetect='i2cdetect -y 1'
 alias save_repo_confs='/home/$USER/rpitools/tools/cache_restore_backup.bash backup'
-alias diskhandler='sudo /home/$USER/rpitools/tools/diskhandler/bin/diskhandler.py'
+alias diskhandler='sudo $DISKHANDLER'
 alias kodibg='kodi &'
-alias sysmonitor='/home/$USER/rpitools/tools/sysmonitor/bin/sysmonitor.py'
 alias remove_app='sudo apt-get autoremove --purge'
 alias list_services='echo -e "\nENABLED:\n\n$(systemctl list-unit-files | grep enabled)\n\nINACTIVE:\n\n$(systemctl list-unit-files | grep disabled)"'
 alias halpage='/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash'
 alias copy_my_sshkey_to='/home/$USER/rpitools/tools/copy_my_sshkey_to.bash'
-alias clientMemDict='/home/$USER/rpitools/tools/socketmem/lib/clientMemDict.py'
-alias camera='/home/$USER/rpitools/gpio/camera/bin/camera_interface.bash'
 alias rpihelp='export WELCOME_TEXT_ENV="true"; /home/$USER/rpitools/tools/welcome_config/welcome_screen.bash; unset WELCOME_TEXT_ENV'
-alias motioncontroll='/home/$USER/rpitools/tools/motioncontroll.bash $@'
 alias network_monitor='bmon -p wlan0'
 alias listlocalrpis='local_rpis=($(sudo arp-scan --interface=wlan0 --localnet | grep "Raspberry Pi" | awk "{print \$1}")); for rpiip in "${local_rpis[@]}"; do hostname="$(nmblookup -A "$rpiip" | grep "<00" | grep -v GROUP | awk "{print \$1}")"; echo -e "$rpiip : $hostname"; done'
 alias cdrpitools='cd ~/rpitools'
-alias backuphandler='/home/$USER/rpitools/tools/backuphandler/backup_handler.bash'
-alias usermanager='/home/$USER/rpitools/tools/user_manager.bash'
-alias retropie='/home/$USER/rpitools/autodeployment/lib/retropie/retropie.bash'
 alias ttyecho='/home/$USER/rpitools/tools/ttyecho/ttyecho_wrapper.bash'
 alias smartpatch='/home/$USER/rpitools/tools/smart_patch_applier.bash'
 alias gotop='/home/$USER/rpitools/tools/gotop/gotop.bash'
-alias cluster='/home/$USER/rpitools/cluster/cluster.bash'
 alias speedtest='speedtest --bytes'
 
 alias gitlog='git log --all --decorate --oneline --graph'

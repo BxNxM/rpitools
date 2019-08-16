@@ -5,16 +5,33 @@ arglist=($@)
 commands_whitelist=("diskhandler" "halpage" "hapticinterface" "kodibg" "listlocalrpis" "motioncontroll" "mysshfs" "oledinterface" "rgbinterface" "sysmonitor" "ttyecho" "smartpatch")
 commands_blacklist=("ll")
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
-source ${MYDIR_}/../colors.bash
-aliases_path="${MYDIR_}/../../template/aliases"
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source ${TERMINALCOLORS}
+aliases_path="${REPOROOT}/template/aliases"
 commands_name_list=($(cat "$aliases_path"  | grep "='.*.'" | cut -d' ' -f2 | cut -d"=" -f1))
 commands_name_counter=0
 commands_list=$(cat "$aliases_path" | grep "='.*.'" | cut -d"'" -f2)
 user_commands_folder="/usr/bin/"
-cache_indicator_path="${MYDIR_}/../../cache/.system_wide_commands_was_set"
+cache_indicator_path="${REPOROOT}/cache/.system_wide_commands_was_set"
 
 _msg_title="SYSTEM CMD CREATE"
 function _msg_() {
@@ -59,7 +76,7 @@ function list_cmds() {
         then
             _msg_ "Command: $cmd OK"
         else
-            _msg_ "Command: $cmd MISSING - run: ${MYPATH_} create"
+            _msg_ "Command: $cmd MISSING - run: ${MYPATH} create"
         fi
     done
 }
@@ -82,6 +99,6 @@ then
         create_commands
     else
         _msg_ "System wide commands was already set: $cache_indicator_path exists."
-        _msg_ "Manual args: ${MYPATH_} create | list"
+        _msg_ "Manual args: ${MYPATH} create | list"
     fi
 fi

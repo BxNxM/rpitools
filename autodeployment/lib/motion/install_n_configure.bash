@@ -1,19 +1,36 @@
 #!/bin/bash
 
-MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-motion_target_folder="$($confighandler -s MOTION -o target_folder)"
-motion_activate="$($confighandler -s MOTION -o activate)"
-http_username="$($confighandler -s MOTION -o http_user)"
-http_password="$($confighandler -s MOTION -o http_pawwd)"
-link_to_apche="$($confighandler -s MOTION -o link_under_apache)"
 
-source "${MYDIR}/../../../prepare/colors.bash"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "$TERMINALCOLORS"
+
+motion_target_folder="$($CONFIGHANDLER -s MOTION -o target_folder)"
+motion_activate="$($CONFIGHANDLER -s MOTION -o activate)"
+http_username="$($CONFIGHANDLER -s MOTION -o http_user)"
+http_password="$($CONFIGHANDLER -s MOTION -o http_pawwd)"
+link_to_apche="$($CONFIGHANDLER -s MOTION -o link_under_apache)"
+
 motion_conf_path="/etc/motion/motion.conf"              # https://tutorials-raspberrypi.com/raspberry-pi-security-camera-livestream-setup/
 motion_conf_path2="/etc/default/motion"                 # start_motion_daemon=yes
 add_modeprobe_to="/etc/modules-load.d/raspberrypi.conf"
-initial_config_done_indicator="/home/$USER/rpitools/cache/.motion_initial_config_done"
+initial_config_done_indicator="$REPOROOT/cache/.motion_initial_config_done"
 
 # source apache path env
 source "${MYDIR}/../apache_setup/apache.env"

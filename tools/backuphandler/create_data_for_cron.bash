@@ -1,14 +1,29 @@
 #!/bin/bash
 
-MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-activate_backup="$($confighandler -s BACKUP -o activate)"
-home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
-system_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/system"
-limit="$($confighandler -s BACKUP -o limit)"
-sshfs_mount_point_name="$(basename $($confighandler -s SSHFS -o mount_folder_path))"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+activate_backup="$($CONFIGHANDLER -s BACKUP -o activate)"
+home_backups_path="$($CONFIGHANDLER -s BACKUP -o backups_path)/backups/users"
+system_backups_path="$($CONFIGHANDLER -s BACKUP -o backups_path)/backups/system"
+limit="$($CONFIGHANDLER -s BACKUP -o limit)"
+sshfs_mount_point_name="$(basename $($CONFIGHANDLER -s SSHFS -o mount_folder_path))"
 
 backuphandler_cron_data_path="${MYDIR}/.backuphandler_cron_data"
 

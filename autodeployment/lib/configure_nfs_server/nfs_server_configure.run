@@ -1,0 +1,3 @@
+TITLE="NFS SERVER CONFIGURATION"
+SCRIPT="configure_nfs_server.bash"
+RUN_DEPENDENCY=("socketmem_setup")

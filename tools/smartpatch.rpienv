@@ -1,0 +1,2 @@
+SCRIPT="smart_patch_applier.bash"
+PROP=("env")

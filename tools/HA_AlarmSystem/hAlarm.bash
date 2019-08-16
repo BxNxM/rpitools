@@ -3,14 +3,30 @@
 # script path n name
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-client_memdict="/home/$USER/rpitools/tools/socketmem/lib/clientMemDict.py"
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
 sysmonitor_log="${MYDIR}/sysmonitor_last.log"
 mail_file_path="${MYDIR}/mail_alarm.dat"
 cycle_sleep_time=20
 
 function get_check_period_sec() {
-    local cycle_sleep_time_="$($confighandler -s HALARM -o check_period_sec)"
+    local cycle_sleep_time_="$($CONFIGHANDLER -s HALARM -o check_period_sec)"
     if [ "$cycle_sleep_time_" != "-undef-option" ]
     then
         if [ "$cycle_sleep_time_" -gt 5 ]
@@ -24,7 +40,7 @@ function get_check_period_sec() {
 
 function write_email_notifier_text() {
     local sysmonitor_printout_path="$1"
-    local get_memdict_system_text="$($client_memdict -md -n system)"
+    local get_memdict_system_text="$($CLIENTMEMDICT -md -n system)"
     local title="RPITOOLS_SYSTEM_NOTIFY_-_NO_REPLY"
 
     if [[ "$get_memdict_system_text" == *"ALARM"* ]]

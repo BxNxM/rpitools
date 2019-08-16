@@ -1,0 +1,3 @@
+TITLE="INSTALL VNC"
+SCRIPT="main.bash"
+RUN_DEPENDENCY=("install_pixel")

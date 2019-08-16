@@ -1,0 +1,2 @@
+SCRIPT="post_config_executor_api.bash"
+PROP=("env")

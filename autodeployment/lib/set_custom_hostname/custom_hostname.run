@@ -1,0 +1,3 @@
+TITLE="SETUP CUSTOM HOSTNAME"
+SCRIPT="set_custom_hostname.bash"
+RUN_DEPENDENCY=("socketmem_setup")

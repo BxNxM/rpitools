@@ -1,0 +1,2 @@
+SCRIPT=hapticenginge_interface.py
+PROP=("env" "alias")

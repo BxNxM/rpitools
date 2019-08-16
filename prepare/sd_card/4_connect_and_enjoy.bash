@@ -1,12 +1,28 @@
 #!/bin/bash
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
-CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+CUSTOM_CONFIG="${REPOROOT}/autodeployment/config/rpitools_config.cfg"
 username="pi"
-hostname="$($CONFIGAHNDLER -s GENERAL -o custom_hostname).local"
-custom_pwd="$($CONFIGAHNDLER -s SECURITY -o os_user_passwd)"
+hostname="$($CONFIGHANDLER -s GENERAL -o custom_hostname).local"
+custom_pwd="$($CONFIGHANDLER -s SECURITY -o os_user_passwd)"
 echo -e "$hostname"
 
 echo -e "\n=======================  RPITOOLS INFORMATIONS =============================="

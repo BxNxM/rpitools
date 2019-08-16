@@ -1,15 +1,32 @@
 #!/bin/bash
 
 #source colors
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source ${MYDIR_}/../colors.bash
-source ${MYDIR_}/../sub_elapsed_time.bash
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "${TERMINALCOLORS}"
+source ${MYDIR}/../sub_elapsed_time.bash
+
 was_installation=0
 # optional program installations
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-transmission_installation="$($confighandler -s TRANSMISSION -o activate)"
-apache_installation="$($confighandler -s APACHE -o activate)"
+transmission_installation="$($CONFIGHANDLER -s TRANSMISSION -o activate)"
+apache_installation="$($CONFIGHANDLER -s APACHE -o activate)"
 
 # message handler function
 function message() {
@@ -230,10 +247,10 @@ function main() {
 main
 if [ "$was_installation" -eq 1 ]
 then
-    if [ ! -e "${MYDIR_}/../../cache/.instantiation_done" ]
+    if [ ! -e "${REPOROOT}/cache/.instantiation_done" ]
     then
         message "After program installations, execute: sudo reboot"
-        . "${MYDIR_}/../../tools/cache_restore_backup.bash" "backup"
+        . "${REPOROOT}/tools/cache_restore_backup.bash" "backup"
         sudo reboot
     else
         message "After program installations good to restart the system: sudo reboot"

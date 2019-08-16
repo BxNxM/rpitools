@@ -8,24 +8,41 @@ arg_list=($@)
 # script path n name
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-mount_history_path="${MYDIR}/../cache/.mysshfs_history"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+mount_history_path="${REPOROOT}/cache/.mysshfs_history"
 if [ ! -f "$mount_history_path" ]
 then
     echo -e $(touch "$mount_history_path")
 fi
 
-# WRITE USER HERE
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
 # HALPAGE HANDLER
-halpage_handler="/home/$USER/rpitools/tools/dropbox_halpage/lib/server_info_getter.bash"
+halpage_handler="${REPOROOT}/tools/dropbox_halpage/lib/server_info_getter.bash"
 
-user="$($confighandler -s SSHFS -o user)"
-default_host="$($confighandler -s SSHFS -o default_host)"
-default_port="$($confighandler -s SSHFS -o default_port)"
-external_port="$($confighandler -s SSHFS -o external_port)"
-mount_folder_path="$($confighandler -s SSHFS -o mount_folder_path)"
-default_halpage_name="$($confighandler -s SSHFS -o halpage_name)"
-halpage_is_available="$($confighandler -s EXTIPHANDLER -o activate)"
+# GET RPITOOLS CONFIG INFORMATIONS
+user="$(${CONFIGHANDLER} -s SSHFS -o user)"
+default_host="$(${CONFIGHANDLER} -s SSHFS -o default_host)"
+default_port="$(${CONFIGHANDLER} -s SSHFS -o default_port)"
+external_port="$(${CONFIGHANDLER} -s SSHFS -o external_port)"
+mount_folder_path="$(${CONFIGHANDLER} -s SSHFS -o mount_folder_path)"
+default_halpage_name="$(${CONFIGHANDLER} -s SSHFS -o halpage_name)"
+halpage_is_available="$(${CONFIGHANDLER} -s EXTIPHANDLER -o activate)"
 
 #-----------------------------------------------#
 server_path="/home/${user}"                      # remote server path
@@ -33,23 +50,7 @@ sshfs_louncher_path="${MYDIR}/mysshfs.bash"      # actual script full path
 MODE="None"
 
 #--------------------------------------------- COLORS ----------------------------------------------------#
-BLACK='\033[0;30m'
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-BROWN='\033[0;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-LIGHT_GRAY='\033[0;37m'
-DARK_GRAY='\033[1;30m'
-LIGHT_RED='\033[1;31m'
-LIGHT_GREEN='\033[1;32m'
-YELLOW='\033[1;33m'
-LIGHT_BLUE='\033[1;34m'
-LIGHT_PURPLE='\033[1;35m'
-LIGHT_CYAN='\033[1;36m'
-WHITE='\033[1;37m'
-NC='\033[0m'
+source "${TERMINALCOLORS}"
 
 function info_msg() {
     echo -e "${YELLOW}[INFO][MODE:$MODE]${NC} ${*}"
@@ -73,8 +74,8 @@ function init() {
                   "--remount\t::\tunmount and mount server, ${known_args_subs_pcs[10]} par"\
                   "--sshkey_sync\t::\tsync ssh key to remote server for the passwordless connection, ${known_args_subs_pcs[11]} par"\
                   "--history\t::\tshow command mount/unmount history and select, ${known_args_subs_pcs[12]} par"\
-                  "--url\t::\t, add halpage access url [contails: host and port] ${known_args_subs_pcs[13]} par" \
-                  "--global\t::\t, create all users available mount point ${known_args_subs_pcs[14]} par")
+                  "--url\t\t::\t add halpage access url [contails: host and port] ${known_args_subs_pcs[13]} par" \
+                  "--global\t::\t create all users available mount point ${known_args_subs_pcs[14]} par")
     #______________________________________________________________#
     ################################################################
     known_args_status=()
@@ -509,7 +510,7 @@ function main() {
         echo -e "MOUNT POINT: $(get_arg_value "mount_point")"
         mount_folder_path="$(get_arg_value "mount_point")"
         manual_connection=$((manual_connection+1))
-    elif [ "$user" != "$($confighandler -s SSHFS -o user)" ]
+    elif [ "$user" != "$(${CONFIGHANDLER} -s SSHFS -o user)" ]
     then
         mount_folder_path="/media/${host}_${user}"
     fi

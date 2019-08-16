@@ -1,0 +1,3 @@
+TITLE="SETUP SOCKET MEM DICT"
+SCRIPT="socketmem_setup.bash"
+RUN_DEPENDENCY=("socketmem_setup")

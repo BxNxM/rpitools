@@ -2,23 +2,38 @@
 
 #source colors
 MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source ${MYDIR_}/../colors.bash
-source ${MYDIR_}/../sub_elapsed_time.bash
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "$TERMINALCOLORS"
+source ${MYDIR}/../sub_elapsed_time.bash
 
 # message handler function
 function message() {
-    local rpitools_log_path="${MYDIR_}/../../cache/rpitools.log"
-
     local msg="$1"
     if [ ! -z "$msg" ]
     then
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${CYAN}[ img deploy ]${NC} $msg"
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${CYAN}[ img deploy ]${NC} $msg" >> "$rpitools_log_path"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${CYAN}[ img deploy ]${NC} $msg" >> "${RRPITOOLS_LOG}"
     fi
 }
 
-OS=$(uname)
 if [ "$OS" == "Darwin" ]
 then
     message "Use MacOS settings."
@@ -41,7 +56,7 @@ fi
 elapsed_time "start"
 # Copy raspbain image to temporary image folder
 message "Search image..."
-img_path=$(echo raspbian_img/*.img)
+img_path=$(echo ${REPOROOT}/prepare/sd_card/raspbian_img/*.img)
 if [ ! -e "$img_path" ]
 then
     img_in_downloads_folder="$(find $glob_downloads_folder -iname "*raspbian*lite*.img")"
@@ -59,16 +74,16 @@ then
 
     if [ -e "$img_in_downloads_folder" ]
     then
-        echo -e "Copy $img_in_downloads_folder image to ${MYDIR_}/raspbian_img/"
-        cp "$img_in_downloads_folder" "${MYDIR_}/raspbian_img/"
+        echo -e "Copy $img_in_downloads_folder image to ${REPOROOT}/prepare/sd_card/raspbian_img/"
+        cp "$img_in_downloads_folder" "${REPOROOT}/prepare/sd_card/raspbian_img/"
     else
         message "Image not found in ~/Downloads"
     fi
 fi
 
 # get image and make deployment to SD card
-img_path_="$(echo raspbian_img/*.img)"
-img_path="${MYDIR_}/${img_path_}"
+img_path_="$(echo ${REPOROOT}/prepare/sd_card/raspbian_img/*.img)"
+img_path="${img_path_}"
 if [ -e "$img_path" ]
 then
     message "List drives: diskutil list / lsblk"
@@ -95,7 +110,7 @@ then
             message "SUCCESS"
             echo -e "Remove temporary image file: $img_path"
             rm -f "$img_path"
-            echo "$drive" > "${MYDIR_}/.drive"
+            echo "$drive" > "${MYDIR}/.drive"
         else
             message "FAILED"
         fi

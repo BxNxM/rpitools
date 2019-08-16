@@ -1,0 +1,3 @@
+TITLE="custom logrotate service: log_cleaner.bash or rpitools_logrotate.service"
+SCRIPT="main.bash"
+RUN_DEPENDENCY=("socketmem_setup")

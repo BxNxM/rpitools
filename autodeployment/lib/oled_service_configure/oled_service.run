@@ -1,0 +1,3 @@
+TITLE="OLED GUI CORE service setup"
+SCRIPT="main.bash"
+RUN_DEPENDENCY=("socketmem_setup" "set_spi_raspberrypi" "set_i2c_raspberrypi")

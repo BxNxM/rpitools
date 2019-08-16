@@ -39,8 +39,31 @@ try:
 except Exception as e:
     print("haptic engine import: " + str(e))
 
+def rpienv_source():
+    import subprocess
+    if not os.path.exists(str(myfolder) + '/.rpienv'):
+        print("[ ENV ERROR ] " + str(myfolder) + "/.rpienv path not exits!")
+        sys.exit(1)
+    command = ['bash', '-c', 'source ' + str(myfolder) + '/.rpienv -s && env']
+    proc = subprocess.Popen(command, stdout = subprocess.PIPE)
+    for line in proc.stdout:
+        if type(line) is bytes:
+            line = line.decode("utf-8")
+        try:
+            name = line.partition("=")[0]
+            value = line.partition("=")[2]
+            if type(value) is unicode:
+                value = value.encode('ascii','ignore')
+            value = value.rstrip()
+            os.environ[name] = value
+        except Exception as e:
+            if "name 'unicode' is not defined" != str(e):
+                print(e)
+    proc.communicate()
+rpienv_source()
+
 try:
-    confhandler_path = os.path.join(myfolder,"../../../autodeployment/lib/")
+    confhandler_path = os.path.join(os.path.dirname(os.environ['CONFIGHANDLERPY']))
     sys.path.append(confhandler_path)
     import ConfigHandler
     cfg = ConfigHandler.init()

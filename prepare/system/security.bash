@@ -3,21 +3,38 @@
 arg_len="$#"
 arg_list=("$@")
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "${MYDIR_}/../colors.bash"
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-ssh_passed_state="$($confighandler -s SECURITY -o password_authentication)"
-password_auth_for_rpitools_admin="$($confighandler -s SECURITY -o password_auth_for_rpitools_admin)"
-ssh_id_rsa_pub="$($confighandler -s SECURITY -o id_rsa_pub)"
-user="$($confighandler -s GENERAL -o user_name_on_os)"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "${TERMINALCOLORS}"
+
+ssh_passed_state="$($CONFIGHANDLER -s SECURITY -o password_authentication)"
+password_auth_for_rpitools_admin="$($CONFIGHANDLER -s SECURITY -o password_auth_for_rpitools_admin)"
+ssh_id_rsa_pub="$($CONFIGHANDLER -s SECURITY -o id_rsa_pub)"
+user="$($CONFIGHANDLER -s GENERAL -o user_name_on_os)"
 sshd_config_path="/etc/ssh/sshd_config"
-authorized_keys_path="/home/$USER/.ssh/authorized_keys"
+authorized_keys_path="$HOME/.ssh/authorized_keys"
 default_id_rsa_pub_value_in_conf="write_you_id_rsa_pub_here"
-rpi_config_path="/home/$USER/rpitools/autodeployment/config/rpitools_config.cfg"
-cache_path="/home/$USER/rpitools/cache/"
-repo_conf_restore_backup="/home/$USER/rpitools/tools/cache_restore_backup.bash"
+rpi_config_path="$REPOROOT/autodeployment/config/rpitools_config.cfg"
+cache_path="$REPOROOT/cache/"
+repo_conf_restore_backup="$REPOROOT/tools/cache_restore_backup.bash"
 
 _msg_title="SECURITY [SSH|UFW|GROUPS] SETUP"
 function _msg_() {
@@ -87,7 +104,7 @@ function save_authorized_keys_first_key_to_rpi_config() {
         change_parameter "id_rsa_pub.*=.*write_you_id_rsa_pub_here" "id_rsa_pub = ${first_id_rsa_pub}" "$rpi_config_path"
 
         _msg_ "Validate config after modifications"
-        echo -e "$($confighandler -v)"
+        echo -e "$($CONFIGHANDLER -v)"
         if [ "$?" -eq 0 ]
         then
             _msg_ "Save modifications."
@@ -207,10 +224,6 @@ function create_linux_groups_for_rpitools() {
         _msg_ "$rpitools_user [rpitools owner] groups: ${rpitools_user_existsing_groups[*]}"
 
         _msg_ "Set rpitools repo secondery group to $rpitools_admin_group"
-        if [ -z "$REPOROOT" ] || [ ! -d "$REPOROOT" ]
-        then
-            REPOROOT="${MYDIR_}/../../"
-        fi
         _msg_ "\tCMD: sudo chgrp -hR $rpitools_admin_group $REPOROOT"
         sudo bash -c "sudo chgrp -hR $rpitools_admin_group $REPOROOT"
         exit_code="$?"
@@ -250,7 +263,7 @@ then
     then
         configure_ufw
     else
-        _msg_ "UNIX FIREWALL ALREADY CONFIGURED [for reconfigure: $MYPATH_ ufw]"
+        _msg_ "UNIX FIREWALL ALREADY CONFIGURED [for reconfigure: $MYPATH ufw]"
         _msg_ "UFW status:"
         sudo ufw status verbose
     fi

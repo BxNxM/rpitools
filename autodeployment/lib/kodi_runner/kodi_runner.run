@@ -1,0 +1,3 @@
+TITLE="SETUP KODI RUNNER"
+SCRIPT="kodi_runner.bash"
+RUN_DEPENDENCY=("socketmem_setup")

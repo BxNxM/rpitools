@@ -1,0 +1,2 @@
+SCRIPT="cache_restore_backup.bash"
+PROP=("env")

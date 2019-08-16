@@ -54,7 +54,7 @@ git clone https://github.com/BxNxM/rpitools.git
 
 ```
 cd rpitools/
-source setup
+source setup.bash
 
 #### SETUP EXECUTION ####
 * Detect the device | linux | mac | raspbian
@@ -649,5 +649,6 @@ https://learngitbranching.js.org
 ```
 
 ## GIT
-***push repo:*** git push -u origin master
+***push master repo:*** git push -u origin master
 
+***push develop repo:*** git push -u origin develop

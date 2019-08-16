@@ -1,0 +1,2 @@
+SCRIPT="mysshfs.bash"
+PROP=("env" "alias")

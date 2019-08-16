@@ -1,7 +1,31 @@
 import sys
 import os
 myfolder = os.path.dirname(os.path.abspath(__file__))
-clientMemDict_path = os.path.join(myfolder, "../../../socketmem/lib/clientMemDict.py")
+
+def rpienv_source():
+    import subprocess
+    if not os.path.exists(str(myfolder) + '/.rpienv'):
+        print("[ ENV ERROR ] " + str(myfolder) + "/.rpienv path not exits!")
+        sys.exit(1)
+    command = ['bash', '-c', 'source ' + str(myfolder) + '/.rpienv -s && env']
+    proc = subprocess.Popen(command, stdout = subprocess.PIPE)
+    for line in proc.stdout:
+        if type(line) is bytes:
+            line = line.decode("utf-8")
+        try:
+            name = line.partition("=")[0]
+            value = line.partition("=")[2]
+            if type(value) is unicode:
+                value = value.encode('ascii','ignore')
+            value = value.rstrip()
+            os.environ[name] = value
+        except Exception as e:
+            if "name 'unicode' is not defined" != str(e):
+                print(e)
+    proc.communicate()
+rpienv_source()
+
+clientMemDict_path = os.environ['CLIENTMEMDICT']
 import LocalMachine
 
 def __debug_print(cmd, activate=False):

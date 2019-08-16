@@ -1,0 +1,3 @@
+TITLE="SETUP RASPBERRY I2C BUS"
+SCRIPT="set_i2c_raspberrypi.conf.bash"
+RUN_DEPENDENCY=("socketmem_setup" "set_spi_raspberrypi")

@@ -5,17 +5,33 @@ arg_list=($@)
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-activate_backup="$($confighandler -s BACKUP -o activate)"
-home_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/users"
-system_backups_path="$($confighandler -s BACKUP -o backups_path)/backups/system"
-limit="$($confighandler -s BACKUP -o limit)"
-instantiation_UUID="$(cat ${MYDIR}/../../cache/.instantiation_UUID)"
-sshfs_mount_point_name="$(basename $($confighandler -s SSHFS -o mount_folder_path))"
-touched_configs_path="${MYDIR}/../../config/"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+activate_backup="$($CONFIGHANDLER -s BACKUP -o activate)"
+home_backups_path="$($CONFIGHANDLER -s BACKUP -o backups_path)/backups/users"
+system_backups_path="$($CONFIGHANDLER -s BACKUP -o backups_path)/backups/system"
+limit="$($CONFIGHANDLER -s BACKUP -o limit)"
+instantiation_UUID="$(cat ${REPOROOT}/cache/.instantiation_UUID)"
+sshfs_mount_point_name="$(basename $($CONFIGHANDLER -s SSHFS -o mount_folder_path))"
+touched_configs_path="${REPOROOT}/config/"
 ERRORS=0
 
-source "${MYDIR}/../../prepare/colors.bash"
+source "${REPOROOT}/prepare/colors.bash"
 
 function _msg_ () {
     local msg="$*"
@@ -47,14 +63,17 @@ else
     _msg_ "Backup creator for users home folder was activated [$activate_backup] in rpi_config.cfg"
 fi
 
+__PROCESS_I=0
 function progress_indicator() {
     local spin=("-" "\\" "|" "/")
-    for sign in "${spin[@]}"
-    do
-        echo -ne "\b${sign}"
-        sleep .1
-    done
+    echo -ne "\b${spin[$__PROCESS_I]}"
+    __PROCESS_I=$((__PROCESS_I+1))
     echo -ne "\b"
+
+    if [ "$__PROCESS_I" -gt "${#spin[@]}" ]
+    then
+        __PROCESS_I=0
+    fi
 }
 
 function create_backup_pathes() {
@@ -543,7 +562,7 @@ function system_restore() {
 
     # fix user groups automaticly
     _msg_ "${YELLOW}Restore user groups from code, with${NC} usermanager --fixusergroups"
-    . "${MYDIR}/../user_manager.bash" "--fixusergroups"
+    . "${USERMANAGER}" "--fixusergroups"
 
     if [ "$account_restore_action" -ne 0 ]
     then

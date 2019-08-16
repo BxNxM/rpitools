@@ -1,22 +1,31 @@
+#!/bin/bash
+
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
 function elapsed_time() {
-    local cache_path="../../cache/"
-    local rpitools_log_path="${cache_path}rpitools.log"
+    local rpitools_log_path="${RRPITOOLS_LOG}"
     if [ -d "$cache_path" ]
     then
         if [ ! -f  "$rpitools_log_path" ]
         then
             echo "" > "$rpitools_log_path"
-        fi
-    fi
-
-    if [ ! -e "$rpitools_log_path" ]
-    then
-        if [ ! -z "$REPOROOT" ]
-        then
-            rpitools_log_path="${REPOROOT}/cache/rpitools.log"
-        else
-            echo -e "logfile: ../cache/rpitools.log or REPOROOT is not exists!"
-            exit 1
         fi
     fi
 

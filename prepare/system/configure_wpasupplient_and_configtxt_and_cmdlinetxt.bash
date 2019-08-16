@@ -1,12 +1,26 @@
 #!/bin/bash
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-CONFIGAHNDLER="${MYDIR_}/../../autodeployment/bin/ConfigHandlerInterface.py"
-CUSTOM_CONFIG="${MYDIR_}/../../autodeployment/config/rpitools_config.cfg"
-CACHE_indicator_done_path="${MYDIR_}/../../cache/.initial_wpa_suppl_and_config_and_cmdline_txt_setup_done"
-source ${MYDIR_}/../colors.bash
-source ${MYDIR_}/../sub_elapsed_time.bash
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+CACHE_indicator_done_path="${REPOROOT}/cache/.initial_wpa_suppl_and_config_and_cmdline_txt_setup_done"
+source "${TERMINALCOLORS}"
+source ${MYDIR}/../sub_elapsed_time.bash
 wpa_supplicant_path="/etc/wpa_supplicant/wpa_supplicant.conf"
 config_path="/boot/config.txt"
 cmdline_path="/boot/cmdline.txt"
@@ -14,7 +28,7 @@ swap_size_config="/etc/dphys-swapfile"
 
 _msg_title="wpa_supplient - config.txt - cmdline.txt SETUP"
 function _msg_() {
-    local rpitools_log_path="${MYDIR_}/../../cache/rpitools.log"
+    local rpitools_log_path="${RRPITOOLS_LOG}"
 
     local msg="$1"
     if [ ! -z "$msg" ]
@@ -87,7 +101,7 @@ function init_wpa_supplient() {
         wpa_conf_templ+='ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev\n'
         wpa_conf_templ+='update_config=1\n'
 
-        local tmp_wpa_data=${MYDIR_}/.wpa_tmp.dat
+        local tmp_wpa_data=${MYDIR}/.wpa_tmp.dat
         echo -e "$wpa_conf_templ" > "$tmp_wpa_data"
         sudo bash -c "cat $wpa_supplicant_path $tmp_wpa_data > $wpa_supplicant_path"
         rm "$tmp_wpa_data"
@@ -114,7 +128,7 @@ function set_wifi_wpa_data() {
         wpa_conf_templ+='    psk="'"${passwd}"'"\n'
         wpa_conf_templ+='}'
 
-        local tmp_wpa_data=${MYDIR_}/.wpa_tmp.dat
+        local tmp_wpa_data=${MYDIR}/.wpa_tmp.dat
         echo -e "$wpa_conf_templ" > "$tmp_wpa_data"
         sudo bash -c "cat $wpa_supplicant_path $tmp_wpa_data >> $wpa_supplicant_path"
         rm "$tmp_wpa_data"
@@ -124,7 +138,7 @@ function set_wifi_wpa_data() {
 # CONFIG config.txt file
 function configure_config_dot_txt_and_cmdline_dot_txt() {
     # SET USB ETHERNET IF TARGET IS RPI_ZERO
-    rpi_module="$($CONFIGAHNDLER -s GENERAL -o model)"
+    rpi_module="$($CONFIGHANDLER -s GENERAL -o model)"
     if [ "$rpi_module" == "rpi_zero" ]
     then
         #config.txt add -> dtoverlay=dwc2 <- end of the file
@@ -152,7 +166,7 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
     is_added=$(grep -rnw "$config_path" -e "gpu_mem")
     if [ "$is_added" == "" ]
     then
-        gpu_mem="$($CONFIGAHNDLER -s GENERAL -o required_gpu_mem)"
+        gpu_mem="$($CONFIGHANDLER -s GENERAL -o required_gpu_mem)"
         _msg_ "Set $config_path file - add new line gpu_mem=$gpu_mem [ for video playing ]"
         sudo bash -c "echo -e '\n# Set GPU allocated memory\ngpu_mem=$gpu_mem' >> $config_path"
     else
@@ -207,7 +221,7 @@ function configure_config_dot_txt_and_cmdline_dot_txt() {
 }
 
 function set_swap_file() {
-    local swap_file_size="$($CONFIGAHNDLER -s GENERAL -o swap_size_mb)"
+    local swap_file_size="$($CONFIGHANDLER -s GENERAL -o swap_size_mb)"
     _msg_ "Set swap size to $swap_file_size in $swap_size_config"
     change_line "CONF_SWAPSIZE=" "CONF_SWAPSIZE=$swap_file_size" "$swap_size_config" 
     if [ "$is_set" == "" ]
@@ -236,7 +250,7 @@ then
     _msg_ "\tConfiguration started..."
 
     init_wpa_supplient
-    set_wifi_wpa_data "$($CONFIGAHNDLER -s NETWORK -o ssid)" "$($CONFIGAHNDLER -s NETWORK -o pwd)"
+    set_wifi_wpa_data "$($CONFIGHANDLER -s NETWORK -o ssid)" "$($CONFIGHANDLER -s NETWORK -o pwd)"
 
     configure_config_dot_txt_and_cmdline_dot_txt
 
@@ -246,9 +260,9 @@ then
 else
     _msg_ "\talready done: $CACHE_indicator_done_path exists."
     _msg_ "\tcheck wpa_supplient data"
-    if [[ "$($CONFIGAHNDLER -s NETWORK -o ssid)" != *"CUSTOM CONFIG FILE IS INVALID"* ]]
+    if [[ "$($CONFIGHANDLER -s NETWORK -o ssid)" != *"CUSTOM CONFIG FILE IS INVALID"* ]]
     then
-        set_wifi_wpa_data "$($CONFIGAHNDLER -s NETWORK -o ssid)" "$($CONFIGAHNDLER -s NETWORK -o pwd)"
+        set_wifi_wpa_data "$($CONFIGHANDLER -s NETWORK -o ssid)" "$($CONFIGHANDLER -s NETWORK -o pwd)"
     else
         echo -e "rpitools_config.cfg invalid, pls fix!"
     fi

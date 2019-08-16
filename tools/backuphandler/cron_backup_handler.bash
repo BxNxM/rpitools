@@ -2,21 +2,35 @@
 
 arg_list=($@)
 
-MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-activate_backup="$($confighandler -s BACKUP -o activate)"
-schedule="$($confighandler -s BACKUP -o schedule)"
-username="$($confighandler -s GENERAL -o user_name_on_os)"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+activate_backup="$($CONFIGHANDLER -s BACKUP -o activate)"
+schedule="$($CONFIGHANDLER -s BACKUP -o schedule)"
+username="$($CONFIGHANDLER -s GENERAL -o user_name_on_os)"
 backuphandler_full_path="${MYDIR}/backup_handler.bash"
 actual_cron_content="$(crontab -l)"
 new_command="${schedule} ${backuphandler_full_path} system backup >> /home/${username}/rpitools/cache/backuphandler.log"
+source "$TERMINALCOLORS"
 
 echo -e "Actual crontab content:"
 echo -e "$actual_cron_content"
-
-source "${MYDIR}/../../prepare/colors.bash"
 
 if [[ "$activate_backup" != "True" ]] && [[ "$activate_backup" != "true" ]]
 then

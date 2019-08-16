@@ -2,12 +2,29 @@
 
 arg_list=($@)
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "${MYDIR_}/../prepare/colors.bash"
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-transmission_is_active="$($confighandler -s TRANSMISSION -o activate)"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+source "$TERMINALCOLORS"
+
+transmission_is_active="$($CONFIGHANDLER -s TRANSMISSION -o activate)"
 
 # inputs
 mac_address=""
@@ -17,7 +34,7 @@ ports_title=("ssh,sftp" "http")
 ports_internal=(22 80)
 ports_external=(62830 80)
 
-config_out_path="${MYDIR_}/../config/router_conf.txt"
+config_out_path="${REPOROOT}/config/router_conf.txt"
 if [ "${arg_list[0]}" == "-r" ]
 then
     rm -f "$config_out_path"
@@ -95,5 +112,5 @@ then
     echo -e "Generate router config file..."
     create_config_description
 else
-    echo -e "$config_out_path already generated, for regenerate: $MYPATH_ -r"
+    echo -e "$config_out_path already generated, for regenerate: $MYPATH -r"
 fi

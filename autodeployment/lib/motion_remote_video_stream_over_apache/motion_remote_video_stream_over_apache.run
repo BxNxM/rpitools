@@ -1,0 +1,3 @@
+TITLE="SETUP MOTION REMOTE VIDEO STREAM OVER APACHE"
+SCRIPT="motion_remote_video_stream_over_apache.bash"
+RUN_DEPENDENCY=("socketmem_setup")

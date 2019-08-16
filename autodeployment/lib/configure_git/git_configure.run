@@ -1,0 +1,3 @@
+TITLE="CONFIGURE GIT"
+SCRIPT="configure_git.bash"
+RUN_DEPENDENCY=("socketmem_setup")

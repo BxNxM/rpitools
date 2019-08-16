@@ -1,0 +1,2 @@
+SCRIPT="install_retropie.bash"
+PROP=("alias")

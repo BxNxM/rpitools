@@ -8,9 +8,33 @@ import pwd
 import BlockDeviceHandler
 from Colors import Colors
 pathname = os.path.dirname(sys.argv[0])
+myfolder = os.path.dirname(os.path.abspath(__file__))
 default_storage_folders = ["/UserSpace", "/SharedSpace", "/OtherSpace"]
 storage_folders_groups = [ "rpitools_admin", "rpitools_user", "rpitools_admin"]
 default_storage_root = "/media/virtaul_storage"
+
+def rpienv_source():
+    import subprocess
+    if not os.path.exists(str(myfolder) + '/.rpienv'):
+        print("[ ENV ERROR ] " + str(myfolder) + "/.rpienv path not exits!")
+        sys.exit(1)
+    command = ['bash', '-c', 'source ' + str(myfolder) + '/.rpienv -s && env']
+    proc = subprocess.Popen(command, stdout = subprocess.PIPE)
+    for line in proc.stdout:
+        if type(line) is bytes:
+            line = line.decode("utf-8")
+        try:
+            name = line.partition("=")[0]
+            value = line.partition("=")[2]
+            if type(value) is unicode:
+                value = value.encode('ascii','ignore')
+            value = value.rstrip()
+            os.environ[name] = value
+        except Exception as e:
+            if "name 'unicode' is not defined" != str(e):
+                print(e)
+    proc.communicate()
+rpienv_source()
 
 def console_out(msg):
     print("{}[STORAGE]{} {}".format(Colors.YELLOW, Colors.NC, msg))
@@ -124,7 +148,7 @@ def create_storage_stucrure(set_extarnal_storage, external_storage_label):
 
 def create_source_file_for_bash_scripts(path_list):
     global default_storage_root
-    source_path = pathname + os.sep + "../../../cache/storage_path_structure"
+    source_path = os.environ['REPOROOT'] + os.sep + "cache/storage_path_structure"
     text = "# storage structure"
     for path in path_list:
         if "user" in path.lower():

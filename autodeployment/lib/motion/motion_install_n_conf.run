@@ -1,0 +1,3 @@
+TITLE="INSTALL AND CONFIGURE MOTION CAMERA"
+SCRIPT="install_n_configure.bash"
+RUN_DEPENDENCY=("socketmem_setup")

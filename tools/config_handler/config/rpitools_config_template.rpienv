@@ -1,0 +1,2 @@
+SCRIPT="rpitools_config_template.cfg"
+PROP=("env")

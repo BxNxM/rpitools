@@ -1,0 +1,3 @@
+TITLE="SETUP RASPBERRY SPI BUS"
+SCRIPT="set_spi_raspberrypi.conf.bash"
+RUN_DEPENDENCY=("socketmem_setup")

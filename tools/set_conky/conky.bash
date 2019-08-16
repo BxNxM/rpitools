@@ -3,8 +3,25 @@
 # more info about conky: https://www.novaspirit.com/2017/02/23/desktop-widget-raspberry-pi-using-conky/
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-rpimodel="$($confighandler -s GENERAL -o model)"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+rpimodel="$($CONFIGHANDLER -s GENERAL -o model)"
 conky_conf_pi_zero=".conkyrc_pizero"
 conky_conf_pi_3=".conkyrc_pi3"
 if [ "$rpimodel" == "rpi_zero" ]
@@ -27,7 +44,7 @@ fi
 if [ ! -e ~/.conkyrc ]
 then
     echo -e "Copy conky configuration: ${MYDIR}/${conky_conf_to_set} -> ~/.conkyrc"
-    cp "${MYDIR}/${conky_conf_to_set}" ~/.conkyrc
+    cp "${MYDIR}/${conky_conf_to_set}" "$HOME/.conkyrc"
 else
     echo -e "~/.conkyrc is already set"
 fi

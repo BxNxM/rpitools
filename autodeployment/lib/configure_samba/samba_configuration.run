@@ -1,0 +1,3 @@
+TITLE="SAMBA CONFIGURATION"
+SCRIPT="configure_samba.bash"
+RUN_DEPENDENCY=("socketmem_setup")

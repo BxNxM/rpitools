@@ -12,10 +12,27 @@ fi
 
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-confighandler="/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py"
-log_file_sizeMB_trigger="$($confighandler -s LOGROTATE -o log_file_size_mb_trigger)"
-log_file_dayolder_trigger="$($confighandler -s LOGROTATE -o log_file_dayolder_trigger)"
-run_period_sec="$($confighandler -s LOGROTATE -o run_period_sec)"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
+log_file_sizeMB_trigger="$($CONFIGHANDLER -s LOGROTATE -o log_file_size_mb_trigger)"
+log_file_dayolder_trigger="$($CONFIGHANDLER -s LOGROTATE -o log_file_dayolder_trigger)"
+run_period_sec="$($CONFIGHANDLER -s LOGROTATE -o run_period_sec)"
 
 logs_folder="/var/log/"
 logs_folder2="/var/log/"

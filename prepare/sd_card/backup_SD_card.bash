@@ -1,10 +1,25 @@
 #!/bin/bash
 
-MYPATH_="${BASH_SOURCE[0]}"
-MYDIR_="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source ${MYDIR_}/../colors.bash
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
 
-OS=$(uname)
+source "${TERMINALCOLORS}"
+
 if [ "$OS" == "Darwin" ]
 then
     message "Use MacOS settings."
@@ -22,7 +37,7 @@ fi
 
 # message handler function
 function message() {
-    local rpitools_log_path="${MYDIR_}/../../cache/rpitools.log"
+    local rpitools_log_path="${RRPITOOLS_LOG}"
 
     local msg="$1"
     if [ ! -z "$msg" ]
@@ -34,7 +49,7 @@ function message() {
 
 function make_backup() {
     local device="$1"
-    local backup_image_path="${MYDIR_}/raspbian_bckp_$(date +"%Y_%m__%d_%H_%M").img.gz"
+    local backup_image_path="${MYDIR}/raspbian_bckp_$(date +"%Y_%m__%d_%H_%M").img.gz"
 
     message "CREATE BACKUP: sudo dd bs=$glob_bs_size if=$device | gzip > $backup_image_path"
     message "BE PATIENT, IT WILL TAKE SOME TIME [WARNING] DO NOT REMOVE SD CARD!!!"

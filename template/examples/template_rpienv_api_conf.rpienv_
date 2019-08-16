@@ -1,0 +1,2 @@
+SCRIPT=script_name_in_the_actual_folder./bash/py/etc
+PROP=()                    # "env" and/or "alias"

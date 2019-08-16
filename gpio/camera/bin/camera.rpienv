@@ -1,0 +1,2 @@
+SCRIPT=camera_interface.bash
+PROP=("env" "alias")

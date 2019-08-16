@@ -34,3 +34,5 @@ tools/autosync/.env
 tools/backuphandler/.status
 tools/autosync/.locks/
 tools/HA_AlarmSystem/sysmonitor_last.log
+**/.rpienv
+autodeployment/bin/run_modules_order.dat

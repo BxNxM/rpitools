@@ -1,0 +1,2 @@
+SCRIPT=rgb_interface.py
+PROP=("env" "alias")

@@ -3,6 +3,26 @@
 arg_len="$#"
 option="$1"
 
+MYPATH="${BASH_SOURCE[0]}"
+MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# RPIENV SETUP (BASH)
+if [ -e "${MYDIR}/.rpienv" ]
+then
+    source "${MYDIR}/.rpienv" "-s" > /dev/null
+    # check one var from rpienv - check the path
+    if [ ! -f "$CONFIGHANDLER" ]
+    then
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!"
+        echo -e "[ ENV ERROR ] \$CONFIGHANDLER path not exits!" >> /var/log/rpienv
+        exit 1
+    fi
+else
+    echo -e "[ ENV ERROR ] ${MYDIR}/.rpienv not exists"
+    sudo bash -c "echo -e '[ ENV ERROR ] ${MYDIR}/.rpienv not exists' >> /var/log/rpienv"
+    exit 1
+fi
+
 # STOP: SERVICE LIST
 service_list_orig=("hAlarm" "oled_gui_core" "dropbox_halpage" "auto_restart_transmission" "rpitools_logrotate" "rgb_led_controller" "temp_controll_fan" "memDictCore")
 # START SERVICE LIST
@@ -24,7 +44,9 @@ else
 fi
 
 function config_is_changed_on_HEAD() {
-    local is_changed="$(git fetch && git diff origin/master ~/rpitools/autodeployment/config/rpitools_config_template.cfg)"
+    local git_branch="$(git rev-parse --abbrev-ref HEAD)"
+    local is_changed="$(git fetch && git diff origin/$git_branch $RPITOOLS_CONFIG_TEMPLATE)"
+    echo -e "CMD: git fetch && git diff origin/$git_branch $RPITOOLS_CONFIG_TEMPLATE)"
     if [ "$is_changed" != "" ]
     then
         echo -e "====== [ WARNING ] ======"
@@ -84,7 +106,7 @@ then
     echo -e "UPDATE"
 elif [ "$option" == "start" ]
 then
-    validate_msg=$(/home/$USER/rpitools/autodeployment/bin/ConfigHandlerInterface.py -v)
+    validate_msg=$("${CONFIGHANDLER}" -v)
     exit_code="$?"
     if [[ "$validate_msg" == *"MISSING"* ]]
     then

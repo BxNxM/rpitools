@@ -1,0 +1,2 @@
+SCRIPT="user_manager.bash"
+PROP=("alias" "env")

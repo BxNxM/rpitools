@@ -1,0 +1,2 @@
+SCRIPT=diskhandler.py
+PROP=("env" "alias")
