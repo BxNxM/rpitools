@@ -41,7 +41,7 @@ transmission_downloads_path="$($CONFIGHANDLER -s TRANSMISSION -o download_path)"
 motion_video_stream_is_activated="$($CONFIGHANDLER -s APACHE_MOTION_STREAM_FORWARDING -o activate)"
 motion_video_stream_proxy_point="$($CONFIGHANDLER -s APACHE_MOTION_STREAM_FORWARDING -o proxy_point)"
 apache2_conf_path="/etc/apache2/apache2.conf"
-
+apache2_sites_available_000_default_conf_path="/etc/apache2/sites-available/000-default.conf"
 
 # SET APACHE ENVIRONMENT PATH FILE FOROTHER SOURCE FILES LIKE MOTION...
 export_env="export APACHE_WEBSHARED_ROOT_FOLDER=${apache_webshared_root_folder}\n"
@@ -52,6 +52,12 @@ echo -e "${export_env}" > ${MYDIR}/apache.env
 
 source "${MYDIR}/../message.bash"
 _msg_title="APACHE SETUP"
+
+function create_official_setup_backup() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$apache2_conf_path" "${MYDIR}/config/"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$apache2_sites_available_000_default_conf_path" "${MYDIR}/config/"
+}
+create_official_setup_backup
 
 if [ "$arg_len" -eq 1 ]
 then
@@ -232,7 +238,6 @@ function motion_stream_forwarding_apache_link_icon() {
 
 function sites_enabled_000-defaultconf_patch() {
     # https://www.thegeekstuff.com/2014/12/patch-command-examples/
-    local apache2_sites_available_000_default_conf_path="/etc/apache2/sites-available/000-default.conf"
     local patch_file_path="${MYDIR}/patches/000-default_patch.conf"
 
     # CREATE PATH FILE

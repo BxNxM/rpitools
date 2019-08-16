@@ -24,6 +24,11 @@ source "$TERMINALCOLORS"
 CACHE_PATH_is_set="$REPOROOT/cache/.nfs_configure_is_done"
 exports_file="/etc/exports"
 
+function create_official_setup_backup() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$exports_file" "${MYDIR}/config/"
+}
+create_official_setup_backup
+
 source "${MYDIR}/../message.bash"
 _msg_title="NFS SETUP"
 

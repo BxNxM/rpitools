@@ -34,6 +34,12 @@ then
     sudo chmod 666 "$conf_file_path"
 fi
 
+function create_official_setup_backup() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$conf_file_path" "${MYDIR}/config/"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$conf_file_path_moduls" "${MYDIR}/config/"
+}
+create_official_setup_backup
+
 function add_if_not_added() {
     local parameter="$1"
     local _conf_file_path="$2"

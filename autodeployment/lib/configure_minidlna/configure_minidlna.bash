@@ -32,6 +32,11 @@ media_dir_path="$($CONFIGHANDLER -s MINIDLNA -o dlna_path)"
 link_downloads="$($CONFIGHANDLER -s MINIDLNA -o link_downloads)"
 transmission_downloads_dir="$($CONFIGHANDLER -s TRANSMISSION -o download_path)"
 
+function create_official_setup_backup() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$minidlna_conf_path" "${MYDIR}/config/"
+}
+create_official_setup_backup
+
 function create_shared_folder() {
     if [ ! -d "$media_dir_path" ]
     then

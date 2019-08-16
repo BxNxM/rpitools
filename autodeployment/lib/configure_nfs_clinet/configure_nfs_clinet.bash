@@ -24,6 +24,11 @@ source "$TERMINALCOLORS"
 CACHE_PATH_is_set="$REPOROOT/cache/.nfs_client_configure_done"
 fstab_path="/etc/fstab"
 
+function create_official_setup_backup() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$fstab_path" "${MYDIR}/config/"
+}
+create_official_setup_backup
+
 source "${MYDIR}/../message.bash"
 _msg_title="NFS CLINET SETUP"
 

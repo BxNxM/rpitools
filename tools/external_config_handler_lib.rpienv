@@ -1,0 +1,2 @@
+SCRIPT="external_config_handler_lib.bash"
+PROP=("env")

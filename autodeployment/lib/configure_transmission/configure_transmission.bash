@@ -33,6 +33,11 @@ incomp_download_path="$($CONFIGHANDLER -s TRANSMISSION -o incomp_download_path)"
 username="$($CONFIGHANDLER -s TRANSMISSION -o username)"
 passwd="$($CONFIGHANDLER -s TRANSMISSION -o passwd)"
 
+function create_official_setup_backup() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$transmission_conf_path" "${MYDIR}/config/"
+}
+create_official_setup_backup
+
 function change_parameter() {
     local from="$1"
     local to="$2"

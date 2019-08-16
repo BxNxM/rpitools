@@ -32,12 +32,7 @@ samba_user="$($CONFIGHANDLER -s SAMBA -o username)"
 samba_link_downloads="$($CONFIGHANDLER -s SAMBA -o link_downloads)"
 
 function create_official_setup_backup() {
-    local samba_conf_path_bak="${samba_conf_path}.bak"
-    if [ ! -e "$samba_conf_path_bak" ]
-    then
-        _msg_ "Create $samba_conf_path backup -> $samba_conf_path_bak"
-        sudo bash -c "cp $samba_conf_path $samba_conf_path_bak"
-    fi
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$samba_conf_path" "${MYDIR}/config/"
 }
 create_official_setup_backup
 
