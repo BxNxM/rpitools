@@ -1,0 +1,7 @@
+proc            /proc           proc    defaults          0       0
+PARTUUID=949e6349-01  /boot           vfat    defaults          0       2
+PARTUUID=949e6349-02  /               ext4    defaults,noatime  0       1
+# a swapfile is not a swap partition, no line here
+#   use  dphys-swapfile swap[on|off]  for that
+UUID=eb722e4b-8ed5-4735-b85b-87d53967ae9d /media/BNM auto defaults,auto,noatime,nofail,users,rw, 0 1
+localhost:/media/BNM/OtherSpace/nfsserver /media/.local_nfs_client/nfsserver nfs rw 0 0
