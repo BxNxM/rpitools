@@ -1,0 +1,32 @@
+19,20c19,20
+< # "testparm" to check that you have not made any basic syntactic 
+< # errors. 
+---
+> # "testparm" to check that you have not made any basic syntactic
+> # errors.
+24a25
+>   unix extensions = no
+193c194,195
+<    read only = yes
+---
+> # CHANGED BY RPITOOLS
+>    read only = no
+209a212,215
+> # ADD BY RPITOOLS
+>    follow symlinks = yes
+>    wide links = yes
+> 
+254a261,273
+> # ADD BY RPITOOLS
+> [{{NAME}}]
+>    Comment = pritools samba set
+>    Path = {{PATH}}
+>    Browseable = yes
+>    Writeable = Yes
+>    only guest = no
+>    create mask = 0777
+>    directory mask = 0777
+>    Public = yes
+>    Guest ok = yes
+>    follow symlinks = yes
+>    wide links = yes

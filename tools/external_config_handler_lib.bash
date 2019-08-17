@@ -62,6 +62,7 @@ function archive_factory_backup() {
     # INPUT: from path, to_folder
     local from_path="$1"
     local to_path="${2}$(basename $from_path).factory"
+    local final_config="${2}$(basename $from_path).final"
 
     if [ -z "$from_path" ] || [ -z "$to_path" ]
     then
@@ -81,17 +82,33 @@ function archive_factory_backup() {
         fi
     else
         local is_diff="$(diff -q $from_path $to_path)"
-        if [ "$?" -eq 0 ]
+        if [ "$?" -eq 0 ] && [ "$is_diff" == "" ]
         then
-            message "$to_path already exists."
+            message "$to_path factory config backup already exists."
         else
-            message "$from_pat <-> $to_path DIFFERENT"
-            message "Archive new factory backup: $from_path -> $to_path"
-            cp -f "$from_path" "$to_path"
-            message "${RED}[ERROR]${NC} Please recreate patch files based on the new factory config: $from_path -> $to_path"
-            exit 255
+            if [ -f "$final_config" ]
+            then
+                message "$to_path factory config backup already exists."
+                message "\t- custom config was already applied: $final_config"
+            else
+                message "$from_pat <-> $to_path DIFFERENT"
+                message "Archive new factory backup: $from_path -> $to_path"
+                cp -f "$from_path" "$to_path"
+                message "${RED}[ERROR]${NC} Please recreate patch files based on the new factory config: $from_path -> $to_path"
+                exit 255
+            fi
         fi
     fi
+}
+
+function save_conf_permissions_meta() {
+    local config_path="$1"
+    local meta_file_folder="$2"
+    local owner="$(stat -c '%U' $config_path)"
+    local group="$(stat -c '%G' $config_path)"
+    local permissions="$(stat -c '%a' $config_path)"
+
+    message "$config_path : $owner : $group : $permissions"
 }
 
 #########################################
