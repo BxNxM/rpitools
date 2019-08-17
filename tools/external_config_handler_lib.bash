@@ -71,16 +71,26 @@ function archive_factory_backup() {
 
     if [ ! -f "$to_path" ]
     then
-        message "Archive factory backup: $from_path -> $to_path"
         if [ -f "$from_path" ]
         then
+            message "Archive factory backup: $from_path -> $to_path"
             cp "$from_path" "$to_path"
         else
             message "File not exists: archive_factory_backup from_path: $from_path"
             exit 3
         fi
     else
-        message "$to_path already exists."
+        local is_diff="$(diff -q $from_path $to_path)"
+        if [ "$?" -eq 0 ]
+        then
+            message "$to_path already exists."
+        else
+            message "$from_pat <-> $to_path DIFFERENT"
+            message "Archive new factory backup: $from_path -> $to_path"
+            cp -f "$from_path" "$to_path"
+            message "${RED}[ERROR]${NC} Please recreate patch files based on the new factory config: $from_path -> $to_path"
+            exit 255
+        fi
     fi
 }
 
