@@ -82,7 +82,7 @@ function run() {
         exitcode="$?"
         if [ "$exitcode" -eq 23 ]
         then
-            echo -e "Exitcode with user($username) exitcoe: $exitcode maybe permission issues, try as root"
+            echo -e "Exitcode with user($username) exitcode: $exitcode maybe permission issues, try as root"
             log="$(sudo bash -c "$autorync_core $config")"
             exitcode="$?"
         fi
