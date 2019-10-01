@@ -16,12 +16,14 @@
 #    enough to be mentioned here
 #
 # NOTE: Whenever you modify this file you should run the command
-# "testparm" to check that you have not made any basic syntactic
-# errors.
+# "testparm" to check that you have not made any basic syntactic 
+# errors. 
 
 #======================= Global Settings =======================
 
 [global]
+# modified by rpitools
+  unix extensions = no
   unix extensions = no
 
 ## Browsing/Identification ###
@@ -191,7 +193,7 @@
 
 # By default, the home directories are exported read-only. Change the
 # next parameter to 'no' if you want to be able to write to them.
-# CHANGED BY RPITOOLS
+# modified by rpitools
    read only = no
 
 # File creation mask is set to 0700 for security reasons. If you want to
@@ -209,7 +211,7 @@
 # This might need tweaking when using external authentication schemes
    valid users = %S
 
-# ADD BY RPITOOLS
+# modified by rpitools
    follow symlinks = yes
    wide links = yes
 
@@ -258,10 +260,10 @@
 # to the drivers directory for these users to have write rights in it
 ;   write list = root, @lpadmin
 
-# ADD BY RPITOOLS
-[{{NAME}}]
+# modified by rpitools
+[{SAMBA_FRIENDLY_NAME}]
    Comment = pritools samba set
-   Path = {{PATH}}
+   Path = {SAMBA_SHARED_PATH}
    Browseable = yes
    Writeable = Yes
    only guest = no

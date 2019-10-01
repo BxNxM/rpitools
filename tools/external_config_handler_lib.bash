@@ -4,7 +4,7 @@ ARGS_LIST=($@)
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 AV_FUNCTIONS=""
-FUNCTIONS_BLACKLIST=("validate_execute_function" "message" "change_parameter_in_file")
+FUNCTIONS_BLACKLIST=("validate_execute_function" "message" "change_parameter_in_file" "patch_exit")
 PATCH_EXIT_CODE=0
 # EXITCODES:
 #       INPUT ERROR: 1
@@ -72,7 +72,7 @@ function validate_execute_function() {
     local av_func_list=($AV_FUNCTIONS)
     for func in ${av_func_list[@]}
     do
-        if [ "$(cat $MYPATH | grep 'function '"$func"'')" != "" ]
+        if [ "$(cat $MYPATH | grep 'function '"$func"'()')" != "" ]
         then
             if [[ "${FUNCTIONS_BLACKLIST[*]}" != *"$func"* ]]
             then
@@ -132,7 +132,7 @@ function change_parameter_in_file() {
 function patch_exit() {
     local exitcode="$1"
     PATCH_EXIT_CODE=$((PATCH_EXIT_CODE+exitcode))
-    message "[WARNING] execution error in patch_workflow ERROR_CODE[$exitcode]: [$PATCH_EXIT_CODE]"
+    message "[WARNING] execution error in $(basename $MYPATH) ERROR_CODE[$exitcode]: [$PATCH_EXIT_CODE]"
     exit "$PATCH_EXIT_CODE"
 }
 
@@ -312,7 +312,16 @@ function apply_patch() {
             patch_exit 2
         fi
     else
-        message "Already patched. Skipping..."
+        message "Error under applying patch"
+        patch_exit 2
+    fi
+
+    diff -q "$orig_bak" ""$origin_file""
+    if [ "$?" -eq 0 ]
+    then
+        message "CONFIG WAS NOT MODIFIED"
+    else
+        message "CONFIG WAS MODIFIED"
     fi
 }
 

@@ -31,10 +31,13 @@ samba_path="$($CONFIGHANDLER -s SAMBA -o samba_path)"
 samba_user="$($CONFIGHANDLER -s SAMBA -o username)"
 samba_link_downloads="$($CONFIGHANDLER -s SAMBA -o link_downloads)"
 
-function create_official_setup_backup() {
-    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$samba_conf_path" "${MYDIR}/config/"
+function smart_config_patch() {
+    # Export template data
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/smb.conf.data" "init" "{SAMBA_FRIENDLY_NAME}" "${remote_name}"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/smb.conf.data" "add" "{SAMBA_SHARED_PATH}" "${samba_path}"
+    # Create patch for smb.conf
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$samba_conf_path" "$MYDIR/config/" "smb.conf.finaltemplate" "smb.conf.data" "smb.conf.final" "smb.conf.patch"
 }
-create_official_setup_backup
 
 function create_shared_folder() {
     if [ ! -d "$samba_path" ]
@@ -43,42 +46,6 @@ function create_shared_folder() {
         sudo mkdir -m 1777 "$samba_path"
     else
         _msg_ "Samba dir is alreasy exists: $samba_path"
-    fi
-}
-
-function add_configuration() {
-    local is_set="$(cat /etc/samba/smb.conf | grep -v grep | grep ${remote_name})"
-    if [ "$is_set" == "" ]
-    then
-        config_text=""
-        _msg_ "Configure: $samba_path"
-        config_text+="\n[$remote_name]\n"
-        config_text+="   Comment = pritools samba set\n"
-        config_text+="   Path = ${samba_path}\n"
-        config_text+="   Browseable = yes\n"
-        config_text+="   Writeable = Yes\n"
-        config_text+="   only guest = no\n"
-        config_text+="   create mask = 0777\n"
-        config_text+="   directory mask = 0777\n"
-        config_text+="   Public = yes\n"
-        config_text+="   Guest ok = yes\n"
-        config_text+="   follow symlinks = yes\n"
-        config_text+="   wide links = yes\n"
-        _msg_ "Samba configuration:$config_text"
-        sudo echo -e "$config_text" >> "$samba_conf_path"
-    else
-        _msg_ "Samba already set: $samba_path"
-    fi
-}
-
-function add_to_global_section() {
-    local parameter="unix extensions = no"
-    if [ "$(cat $samba_conf_path | grep ${parameter})" == "" ]
-    then
-        _msg_ "Add ${parameter} parameter to $samba_conf_path"
-        sudo bash -c "sed -i 's/\[global\]/[global]\n  ${parameter}/g' $samba_conf_path"
-    else
-        _msg_ "${parameter} already exists in $samba_conf_path"
     fi
 }
 
@@ -106,18 +73,11 @@ function link_downloades_under_shared_folder() {
     fi
 }
 
-
 create_shared_folder
-if [ ! -e "$CACHE_PATH_is_set" ]
-then
-    set_permissions
-    add_configuration
-    add_to_global_section
-    set_user_and_restart
-    echo -e "$(date)" > "$CACHE_PATH_is_set"
-else
-    _msg_ "Samba is already set: $CACHE_PATH_is_set exists"
-fi
+set_permissions
+smart_config_patch
+set_user_and_restart
+echo -e "$(date)" > "$CACHE_PATH_is_set"
 
 if [ "$samba_link_downloads" == "True" ] || [ "$samba_link_downloads" == "true" ]
 then
