@@ -1,4 +1,12 @@
-# RPITOOLS DEVELOPER GUIDE
+1. [RPITOOLS DEVELOPER GUIDE](#general)
+2. [DYNAMIC ENVIRONMENT](#dynamicenv)
+3. [POST CONFIGURE API](#postconf)
+4. [CONFIGHANDLER](#confhandler)
+5. [SHARED MEMORY DICT](#sharedmemdict)
+6. [AUTOSYNC](#autosync)
+7. [SETUP.BASH](#setup)
+
+# RPITOOLS DEVELOPER GUIDE <a name="general"></a>
 
 Rpitools is a "hobby" middleware what was designed to setup, controll and maintain your system based on a central configuration `$RPITOOLS_CONFIG`, what you can access over `configeditor`.
 
@@ -13,7 +21,7 @@ This **programmers guide** document want to describe the main solution how to cu
 
 ---
 
-## DYNAMIC ENVIRONMENT
+## DYNAMIC ENVIRONMENT <a name="dynamicenv"></a>
 
 Basically rpitools is a script collection, there are some main scripts and some others for specific application. All scripts based on script language like `bash` and `python`, the mail goal is the flaxibility behund that.
 
@@ -144,7 +152,7 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $MYDIR/.rpienv
 ```
 
-## POST CONFIGURE API
+## POST CONFIGURE API <a name="postconf"></a>
 
 Search zone: `$REPOROOT/autodeployment/lib/`
 
@@ -168,7 +176,7 @@ __template_package_structure/
 
 Copy folder and replace element with yours.
 
-## CONFIGHANDLER
+## CONFIGHANDLER <a name="confhandler"></a>
 
 Access for central configuration file storage
 
@@ -205,7 +213,7 @@ optional arguments:
 ```
 
 
-## SHARED MEMORY DICT
+## SHARED MEMORY DICT <a name="sharedmemdict"></a>
 
 For multiprocess communication with socket interface - dictionary key - value store
 
@@ -267,7 +275,7 @@ general
 		last_update : 2019-08-21 22:17:38.747266
 ```
 
-## AUTOSYNC
+## AUTOSYNC <a name="autosync"></a>
 
 Sync, copy, move your filder and files locally or remote.
 
@@ -303,7 +311,7 @@ TMP_PASSWORD_DELETE=True
 
 Fill with your content.
 
-## SETUP.BASH heart of rpitools
+## SETUP.BASH heart of rpitools <a name="setup"></a>
 
 The central logic of rpitools middleware subsystem. Autoexecute steps like:
 
