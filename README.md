@@ -8,7 +8,28 @@
  | | \ \  | |       _| |_     | |    | |__| | | |__| | | |____   ____) |
  |_|  \_\ |_|      |_____|    |_|     \____/   \____/  |______| |_____/ 
 ```
-## WHAT IS RPITOOLS [HomeCloud]?
+
+1. [What is rpitools](#homecloud)
+2. [How to install](#installation)
+	1. [Deployment](#development)
+	2. [WIRING](#wiring)
+3. [OLED bootup launch](#oled)
+	1. [Oled framework main features](#oledframework)
+4. [Bult in KODI](#kodi)
+5. [RGB interface](#rgb)
+6. [HAPTIC-ENGINE interface](#haptic)
+7. [USER MANAGEMENT interface](#usermanag)
+8. [BACKUPHANDLER interface](#backuphandler)
+9. [Custom System monitoring](#sysmonitor)
+10. [RPITOOLs custom configuration access](#confeditor)
+11. [Website](#website)
+12. [How to use bluetooth keyboard and other devices](#bluetooth)
+13. [Development environment](#devenv)
+14. [Useful links for Debian/Raspbain](#links)
+
+---
+
+## WHAT IS RPITOOLS [HomeCloud]? <a name="homecloud"></a>
 * RPITOOLS is an installation and configuration (deployment) system for the raspberry pi family. It deploys the official raspbain lite operating system and many useful programs(1), and set the complete system to a tiny low cost perfectly configured server.
 * Completly set for remote usage - ssh, sshfs, sftp, smb, vnc(optional), website(http), camera stream support (motion)
 * Sets an optional GUI (PIXEL) for graphical usage
@@ -35,7 +56,7 @@
 
 ***More detailed informations coming soon for every function***
 
-## How to install:
+## How to install <a name="installation"></a>:
  
 #### CONFIGURATION ON MAC & LINUX
 
@@ -92,7 +113,7 @@ x			- type - cut selected area
 p			- type - paste copied area
 ```
 
-## Deployment
+## Deployment <a name="development"></a>
 When your custom configuration (confeditor) is ready and validated, you can start to deploy your system.
 
 * Execute deployment scripts:
@@ -131,7 +152,7 @@ your whole system.
 #########################
 ```
 
-***WIRING***
+***WIRING*** <a name="wiring"></a>
 
 ###### If you have our - offcial shild - just connect it to your raspberrypi.
 ###### Otherwase if you want, build your own shield for your pi, wiring is down below.
@@ -140,7 +161,7 @@ your whole system.
 
 ![page_welcome](https://github.com/BxNxM/rpitools/blob/master/gpio/RPITOOLS_1.0_GPIO_PINOUT.png?raw=true)
 
-***OLED BOOTUP LAUNCH SETUP - CONFIGURE A SERVICE (optional) [1]***
+***OLED BOOTUP LAUNCH SETUP - CONFIGURE A SERVICE (optional) [1]*** <a name="oled"></a>
 
 ```
 for more info:
@@ -168,7 +189,7 @@ oledinterface -j UP
 oledinterface -j DOWN
 ```
 
-#### CUSTOMIZE OLED FRAMEWORK AND CREATE NEW PAGES (OPTIONAL)
+#### CUSTOMIZE OLED FRAMEWORK AND CREATE NEW PAGES (OPTIONAL) 
 
 * create your own page under
 
@@ -186,7 +207,7 @@ or
 ls -lath /home/$USER/rpitools/gpio/oled_128x64/lib/pages
 ```
 
-## oled framework main features
+## oled framework main features <a name="oledframework"></a>
 * draw text
 * draw shapes: ellipse, rectangle, line, poligon
 * draw image
@@ -210,7 +231,7 @@ CPU LOAD: 25 % - 35 %
 CPU if oled in STANDBY: 2.3 %
 ```
 
-# BUILT IN KODI
+# BUILT IN KODI <a name="kodi"></a>
 ```                            
   _  __   ____    _____    _____ 
  | |/ /  / __ \  |  __ \  |_   _|
@@ -232,7 +253,7 @@ It gives you a full media player with many options.
 The video output goes to the dedicated HDMI connector.
 
 
-# RGB interface
+# RGB interface <a name="rgb"></a>
 ```
                  _       _           _                    __                       
                 | |     (_)         | |                  / _|                      
@@ -291,7 +312,7 @@ rgbinterface -sh
 rgbinterface -h
 ```
 
-# HAPTIC-ENGINE interface
+# HAPTIC-ENGINE interface <a name="haptic"></a>
 ```
   _    _              _____    _______   _____    _____   ______   _   _    _____   _____   _   _   ______ 
  | |  | |     /\     |  __ \  |__   __| |_   _|  / ____| |  ____| | \ | |  / ____| |_   _| | \ | | |  ____|
@@ -313,7 +334,7 @@ optional arguments:
   -sn, --snooze     HapticEngine SNOOZE signel
 ```
 
-# USER MANAGEMENT interface
+# USER MANAGEMENT interface <a name="usermanag"></a>
 ```
 usermanager --man
 
@@ -327,7 +348,7 @@ usermanager --man
 --addapacheuser	::	Add user for apache - private cloud <username> <userpasswd> 2 par
 ```
 
-# BACKUPHANDLER interface
+# BACKUPHANDLER interface <a name="backuphandler"></a>
 ```
 backuphandler --man
 
@@ -342,7 +363,7 @@ restore <username>	- restore a selected user last backup in subfolder under its 
 struct			-show actual backup archive structure
 ```
 
-# Custom System monitoring
+# Custom System monitoring <a name="sysmonitor"></a>
 ```
 sysmonitor -h
 
@@ -419,7 +440,7 @@ EXAMPLE: sysmonitor --services
 	:) 0...23 :( exit code: 0
 ```
 
-# RPITOOLs custom configuration access
+# RPITOOLs custom configuration access <a name="confeditor"></a>
 ```
 confeditor -h
 
@@ -432,7 +453,7 @@ import | i	- [not on raspberry!] import existing configuration for deployment
 OR RUN WITHOUT PARAMETERS, AND FOLLOW THE INSTRUCTIONS (RECOMMENDED)
 ```
 
-# Your website
+# Your website <a name="website"></a>
 You have a custom website, with protected files web folder - like custom dropbox (cloud) on a private drive at home.
 Get your internal or extarnal ip address and copy-paste it to your browser.
 
@@ -443,7 +464,7 @@ sysmonitor -g
 
 ![website_1.0](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/website1.0.png?raw=true)
 ![websiteAllDemo](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/webpageDemoAll.png?raw=true)
-# How to use bluetooth keyboard and other devices
+# How to use bluetooth keyboard and other devices <a name="bluetooth"></a>
 [resource](https://askubuntu.com/questions/17504/how-can-i-have-a-bluetooth-keyboard-auto-connect-at-startup)
 
 ```
@@ -486,11 +507,11 @@ sudo service keyboard status
 
 That's it. Now whenever you turn your Bluetooth keyboard on, it'll be connected to your Linux automatically.
 
-# DEVELOPMENT ENVIRONMENT
+# DEVELOPMENT ENVIRONMENT <a name="devenv"></a>
 
 [PROGRAMMERS_GUIDE](https://github.com/BxNxM/rpitools/blob/develop/PROGRAMMERS_GUIDE.md)
 
-# Useful links for Debian/Raspbain:
+# Useful links for Debian/Raspbain <a name="links"></a>:
 * RaspberryPi GPIO usage:
 
 ```
