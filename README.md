@@ -486,6 +486,10 @@ sudo service keyboard status
 
 That's it. Now whenever you turn your Bluetooth keyboard on, it'll be connected to your Linux automatically.
 
+# DEVELOPMENT ENVIRONMENT
+
+[PROGRAMMERS_GUIDE](https://github.com/BxNxM/rpitools/blob/develop/PROGRAMMERS_GUIDE.md)
+
 # Useful links for Debian/Raspbain:
 * RaspberryPi GPIO usage:
 
