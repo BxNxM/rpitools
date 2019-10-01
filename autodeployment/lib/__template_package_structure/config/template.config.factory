@@ -1,0 +1,10 @@
+project="test"
+date=2019.10.1
+
+# comment lines - users
+
+name1="Wilma"
+sex="female"
+
+name2="Alma"
+sex="female"

@@ -1,0 +1,10 @@
+project="test"
+date=2019.10.1
+
+# comment lines - users
+
+name1="{USER}"
+sex="{SEX2}"
+
+name2="{USER2}"
+sex="{SEX}"
