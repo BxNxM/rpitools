@@ -24,11 +24,6 @@ source "$TERMINALCOLORS"
 CACHE_PATH_is_set="$REPOROOT/cache/.nfs_configure_is_done"
 exports_file="/etc/exports"
 
-function create_official_setup_backup() {
-    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$exports_file" "${MYDIR}/config/"
-}
-create_official_setup_backup
-
 source "${MYDIR}/../message.bash"
 _msg_title="NFS SETUP"
 
@@ -38,6 +33,11 @@ nfs_shared_folder_permissions="$($CONFIGHANDLER -s NFS_SERVER -o nfs_shared_fold
 # =============================================================== #
 #                          SERVER SETUP                           #
 # =============================================================== #
+function smart_config_patch() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/exports.data" "init" "{NFS_SERVER_FOLDER_PATH}" "$nfs_shared_folder"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$exports_file" "$MYDIR/config/" "exports.finaltemplate" "exports.data" "exports.final" "exports.patch"
+}
+
 action=false
 function create_nfs_file_structure() {
 
@@ -58,22 +58,17 @@ function create_nfs_file_structure() {
 }
 
 function edit_exports_file_and_permissions() {
-    local export_file_content="${nfs_shared_folder} *(rw,sync)"
-
     if [ "$action" == "true" ]
     then
         (grep "${nfs_shared_folder}" "${exports_file}")
         if [ "$?" -ne 0 ]
         then
-            _msg_ "Add ${export_file_content} to ${exports_file}"
-            sudo bash -c "echo -e '${export_file_content}' >> ${exports_file}"
+            smart_config_patch
 
             sudo bash -c "exportfs"
 
             sudo bash -c "update-rc.d rpcbind enable"
             sudo bash -c "sudo service rpcbind restart"
-        else
-            _msg_ "${export_file_content} already set in ${exports_file}"
         fi
 
         echo -e "$(date)" > "$CACHE_PATH_is_set"
@@ -103,6 +98,7 @@ function create_nfs_client_local_mount_point() {
         _msg_ "nfs client local mount point exists: $nfs_client_mount_point_path"
     fi
 }
+
 function mount_nfs_server() {
     local ip="$1"
     local nfs_client_path_to_mount="$2"
@@ -110,6 +106,7 @@ function mount_nfs_server() {
     _msg_ "Manual mount: sudo mount ${ip}:${nfs_client_path_to_mount} ${nfs_client_mount_point_path}"
     sudo mount ${ip}:${nfs_client_path_to_mount} ${nfs_client_mount_point_path}
 }
+
 function edit_fstab_for_automount() {
     local ip="$1"
     local nfs_client_path_to_mount="$2"
@@ -132,6 +129,7 @@ function edit_fstab_for_automount() {
     fi
     mount_nfs_server "$ip" "$nfs_client_path_to_mount" "$nfs_client_mount_point_path"
 }
+
 function create_test_mount_point() {
     local nfs_client_mount_point_path="/media/.local_nfs_client/$(basename $nfs_shared_folder)"
     _msg_ "Test client mount point: $nfs_client_mount_point_path"
@@ -143,13 +141,9 @@ function create_test_mount_point() {
 #                              MAIN                               #
 # =============================================================== #
 _msg_ "NFS HOWTO: https://www.htpcguides.com/configure-nfs-server-and-nfs-client-raspberry-pi/"
+
 create_nfs_file_structure
-if [ ! -f "$CACHE_PATH_is_set" ]
-then
-    edit_exports_file_and_permissions
-else
-    _msg_ "NFS was aleady set: $CACHE_PATH_is_set exists"
-    _msg_ "Indicator file exists: $CACHE_PATH_is_set, remove fom reconfigure."
-fi
+edit_exports_file_and_permissions
+
 start_nfs_server_if_required
 create_test_mount_point
