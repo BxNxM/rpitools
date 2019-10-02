@@ -24,6 +24,10 @@ fi
 
 source "$TERMINALCOLORS"
 
+#################################
+#           INPUT DATA          #
+#################################
+# PATH LISTS
 BACKUP_PATH="${HOME}/.rpitools_bckp/"
 REQ_BACKUP_SUB_PATH_LIST=("/cache/" \
                           "/gpio/Adafruit_Python_SSD1306/" \
@@ -32,7 +36,16 @@ REQ_BACKUP_SUB_PATH_LIST=("/cache/" \
                           "/autodeployment/lib/retropie/RetroPie-Setup/" \
                           "/tools/gotop/gotop" \
                           "/tools/socketmem/lib/.dictbackup.json")
+__COMPONENT_CONFIGS_PATH_LIST=($(find "${REPOROOT}/autodeployment/" -type d -name 'config'))
+for comp_path in ${__COMPONENT_CONFIGS_PATH_LIST[@]}
+do
+    COMPONENT_CONFIGS_PATH_LIST+=("${comp_path//$REPOROOT}")
+done
+# FINALIZE PATH LIST
+REQ_BACKUP_SUB_PATH_LIST+=(${COMPONENT_CONFIGS_PATH_LIST[@]})
 
+FILE_NAME_BLACKLIST=("confeditor.bash")
+#################################
 
 # message handler function
 function message() {
@@ -44,6 +57,22 @@ function message() {
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ CACHE ]${NC} $msg"
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ CACHE ]${NC} $msg" >> "$rpitools_log_path"
     fi
+}
+
+function cleanUP_cache() {
+    local patch_blacklist=()
+    for black in ${FILE_NAME_BLACKLIST[@]}
+    do
+        patch_blacklist=($(find "${BACKUP_PATH}" -type f -name "$black"))
+        for path in ${patch_blacklist[@]}
+        do
+            if [ -e "$path" ]
+            then
+                message "Remove based on blacklist [$black]: $path"
+                rm -f "$path"
+            fi
+        done
+    done
 }
 
 function __backup() {
@@ -81,10 +110,12 @@ function __backup() {
             message "\tFROM PATH: $from_path NOT EXISTS... ${PURPLE}SKIPPING${NC}"
         fi
     done
+    cleanUP_cache
 }
 
 function __restore() {
     message "=== ${PURPLE}RESTORE CACHE${NC} ==="
+    cleanUP_cache
     local PATH_ROOT="$BACKUP_PATH"
     local from_path=""
     local to_path=""
