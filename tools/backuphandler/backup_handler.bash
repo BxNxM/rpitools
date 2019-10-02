@@ -38,6 +38,26 @@ function _msg_ () {
     echo -e "[$(date)]${BLUE}[backuphandler]${NC} $msg"
 }
 
+function write_status_file() {
+    local errors="$1"
+    if [ "$errors" == "" ]
+    then
+        ERRORS="$ERRORS"
+    else
+        ERRORS="$errors"
+    fi
+    local status_path="${MYDIR}/.status"
+    if [ "$ERRORS" -eq 0 ]
+    then
+        echo "ok" > "$status_path"
+    elif [ "$ERRORS" -gt 0 ] && [ "$errors" != "" ]
+    then
+        echo "fails" > "$status_path"
+    else
+        echo "warning" > "$status_path"
+    fi
+}
+
 # crontab - rpitools config get activate fix
 if [ "$activate_backup" == "" ]
 then

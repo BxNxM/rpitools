@@ -65,6 +65,18 @@ function check_servive() {
     fi
 }
 
+function force_clean_locks() {
+    # WORKAROUND FOR STUCKED LOCKS
+    local locks_path="$MYDIR/.locks"
+    local locks=($(ls -1 "$locks_path"))
+
+    for lock in ${locks[@]}
+    do
+        echo -e "Remove lock: $locks_path/$lock"
+        rm "$locks_path/$lock"
+    done
+}
+
 is_changed=0
 if [[ "$actual_cron_content" == *"$new_command"* ]]
 then
@@ -89,8 +101,8 @@ fi
 check_servive "$is_changed"
 echo -e "Set ${MYDIR}/.env file: USERNAME=$username"
 echo "USERNAME=$username" > "${MYDIR}/.env"
+force_clean_locks
 exit 0
-
 
 
 
