@@ -56,11 +56,9 @@ function __backup() {
         from_path="${PATH_ROOT}${sub_path}"
         if [ -d "${PATH_ROOT}${sub_path}" ]
         then
-            echo -e "DIR: $from_path"
             to_path="${BACKUP_PATH}$(dirname ${sub_path})"
             basename_of_to_path="$to_path"
         else
-            echo -e "FILE: $from_path"
             to_path="${BACKUP_PATH}${sub_path}"
             basename_of_to_path="$(dirname $to_path)"
         fi
