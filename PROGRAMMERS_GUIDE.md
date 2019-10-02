@@ -5,6 +5,7 @@
 5. [SHARED MEMORY DICT](#sharedmemdict)
 6. [AUTOSYNC](#autosync)
 7. [SETUP.BASH](#setup)
+8. [OLED API](#oled)
 
 # RPITOOLS DEVELOPER GUIDE <a name="general"></a>
 
@@ -380,4 +381,124 @@ Autoexecute steps like:
 ```bash
 source $REPOROOT/setup.bash
 ```
+
+## OLED API <a name="oled"></a>
+
+Oled pages search zone: `${REPOROOT}/rpitools/gpio/oled_128x64/lib/pages`
+
+Default content:
+
+```bash
+|-- images
+|   |-- happycat_oled_64.ppm
+|   |-- katica_draw.png
+|   |-- linux.png
+|   |-- rpi.png
+|   `-- weather_images
+|       |-- cloudy.png
+|       |-- empty.png
+|       |-- mist.png
+|       |-- partly_cloudy.png
+|       |-- rain.png
+|       |-- snow-rain.png
+|       |-- snow.png
+|       |-- storm.png
+|       `-- sunny.png
+|-- link.rpienv
+|-- page_0.py
+|-- page_1.py
+|-- page_2.py
+|-- page_3.py
+|-- page_4.py
+|-- page_5.py
+|-- page_6.py
+|-- page_7.py
+|-- page_8.py
+|-- page_empty.py
+|-- page_joystick_elemets_test.py
+|-- page_shapes.py
+`-- page_simple_rgb_demo.py
+``` 
+
+Page template:
+
+```python
+import subprocess
+import time
+
+#################################################################################
+#                                PAGE 5 - empty page demo                       #
+#                              ----------------------------                     #
+#                                 * TEMP, * CPU freq                            #
+#################################################################################
+
+def page_setup(display, joystick_elements):
+    display.head_page_bar_switch(True, True)
+    display.display_refresh_time_setter(10)
+
+def page(display, joystick, joystick_elements):
+    return False
+
+def page_destructor(displayi, joystick_elements):
+    pass
+```
+
+#### Create new page
+
+Copy template with new name `page_<next digit>.py`.
+
+```bash
+cp ${REPOROOT}/gpio/oled_128x64/lib/pages/page_empty.py ${REPOROOT}/gpio/oled_128x64/lib/pages/page_9.py
+```
+
+Restart oled service
+
+```bash
+oledinterface --restart
+```
+
+oledinterface `-h`
+
+```bash
+  -h, --help            show this help message and exit
+  -o OLED, --oled OLED  Oled service ON or OFF
+  -s, --show            show service status
+  -r, --restart         restart oled service
+  -b BUTTON, --button BUTTON
+                        LEFT / STANDBY / RIGHT / standbyFalse / standbyTrue
+  -j JOYSTICK, --joystick JOYSTICK
+                        LEFT / RIGHT / UP / DOWN /CENTER
+```
+
+#### API Documentation
+
+|                      Phases                   |          Description         |
+| :-------------------------------------------: | :--------------------------: |
+|  page_setup(display, joystick_elements)       |  Initiate screen - run once
+|  page(display, joystick, joystick_elements)   |  Page main loop
+|  page_destructor(displayi, joystick_elements) |  Exit page - event function
+
+
+|                   Function                   |            Description       |
+|  ------------------------------------------  | :--------------------------: |
+| display.head_page_bar_switch(True, True)     |
+| display.display_refresh_time_setter(3)       |
+| w, h = display.draw_text("Hello World", x, y)|
+| display.draw.rectangle((x, y, x+size, y+size), outline=255, fill=0) |
+| display.draw.ellipse((x, y, x+size, y+size), outline=255, fill=0) | 
+| display.draw.polygon([(x, y), (x, y+size), (x-size, y)], outline=255, fill=0)| | display.draw.line((x, y, x+size, y+size), fill=255) |
+| display.clever_screen_clean(force_clean=True) |
+| display.draw_image('path/pics.png')           |
+| display.display_show()                        |
+| display.disp.clear()                          |
+
+|        joystick keys         |        Description      |
+| :--------------------------: | :---------------------: |
+|    joystick == "UP"          |   
+|    joystick == "LEFT"        |
+|    joystick == "RIGHT"       |
+|    joystick == "DOWN"        |
+|    joystick == "CENTER"      |
+|    joystick == "CENTER"      |
+ 
 
