@@ -22,8 +22,17 @@ else
     exit 1
 fi
 
-mypath="${MYDIR}"
-backup_path="$HOME/.rpitools_bckp/"
+source "$TERMINALCOLORS"
+
+BACKUP_PATH="${HOME}/.rpitools_bckp/"
+REQ_BACKUP_SUB_PATH_LIST=("/cache/" \
+                          "/gpio/Adafruit_Python_SSD1306/" \
+                          "/autodeployment/config/" \
+                          "/tools/dropbox_halpage/lib/Dropbox-Uploader/" \
+                          "/autodeployment/lib/retropie/RetroPie-Setup/" \
+                          "/tools/gotop/gotop" \
+                          "/tools/socketmem/lib/.dictbackup.json")
+
 
 # message handler function
 function message() {
@@ -37,141 +46,98 @@ function message() {
     fi
 }
 
+function __backup() {
+    message "=== ${PURPLE}BACKUP CACHE${NC} ==="
+    local PATH_ROOT="$REPOROOT"
+    local from_path=""
+    local to_path=""
+    for sub_path in ${REQ_BACKUP_SUB_PATH_LIST[@]}
+    do
+        from_path="${PATH_ROOT}${sub_path}"
+        if [ -d "${PATH_ROOT}${sub_path}" ]
+        then
+            echo -e "DIR: $from_path"
+            to_path="${BACKUP_PATH}$(dirname ${sub_path})"
+            basename_of_to_path="$to_path"
+        else
+            echo -e "FILE: $from_path"
+            to_path="${BACKUP_PATH}${sub_path}"
+            basename_of_to_path="$(dirname $to_path)"
+        fi
+        if [ -e "$from_path" ]
+        then
+            message "\t${PURPLE}EXPORT${NC} CACHE: $from_path -> $to_path"
+            if [ ! -d "$basename_of_to_path"  ]
+            then
+                message "\t - Create $basename_of_to_path basedir"
+                mkdir -p "$basename_of_to_path"
+            fi
+            sudo bash -c "cp -raf $from_path $to_path"
+            if [ "$?" -eq 0 ]
+            then
+                message "\t\t[${GREEN}OK${NC}]"
+            else
+                message "\t\t$[${RED}ERR${NC}]"
+            fi
+        else
+            message "\tFROM PATH: $from_path NOT EXISTS... ${PURPLE}SKIPPING${NC}"
+        fi
+    done
+}
+
+function __restore() {
+    message "=== ${PURPLE}RESTORE CACHE${NC} ==="
+    local PATH_ROOT="$BACKUP_PATH"
+    local from_path=""
+    local to_path=""
+    for sub_path in ${REQ_BACKUP_SUB_PATH_LIST[@]}
+    do
+        from_path="${PATH_ROOT}${sub_path}"
+        if [ -d "${PATH_ROOT}${sub_path}" ]
+        then
+            to_path="${REPOROOT}$(dirname ${sub_path})"
+        else
+            to_path="${REPOROOT}${sub_path}"
+        fi
+        if [ -e "$from_path" ]
+        then
+            basename_of_to_path="$(dirname $to_path)"
+            message "\t${PURPLE}RESTORE${NC} CACHE: $from_path -> $to_path"
+            if [ ! -d "$basename_of_to_path"  ]
+            then
+                message "\t - Create $basename_of_to_path basedir"
+                mkdir -p "$basename_of_to_path"
+            fi
+            sudo bash -c "cp -raf $from_path $to_path"
+            if [ "$?" -eq 0 ]
+            then
+                message "\t\t[${GREEN}OK${NC}]"
+            else
+                message "\t\t$[${RED}ERR${NC}]"
+            fi
+        else
+            message "\tFROM PATH: $from_path NOT EXISTS... ${PURPLE}SKIPPING${NC}"
+        fi
+    done
+}
+
+function __show() {
+    tree "$BACKUP_PATH" -L 3
+}
+
 if [ "$arg_len" == 1 ]
 then
     if [ "${arg_list[0]}" == "backup" ]
     then
-        echo -e "Create cache backup"
-        if [ ! -d "$backup_path" ]
-        then
-            mkdir "$backup_path"
-        fi
-        # backup cache and adafruit library
-        # adafruit lib
-        echo -e "\tbackup: ${REPOROOT}/gpio/Adafruit_Python_SSD1306 -> $backup_path"
-        sudo cp -r "${REPOROOT}/gpio/Adafruit_Python_SSD1306" "$backup_path"
-
-        if [ -d "${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader" ]
-        then
-            # Dropbox-Uploader lib
-            echo -e "\tbackup: ${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader -> $backup_path"
-            sudo cp -r "${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader" "$backup_path"
-        else
-            echo -e "\t${REPOROOT}/tools/dropbox_halpage/lib/Dropbox-Uploader not present in the system."
-        fi
-
-        if [ -d "${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup" ]
-        then
-            # Retropie setup
-            echo -e "\tbackup: ${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup" "$backup_path"
-            sudo cp -r "${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup" "$backup_path"
-        else
-            echo -e "\t${REPOROOT}/autodeployment/lib/retropie/RetroPie-Setup not present in the system."
-        fi
-
-        if [ -e "${REPOROOT}/tools/gotop/gotop" ]
-        then
-            # Gotop script
-            echo -e "\tbackup: ${REPOROOT}/tools/gotop/gotop" "$backup_path"
-            sudo cp -r "${REPOROOT}/tools/gotop/gotop" "$backup_path"
-        else
-            echo -e "\t${REPOROOT}/tools/gotop/gotop not present in the system."
-        fi
-
-        if [ -d "${REPOROOT}/tools/autosync/sync_configs/" ]
-        then
-            # autosync sync_configs
-            echo -e "\tbackup: ${REPOROOT}/tools/autosync/sync_configs/ -> $backup_path"
-            sudo bash -c "cp -ra "${REPOROOT}/tools/autosync/sync_configs/" "$backup_path""
-            cache_exitcode="$?"
-        else
-             echo -e "${REPOROOT}/tools/autosync/sync_configs/not present in the system."
-        fi
-
-        # cache
-        echo -e "\tbackup: ${REPOROOT}/cache -> $backup_path"
-        sudo bash -c "cp -ra "${REPOROOT}/cache" "$backup_path""
-        cache_exitcode="$?"
-
-        # backup config
-        echo -e "\tbackup: ${REPOROOT}/autodeployment/config/rpitools_config.cfg -> $backup_path"
-        cp "${REPOROOT}/autodeployment/config/rpitools_config.cfg" "$backup_path"
-        config_copy_exitcode="$?"
-        if [ "$cache_exitcode" -eq 0 ] && [ "$config_copy_exitcode" -eq 0 ]
-        then
-            echo -e "Create backup SUCCESS"
-        else
-            echo -e "Create backup FAIL"
-        fi
-
-
+        __backup
     elif [ "${arg_list[0]}" == "restore" ]
     then
-        echo -e "Restore backup"
-        if [ -e "${backup_path}/cache" ]
-        then
-            # restore cache and Adafruit library
-            # adafruit lib
-            echo -e "\trestore: ${backup_path}/cache/Adafruit_Python_SSD1306 -> ${REPOROOT}/gpio/"
-            sudo cp -r "${backup_path}/Adafruit_Python_SSD1306" "${REPOROOT}/gpio/"
-
-            if [ -d "${backup_path}/Dropbox-Uploader" ]
-            then
-                # Dropbox-Uploader lib
-                echo -e "\trestore: ${backup_path}/Dropbox-Uploader -> ${REPOROOT}/tools/dropbox_halpage/lib/"
-                sudo cp -r "${backup_path}/Dropbox-Uploader" "${REPOROOT}/tools/dropbox_halpage/lib/"
-            else
-                echo -e "restore: ${backup_path}/Dropbox-Uploader not present in the system."
-            fi
-
-            if [ -d "${backup_path}/RetroPie-Setup" ]
-            then
-                # Retropie setup
-                echo -e "\trestore: ${backup_path}/RetroPie-Setup -> ${REPOROOT}/autodeployment/lib/retropie/"
-                sudo cp -r "${backup_path}/RetroPie-Setup" "${REPOROOT}/autodeployment/lib/retropie/"
-            else
-                echo -e "\trestore: ${backup_path}/RetroPie-Setup not present in the system."
-            fi
-
-            if [ -e "${backup_path}/gotop" ]
-            then
-                # gotoop script
-                echo -e "\trestore: ${backup_path}/gotop -> ${REPOROOT}/tools/gotop/"
-                sudo cp -r "${backup_path}/gotop" "${REPOROOT}/tools/gotop/"
-            else
-                echo -e "\trestore: ${backup_path}/gotop not present in the system."
-            fi
-
-            if [ -d "${backup_path}/sync_configs" ]
-            then
-                # autosync sync_configs
-                echo -e "\trestore: ${backup_path}/sync_configs/ -> ${REPOROOT}/tools/autosync/"
-                sudo bash -c "cp -ra "${backup_path}/sync_configs/" "${REPOROOT}/tools/autosync/""
-                cache_exitcode="$?"
-            else
-                echo -e "\trestore: ${backup_path}/sync_configs not present in the system."
-            fi
-
-            # cache
-            echo -e "\trestore: ${backup_path}/cache -> ${REPOROOT}"
-            sudo bash -c "cp -ra "${backup_path}/cache" "${REPOROOT}""
-            cache_exitcode="$?"
-
-            # restore config
-            echo -e "\trestore: ${backup_path}/rpitools_config.cfg -> ${REPOROOT}/autodeployment/config/"
-            cp "${backup_path}/rpitools_config.cfg" "${REPOROOT}/autodeployment/config/"
-            config_copy_exitcode="$?"
-            if [ "$cache_exitcode" -eq 0 ] && [ "$config_copy_exitcode" -eq 0 ]
-            then
-                echo -e "Restore backup SUCCESS"
-            else
-                echo -e "Restore backup FAIL"
-            fi
-        else
-            echo -e "Backup not found! ${backup_path}/cache"
-        fi
+        __restore
+    elif [ "${arg_list[0]}" == "show" ]
+    then
+        __show
     else
-        "Invalid input ${arg_list[0]}\nTry backup/restore"
+        "Invalid input ${arg_list[0]}\nTry backup/restore/show"
     fi
 else
     echo -e "AVAIBLE INPUTS: backup/restore\nthese are cache saving options for easier repo update"
