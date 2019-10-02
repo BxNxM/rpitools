@@ -35,7 +35,9 @@ REQ_BACKUP_SUB_PATH_LIST=("/cache/" \
                           "/tools/dropbox_halpage/lib/Dropbox-Uploader/" \
                           "/autodeployment/lib/retropie/RetroPie-Setup/" \
                           "/tools/gotop/gotop" \
-                          "/tools/socketmem/lib/.dictbackup.json")
+                          "/tools/socketmem/lib/.dictbackup.json"
+                          "/autodeployment/lib/apache_setup/h5ai-0.29.0.zip" \
+                          "/autodeployment/lib/apache_setup/_h5ai")
 __COMPONENT_CONFIGS_PATH_LIST=($(find "${REPOROOT}/autodeployment/" -type d -name 'config'))
 for comp_path in ${__COMPONENT_CONFIGS_PATH_LIST[@]}
 do
@@ -54,7 +56,7 @@ function message() {
     local msg="$1"
     if [ ! -z "$msg" ]
     then
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ CACHE ]${NC} $msg"
+        echo -e "${PURPLE}[ CACHE ]${NC} $msg"
         echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ CACHE ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
@@ -100,10 +102,8 @@ function __backup() {
                 mkdir -p "$basename_of_to_path"
             fi
             sudo bash -c "cp -raf $from_path $to_path"
-            if [ "$?" -eq 0 ]
+            if [ "$?" -ne 0 ]
             then
-                message "\t\t[${GREEN}OK${NC}]"
-            else
                 message "\t\t$[${RED}ERR${NC}]"
             fi
         else
@@ -138,10 +138,8 @@ function __restore() {
                 mkdir -p "$basename_of_to_path"
             fi
             sudo bash -c "cp -raf $from_path $to_path"
-            if [ "$?" -eq 0 ]
+            if [ "$?" -ne 0 ]
             then
-                message "\t\t[${GREEN}OK${NC}]"
-            else
                 message "\t\t$[${RED}ERR${NC}]"
             fi
         else
