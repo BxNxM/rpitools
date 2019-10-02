@@ -97,6 +97,9 @@ function write_status_file() {
     else
         ERRORS="$errors"
     fi
+
+    MYPATH="${BASH_SOURCE[0]}"
+    MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     local status_path="${MYDIR}/.status"
     if [ "$ERRORS" -eq 0 ]
     then
@@ -560,6 +563,8 @@ function system_restore() {
         restore_extra_system_folders "${last_extra_system_backups_list[@]}"
     fi
 
+    _msg_ "Force refresh user environment - if it conatins dynamic env indicators..."
+    source "${MYDIR}/.rpienv" "-f -p"
     # fix user groups automaticly
     _msg_ "${YELLOW}Restore user groups from code, with${NC} usermanager --fixusergroups"
     . "${USERMANAGER}" "--fixusergroups"
