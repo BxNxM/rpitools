@@ -8,7 +8,7 @@
 
 # RPITOOLS DEVELOPER GUIDE <a name="general"></a>
 
-Rpitools is a "hobby" middleware what was designed to setup, controll and maintain your system based on a central configuration `$RPITOOLS_CONFIG`, what you can access over `configeditor`.
+Rpitools is a "hobby" middleware what was designed to setup, controll and maintain your system based on a central configuration `$RPITOOLS_CONFIG`, what you can access with `configeditor`.
 
 The rpitools provides many possiblilites to collaborate, and integrate new application components into the system. Most of the central elements supports easy to use interfaces:
 
@@ -23,21 +23,30 @@ This **programmers guide** document want to describe the main solution how to cu
 
 ## DYNAMIC ENVIRONMENT <a name="dynamicenv"></a>
 
-Basically rpitools is a script collection, there are some main scripts and some others for specific application. All scripts based on script language like `bash` and `python`, the mail goal is the flaxibility behund that.
+Basically rpitools is a script collection, there are some main scripts and some source wich provides sub-functionality implementtaions.
+
+- user manager
+- backup manager
+- system monitor
+- etc.
+
+> NOTE: Execute `rpihelp` alias for the details. 
+
+System implementation use `bash` and `python` programming languages, opensource and flaxible ...
 
 Rpitools **main goals**
 
 - all scripts managed in git repository
 	- embedded version controll, easy to maintain and develop
-	- upgrade is basically
+	- easy to upgrade `rpitools_update`
 		- graceful service shutdown
 		- git pull --rebase (with stash before if necessary)
 		- service launch
 		- etc.
 
-There is a need, to access the scripts from everywhere from the system, to hardcode the central scripts path is NOT a good idea as we know, so we need a solution for that. That was named as DYNAMIC ENVIRONMENT.
+There is a need, to access the scripts from everywhere from the system, to aviod (exposed) script path hardcodeing (hardcode path is NOT a good idea as we know, it results a fragile system), so we need a solution for that clain. That was named as **DYNAMIC ENVIRONMENT**.
 
-Somehow we want to highlight a script to be accessable as an `alias` and/or `environmant variable` in our system.
+Somehow we want to highlight a custom script for expose (make it accessible environment wide). To make it accessable as an `alias` and/or `environmant variable` create an indicator file `<name>.rpienv`.
 
 ### Lets show an example for you.
 
@@ -46,9 +55,9 @@ Somehow we want to highlight a script to be accessable as an `alias` and/or `env
 `-- myscript.bash
 ```
 
-Here we have a script what we want to use from everywhere `myscript.bash`, but we don't wan't to know where it is exactly. SO we want to expose that.
+Here we have a script what we want to use from everywhere `myscript.bash`, but we don't want to know where it is exactly in a file system. SO we want to expose that.
 
-> NOTE: The indicator file `helloworld.rpitools` should be next to the script what we want to expose.
+> NOTE: The indicator file `helloworld.rpienv` should be next to the script what we want to expose.
 
 #### helloworld.rpienv
 
@@ -57,13 +66,13 @@ SCRIPT=myscript.bash
 PROP=("env" "alias")
 ```
 
-The content of the indicator file has 2 lines.
+The content of the indicator file `<name>.rpienv` has 2 lines.
 
 ```bash
 SCRIPT=
 ```
 
-- Write your main script name hare
+- Write your main script name after `SCRIPT=`
 
 ```bash
 PROP=()
@@ -82,9 +91,9 @@ PROP=()
 echo -e "Hello world!"
 ```
 
-or some python script, or what are you want, it must have `+x` rights
+or some python script, or what are you want, it must have execute `+x` rights
 
-> NOTE: The rpienv search zone under `REPOROOT` folder
+> NOTE: The rpienv search zone is under `REPOROOT` folder
 
 #### The interpreter script
 
@@ -124,7 +133,9 @@ scipt what gets the proper environment back.
 
 #### Environment caching
 
-The RPIENV `$REPOROOT/rpienv.bash` (source environment) stores environment in cacse for the better performance
+The RPIENV `$REPOROOT/rpienv.bash` (source environment) stores environment in cache for the better loading performance.
+
+Cache path:
 
 ```bash
 pi@node01:~/echo $ENV_CACHE_PATH
@@ -133,14 +144,20 @@ pi@node01:~/ $ echo $ALIAS_CACHE_PATH
 /home/pi/rpitools/cache/rpialiases
 ```
 
-> NOTE: -f force resource or system autodecet in case of rpitools repo movement in a system
-
-#### Use from scripts
-
-Create `link.rpienv` empty file next to the script where you want to use `source` the envirenment.
+> NOTE: Generate env manually: `-f` force resource or system autodecet in case of rpitools repo movement in a system
 
 ```bash
-execute source $REPOROOT/rpienv.bash
+source $REPOROOT/rpienv.bash -f -v -p
+``` 
+
+#### Use from scripts - access rpitools environment
+
+Create `link.rpienv` empty file next to the script where you want to use 
+
+Generate `rpienv link` next to the script:
+
+```bash
+source $REPOROOT/rpienv.bash -f -p
 ``` 
 
 Source link `.rpienv -> $REPOROOT/rpienv.bash` file from script folder.
@@ -176,9 +193,21 @@ __template_package_structure/
 
 Copy folder and replace element with yours.
 
+The key is `<UID_name>.run`:
+
+```bash
+TITLE="template main execution"
+SCRIPT="main.bash"
+RUN_DEPENDENCY=("socketmem_setup")
+```
+
+- Fill the `TITLE=` with your app/service/autoconfig name.
+- Fill main scipt name `SCRIPT=` it must next to be `<UID_name>.run` file.
+- Dependency list for other `<UID_name>` names.
+
 ## CONFIGHANDLER <a name="confhandler"></a>
 
-Access for central configuration file storage
+Access for central configuration file storage.
 
 Use from command line, with alias: 
 
@@ -215,7 +244,7 @@ optional arguments:
 
 ## SHARED MEMORY DICT <a name="sharedmemdict"></a>
 
-For multiprocess communication with socket interface - dictionary key - value store
+For multiprocess communication with socket interface - dictionary key - value storage.
 
 Use from command line `alias`
 
@@ -313,13 +342,11 @@ Fill with your content.
 
 ## SETUP.BASH heart of rpitools <a name="setup"></a>
 
-The central logic of rpitools middleware subsystem. Autoexecute steps like:
+The central logic of rpitools middleware subsystem. Configure, repair, update, etc.
 
-```bash
-source $REPOROOT/setup.bash
+Autoexecute steps like:
+
 ```
-
-```bash
  _____  _____  _____  _   _ ______
 /  ___||  ___||_   _|| | | || ___ |
 \ \'--.| |__    | |  | | | || |_/ /
@@ -329,22 +356,28 @@ source $REPOROOT/setup.bash
 ```
 
 1. Restore backup
-- [ rpitools ] GET RPITOOLS ENVIRONMENT
-- [ rpitools ] wpa_supplient - config.txt - cmdline.txt SETUP
-- [ rpitools ] /home/pi/rpitools/config/ config linking
-- VALIDATE CUSTOM (USER) CONFIG FILE
-- [ CUSTOM HOSTNAME SETUP ]
-- [ SET USER ] - CUSTOM PASSWORD
-- [ rpitools ] other basic system files: vimrc, .ssh, etc.
-- [ rpitools ] Install requested programs from list /home/pi/rpitools/template/programs.dat
-- [ SECURITY [SSH|UFW|GROUPS] SETUP ]
-- [ rpitools ] PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON
-- [STORAGE] CREATE STORAGE STUCTURE FOR RPITOOLS
-- [ rpitools ] Run autodeployment scripts. [ CONFIG POST ACTIONS ]
-- [ SYSTEM CMD CREATE ] - Manual args: /home/pi/rpitools/prepare/system/set_system_wide_commands.bash create | list
-- [ rpitools ] Instantiation UUID: 46139787-6f63-47b3-a562-32242da11344
-- [ rpitools ] LINK STORAGE FOLDERS UNDER /home/pi -> /home/pi/storage/
-- [ rpitools ] Router config - manual
-- [ rpitools ] Set system backup scheduling
-- Create cache backup
+2. [ rpitools ] GET RPITOOLS ENVIRONMENT
+3. [ rpitools ] wpa_supplient - config.txt - cmdline.txt SETUP
+4. [ rpitools ] /home/pi/rpitools/config/ config linking
+5. VALIDATE CUSTOM (USER) CONFIG FILE
+6. [ CUSTOM HOSTNAME SETUP ]
+7. [ SET USER ] - CUSTOM PASSWORD
+8. [ rpitools ] other basic system files: vimrc, .ssh, etc.
+9. [ rpitools ] Install requested programs from list /home/pi/rpitools/template/programs.dat
+10. [ SECURITY [SSH|UFW|GROUPS] SETUP ]
+11. [ rpitools ] PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON
+12. [STORAGE] CREATE STORAGE STUCTURE FOR RPITOOLS
+13. [ rpitools ] Run autodeployment scripts. [ CONFIG POST ACTIONS ]
+14. [ SYSTEM CMD CREATE ] - Manual args: /home/pi/rpitools/prepare/system/set_system_wide_commands.bash create | list
+15. [ rpitools ] Instantiation UUID: 46139787-6f63-47b3-a562-32242da11344
+16. [ rpitools ] LINK STORAGE FOLDERS UNDER /home/pi -> /home/pi/storage/
+17. [ rpitools ] Router config - manual
+18. [ rpitools ] Set system backup scheduling
+19. Create cache backup
+
+#### Execute:
+
+```bash
+source $REPOROOT/setup.bash
+```
 
