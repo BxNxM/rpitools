@@ -408,8 +408,14 @@ function add_apache_user_with_passwd() {
 
         if [ "$(cat $apasswords_path | grep ${user}:)" == "" ]
         then
-            _msg_ "Create password for user: htpasswd -c $apasswords_path $user"
-            htpasswd -cb "$apasswords_path" "$user" "$password"
+            if [ -f "$apasswords_path" ]
+            then
+                _msg_ "Create password for user: htpasswd -b $apasswords_path $user"
+                htpasswd -b "$apasswords_path" "$user" "$password"
+            else
+                _msg_ "Create password for user: htpasswd -cb $apasswords_path $user"
+                htpasswd -cb "$apasswords_path" "$user" "$password"
+            fi
             new_user=1
         else
             _msg_ "User $user already exists in $apasswords_path"
