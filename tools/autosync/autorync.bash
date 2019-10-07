@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ARG_LIST=($@)
+DEBUG=false
 
 # script path n name
 MYPATH="${BASH_SOURCE[0]}"
@@ -52,7 +53,7 @@ function write_status() {
     local status_file_path="${MYDIR}/.status"
 
     get_lines=$((${#SYNC_CONFIG_LIST[@]}*${one_execution_log_lines}))
-    log_slice="$(tail -n "$get_lines" "/home/${username}/rpitools/cache/cron_autosync.log")"
+    log_slice="$(tail -n "$get_lines" "${REPOROOT}/cache/cron_autosync.log")"
     if [[ "$log_slice" == *"FAILED"* ]]
     then
         echo "fails" > "$status_file_path"
@@ -102,6 +103,11 @@ function run() {
             echo -e "$config sync OK [$exitcode]"
         fi
     done
+
+    if [ "$DEBUG" == "true" ]
+    then
+        echo -e "$log -> $autorync_log_path"
+    fi
 
     if [ "${#SYNC_CONFIG_LIST[@]}" -eq 0 ]
     then
