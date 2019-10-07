@@ -44,11 +44,24 @@ function sync_lock() {
     local operation="$2"                # lock | unlock | status
     local locks_folder="${MYDIR}/.locks"
     local actual_lock_path="${locks_folder}/$(basename ${sync_from_path})_$(basename ${ARG_LIST[0]}).lock"
+    local active_process=""
     LOCK_STATUS=-1
 
     if [ ! -d "$locks_folder" ]
     then
         mkdir "$locks_folder"
+    fi
+
+    # handle stucked locks
+    if [ -f "$actual_lock_path" ]
+    then
+        active_process="$(ps aux | grep rsync | grep $sync_from_path)"
+        if [ "$active_process" == "" ]
+        then
+            msg "Unlock stucked resource: $actual_lock_path"
+            msg "\tLock found: $actual_lock_path but process was not found: $active_process"
+            rm -f "$actual_lock_path"
+        fi
     fi
 
     if [ "$operation" == "lock" ]
