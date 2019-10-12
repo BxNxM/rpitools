@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# https://linuxhint.com/install_docker_on_raspbian_os/
+
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ERROR_CODES=0
 
 # RPIENV SETUP (BASH)
 if [ -e "${MYDIR}/.rpienv" ]
@@ -20,34 +23,53 @@ else
     exit 1
 fi
 
+source "${MYDIR}/../message.bash"
+_msg_title="DOCKER SETUP"
+source "$TERMINALCOLORS"
+
 function exit_code_check() {
     local exitcode="$1"
     local title="$2"
     if [ "$exitcode" -ne 0 ]
     then
-        echo -e  "\t[ ERROR ] $title [$exitcode]"
+        _msg_  "\t[ ${RED}ERROR${NC} ] $title [$exitcode]"
+        ERROR_CODES=$((ERROR_CODES + exitcode))
         exit "$exitcode"
     else
-        echo -e "\t[ OK ] $title [$exitcode]"
+        _msg_ "\t[ ${GREEN}OK${NC} ] $title [$exitcode]"
     fi
 }
 
-echo -e "Execute test main script"
+_msg_ "Docker support in rpitools"
 
 is_configured_cache_file="${MYDIR}/config/docker_config_done"
 
 if [ -f "$is_configured_cache_file" ]
 then
-    echo -e "Docker config was already done."
+    _msg_ "Docker and docker-compose configuration was already done."
 else
+    _msg_ "Install Docker and docker-compose:"
+
     sudo apt-get install raspberrypi-kernel raspberrypi-kernel-headers -y
     exit_code_check "$?" "install: raspberrypi-kernel raspberrypi-kernel-headers"
 
     curl -sSL https://get.docker.com | sh
     exit_code_check "$?" "get: docker"
 
+    sudo pip3 install docker-compose
+    exit_code_check "$?" "install: docker-compose"
+
     echo -e "$(date)" > "$is_configured_cache_file"
+
+    _msg_ "Reboot required..."
+    sudo reboot
 fi
 sudo usermod -aG docker "${USER}"
 exit_code_check "$?" "add ${USER} to docker user group"
 
+if [ "$ERROR_CODES" -eq 0 ]
+then
+    _msg_ "DOCKER: ${GREEN}OK${NC}"
+else
+    _msg_ "DOCKER: ${RED}ERROR${NC}"
+fi
