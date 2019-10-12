@@ -10,7 +10,7 @@ import MemDictHandler
 health_error_code = 0
 health_all_monitored = 0
 rpitools_services = ["oled_gui_core", "dropbox_halpage", "auto_restart_transmission", "rpitools_logrotate", "memDictCore", "rgb_led_controller", "temp_controll_fan", "hAlarm"]
-linux_services = ["apache2", "transmission-daemon", "motion", "smbd", "minidlna", "ssh", "nfs-kernel-server", "glances", "cron", "networking"]
+linux_services = ["apache2", "transmission-daemon", "motion", "smbd", "minidlna", "ssh", "nfs-kernel-server", "glances", "cron", "networking", "docker"]
 health_sub_states={"rpitools_services_si": [0, ""], "linux_services_si": [0, ""], "processes_si": [0, ""]}
 
 def get_rpitools_services(color=Colors.CYAN):

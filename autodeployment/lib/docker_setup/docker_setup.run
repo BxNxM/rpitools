@@ -1,0 +1,3 @@
+TITLE="docker configuration"
+SCRIPT="main.bash"
+RUN_DEPENDENCY=("socketmem_setup")
