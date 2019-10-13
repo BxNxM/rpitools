@@ -26,7 +26,7 @@ then
         echo -e "RPIENV LINKS [${#rpienv_links[@]}]:"
         for k in ${rpienv_links[@]}; do echo -e "\t$k"; done
         echo -e "RPIENV ADAPTORS [${#rpienv_adaptors[@]}]:"
-        for k in ${rpienv_adaptors[@]}; do echo -e "\t$k"; done
+        for k in ${rpienv_adaptors[@]}; do echo -e "\t$k\t\t$(cat $k  | grep 'PROP')"; done
         ;;
     "-p" | "--progress")
         PROGRESS=1
@@ -44,7 +44,7 @@ then
         echo -e "<ENV/alias name>.rpienv       - replace <>"
         echo -e "2. Content of the rpienv config:"
         echo -e "SCRIPT=<foo.bash>             - replace <> exposed script name"
-        echo -e "PROP=(\"env\" \"alias\")     - mode: env and/or alias"
+        echo -e "PROP=(\"env\" \"alias\" \"cmd\")     - mode: env alias cmd"
         echo -e ""
         echo -e "USAGE[CASE 2]:"
         echo -e "1. Create config file next to the script where you want to use ENV VARS"
@@ -82,17 +82,35 @@ then
 fi
 
 # ENV FILE CACHE
-ENV_CACHE_PATH="${REPOROOT}/cache/rpienv"
+ENV_CACHE_PATH="${REPOROOT}/cache/rpienv_cache/rpienv"
 if [ ! -f "$ENV_CACHE_PATH" ]
 then
+    if [ ! -d "$(dirname $ENV_CACHE_PATH)"  ]
+    then
+        mkdir -p  "$(dirname $ENV_CACHE_PATH)"
+    fi
     echo -n "" > "$ENV_CACHE_PATH"
 fi
 ENV_CACHE_PATH_INITIALIZED=0
 # ALIAS CACHE PATH
-ALIAS_CACHE_PATH="${REPOROOT}/cache/rpialiases"
+ALIAS_CACHE_PATH="${REPOROOT}/cache/rpienv_cache/rpialiases"
 if [ ! -f "$ALIAS_CACHE_PATH" ]
 then
+    if [ ! -d "$(dirname $ALIAS_CACHE_PATH)"  ]
+    then
+        mkdir -p  "$(dirname $ALIAS_CACHE_PATH)"
+    fi
     echo -n "" > "$ALIAS_CACHE_PATH"
+fi
+# CMD CACHE PATH
+CMD_CACHE_PATH="${REPOROOT}/cache/rpienv_cache/rpicmds"
+if [ ! -f "$CMD_CACHE_PATH" ]
+then
+    if [ ! -d "$(dirname $CMD_CACHE_PATH)"  ]
+    then
+        mkdir -p  "$(dirname $CMD_CACHE_PATH)"
+    fi
+    echo -n "" > "$CMD_CACHE_PATH"
 fi
 # RPITOOLS SYS LOG
 RRPITOOLS_LOG="${REPOROOT}/cache/rpitools.log"
@@ -105,7 +123,7 @@ USER="$USER"
 # HOSTNAME
 HOSTNAME="$HOSTNAME"
 # BASE_ENV_LIST
-BASE_ENV_LIST=("ENV_CACHE_PATH" "REPOROOT" "RRPITOOLS_LOG" "ALIAS_CACHE_PATH" "USER" "HOSTNAME")
+BASE_ENV_LIST=("ENV_CACHE_PATH" "REPOROOT" "RRPITOOLS_LOG" "ALIAS_CACHE_PATH" "CMD_CACHE_PATH" "USER" "HOSTNAME")
 # IGNORE PATH CHECK
 IGNORE_PATH_CHECK=("DEVICE" "OS" "USER" "HOSTNAME")
 # VALIDATION STATE - true:0 - false:>0
@@ -115,6 +133,7 @@ INTERFACE_INDICATOR="*.rpienv"
 # ENV PROPERTY LISTS
 ENV_PROP_LIST=(${BASE_ENV_LIST[@]})
 ALIAS_PROP_LIST=()
+CMD_PROP_LIST=()
 # SEARCHED .rpienv interfaces list
 RPIENV_INTERFACES=()
 
@@ -152,6 +171,10 @@ function addenv() {
 
 function addalias() {
     echo "$*" >> "$ALIAS_CACHE_PATH"
+}
+
+function addcmd() {
+    echo "$*" >> "$CMD_CACHE_PATH"
 }
 
 function __elapsed_time() {
@@ -248,6 +271,7 @@ function create() {
             __add_to_prop_lists "$ife_name" "$ife_prop"
             __create_env "$ife_name" "$ife_dir_path/$ife_script"
             __create_aliases "$ife_name" "$ife_dir_path/$ife_script"
+            __create_cmd "$ife_name" "$ife_dir_path/$ife_script"
         elif [  "$(basename $ife)" == "link.rpienv"  ]
         then
             console "[ INTERFACE ] LINK $RPIENV_BASH to $(dirname $ife) at the end"
@@ -336,6 +360,20 @@ function __create_aliases() {
     fi
 }
 
+# CREATE CMD FILE BASED IN .RPIENV
+function __create_cmd() {
+    local name="$1"
+    local path="$2"
+    if [[ "${CMD_PROP_LIST[*]}" == *"$name"* ]]
+    then
+        local new_ali="$name='$path'"
+        console "[ CREATE CMD ] $new_ali"
+        addcmd "$new_ali"
+    else
+        console "[ ! CREATE CMD ] $name not in ${CMD_PROP_LIST[*]}"
+    fi
+}
+
 # GENERATE PROP ARRAYS: ENV_PROP_LIST, ALIAS_PROP_LIST
 function __add_to_prop_lists() {
     local input_list=($@)
@@ -349,12 +387,16 @@ function __add_to_prop_lists() {
         elif [ "$p" == "alias" ]
         then
             ALIAS_PROP_LIST+=("$name")
+        elif [ "$p" == "cmd" ]
+        then
+            CMD_PROP_LIST+=("$name")
         else
             console "Unknown env option: $p\navaliable: env | alias"
         fi
     done
     console "ENV_PROP_LIST=(${ENV_PROP_LIST[*]})"
     console "ALIAS_PROP_LIST=(${ALIAS_PROP_LIST[*]})"
+    console "CMD_PROP_LIST=(${CMD_PROP_LIST[*]})"
     console "OTHER_PROP_LOST=(${OTHER_PROP_LOST[*]})"
 }
 

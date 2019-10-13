@@ -1,2 +1,2 @@
 SCRIPT="motioncontroll.bash"
-PROP=("alias")
+PROP=("alias" "cmd")
