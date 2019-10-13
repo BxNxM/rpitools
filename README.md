@@ -509,7 +509,7 @@ That's it. Now whenever you turn your Bluetooth keyboard on, it'll be connected 
 
 # DEVELOPMENT ENVIRONMENT <a name="devenv"></a>
 
-![rpitools_system](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/)
+![rpitools_system](https://github.com/BxNxM/rpitools/blob/develop/template/demo_images/rpitools2xsystem.png?raw=true)
 
 [PROGRAMMERS_GUIDE](https://github.com/BxNxM/rpitools/blob/develop/PROGRAMMERS_GUIDE.md)
 
