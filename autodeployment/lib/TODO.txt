@@ -1,0 +1,37 @@
+ADAPTATION FOR DYNAMIC (EXTERNAL) SUB-COMPONENT CONFIG HANDLING
+${EXTERNAL_CONFIG_HANDLER_LIB}
+
+|-----------------------------------------------|-----------------------|
+|                   COMPONENT                   |         STATUS        |
+|-----------------------------------------------|-----------------------|
+configure_nfs_server                            |       ADAPTED
+configure_nfs_clinet                            |       TODO
+configure_git                                   |       ~TODO
+dropbox_halpage_setup                           |       ------
+set_custom_hostname                             |       ------
+call_vnc_configure                              |       ------
+install_retropie                                |       ------
+log_cleaner_service                             |       ------
+call_fan_controll                               |       ------
+motion                                          |       TODO
+apache_setup                                    |       TODO
+call_rgb_led_service                            |       ------
+set_spi_raspberrypi                             |       TODO
+socketmem_service                               |       ------
+call_pixel_configure                            |       ------
+kodi_runner                                     |       ------
+oled_service_configure                          |       ------
+motion_remote_video_stream_over_apache          |       TODO
+set_i2c_raspberrypi                             |       ------
+docker_setup                                    |       ------
+configure_transmission                          |       TODO
+configure_minidlna                              |       TODO
+set_timezone                                    |       ------
+configure_samba                                 |       ADAPTED
+|-----------------------------------------------|-----------------------|
+|       STATE                                   |       2/10
+|-----------------------------------------------|-----------------------|
+------          ADAPTATION NOT REQUIRED
+ADAPTED         COMPONENT WAS ALREADY ADAPTED
+TODO            HAVE TO ADAPAT
+~TODO           HAVE TO ADAPAT - EXTRA FLOW REQUIRED
