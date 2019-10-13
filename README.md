@@ -509,6 +509,8 @@ That's it. Now whenever you turn your Bluetooth keyboard on, it'll be connected 
 
 # DEVELOPMENT ENVIRONMENT <a name="devenv"></a>
 
+![rpitools_system](https://github.com/BxNxM/rpitools/blob/master/template/demo_images/)
+
 [PROGRAMMERS_GUIDE](https://github.com/BxNxM/rpitools/blob/develop/PROGRAMMERS_GUIDE.md)
 
 # Useful links for Debian/Raspbain <a name="links"></a>:

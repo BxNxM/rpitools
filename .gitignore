@@ -35,5 +35,6 @@ tools/backuphandler/.status
 tools/autosync/.locks/
 tools/HA_AlarmSystem/sysmonitor_last.log
 **/.rpienv
+**/.DS_Store
 autodeployment/bin/run_modules_order.dat
 autodeployment/lib/configure_samba/config/smb.conf.final
