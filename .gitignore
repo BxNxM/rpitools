@@ -38,3 +38,4 @@ tools/HA_AlarmSystem/sysmonitor_last.log
 **/.DS_Store
 autodeployment/bin/run_modules_order.dat
 autodeployment/lib/configure_samba/config/smb.conf.final
+autodeployment/lib/bludit_cms/config/bludit_docker
