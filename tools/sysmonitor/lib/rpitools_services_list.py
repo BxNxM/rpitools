@@ -183,6 +183,16 @@ def update_system_health_data_with_services_state():
         health_sub_states["processes_si"][0] = "ALARM"
     system_health_data_handler(health_sub_states["rpitools_services_si"], health_sub_states["linux_services_si"], health_sub_states["processes_si"])
 
+def docker_stats(color=Colors.CYAN):
+    status = " {}DOCKER STATUS:{}\n".format(Colors.CYAN, Colors.NC)
+    output = LocalMachine.run_command("docker stats --no-stream")[1].split('\n')
+    for line_number, line in enumerate(output):
+        if line_number == 0:
+            status += " {}{}{}\n".format(Colors.CYAN, line, Colors.NC)
+        else:
+            status += " {}\n".format(line)
+    return status
+
 def create_printout(separator="|", char_width=80, color=Colors.CYAN, export=None):
     global health_sub_states
     text = GeneralElements.header_bar(" SERVICES ", char_width, separator, color_name=color)
@@ -191,6 +201,7 @@ def create_printout(separator="|", char_width=80, color=Colors.CYAN, export=None
     text += get_autosync_status()
     text += get_backuphandler_status()
     text += get_rpienv_status()
+    text += docker_stats()
     text += calculate_health_multipayer()
     if export is not None and export:
         update_system_health_data_with_services_state()
