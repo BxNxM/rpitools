@@ -290,6 +290,7 @@ function __init_and_create_base_env() {
     # clean up previous state
     echo "" > "$ENV_CACHE_PATH"
     echo "" > "$ALIAS_CACHE_PATH"
+    echo "" > "$CMD_CACHE_PATH"
     # create base env vars
     for eenv in "${BASE_ENV_LIST[@]}"
     do
