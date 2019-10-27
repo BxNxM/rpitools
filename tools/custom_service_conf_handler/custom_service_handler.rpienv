@@ -1,0 +1,2 @@
+SCRIPT="custom_service_handler.bash"
+PROP=("env")

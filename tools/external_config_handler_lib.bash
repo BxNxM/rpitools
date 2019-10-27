@@ -27,7 +27,6 @@ PATCH_EXIT_CODE=0
 # ACTION: execute .finalpatch on original factory settings
 #################################
 
-
 # RPIENV SETUP (BASH)
 if [ -e "${MYDIR}/.rpienv" ]
 then

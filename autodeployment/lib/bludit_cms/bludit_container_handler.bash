@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # DOC: https://github.com/pdacity/bludit_docker
+# THEMES: https://themes.bludit.com
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
