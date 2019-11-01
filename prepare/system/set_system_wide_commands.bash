@@ -2,9 +2,6 @@
 
 arglist=($@)
 
-commands_whitelist=("diskhandler" "halpage" "hapticinterface" "kodibg" "listlocalrpis" "motioncontroll" "mysshfs" "oledinterface" "rgbinterface" "sysmonitor" "ttyecho" "smartpatch")
-commands_blacklist=("ll")
-
 MYPATH="${BASH_SOURCE[0]}"
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -26,10 +23,7 @@ else
 fi
 
 source ${TERMINALCOLORS}
-aliases_path="${REPOROOT}/template/aliases"
-commands_name_list=($(cat "$aliases_path"  | grep "='.*.'" | cut -d' ' -f2 | cut -d"=" -f1))
-commands_name_counter=0
-commands_list=$(cat "$aliases_path" | grep "='.*.'" | cut -d"'" -f2)
+
 user_commands_folder="/usr/bin/"
 cache_indicator_path="${REPOROOT}/cache/.system_wide_commands_was_set"
 
@@ -40,50 +34,52 @@ function _msg_() {
 }
 
 function create_commands() {
-    while read -r cmd
+    while read cmd
     do
-        command_name="${commands_name_list[$commands_name_counter]}"
-        if [ "$command_name" != "" ] && [[ "${commands_whitelist[*]}" == *"$command_name"*  ]] && [[ "${commands_blacklist[*]}" != *"$command_name"* ]]
+        command_name="$(echo $cmd | cut -d'=' -f1 | tr -d '\n')"
+        if [ "$command_name" != "" ]
         then
+            command_executable="$(echo $cmd | cut -d'=' -f2 | tr -d '\n')"
             command_path="${user_commands_folder}${command_name}"
-            _msg_ "$command_name -> $command_path"
+            _msg_ "$command_name -> $command_path [$command_executable]"
 
             _command="#!/bin/bash\n"
-            _command+="HOME_bak="'\"\$HOME\"'"\n"
-            _command+="USER_bak="'\"\$USER\"'"\n"
-            _command+="HOME="'\"'"$HOME"'\"'"\n"
-            _command+="USER="'\"'"$USER"'\"'"\n"
-            _command+="REPOROOT="'\"$REPOROOT\"'"\n"
-            sudo bash -c "echo -e \"$_command\" > \"$command_path\""
-            sudo bash -c "echo '$cmd \$*' >> \"$command_path\""
-            _command="HOME="'\"\$HOME_bak\"'"\n"
-            _command+="USER="'\"\$USER_bak\"'"\n"
-            sudo bash -c "echo -e \"\n$_command\" >> \"$command_path\""
-
+            _command+="bash -c \"source '$ENV_CACHE_PATH' && $command_executable \$* 2>/dev/null\""
+            sudo bash -c "echo -e '$_command' > \"$command_path\""
             sudo bash -c "sudo chmod ugo+x $command_path"
+            if [ "$?" -eq 0 ]
+            then
+                _msg_ "\t[ ${GREEN}OK${NC} ] $command_name"
+            else
+                _msg_ "\t[ ${RED}ERR${NC} ] $command_name"
+            fi
         fi
-        commands_name_counter=$((commands_name_counter+1))
-    done <<< "$commands_list"
+    done < "$CMD_CACHE_PATH"
 
     echo -e "$(date)" > "$cache_indicator_path"
 }
 
 function list_cmds() {
-    local existing_commands_list=($(ls -1 "$user_commands_folder"))
-    for cmd in "${commands_whitelist[@]}"
+    _msg_ "RpiTools commands: $user_commands_folder"
+    while read cmd
     do
-        if [[ "${existing_commands_list[*]}" == *"$cmd"* ]]
+        command_name="$(echo $cmd | cut -d'=' -f1 | tr -d '\n')"
+        if [ "$command_name" != "" ]
         then
-            _msg_ "Command: $cmd OK"
-        else
-            _msg_ "Command: $cmd MISSING - run: ${MYPATH} create"
+            all_deployed_commands="$(ls -1 $user_commands_folder)"
+            if [[ "$all_deployed_commands" == *"$command_name"* ]]
+            then
+                _msg_ "[ ${GREEN}OK${NC} ] $command_name"
+            else
+                _msg_ "[ ${YELLOW}MISSING${NC} ] $command_name"
+            fi
         fi
-    done
+    done < "$CMD_CACHE_PATH"
 }
 
 if [ "${#arglist[@]}" -eq 1 ] && [ "${arglist[0]}" == "create" ]
 then
-    _msg_ "Create system wide commands"
+    _msg_ "Create system wide commands based on $CMD_CACHE_PATH under $user_commands_folder"
     create_commands
 elif [ "${#arglist[@]}" -eq 1 ] && [ "${arglist[0]}" == "list" ]
 then

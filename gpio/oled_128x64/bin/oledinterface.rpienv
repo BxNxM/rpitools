@@ -1,2 +1,2 @@
 SCRIPT=oled_interface.py
-PROP=("env" "alias")
+PROP=("env" "alias" "cmd")

@@ -1,2 +1,2 @@
 SCRIPT=diskhandler.py
-PROP=("env" "alias")
+PROP=("env" "alias" "cmd")
