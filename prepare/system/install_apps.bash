@@ -250,7 +250,7 @@ then
     if [ ! -e "${REPOROOT}/cache/.instantiation_done" ]
     then
         message "After program installations, execute: sudo reboot"
-        . "${REPOROOT}/tools/cache_restore_backup.bash" "backup"
+        . "$CACHE_MANAGER" "backup"
         sudo reboot
     else
         message "After program installations good to restart the system: sudo reboot"

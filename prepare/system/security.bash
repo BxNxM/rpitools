@@ -34,7 +34,7 @@ authorized_keys_path="$HOME/.ssh/authorized_keys"
 default_id_rsa_pub_value_in_conf="write_you_id_rsa_pub_here"
 rpi_config_path="$REPOROOT/autodeployment/config/rpitools_config.cfg"
 cache_path="$REPOROOT/cache/"
-repo_conf_restore_backup="$REPOROOT/tools/cache_restore_backup.bash"
+repo_conf_restore_backup="$CACHE_MANAGER"
 
 _msg_title="SECURITY [SSH|UFW|GROUPS] SETUP"
 function _msg_() {

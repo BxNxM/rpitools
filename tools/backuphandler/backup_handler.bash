@@ -600,7 +600,7 @@ function system_restore() {
 function users_backup() {
     _msg_ "${YELLOW}   --- CREATE CACHE BACKUP ---   ${NC}"
     # create cache backup
-    . "${MYDIR}/../cache_restore_backup.bash" "backup"
+    . "${CACHE_MANAGER}" "backup"
 
     _msg_ "${YELLOW}   --- CREATE USER BACKUP ---   ${NC}"
     # user backup

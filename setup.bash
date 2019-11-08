@@ -128,8 +128,7 @@ function setup_main_on_raspberrypi() {
         fi
 
         # restore existing backup
-        output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash restore; popd)
-        echo -e "$output"
+        $CACHE_MANAGER "restore"
 
         # security config permission set
         set_rpiconfig_permissions
@@ -411,8 +410,7 @@ function setup_main_on_raspberrypi() {
             echo -e "${NC}"
 
             # backup modification configs
-            output=$(pushd "${REPOROOT}/tools/"; ./cache_restore_backup.bash backup; popd)
-            echo -e "$output"
+            $CACHE_MANAGER "backup"
         fi
     fi
 }

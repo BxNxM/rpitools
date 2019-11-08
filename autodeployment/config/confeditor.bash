@@ -147,13 +147,13 @@ else
     if [[ "${arg_list[*]}" == *"s"* ]] || [[ "${arg_list[*]}" == *"save"* ]]
     then
         echo -e "SAVE CONFIGS..."
-        /home/"$USER"/rpitools/tools/cache_restore_backup.bash "backup"
+        $CACHE_MANAGER "backup"
         exit 0
     fi
     if [[ "${arg_list[*]}" == *"r"* ]] || [[ "${arg_list[*]}" == *"restore"* ]]
     then
         echo -e "SAVE CONFIGS..."
-        /home/"$USER"/rpitools/tools/cache_restore_backup.bash "restore"
+        $CACHE_MANAGER "restore"
         exit 0
     fi
     # quick args
@@ -208,7 +208,7 @@ then
         read option
         if [[ "$option" == "Y" ]] || [[ "$option" == "y" ]]
         then
-            (. /home/$USER/rpitools/tools/cache_restore_backup.bash backup)
+            (. $CACHE_MANAGER backup)
             question "APPLY MODIFICATIONS ($REPOROOT/setup.bash)? [Y] | [N]"
             read option_resource
             if [ "$option_resource" == "Y" ] || [ "$option_resource" == "y" ]
