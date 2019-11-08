@@ -33,8 +33,8 @@ function _msg_() {
     local msg="$1"
     if [ ! -z "$msg" ]
     then
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $_msg_title - $msg"
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools ]${NC} $_msg_title - $msg" >> "$rpitools_log_path"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools base ]${NC} $_msg_title - $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${YELLOW}[ rpitools base ]${NC} $_msg_title - $msg" >> "$rpitools_log_path"
     fi
 }
 

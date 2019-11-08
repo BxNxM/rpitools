@@ -103,7 +103,7 @@ function set_deploy_mode_aliases_and_install_requirements() {
     fi
 }
 
-function run_source_FALSE_if_are_NOT_on_raspberrypi() {
+function run_source_set_on_raspberrypi() {
     # exit if we are not on raspberyy pi
     if [[ "$OS" != "GNU/Linux" ]] || [[ "$DEVICE" != "RASPBERRY" ]]
      then
@@ -112,6 +112,79 @@ function run_source_FALSE_if_are_NOT_on_raspberrypi() {
         setupmessage "[INFO] [MAIN SCRIPT] This script works on raspbian properly, this OS $OS DEVICE $DEVICE is not supported! => DEPLOYMENT MODE"
         run_source=false
     fi
+}
+
+function create_config_linking() {
+    # config files list
+    file_to_link_list=("/etc/wpa_supplicant/wpa_supplicant.conf" \
+                       "/lib/systemd/system/" \
+                       "/boot/config.txt" \
+                       "/var/log" \
+                       "/etc/fstab" \
+                       "/etc/transmission-daemon/settings.json" \
+                       "/etc/logrotate.conf" \
+                       "/etc/hostname" \
+                       "/etc/hosts" \
+                       "/etc/dphys-swapfile" \
+                       "/boot/cmdline.txt" \
+                       "/etc/modules-load.d/raspberrypi.conf" \
+                       "${RPITOOLS_CONFIG}" \
+                       "/etc/samba/smb.conf" \
+                       "/var/www/html/" \
+                       "/etc/systemd/journald.conf" \
+                       "/etc/modules" \
+                       "/etc/apache2/apache2.conf" \
+                       "/etc/motion/motion.conf" \
+                       "/etc/default/motion" \
+                       "/etc/ssh/sshd_config" \
+                       "${HOME}/welcomeColor.dat" \
+                       "/etc/apache2/sites-enabled/000-default.conf" \
+                       "/etc/dhcpcd.conf" \
+                       "/etc/minidlna.conf" \
+                       "/var/lib/transmission-daemon/info/torrents" \
+                       "/etc/exports" \
+                       "/etc/apt/sources.list" \
+                       "/etc/dphys-swapfile" \
+                       "/opt/retropie/configs/all/retroarch.cfg" \
+                       "${REPOROOT}/gpio/oled_128x64/lib/pages/" \
+                       "/var/spool/cron/crontabs/" \
+                       "${REPOROOT}/autodeployment/config/" \
+                       "/etc/network/interfaces" \
+                       "${REPOROOT}/tools/autosync/sync_configs/" )
+    # linking config files and used folders under config folder
+    for file_path in "${file_to_link_list[@]}"
+    do
+        filename=$(basename "$file_path")
+        extension="${filename##*.}"
+        filename="${filename%.*}"
+
+        # make directory extension correction
+        if [ -d "$file_path" ]
+        then
+            extension=""
+        else
+            if [ "$extension" == "$filename" ]
+            then
+                extension=""
+            else
+                extension=".$extension"
+            fi
+        fi
+
+        # make links if not exists
+        if [  -e "$REPOROOT/config/${filename}${extension}" ]
+        then
+            setupmessage "$REPOROOT/config/${filename}${extension} is already linked"
+        else
+            if [ -e "${file_path}" ]
+            then
+                setupmessage "Linking: ln -s ${file_path} $REPOROOT/config/${filename}${extension}"
+                ln -s "${file_path}" "$REPOROOT/config/${filename}${extension}"
+            else
+                setupmessage "Linking not possible: ${file_path} not exists (yet)."
+            fi
+        fi
+    done
 }
 
 function setup_main_on_raspberrypi() {
@@ -133,82 +206,15 @@ function setup_main_on_raspberrypi() {
         # security config permission set
         set_rpiconfig_permissions
 
-        # Run configurations on the system
-        "${REPOROOT}/prepare/system/configure_wpasupplient_and_configtxt_and_cmdlinetxt.bash"
+        # Execute base moduls
+        setupmessage "Execute base configuration"
+        . "${REPOROOT}/prepare/system_base_prepare.bash"
 
-        # config files list
-        file_to_link_list=("/etc/wpa_supplicant/wpa_supplicant.conf" \
-                           "/lib/systemd/system/" \
-                           "/boot/config.txt" \
-                           "/var/log" \
-                           "/etc/fstab" \
-                           "/etc/transmission-daemon/settings.json" \
-                           "/etc/logrotate.conf" \
-                           "/etc/hostname" \
-                           "/etc/hosts" \
-                           "/etc/dphys-swapfile" \
-                           "/boot/cmdline.txt" \
-                           "/etc/modules-load.d/raspberrypi.conf" \
-                           "${RPITOOLS_CONFIG}" \
-                           "/etc/samba/smb.conf" \
-                           "/var/www/html/" \
-                           "/etc/systemd/journald.conf" \
-                           "/etc/modules" \
-                           "/etc/apache2/apache2.conf" \
-                           "/etc/motion/motion.conf" \
-                           "/etc/default/motion" \
-                           "/etc/ssh/sshd_config" \
-                           "${HOME}/welcomeColor.dat" \
-                           "/etc/apache2/sites-enabled/000-default.conf" \
-                           "/etc/dhcpcd.conf" \
-                           "/etc/minidlna.conf" \
-                           "/var/lib/transmission-daemon/info/torrents" \
-                           "/etc/exports" \
-                           "/etc/apt/sources.list" \
-                           "/etc/dphys-swapfile" \
-                           "/opt/retropie/configs/all/retroarch.cfg" \
-                           "${REPOROOT}/gpio/oled_128x64/lib/pages/" \
-                           "/var/spool/cron/crontabs/" \
-                           "${REPOROOT}/autodeployment/config/" \
-                           "/etc/network/interfaces" \
-                           "${REPOROOT}/tools/autosync/sync_configs/" )
-        # linking config files and used folders under config folder
-        for file_path in "${file_to_link_list[@]}"
-        do
-            filename=$(basename "$file_path")
-            extension="${filename##*.}"
-            filename="${filename%.*}"
-
-            # make directory extension correction
-            if [ -d "$file_path" ]
-            then
-                extension=""
-            else
-                if [ "$extension" == "$filename" ]
-                then
-                    extension=""
-                else
-                    extension=".$extension"
-                fi
-            fi
-
-            # make links if not exists
-            if [  -e "$REPOROOT/config/${filename}${extension}" ]
-            then
-                setupmessage "$REPOROOT/config/${filename}${extension} is already linked"
-            else
-                if [ -e "${file_path}" ]
-                then
-                    setupmessage "Linking: ln -s ${file_path} $REPOROOT/config/${filename}${extension}"
-                    ln -s "${file_path}" "$REPOROOT/config/${filename}${extension}"
-                else
-                    setupmessage "Linking not possible: ${file_path} not exists (yet)."
-                fi
-            fi
-        done
+        # Create modified config collection
+        create_config_linking
 
         # validate custom - user config based on template
-        "${CONFIGHANDLER}" -v
+        "${CONFIGHANDLER}" -v > /dev/null
         exit_code="$?"
         if [ "$exit_code" -ne 0 ]
         then
@@ -221,11 +227,7 @@ function setup_main_on_raspberrypi() {
 
         if [ "$INVALID_CONFIG" == "FALSE" ]
         then
-            # set custom hostname
             . ${REPOROOT}/autodeployment/lib/set_custom_hostname/set_custom_hostname.bash
-
-            # set custom password for the linux user
-            . ${REPOROOT}/prepare/system/custom_user.bash                   # default user - custom hostname
 
             # set vimrc
             if [ -f ~/.vimrc ]
@@ -277,33 +279,6 @@ function setup_main_on_raspberrypi() {
                     setupmessage "Set your public key (id_pub.rsa) for pwdless ssh in ~/.ssh/authorized_keys"
                 fi
             fi
-
-            setupmessage "Set network interfaces for the expected behaviour"
-            echo -e $(. "${REPOROOT}/prepare/system/network/setup_network_interfaces.bash")
-
-            . "${REPOROOT}/prepare/system/hack_apt_sources.bash"
-            # update once (first run ever) before install apps
-            is_installed_file_indicator="$REPOROOT/cache/.first_boot_update_update_installed"
-            if [ -e "$is_installed_file_indicator" ]
-            then
-                setupmessage "After first boot update already done"
-            else
-                setupmessage "Make updates after first boot."
-                . ${REPOROOT}/prepare/system/install_updates.bash
-                if [ "$?" -eq 0 ]
-                then
-                   echo "$(date) First boot update done" > "$is_installed_file_indicator"
-                else
-                    setupmessage "ERROR: ${REPOROOT}/prepare/system/install_updates.bash"
-                fi
-            fi
-
-            # install tools apps
-            setupmessage "Install requested programs from list ${REPOROOT}/template/programs.dat:"
-            . ${REPOROOT}/prepare/system/install_apps.bash
-
-            # set up security stuffs
-            . ${REPOROOT}/prepare/system/security.bash
 
             # automaticly mount connected devices -  add to fstab - and mount it
             setupmessage "PREPARE CONNECTED DISKS WHICH CONTAINS DISKCONF.JSON"
@@ -359,9 +334,6 @@ function setup_main_on_raspberrypi() {
             else
                 setupmessage "AUTODEPLOYMENT: Waiting for initial first reboot! (Run autodeployments scrits after reboot...)"
             fi
-
-            # craate system wide commands
-            . "${REPOROOT}/prepare/system/set_system_wide_commands.bash"
 
             # first run reboot
             if [ ! -e "${REPOROOT}/cache/.first_run_reboot_done" ]
@@ -468,5 +440,5 @@ set_rpitools_env
 set_deploy_mode_aliases_and_install_requirements
 
 # RASPBERRY PI SIDE OPERATIONS
-run_source_FALSE_if_are_NOT_on_raspberrypi
+run_source_set_on_raspberrypi
 setup_main_on_raspberrypi
