@@ -1,0 +1,2 @@
+SCRIPT="docker_tools.bash"
+PROP=("env" "alias")

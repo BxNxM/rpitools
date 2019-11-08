@@ -96,15 +96,6 @@ function help() {
 #########################################
 #               FUNCTIONS               #
 #########################################
-#./tools/auto_restart_transmission/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.service"
-#./tools/HA_AlarmSystem/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.service"
-#./tools/log_cleaner_service/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.service"
-#./tools/socketmem/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.servic"
-#./tools/dropbox_halpage/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.service"
-#./autodeployment/lib/apache_setup/glances/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/templategeneral_template.service"
-#./gpio/fan_controll/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.service"
-#./gpio/rgb_led/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.service"
-#./gpio/oled_128x64/systemd_setup/set_service.bash:22:service_template_path="${REPOROOT}/template/general_template.service"
 
 function change_parameter() {
     local from="$1"
@@ -277,7 +268,7 @@ rpitools_linux_user="$($CONFIGHANDLER -s GENERAL -o user_name_on_os)"
 # Service activation
 set_service_conf="$($CONFIGHANDLER -s TRANSMISSION -o auto_edit_whitelist)"
 
-set_service "$service_description" "$exec_cmd" "$working_dir" "$syslog_idf" "$service_name" "$target_dir_path" "$rpitools_linux_user" "$set_service_conf"
+#set_service "$service_description" "$exec_cmd" "$working_dir" "$syslog_idf" "$service_name" "$target_dir_path" "$rpitools_linux_user" "$set_service_conf"
 
 #########################################
 #               EXECUTION               #
