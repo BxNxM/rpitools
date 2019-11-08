@@ -30,6 +30,7 @@ remote_name="$($CONFIGHANDLER -s SAMBA -o remote_name)"
 samba_path="$($CONFIGHANDLER -s SAMBA -o samba_path)"
 samba_user="$($CONFIGHANDLER -s SAMBA -o username)"
 samba_link_downloads="$($CONFIGHANDLER -s SAMBA -o link_downloads)"
+skip_actions=false
 
 function smart_config_patch() {
     # Export template data
@@ -37,6 +38,11 @@ function smart_config_patch() {
     "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/smb.conf.data" "add" "{SAMBA_SHARED_PATH}" "${samba_path}"
     # Create patch for smb.conf
     "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$samba_conf_path" "$MYDIR/config/" "smb.conf.finaltemplate" "smb.conf.data" "smb.conf.final" "smb.conf.patch"
+    local exitcode="$?"
+    if [ "$exitcode" -eq 255 ]
+    then
+        skip_actions=true
+    fi
 }
 
 function create_shared_folder() {
@@ -76,10 +82,13 @@ function link_downloades_under_shared_folder() {
 create_shared_folder
 set_permissions
 smart_config_patch
-set_user_and_restart
-echo -e "$(date)" > "$CACHE_PATH_is_set"
-
-if [ "$samba_link_downloads" == "True" ] || [ "$samba_link_downloads" == "true" ]
+if [ "$skip_actions" == "false" ]
 then
-    link_downloades_under_shared_folder "$samba_path"
+    set_user_and_restart
+    echo -e "$(date)" > "$CACHE_PATH_is_set"
+
+    if [ "$samba_link_downloads" == "True" ] || [ "$samba_link_downloads" == "true" ]
+    then
+        link_downloades_under_shared_folder "$samba_path"
+    fi
 fi

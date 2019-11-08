@@ -210,6 +210,7 @@ function create_data_file() {
 
     if [ "$mode" == "init" ]
     then
+        cp -f "$data_file_path" "${data_file_path}.bak"
         echo "${placeholder}=${value}" > "$data_file_path"
     else
         echo "${placeholder}=${value}" >> "$data_file_path"
@@ -327,11 +328,13 @@ function apply_patch() {
 function patch_workflow() {
     local factory_config_path="$1"
     local local_config_dir_path="$2"
-
     local final_template_name="$3"
     local data_name="$4"
     local final_config_name="$5"
     local patch_name="$6"
+
+    local data_path="${local_config_dir_path}/$data_name"
+    local data_path_bak="${local_config_dir_path}/${data_name}.bak"
 
     # archive factory config
     message "############################"
@@ -339,32 +342,38 @@ function patch_workflow() {
     message "############################"
     archive_factory_backup "$factory_config_path" "$local_config_dir_path"
 
-    # Create .final
-    message "############################"
-    message "# [2] CREATE FINAL CONFIG  #"
-    message "############################"
-    create_final "${local_config_dir_path}/$final_template_name" "${local_config_dir_path}/$data_name"
-
-    # Create patch
-    message "############################"
-    message "#    [3] CREATE PATCH      #"
-    message "############################"
-    create_patch "$factory_config_path" "${local_config_dir_path}/$final_config_name"
-
-    # Apply patch
-    message "############################"
-    message "#      [4] APPLY PATCH     #"
-    message "############################"
-    apply_patch "$factory_config_path" "${local_config_dir_path}/$patch_name"
-
-    if [ "$PATCH_EXIT_CODE" -eq 0 ]
+    if [ "$(diff -q $data_path $data_path_bak)" != "" ]
     then
-        message "\t[${GREEN}OK${NC}]"
-    else
-        message "\t[${RED}ERR${NC}]"
-    fi
+        # Create .final
+        message "############################"
+        message "# [2] CREATE FINAL CONFIG  #"
+        message "############################"
+        create_final "${local_config_dir_path}/$final_template_name" "${local_config_dir_path}/$data_name"
 
-    message "RESULT: $factory_config_path"
+        # Create patch
+        message "############################"
+        message "#    [3] CREATE PATCH      #"
+        message "############################"
+        create_patch "$factory_config_path" "${local_config_dir_path}/$final_config_name"
+
+        # Apply patch
+        message "############################"
+        message "#      [4] APPLY PATCH     #"
+        message "############################"
+        apply_patch "$factory_config_path" "${local_config_dir_path}/$patch_name"
+
+        if [ "$PATCH_EXIT_CODE" -eq 0 ]
+        then
+            message "\t[${GREEN}OK${NC}]"
+        else
+            message "\t[${RED}ERR${NC}]"
+        fi
+
+        message "RESULT[$PATCH_EXIT_CODE]: $factory_config_path"
+    else
+        PATCH_EXIT_CODE=255
+        message "[SKIP][$PATCH_EXIT_CODE] Data was not changed: $data_path <-> $data_path_bak"
+    fi
 }
 
 #########################################

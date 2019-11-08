@@ -29,6 +29,7 @@ _msg_title="NFS SETUP"
 
 nfs_shared_folder="$($CONFIGHANDLER -s NFS_SERVER -o nfs_shared_folder)"
 nfs_shared_folder_permissions="$($CONFIGHANDLER -s NFS_SERVER -o nfs_shared_folder_permissions)"
+skip_actions=false
 
 # =============================================================== #
 #                          SERVER SETUP                           #
@@ -36,6 +37,11 @@ nfs_shared_folder_permissions="$($CONFIGHANDLER -s NFS_SERVER -o nfs_shared_fold
 function smart_config_patch() {
     "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/exports.data" "init" "{NFS_SERVER_FOLDER_PATH}" "$nfs_shared_folder"
     "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$exports_file" "$MYDIR/config/" "exports.finaltemplate" "exports.data" "exports.final" "exports.patch"
+    local exitcode="$?"
+    if [ "$exitcode" -eq 255 ]
+    then
+        skip_actions=true
+    fi
 }
 
 action=false
@@ -60,11 +66,9 @@ function create_nfs_file_structure() {
 function edit_exports_file_and_permissions() {
     if [ "$action" == "true" ]
     then
-        (grep "${nfs_shared_folder}" "${exports_file}")
-        if [ "$?" -ne 0 ]
+        smart_config_patch
+        if [ "$skip_actions" == "false" ]
         then
-            smart_config_patch
-
             sudo bash -c "exportfs"
 
             sudo bash -c "update-rc.d rpcbind enable"
@@ -93,4 +97,5 @@ create_nfs_file_structure
 edit_exports_file_and_permissions
 start_nfs_server_if_required
 
+_msg_ "\t=== TEST ==="
 "${MYDIR}"/test.bash
