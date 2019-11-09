@@ -31,11 +31,19 @@ friendly_name="$($CONFIGHANDLER -s MINIDLNA -o friendly_name)"
 media_dir_path="$($CONFIGHANDLER -s MINIDLNA -o dlna_path)"
 link_downloads="$($CONFIGHANDLER -s MINIDLNA -o link_downloads)"
 transmission_downloads_dir="$($CONFIGHANDLER -s TRANSMISSION -o download_path)"
+skip_actions=false
 
-function create_official_setup_backup() {
-    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$minidlna_conf_path" "${MYDIR}/config/"
+function smart_config_patch() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/minidlna.data" "init" "{MINIDLNA_MEDIA_DIR}" "$media_dir_path"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/minidlna.data" "add" "{MINIDLNA_FRIENDLY_NAME}" "$friendly_name"
+
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$minidlna_conf_path" "$MYDIR/config/" "minidlna.conf.finaltemplate" "minidlna.data" "minidlna.conf.final" "minidlna.conf.patch"
+    local exitcode="$?"
+    if [ "$exitcode" -eq 255 ]
+    then
+        skip_actions=true
+    fi
 }
-create_official_setup_backup
 
 function create_shared_folder() {
     if [ ! -d "$media_dir_path" ]
@@ -48,35 +56,12 @@ function create_shared_folder() {
 }
 
 function add_configuration() {
-    local is_set="$(cat $minidlna_conf_path | grep -v grep | grep ${friendly_name})"
-    if [ "$is_set" == "" ]
+
+    smart_config_patch
+    if [ "$skip_actions" == "false" ]
     then
-        if [ ! -e "${minidlna_conf_path}.bak" ]
-        then
-            sudo cp "$minidlna_conf_path" "${minidlna_conf_path}.bak"
-        fi
-
-        # WORKAROUND FOR REPLACING...
-        change_line "media_dir=/var/lib/minidlna/" "media_dir=/var/lib/minidlna_separatedirs/" "$minidlna_conf_path"
-
-        config_content=""
-        config_content+="media_dir=$media_dir_path\n"
-        config_content+="friendly_name=$friendly_name\n"
-        config_content+="inotify=yes\n"
-        config_content+="wide_links=yes\n"
-        config_content+="port=8200\n"
-        config_content+="album_art_names=Cover.jpg/cover.jpg/AlbumArtSmall.jpg/albumartsmall.jpg\n"
-        config_content+="album_art_names=AlbumArt.jpg/albumart.jpg/Album.jpg/album.jpg\n"
-        config_content+="album_art_names=Folder.jpg/folder.jpg/Thumb.jpg/thumb.jpg\n"
-
-        _msg_ "MINIDLNA CUSTOM CONFIG:\n${config_content}"
-        echo -e "${config_content}" > "$minidlna_conf_path"
-
         _msg_ "Restart minidlna service: sudo systemctl restart minidlna"
         sudo systemctl restart minidlna
-    else
-        _msg_ "minidlna already set: $minidlna_conf_path"
-        _msg_ "Official config available: ${minidlna_conf_path}.bak"
     fi
 }
 
@@ -96,15 +81,9 @@ function set_permissions(){
 }
 
 create_shared_folder
-if [ ! -e "$CACHE_PATH_is_set" ]
-then
-    set_permissions
-    add_configuration
-    link_downloads_folder_into_dlna_folder
-    echo -e "$(date)" > "$CACHE_PATH_is_set"
-else
-    _msg_ "minidlna is already set: $CACHE_PATH_is_set exists"
-fi
+set_permissions
+add_configuration
+link_downloads_folder_into_dlna_folder
 
 
 
