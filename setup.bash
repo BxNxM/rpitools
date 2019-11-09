@@ -2,6 +2,9 @@
 
 arg_helper_lolcat="$SETUPLOLCAT"
 
+# trap ctrl-c and call ctrl_c()
+trap ctrl_c_action INT
+
 function setupmessage() {
     # setupmessage handler function
     local msg="$1"
@@ -432,13 +435,52 @@ function set_rpitools_env() {
     cache_instantiation_uuid_path="${REPOROOT}/cache/.instantiation_UUID"
 }
 
+
+function LockUnlockCheck_main() {
+    local option="$1"
+    local file_lock_path="/var/lock/rpitools_setup_main_lock"
+    if [ -f "$file_lock_path" ]
+    then
+        __MIAN_LOCK="lock"
+    else
+        setupmessage "MAIN WAS LOCKED: $file_lock_path"
+        __MIAN_LOCK="ulock"
+    fi
+
+    if [ "$option" == "lock" ]
+    then
+        sudo bash -c 'echo "$(date)" > '"$file_lock_path"''
+    elif [ "$option" == "ulock" ] && [ -f "$file_lock_path" ]
+    then
+        sudo bash -c 'rm -f '"$file_lock_path"''
+    else
+        setupmessage "MAIN STATE: $__MIAN_LOCK"
+    fi
+}
+
+function ctrl_c_action() {
+        echo "** Trapped CTRL-C"
+        LockUnlockCheck_main 'ulock'
+        return 1
+}
+
 # =============================================== MAIN =============================================== #
-# SET UP ENVIRONMENT FOR RPITOOLS
-set_rpitools_env
+LockUnlockCheck_main 'check'
+if [ "$__MIAN_LOCK" == "ulock" ]
+then
+    LockUnlockCheck_main 'lock'
 
-# DEPLOYMENT SIDE PREPARATION
-set_deploy_mode_aliases_and_install_requirements
+    # SET UP ENVIRONMENT FOR RPITOOLS
+    set_rpitools_env
 
-# RASPBERRY PI SIDE OPERATIONS
-run_source_set_on_raspberrypi
-setup_main_on_raspberrypi
+    # DEPLOYMENT SIDE PREPARATION
+    set_deploy_mode_aliases_and_install_requirements
+
+    # RASPBERRY PI SIDE OPERATIONS
+    run_source_set_on_raspberrypi
+    setup_main_on_raspberrypi
+
+    LockUnlockCheck_main 'ulock'
+else
+    setupmessage "SETUP ALREADY RUNNING: [LOCKED]: /var/lock/rpitools_setup_main_lock"
+fi
