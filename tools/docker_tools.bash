@@ -31,6 +31,11 @@ else
     exit 1
 fi
 
+# DOCKER ENV VARS
+DOCKER_STORAGE_DIR="$OTHERSPACE/docker_storage"
+DOCKER_META_DIR="$DOCKER_STORAGE_DIR/meta"
+IMAGE_ARCHIVE_PATH="$DOCKER_STORAGE_DIR/image_archive"
+
 ##################################################
 #               INTERNAL FUNCTIONS               #
 ##################################################
@@ -93,8 +98,6 @@ function help() {
 }
 
 function create_docker_persistent_storage_dir() {
-    DOCKER_STORAGE_DIR="$OTHERSPACE/docker_storage"             # should we expose?
-    DOCKER_META_DIR="$DOCKER_STORAGE_DIR/meta"                  # should we expose?
     if [ ! -d "$DOCKER_STORAGE_DIR" ]
     then
         sudo bash -c 'mkdir -p '"$DOCKER_STORAGE_DIR"' && chgrp docker '"$DOCKER_STORAGE_DIR"''
@@ -140,36 +143,83 @@ function build() {
 
 function export_image() {
     local image_name="$1"
-    local image_archive_path="$DOCKER_STORAGE_DIR/image_archive"
-    local commandstr="docker export $image_name > ${image_archive_path}/${image_name}.tar"
+    local repo_name="rpitools"
+    local commandstr="docker image save ${repo_name}:${image_name} > ${IMAGE_ARCHIVE_PATH}/${repo_name}_${image_name}.tar"
 
-    if [ ! -d "$image_archive_path" ]
+    if [ ! -d "$IMAGE_ARCHIVE_PATH" ]
     then
-        sudo bash -c "mkdir -p $image_archive_path && chgrp -R docker $image_meta_path && chmod ugo+rw $image_meta_path"
+        sudo bash -c "mkdir -p $IMAGE_ARCHIVE_PATH && chgrp -R docker $image_meta_path && chmod ugo+rw $image_meta_path"
     fi
 
     message "Export docker image:\n\t$commandstr"
     sudo bash -c "eval $commandstr"
+    if [ "$?" -eq 0 ]
+    then
+        message "\tEXPORT OK"
+    else
+        message "\tEXPORT ERR"
+    fi
+    message "EXPORTED IMAGES $IMAGE_ARCHIVE_PATH:\n$(ls -lt ${IMAGE_ARCHIVE_PATH})"
+
 }
 
 function load_image() {
-    local image_archive_path="$DOCKER_STORAGE_DIR/image_archive"
+    local image_name="$1"
+    local commandstr="docker image load --input ${IMAGE_ARCHIVE_PATH}/$image_name"
 
-    message "Load image from $image_archive_path "
+    if [ "$image_name" != "" ]
+    then
+        if [ -e "${IMAGE_ARCHIVE_PATH}/$image_name" ]
+        then
+            message "Load image: $commandstr"
+            sudo bash -c "eval $commandstr"
+            if [ "$?" -eq 0 ]
+            then
+                message "\tLOAD OK"
+            else
+                message "\tLOAD ERR"
+            fi
+        fi
+    else
+        message "Please add image name for first parameter in\n $(ls -lt $IMAGE_ARCHIVE_PATH)"
+    fi
 }
 
 function run() {
-    local args="$*"
-    #TODO: add default volume and save container id
+    local args_list=("docker" "run")
+    local args_list+=($@)
+    local repo_name="rpitools"
+    local commandstr=""
+    for ((ei=0; ei<${#args_list[@]}; ei++))
+    do
+        local element="${args_list[$ei]}"
+        if [ "$element" == "run" ]
+        then
+            image_tag="${args_list[$((ei+1))]}"
+            commandstr+=" $element ${repo_name}:${image_tag}"
+            ei+=1
+        else
+            commandstr+="$element"
+        fi
+    done
 
-    message "Docker run: $args"
-    eval $args
+    message "Docker run: ${commandstr}"
+    eval ${commandstr}
+}
+
+function list() {
+    message "${LIGHT_GRAY}DOCKER LIST ALL CONTAINERS${NC}"
+    docker container list --all
+    message "${LIGHT_GRAY}DOCKER LIST IMAGES${NC}"
+    docker images
+    message "${LIGHT_GRAY}IMAGE ARCHIVE LIST${NC}"
+    ls -1 "$IMAGE_ARCHIVE_PATH"
 }
 
 function info() {
     echo -e "Docker containers host dir: $DOCKER_STORAGE_DIR"
     echo -e "Docker containers meta dir: $DOCKER_META_DIR"
-    echo -e "Dokcer containers image archive: $DOCKER_STORAGE_DIR/image_archive"
+    echo -e "Dokcer containers image archive: $IMAGE_ARCHIVE_PATH"
 }
 
 #########################################
