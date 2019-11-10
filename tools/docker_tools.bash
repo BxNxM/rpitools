@@ -197,9 +197,9 @@ function run() {
         then
             image_tag="${args_list[$((ei+1))]}"
             commandstr+=" $element ${repo_name}:${image_tag}"
-            ei+=1
+            ei=$((ei+1))
         else
-            commandstr+="$element"
+            commandstr+=" $element"
         fi
     done
 
@@ -207,13 +207,33 @@ function run() {
     eval ${commandstr}
 }
 
+function compose() {
+    local args_list=("sudo" "docker-compose")
+    local args_list+=($@)
+
+    message "Docker compose: ${args_list[*]}"
+    eval ${args_list[*]}
+}
+
 function list() {
     message "${LIGHT_GRAY}DOCKER LIST ALL CONTAINERS${NC}"
     docker container list --all
+    message "${LIGHT_GRAY}DOCKER CONTAINER STATS${NC}"
+    docker stats --no-stream --all
     message "${LIGHT_GRAY}DOCKER LIST IMAGES${NC}"
     docker images
     message "${LIGHT_GRAY}IMAGE ARCHIVE LIST${NC}"
     ls -1 "$IMAGE_ARCHIVE_PATH"
+}
+
+function purge() {
+    local args_list=($@)
+    for id in ${args_list[@]}
+    do
+        message "Docker stop and remove container: $id"
+        docker stop "$id"
+        docker rm "$id"
+    done
 }
 
 function info() {
