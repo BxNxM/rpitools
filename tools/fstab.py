@@ -2,6 +2,7 @@ import re
 import os
 import tempfile
 import shutil
+from datetime import datetime
 
 #http://man7.org/linux/man-pages/man5/fstab.5.html
 class FstabRecord():
@@ -193,6 +194,7 @@ class Fstab():
         os.close(fd)
         original_premissions = os.stat(self.getFilePath()).st_mode
         os.chmod(temp_path, original_premissions)
-        shutil.copy2(self.getFilePath(), self.getFilePath()+'.backup')
-        os.remove(self.getFilePath())
+        d = datetime.now()
+        timestamp = '{:%Y_%m_%d-%H_%M_%S.%f}'.format(d)
+        os.rename(self.getFilePath(), "{}.{}".format(self.getFilePath(), timestamp))
         os.rename(temp_path, self.getFilePath())
