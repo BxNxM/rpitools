@@ -196,5 +196,6 @@ class Fstab():
         os.chmod(temp_path, original_premissions)
         d = datetime.now()
         timestamp = '{:%Y_%m_%d-%H_%M_%S.%f}'.format(d)
-        os.rename(self.getFilePath(), "{}.{}".format(self.getFilePath(), timestamp))
+        backup = os.path.join(self.__dir_path__, '.{}.{}'.format(self.__file_name__, timestamp))
+        os.rename(self.getFilePath(), backup)
         os.rename(temp_path, self.getFilePath())
