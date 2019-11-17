@@ -12,7 +12,6 @@ class FstabRecord():
         self.mount_options = mount_options
         self.is_dumped = is_dumped
         self.filesystem_check_order = filesystem_check_order
-        self.__raw_string__ = None
 
     @classmethod
     def fromString(cls, raw_string):
