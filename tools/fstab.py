@@ -40,7 +40,7 @@ class FstabRecord():
             str(self.filesystem_check_order)
         ])
 
-    # The official field names are not so readable
+    # The official field names are not so readable, but we want to support the official names as well
     @property
     def remote(self):
        return self.fs_spec
@@ -95,6 +95,13 @@ class Fstab():
             'remote': {},
             'mount_target': {} 
         }
+        #Method aliases (to be able to use the official names as well)
+        self.getIndexByFsSpec = self.getIndexByRemote
+        self.getIndexByFsFile = self.getIndexByMountTarget
+        self.__insertRelativeToFsSpec__ = self.__insertRelativeToRemote__
+        self.__insertRelativeToFsFile__ = self.__insertRelativeToMountTarget__
+        self.insertAfterFsSpec = self.insertAfterRemote
+        self.insertAfterFsFile = self.insertAfterMountTarget
         with open(file_path) as file:
             for line in file:
                 line = line.rstrip()
@@ -148,6 +155,36 @@ class Fstab():
         if(isinstance(record, FstabRecord)):
             self.__index__['remote'][record.remote] = index
             self.__index__['mount_target'][record.mount_target] = index
+
+    def getIndexByRemote(self, remote):
+        return self.__index__['remote'][remote]
+
+    def getIndexByMountTarget(self, mount_target):
+        return self.__index__['mount_target'][mount_target]
+
+    def __insertRelativeToRemote__(self, remote, record, shift):
+        index = self.getIndexByRemote(remote) + shift
+        if(index < 0):
+            index = 0
+        self.insert(index, record)
+
+    def __insertRelativeToMountTarget__(self, mount_target, record, shift):
+        index = self.getIndexByMountTarget(mount_target) + shift
+        if(index < 0):
+            index = 0
+        self.insert(index, record)
+
+    def insertAfterRemote(self, remote, record):
+        self.__insertRelativeToRemote(remote, record, 1)
+
+    def insertAfterMountTarget(self, mount_target, record):
+        self.__insertRelativeToMountTarget__(mount_target, record, 1)
+
+    def insertBeforeRemote(self, remote, record):
+        self.__insertRelativeToRemote__(remote, record, 0)
+
+    def insertBeforeMountTarger(self, mount_target, record):
+        self.__insertRelativeToMountTarget__(mount_target, record, 0)
 
     def save(self):
         fd, temp_path = tempfile.mkstemp(prefix='.{}-'.format(self.__file_name__), dir=self.__dir_path__, text=True)
