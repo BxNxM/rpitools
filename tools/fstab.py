@@ -102,6 +102,8 @@ class Fstab():
         self.__insertRelativeToFsFile__ = self.__insertRelativeToMountTarget__
         self.insertAfterFsSpec = self.insertAfterRemote
         self.insertAfterFsFile = self.insertAfterMountTarget
+        self.deleteFsSpec = self.deleteRemote
+        self.deleteFsFile = self.deleteMountTarget
         with open(file_path) as file:
             for line in file:
                 line = line.rstrip()
@@ -205,6 +207,14 @@ class Fstab():
 
     def insertBeforeMountTarger(self, mount_target, record):
         self.__insertRelativeToMountTarget__(mount_target, record, 0)
+
+    def deleteRemote(self, remote):
+        index = self.getIndexByRemote(remote)
+        self.delete(index)
+
+    def deleteMountTarget(self, mount_target):
+        index = self.getIndexByMountTarget(mount_target)
+        self.delete(index)
 
     def save(self):
         fd, temp_path = tempfile.mkstemp(prefix='.{}-'.format(self.__file_name__), dir=self.__dir_path__, text=True)
