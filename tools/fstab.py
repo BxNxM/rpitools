@@ -147,14 +147,34 @@ class Fstab():
 
     def insert(self, index, record):
         record = self.__handleInputRecord(record)
+        self.__lines__.insert(index, record)
         for index_type in self.__index__.keys():
             for key, index_value in self.__index__[index_type].items():
                 if index_value >= index:
                     self.__index__[index_type][key]+=1
-        self.__lines__.insert(index, record)
         if(isinstance(record, FstabRecord)):
             self.__index__['remote'][record.remote] = index
             self.__index__['mount_target'][record.mount_target] = index
+
+    def delete(self, index):
+        del(self.__lines__[index])
+        delete_this = {}
+        for index_type in self.__index__.keys():
+            delete_this[index_type] = set()
+            for key, index_value in self.__index__[index_type].items():
+                if index_value > index:
+                    self.__index__[index_type][key]-=1
+                elif index_value == index:
+                    delete_this[index_type].add(key)
+        for index_type in delete_this.keys():
+            for key in delete_this[index_type]:
+                del(self.__index__[index_type][key])
+
+    def length(self):
+        return len(self.__lines__)
+
+    def getLineByIndex(self, index):
+        return self.__lines__[index]
 
     def getIndexByRemote(self, remote):
         return self.__index__['remote'][remote]
