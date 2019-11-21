@@ -159,7 +159,7 @@ class Fstab():
             self.__index__['mount_target'][record.mount_target] = index
 
     def delete(self, index):
-        del(self.__lines__[index])
+        record = self.__lines__.pop(index)
         delete_this = {}
         for index_type in self.__index__.keys():
             delete_this[index_type] = set()
@@ -171,6 +171,7 @@ class Fstab():
         for index_type in delete_this.keys():
             for key in delete_this[index_type]:
                 del(self.__index__[index_type][key])
+        return record
 
     def length(self):
         return len(self.__lines__)
@@ -210,11 +211,11 @@ class Fstab():
 
     def deleteRemote(self, remote):
         index = self.getIndexByRemote(remote)
-        self.delete(index)
+        return self.delete(index)
 
     def deleteMountTarget(self, mount_target):
         index = self.getIndexByMountTarget(mount_target)
-        self.delete(index)
+        return self.delete(index)
 
     def save(self):
         fd, temp_path = tempfile.mkstemp(prefix='.{}-'.format(self.__file_name__), dir=self.__dir_path__, text=True)
