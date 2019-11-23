@@ -173,6 +173,22 @@ class Fstab():
                 del(self.__index__[index_type][key])
         return record
 
+    def overwrite(self, index, record):
+        original_record = self.delete(index)
+        self.insert(index, record)
+        return original_record
+
+    def update(self, index, new_values):
+        if not isinstance(new_values, dict):
+            raise ValueError("'new_valkues' has to be a dictionary")
+        new_remote = new_values.get('remote', new_values.get('fs_spec', self.__lines__[index].remote))
+        new_mount_target = new_values.get('mount_target', new_values.get('fs_file', self.__lines__[index].mount_target))
+        new_filesystem_type = new_values.get('filesystem_type', new_values.get('fs_vfstype', self.__lines__[index].filesystem_type))
+        new_mount_options = new_values.get('mount_options', new_values.get('fs_mntops', self.__lines__[index].mount_options))
+        new_is_dumped = new_values.get('is_dumped', new_values.get('fs_freq', self.__lines__[index].is_dumped))
+        new_filesystem_check_order = new_values.get('filesystem_check_order', new_values.get('fs_passno', self.__lines__[index].filesystem_check_order))
+        return self.overwrite(index, FstabRecord(new_remote, new_mount_target, new_filesystem_type, new_mount_options, new_is_dumped, new_filesystem_check_order))
+
     def length(self):
         return len(self.__lines__)
 
