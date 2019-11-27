@@ -180,7 +180,7 @@ class Fstab():
 
     def update(self, index, new_values):
         if not isinstance(new_values, dict):
-            raise ValueError("'new_valkues' has to be a dictionary")
+            raise ValueError("'new_values' has to be a dictionary")
         new_remote = new_values.get('remote', new_values.get('fs_spec', self.__lines__[index].remote))
         new_mount_target = new_values.get('mount_target', new_values.get('fs_file', self.__lines__[index].mount_target))
         new_filesystem_type = new_values.get('filesystem_type', new_values.get('fs_vfstype', self.__lines__[index].filesystem_type))
