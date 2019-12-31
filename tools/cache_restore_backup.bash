@@ -61,6 +61,15 @@ function message() {
     fi
 }
 
+function backup_restre_file_progress_indicator() {
+    local rpitools_log_path="${REPOROOT}/cache/rpitools.log"
+    local msg="$*"
+
+    echo -en "\e[1A";
+    echo -e "\e[0K\r ${msg}"
+    echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ CACHE ]${NC} $msg" >> "$rpitools_log_path"
+}
+
 function cleanUP_cache() {
     local patch_blacklist=()
     for black in ${FILE_NAME_BLACKLIST[@]}
@@ -79,6 +88,7 @@ function cleanUP_cache() {
 
 function __backup() {
     message "=== ${PURPLE}BACKUP CACHE${NC} ==="
+    message "\tshow cached contnet with: cache_manager show\n"
     local PATH_ROOT="$REPOROOT"
     local from_path=""
     local to_path=""
@@ -95,7 +105,7 @@ function __backup() {
         fi
         if [ -e "$from_path" ]
         then
-            message "\t${PURPLE}EXPORT${NC} CACHE: $from_path -> $to_path"
+            backup_restre_file_progress_indicator "\t${PURPLE}EXPORT${NC} CACHE: $from_path -> $to_path"
             if [ ! -d "$basename_of_to_path"  ]
             then
                 message "\t - Create $basename_of_to_path basedir"
@@ -115,6 +125,7 @@ function __backup() {
 
 function __restore() {
     message "=== ${PURPLE}RESTORE CACHE${NC} ==="
+    message "\tshow cached contnet with: cache_manager show\n"
     cleanUP_cache
     local PATH_ROOT="$BACKUP_PATH"
     local from_path=""
@@ -131,7 +142,7 @@ function __restore() {
         if [ -e "$from_path" ]
         then
             basename_of_to_path="$(dirname $to_path)"
-            message "\t${PURPLE}RESTORE${NC} CACHE: $from_path -> $to_path"
+            backup_restre_file_progress_indicator "\t${PURPLE}RESTORE${NC} CACHE: $from_path -> $to_path"
             if [ ! -d "$basename_of_to_path"  ]
             then
                 message "\t - Create $basename_of_to_path basedir"
@@ -164,8 +175,8 @@ then
     then
         __show
     else
-        "Invalid input ${arg_list[0]}\nTry backup/restore/show"
+        message "Invalid input ${arg_list[0]}\n\tTry backup/restore/show"
     fi
 else
-    echo -e "AVAIBLE INPUTS: backup/restore\nthese are cache saving options for easier repo update"
+    message "AVAIBLE INPUTS: backup/restore/show\nthese are cache saving options for easier repo status maintenance."
 fi

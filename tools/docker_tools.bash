@@ -189,22 +189,21 @@ function run() {
     local args_list=("docker" "run")
     local args_list+=($@)
     local repo_name="rpitools"
+    local image_tag=${args_list[-1]}
     local commandstr=""
     for ((ei=0; ei<${#args_list[@]}; ei++))
     do
         local element="${args_list[$ei]}"
-        if [ "$element" == "run" ]
+        if [ "$element" == "$image_tag" ]
         then
-            image_tag="${args_list[$((ei+1))]}"
-            commandstr+=" $element ${repo_name}:${image_tag}"
-            ei=$((ei+1))
+            commandstr+=" ${repo_name}:${image_tag}"
         else
             commandstr+=" $element"
         fi
     done
 
     message "Docker run: ${commandstr}"
-    eval ${commandstr}
+    eval $commandstr
 }
 
 function compose() {
