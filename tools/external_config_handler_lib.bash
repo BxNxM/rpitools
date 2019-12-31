@@ -141,9 +141,12 @@ function patch_exit() {
 function archive_factory_backup() {
     # INPUT: from path, to_folder
     local from_path="$1"
-    local to_path="${2}$(basename $from_path).factory"
-    local final_path="${2}$(basename $from_path).final"
-    local final_template_path="${2}$(basename $from_path).finaltemplate"
+    local from_basename_path="$(echo $(basename $from_path) | sed 's|^\.||g')"             # remove first character if .
+    local to_path="${2}${from_basename_path}.factory"
+    local final_path="${2}${from_basename_path}.final"
+    local final_template_path="${2}${from_basename_path}.finaltemplate"
+    local data_path="${3}"
+    local data_path_bak="${4}"
 
     if [ -z "$from_path" ] || [ -z "$to_path" ]
     then
@@ -167,7 +170,7 @@ function archive_factory_backup() {
     fi
 
     # in case of final not exists - orig and stored factory setting sgould be the same
-    if [ ! -f ${final_path} ]
+    if [ ! -f "${final_path}" ]
     then
         local diff_factorys="$(diff -q $from_path $to_path)"
         if [ "$?" -ne 0 -o "$diff_factorys" != "" ]
@@ -175,6 +178,11 @@ function archive_factory_backup() {
             message "Factory and stored factory settings was changed, please modify manually: $diff_factorys"
             message "\tCheck stored and orig factory diffs:\n\tvimdiff $to_path $from_path"
             message "\tThen modify the finaltemplate:\n\tvimdiff $to_path $final_template_path"
+
+            # restore data files
+            rm -f "$data_path"
+            rm -f "$data_path_bak"
+
             patch_exit 2
         fi
     fi
@@ -316,12 +324,15 @@ function apply_patch() {
         patch_exit 2
     fi
 
-    diff -q "$orig_bak" ""$origin_file""
-    if [ "$?" -eq 0 ]
+    if [ ! -f "$orig_bak" ]
     then
-        message "CONFIG WAS NOT MODIFIED"
-    else
-        message "CONFIG WAS MODIFIED"
+        diff -q "$orig_bak" ""$origin_file""
+        if [ "$?" -eq 0 ]
+        then
+            message "CONFIG WAS NOT MODIFIED"
+        else
+            message "CONFIG WAS MODIFIED"
+        fi
     fi
 }
 
@@ -340,9 +351,15 @@ function patch_workflow() {
     message "############################"
     message "# [1] SAVE FACTORY CONFIG  #"
     message "############################"
-    archive_factory_backup "$factory_config_path" "$local_config_dir_path"
+    archive_factory_backup "$factory_config_path" "$local_config_dir_path" "$data_path" "$data_path_bak"
 
-    if [ "$(diff -q $data_path $data_path_bak)" != "" ]
+    local data_change="something"
+    if [ -f "$data_path_bak" ]
+    then
+        data_change="$(diff -q $data_path $data_path_bak)"
+    fi
+
+    if [ "$data_change" != "" ]
     then
         # Create .final
         message "############################"

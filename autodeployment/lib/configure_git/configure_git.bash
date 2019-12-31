@@ -1,7 +1,6 @@
 #!/bin/bash
 
 MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-GITALISES_PATH="${MYDIR}/config/gitconfig.add"
 GITCONFIG_PATH="$HOME/.gitconfig"
 
 # RPIENV SETUP (BASH)
@@ -28,34 +27,42 @@ CACHE_PATH_is_set="$REPOROOT/cache/.git_configure_is_done"
 source "${MYDIR}/../message.bash"
 _msg_title="GIT SETUP"
 
-git_mail="$($CONFIGHANDLER -s MYGIT -o git_username)"
-git_name="$($CONFIGHANDLER -s MYGIT -o git_mail)"
+git_mail="$($CONFIGHANDLER -s MYGIT -o git_mail)"
+git_name="$($CONFIGHANDLER -s MYGIT -o git_username)"
 git_set_action="$($CONFIGHANDLER -s MYGIT -o activate)"
 
-
-function add_git_aliases() {
-    if [ "$(cat $GITCONFIG_PATH | grep 'alias')" == "" ]
+# =============================================================== #
+#                          SERVER SETUP                           #
+# =============================================================== #
+function smart_config_patch() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/gitconfig.data" "init" "{MAIL}" "$git_mail"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/gitconfig.data" "add" "{NAME}" "$git_name"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$GITCONFIG_PATH" "$MYDIR/config/" "gitconfig.finaltemplate" "gitconfig.data" "gitconfig.final" "gitconfig.patch"
+    local exitcode="$?"
+    if [ "$exitcode" -eq 255 ]
     then
-        _msg_ "Add git aliases"
-        cat "$GITALISES_PATH" >> "$GITCONFIG_PATH"
-    else
-        _msg_ "Git aliases was already added"
+        skip_actions=true
     fi
 }
 
 if [ "$git_set_action" == "True" ] || [ "$git_set_action" == "true" ]
 then
     _msg_ "SET MAIL ADDRESS: git config --global user.email ${git_mail}"
-    git config --global user.email "${git_mail}"
-    exit_code_mail="$?"
     _msg_ "SET USERNAME: git config --global user.name ${git_name}"
-    git config --global user.name "${git_name}"
-    exit_code_name="$?"
-    add_git_aliases
-    if [ "$exit_code_mail" == 0 ] && [ "$exit_code_name" == 0 ]
+
+    # WORKAROUND - no default config for git - store default as gitconfig.factory
+    if [ ! -f "$GITCONFIG_PATH" ]
     then
-        echo -e "$(date)" > "$CACHE_PATH_is_set"
+        cp "$MYDIR/config/gitconfig.factory" "$GITCONFIG_PATH"
     fi
+
+    smart_config_patch
+    cp "$MYDIR/config/gitconfig.final" "$GITCONFIG_PATH"
+    if [ ! -f "$GITCONFIG_PATH" ]
+    then
+        _msg_ "$GITCONFIG_PATH set failed!"
+    fi
+
 else
     _msg_ "GIT SETUP NOT REQUESTED"
 fi

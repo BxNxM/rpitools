@@ -1,3 +1,6 @@
+[user]
+  email = {MAIL}
+  name = {NAME}
 
 [alias]
   co = checkout
