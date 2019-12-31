@@ -167,6 +167,8 @@ if [ "$arg_len" == 1 ]
 then
     if [ "${arg_list[0]}" == "backup" ]
     then
+        message "=== PREPARE BACKUP: ${CLEANUP_RPITOOLS}"
+        "${CLEANUP_RPITOOLS}" > /dev/null       # clean up obsolete logs, for better system performance
         __backup
     elif [ "${arg_list[0]}" == "restore" ]
     then
@@ -174,9 +176,12 @@ then
     elif [ "${arg_list[0]}" == "show" ]
     then
         __show
+    elif [ "${arg_list[0]}" == "cleanup" ]
+    then
+        "${CLEANUP_RPITOOLS}"
     else
-        message "Invalid input ${arg_list[0]}\n\tTry backup/restore/show"
+        message "Invalid input ${arg_list[0]}\n\tTry backup | restore | show | cleanup"
     fi
 else
-    message "AVAIBLE INPUTS: backup/restore/show\nthese are cache saving options for easier repo status maintenance."
+    message "AVAIBLE INPUTS: backup | restore | show | cleanup\nThese are cache saving options for easier repo status maintenance."
 fi

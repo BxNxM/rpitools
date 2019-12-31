@@ -1,0 +1,2 @@
+SCRIPT="clear_logs.bash"
+PROP=("alias" "env")
