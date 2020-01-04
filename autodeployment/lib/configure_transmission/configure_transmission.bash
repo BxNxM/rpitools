@@ -22,6 +22,7 @@ fi
 source "$TERMINALCOLORS"
 
 CACHE_PATH_is_set="$REPOROOT/cache/.transmission_configure_is_done"
+skip_actions=false
 
 source "${MYDIR}/../message.bash"
 _msg_title="TRANSMISSION SETUP"
@@ -32,48 +33,27 @@ download_path="$($CONFIGHANDLER -s TRANSMISSION -o download_path)"
 incomp_download_path="$($CONFIGHANDLER -s TRANSMISSION -o incomp_download_path)"
 username="$($CONFIGHANDLER -s TRANSMISSION -o username)"
 passwd="$($CONFIGHANDLER -s TRANSMISSION -o passwd)"
+AUTH_REQUIRED=true
+RPC_ENABLED=true
+HOST_WHITELIST_ENABLED=true
+PORT=9091
+RPC_WHITELIST='127.0.0.1, 10.0.1.*, 192.168.0.*'
 
-function create_official_setup_backup() {
-    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$transmission_conf_path" "${MYDIR}/config/"
-}
-create_official_setup_backup
-
-function change_parameter() {
-    local from="$1"
-    local to="$2"
-    local where="$3"
-    if [ ! -z "$from" ]
+function smart_config_patch() {
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "init" "{DOWNLOAD_DIR}" "$download_path"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{INCOMPLETE_DIR}" "$incomp_download_path"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{USER}" "$username"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{PASSWORD}" "$passwd"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{AUTH_REQUIRED}" "$AUTH_REQUIRED"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{RPC_ENABLED}" "$RPC_ENABLED"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{HOST_WHITELIST_ENABLED}" "$HOST_WHITELIST_ENABLED"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{PORT}" "$PORT"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/settings.json.data" "add" "{RPC_WHITELIST}" "${RPC_WHITELIST}"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$transmission_conf_path" "$MYDIR/config/" "settings.json.finaltemplate" "settings.json.data" "settings.json.final" "settings.json.patch"
+    local exitcode="$?"
+    if [ "$exitcode" -eq 255 ]
     then
-        is_set="$(sudo cat "$where" | grep -v grep | grep "$to")"
-        _msg_ "sudo cat $where | grep -v grep | grep $to\nis_set: $is_set"
-        _msg_ "$is_set"
-        if [ "$is_set" == "" ]
-        then
-            _msg_ "${GREEN}Set parameter: $to  (from: $from) ${NC}"
-            sudo sed -i 's|'"${from}"'|'"${to}"'|g' "$where"
-        else
-            _msg_ "${GREEN}Custom parameter $to already set in $where ${NC}"
-        fi
-    fi
-}
-
-function change_line() {
-    local from="$1"
-    local to="$2"
-    local where="$3"
-    if [ ! -z "$from" ]
-    then
-        _msg_ "sudo cat $where | grep -v grep | grep $to\nis_set: $is_set"
-        is_set="$(sudo cat "$where" | grep -v grep | grep "$to")"
-        _msg_ "$is_set"
-        if [ "$is_set" == "" ]
-        then
-            _msg_ "${GREEN}Set parameter (full line): $to  (from: $from) ${NC}"
-            #sudo sed -i 's|'"${from}"'\c|'"${to}"'|g' "$where"
-            sudo sed -i '/'"${from}"'/c\'"${to}"'' "$where"
-        else
-            _msg_ "${GREEN}Custom config line $to already set in $where ${NC}"
-        fi
+        skip_actions=true
     fi
 }
 
@@ -106,31 +86,13 @@ function create_transmission_folders() {
 }
 
 function configure_transmission() {
-    if [ ! -e "$CACHE_PATH_is_set" ] && [ -d "${download_path}" ] && [ -d "${incomp_download_path}" ]
+    # make usermod
+    sudo usermod -a -G debian-transmission "$USER"
+
+    smart_config_patch
+
+    if [ "$skip_actions" != "true" ]
     then
-        # make usermod
-        sudo usermod -a -G debian-transmission "$USER"
-
-        _msg_ "SET DOWNLOADS FOLDER: $download_path IN: $transmission_conf_path"
-        #change_parameter "/var/lib/transmission-daemon/downloads" "$download_path" "$transmission_conf_path"
-        change_line "download-dir" "    \"download-dir\": \"${download_path}\"," "$transmission_conf_path"
-
-        _msg_ "SET INCOMP DOWNLOADS FOLDER: $incomp_download_path IN: $transmission_conf_path"
-        #change_parameter "/var/lib/transmission-daemon/Downloads" "$incomp_download_path" "$transmission_conf_path"
-        change_line "incomplete-dir" "    \"incomplete-dir\": \"$incomp_download_path\"," "$transmission_conf_path"
-        change_parameter "\"incomplete-dir-enabled\": false" "\"incomplete-dir-enabled\": true" "$transmission_conf_path"
-
-        _msg_ "SET USERNAME TO: $username (FROM transmission)"
-        #change_parameter "\"rpc-username\": \"transmission\"" "\"rpc-username\": \"${username}\"" "$transmission_conf_path"
-        change_line "rpc-username" "    \"rpc-username\": \"${username}\"," "$transmission_conf_path"
-
-        _msg_ "SET PASSWORD TO: $passwd"
-        change_line "rpc-password" "    \"rpc-password\": \""$passwd"\"," "$transmission_conf_path"
-
-        _msg_ "SET WHITELIST:"
-        "rpc-whitelist": "127.0.0.1",
-        change_line "\"rpc-whitelist\": \"127.0.0.1\"," "    \"rpc-whitelist\": \"127.0.0.1, 10.0.1.*, 192.168.0.*\"," "$transmission_conf_path"
-
         echo "" > "$CACHE_PATH_is_set"
 
         _msg_ "Reload transmission: sudo service transmission-daemon reload"
