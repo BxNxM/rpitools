@@ -21,7 +21,7 @@
     "idle-seeding-limit": 30,
     "idle-seeding-limit-enabled": false,
     "incomplete-dir": "/media/PIHDD/SharedSpace/Transmission/inc_downloads",
-    "incomplete-dir": "/media/PIHDD/SharedSpace/Transmission/inc_downloads",
+    "incomplete-dir-enabled": true,
     "lpd-enabled": false,
     "max-peers-global": 200,
     "message-level": 1,

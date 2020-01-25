@@ -177,7 +177,7 @@ function archive_factory_backup() {
         if [ "$?" -ne 0 -o "$diff_factorys" != "" ]
         then
             message "Factory and stored factory settings was changed, please modify manually: $diff_factorys"
-            message "\tCheck stored and orig factory diffs:\n\tvimdiff $to_path $from_path"
+            message "\tCheck stored and orig factory diffs:\n\t${YELLOW}RESOLVE${NC} vimdiff $to_path $from_path"
             message "\tThen modify the finaltemplate:\n\tvimdiff $to_path $final_template_path"
 
             # restore data files
@@ -215,11 +215,11 @@ function create_data_file() {
         if [ ! -z "$value" -a "$value" == "None" ]
         then
             message "placehodler: [$placeholder] or value: [$value] missing -> ${REMOVE_LINE_DEFAULT_MARKER}"
-            message "\t[WARNING] placeholder line will be remove automatically."
+            message "\t[${YELLOW}WARNING${NC}] placeholder line will be remove automatically."
             value="${REMOVE_LINE_DEFAULT_MARKER}"
         elif [ -z "$value" ]
         then
-            message "[!!!] placehodler: [$placeholder] or value: [$value] missing!"
+            message "[${RED}CRITICAL${NC}] placehodler: [$placeholder] or value: [$value] missing!"
             patch_exit 1
         fi
     fi
