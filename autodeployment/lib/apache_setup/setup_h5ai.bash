@@ -69,12 +69,13 @@ function copy_h5ai_to() {
 
 function generate_htaccess() {
     local h5ai_path="$1"
-    local htaccess_content="DirectoryIndex  index.html  index.php /${h5ai_path}/_h5ai/public/index.php"
+    local htaccess_content="DirectoryIndex index.html index.php /${h5ai_path}/_h5ai/public/index.php"
     local full_htaccess_path="${html_folder_path}/${h5ai_path}/.htaccess"
-    grep -i "${htaccess_content}" "$full_htaccess_path"
-    if [ "$?" -ne 0 ]
+    local is_exists="$(sudo bash -c "grep '${htaccess_content}' $full_htaccess_path")"
+    #echo -e "\t\tgrep '${htaccess_content}' $full_htaccess_path\n\t\t$is_exists"
+    if [ "$is_exists" == "" ]
     then
-        _msg_ "add $htaccess_content to .htaccess"
+        _msg_ "Add $htaccess_content to .htaccess"
         sudo bash -c "echo -e ${htaccess_content} >> ${full_htaccess_path}"
         restart_required=$((restart_required+1))
     else
