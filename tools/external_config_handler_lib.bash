@@ -6,6 +6,7 @@ MYDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 AV_FUNCTIONS=""
 FUNCTIONS_BLACKLIST=("validate_execute_function" "message" "change_parameter_in_file" "patch_exit")
 PATCH_EXIT_CODE=0
+REMOVE_LINE_DEFAULT_MARKER="{RPI_REMOVE_LINE}"
 # EXITCODES:
 #       INPUT ERROR: 1
 #       EXEC ERROR: 2
@@ -22,7 +23,7 @@ PATCH_EXIT_CODE=0
 # GENERATED
 # .data                 - data for fill placeholders: syntax: {placeholder_name}=value
 # .final                - .finaltemplate filled placeholders
-# .finalpatch           - .final + .factory diff
+# .patch                - .final + .factory diff
 
 # ACTION: execute .finalpatch on original factory settings
 #################################
@@ -53,8 +54,8 @@ function message() {
     local msg="$1"
     if [ ! -z "$msg" ]
     then
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ EXT CONF HANDLER LIB ]${NC} $msg"
-        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${PURPLE}[ EXT CONF HANDLER LIB ]${NC} $msg" >> "$rpitools_log_path"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${DARK_GRAY}[ EXT CONF HANDLER LIB ]${NC} $msg"
+        echo -e "$(date '+%Y.%m.%d %H:%M:%S') ${DARK_GRAY}[ EXT CONF HANDLER LIB ]${NC} $msg" >> "$rpitools_log_path"
     fi
 }
 
@@ -89,9 +90,9 @@ function validate_execute_function() {
 
     if [[ "$AV_FUNCTIONS" == *"$function_exec"* ]]
     then
-        message "${GREEN}VALID${NC}: $function_exec"
+        message "${GREEN}CMD${NC}: $function_exec"
     else
-        message "${RED}INVALID${NC}: $function_exec"
+        message "${RED}INVALID CMD${NC}: $function_exec"
         exit 2
     fi
 }
@@ -208,17 +209,29 @@ function create_data_file() {
         patch_exit 1
     fi
 
-    if [ -z "$placeholder" -o -z "$value" ]
+
+    if [ -z "$placeholder" -o "$placeholder" != "" ]
     then
-        message "placehodler: [$placeholder] or value: [$value] missing"
-        patch_exit 1
+        if [ ! -z "$value" -a "$value" == "None" ]
+        then
+            message "placehodler: [$placeholder] or value: [$value] missing -> ${REMOVE_LINE_DEFAULT_MARKER}"
+            message "\t[WARNING] placeholder line will be remove automatically."
+            value="${REMOVE_LINE_DEFAULT_MARKER}"
+        elif [ -z "$value" ]
+        then
+            message "[!!!] placehodler: [$placeholder] or value: [$value] missing!"
+            patch_exit 1
+        fi
     fi
 
     message "Create data file fregment: [$mode] ${placeholder}=${value} -> $data_file_path"
 
     if [ "$mode" == "init" ]
     then
-        cp -f "$data_file_path" "${data_file_path}.bak"
+        if [ -f "$data_file_path" ]
+        then
+            cp -f "$data_file_path" "${data_file_path}.bak"
+        fi
         echo "${placeholder}=${value}" > "$data_file_path"
     else
         echo "${placeholder}=${value}" >> "$data_file_path"
@@ -336,6 +349,48 @@ function apply_patch() {
     fi
 }
 
+function remove_unfilled_ph_lines() {
+    local remove_in_file_path="$1"
+
+    if [ ! -f "$remove_in_file_path" ]
+    then
+        message "(1) remove_in_file_path [$remove_in_file_path] input parameter/path not exists!"
+        patch_exit 1
+    fi
+
+    message "Remove lines with $REMOVE_LINE_DEFAULT_MARKER placeholder in $remove_in_file_path"
+    cp "$remove_in_file_path" "/tmp/__$(basename $remove_in_file_path)"
+    sed -i "/$REMOVE_LINE_DEFAULT_MARKER/d" "$remove_in_file_path"
+    diff -u "/tmp/__$(basename $remove_in_file_path)" "$remove_in_file_path"
+}
+
+function reset_configdir() {
+    local config_dir="$1"
+    local extension_to_remove=(".data" ".final" ".patch")
+    local extension=""
+    local remove_file=""
+    local file=""
+
+    if [ ! -d "$config_dir" ]
+    then
+        message "(1) missing parameter: config_dir"
+        patch_exit 1
+    fi
+
+    for extension in ${extension_to_remove[@]}
+    do
+        remove_file=($(find $config_dir -type f -iname "*$extension" ))
+        for file in ${remove_file[@]}
+        do
+            if [ -f "$file" ]
+            then
+                message "Remove: $remove_file"
+                rm -f "$remove_file"
+            fi
+        done
+    done
+}
+
 function patch_workflow() {
     local factory_config_path="$1"
     local local_config_dir_path="$2"
@@ -366,6 +421,8 @@ function patch_workflow() {
         message "# [2] CREATE FINAL CONFIG  #"
         message "############################"
         create_final "${local_config_dir_path}/$final_template_name" "${local_config_dir_path}/$data_name"
+        message "## PLACEHOLDER AUTOREMOVE ##"
+        remove_unfilled_ph_lines "${local_config_dir_path}/$final_config_name"
 
         # Create patch
         message "############################"

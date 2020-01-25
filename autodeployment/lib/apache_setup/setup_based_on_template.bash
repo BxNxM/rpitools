@@ -42,6 +42,7 @@ motion_video_stream_is_activated="$($CONFIGHANDLER -s APACHE_MOTION_STREAM_FORWA
 motion_video_stream_proxy_point="$($CONFIGHANDLER -s APACHE_MOTION_STREAM_FORWARDING -o proxy_point)"
 apache2_conf_path="/etc/apache2/apache2.conf"
 apache2_sites_available_000_default_conf_path="/etc/apache2/sites-available/000-default.conf"
+skip_actions=false
 
 # SET APACHE ENVIRONMENT PATH FILE FOROTHER SOURCE FILES LIKE MOTION...
 export_env="export APACHE_WEBSHARED_ROOT_FOLDER=${apache_webshared_root_folder}\n"
@@ -53,12 +54,6 @@ echo -e "${export_env}" > ${MYDIR}/apache.env
 source "${MYDIR}/../message.bash"
 _msg_title="APACHE SETUP"
 
-function create_official_setup_backup() {
-    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$apache2_conf_path" "${MYDIR}/config/"
-    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$apache2_sites_available_000_default_conf_path" "${MYDIR}/config/"
-}
-create_official_setup_backup
-
 if [ "$arg_len" -eq 1 ]
 then
     if [ "$arg" == "-f" ] || [ "$arg" == "-force" ]
@@ -67,6 +62,86 @@ then
         force="True"
     fi
 fi
+
+function smart_config_patch() {
+    local transmission_enabled="True"
+    local glances_enabled="True"
+    local motion_enabled="$motion_video_stream_is_activated"
+
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "init" "{HTML_ROOT_DIR}" "$html_folder_path"
+
+    # TRANSMISSION SETUP
+    if [ "$transmission_enabled" == "True" -o "$transmission_enabled" == "true" ]
+    then
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{TRANSMISSION_SUBDOMAIN}" "/transmission"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{TRANSMISSION_LOCAL_PORT}" "9091"
+    else
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{TRANSMISSION_SUBDOMAIN}" "None"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{TRANSMISSION_LOCAL_PORT}" "None"
+    fi
+
+    # GLANCES SETUP
+    if [ "$glances_enabled" == "True" -o "$glances_enabled" == "true" ]
+    then
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{GLANCES_SUBDOMAIN}" "/glances"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{GLANCES_PORT}" "61208"
+    else
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{GLANCES_SUBDOMAIN}" "None"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{GLANCES_PORT}" "None"
+    fi
+
+    # MOTION SETUP
+    if [ "$motion_enabled" == "True" -o "$motion_enabled" == "true" ]
+    then
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{MOTION_SUBDOMAIN}" "$motion_video_stream_proxy_point"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{MOTION_URL}" "http://impimonitor.local"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{MOTION_PORT}" "12345"
+    else
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{MOTION_SUBDOMAIN}" "None"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{MOTION_URL}" "None"
+        "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_data_file" "$MYDIR/config/apache2.conf.data" "add" "{MOTION_PORT}" "None"
+    fi
+
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "patch_workflow" "$apache2_conf_path" "$MYDIR/config/" "apache2.conf.finaltemplate" "apache2.conf.data" "apache2.conf.final" "apache2.conf.patch"
+    local exitcode1="$?"
+
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "archive_factory_backup" "$apache2_sites_available_000_default_conf_path" "${MYDIR}/config/"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "create_patch" "${MYDIR}/config/000-default.conf.factory" "${MYDIR}/config/000-default.conf.final"
+    "${EXTERNAL_CONFIG_HANDLER_LIB}" "apply_patch" "$apache2_sites_available_000_default_conf_path" "${MYDIR}/config/000-default.conf.patch"
+    local exitcode2="$?"
+
+    if [ "$exitcode1" -eq 255 -o "$exitcode2" -eq  255 ]
+    then
+        skip_actions=true
+    fi
+}
+
+function apache_restart() {
+    if [ "$skip_actions" != "true" ]
+    then
+        _msg_ "Reload apache2: sudo /etc/init.d/apache2 force-reload"
+        sudo /etc/init.d/apache2 force-reload
+
+        _msg_ "Restart apache2: sudo systemctl restart apache2"
+        sudo systemctl restart apache2
+    fi
+}
+
+function generate_project_structure() {
+    folder="$REPOROOT"; tree "$folder" -T "RPITOOLS FILE STRUCURE" -H rpitools -C > "${MYDIR}/template/htmls/$(basename ${folder})_file_structure.html"; sed -i 's|href=".*"||g' "${MYDIR}/template/htmls/$(basename ${folder})_file_structure.html"
+}
+
+function copy_template_under_apache_html_folder() {
+
+    _msg_ "CLEAN: ${html_folder_path}"
+    sudo rm -rf ${html_folder_path}*
+
+    _msg_ "COPY: ${template_folder_path}* ${html_folder_path}"
+    sudo cp -rp ${template_folder_path}* "${html_folder_path}"
+
+    _msg_ "YOUR ${html_folder_path} CONTENT:"
+    ls -lrth "${html_folder_path}"
+}
 
 function change_line() {
     local from="$1"
@@ -87,18 +162,6 @@ function change_line() {
     fi
 }
 
-function copy_template_under_apache_html_folder() {
-
-    _msg_ "CLEAN: ${html_folder_path}"
-    sudo rm -rf ${html_folder_path}*
-
-    _msg_ "COPY: ${template_folder_path}* ${html_folder_path}"
-    sudo cp -rp ${template_folder_path}* "${html_folder_path}"
-
-    _msg_ "YOUR ${html_folder_path} CONTENT:"
-    ls -lrth "${html_folder_path}"
-}
-
 function link_html_folder_to_requested_path() {
     if [ ! -e "${html_folder_link_to}" ]
     then
@@ -109,30 +172,7 @@ function link_html_folder_to_requested_path() {
     fi
 }
 
-function set_shared_folder_password_protected() {
-    is_edited="$(grep -i '<Directory /var/www/html>' $apache2_conf_path)"
-    if [ "$?" -ne 0 ]
-    then
-        _msg_ "Configure $apache2_conf_path for custom rpitools shaerd folder."
-        apache2_config='# SHARED FODER FOR RPITOOLS APACHE\n'
-        apache2_config+='<Directory /var/www/html>\n'
-        apache2_config+='         Options Indexes Includes FollowSymLinks MultiViews\n'
-        apache2_config+='         # AllowOverride AuthConfig\n'
-        apache2_config+='         AllowOverride All\n'
-        apache2_config+='         Order allow,deny\n'
-        apache2_config+='         Allow from all\n'
-        apache2_config+='</Directory>\n'
-        sudo chmod go+rw "$apache2_conf_path"
-        echo -e "$apache2_config"
-        echo -e "$apache2_config" >> "$apache2_conf_path"
-        sudo chmod g-rw "$apache2_conf_path"
-
-        _msg_ "Reload apache2: sudo /etc/init.d/apache2 force-reload"
-        sudo /etc/init.d/apache2 force-reload
-    else
-        _msg_ "$apache2_conf_path already configured with <Directory /var/www/html>"
-    fi
-
+function set_htaccess_w_passwd_password_protection() {
     if [ ! -e "$HOME/.secure/" ]
     then
         _msg_ "Create password folder: mkdir -p $HOME/.secure/"
@@ -198,23 +238,6 @@ function set_embedded_transmission_access() {
         if [ "$?" -ne 0 ]; then echo -e "install failed"; exit 1; fi
         sudo a2enmod proxy_http
         if [ "$?" -ne 0 ]; then echo -e "install failed"; exit 1; fi
-
-        _msg_ "Configure $apache2_conf_path for embedded transmission access."
-        apache2_config='# ENABLE APACHE EMBEDDED TRANSMISSION ACCESS\n'
-        apache2_config+='ProxyRequests Off\n'
-        apache2_config+='<Proxy *>\n'
-        apache2_config+='Order Allow,Deny\n'
-        apache2_config+='         Allow from all\n'
-        apache2_config+='</Proxy>\n'
-        apache2_config+='ProxyPass /transmission http://localhost:9091/transmission\n'
-        apache2_config+='ProxyPassReverse /transmission http://localhost:9091/transmission\n'
-        sudo chmod go+rw "$apache2_conf_path"
-        echo -e "$apache2_config"
-        echo -e "$apache2_config" >> "$apache2_conf_path"
-        sudo chmod g-rw "$apache2_conf_path"
-
-        _msg_ "Reload apache2: sudo /etc/init.d/apache2 force-reload"
-        sudo /etc/init.d/apache2 force-reload
     else
         _msg_ "$apache2_conf_path already configured ProxyPass /transmission"
     fi
@@ -233,27 +256,6 @@ function motion_stream_forwarding_apache_link_icon() {
     else
         _msg_ "Set motion stream forwarding icon link NOT required [ $is_activated ]"
         change_line "media\/webcam.png" "$index_html_motion_icon_placeholder" "$index_html_to_edit_path"
-    fi
-}
-
-function sites_enabled_000-defaultconf_patch() {
-    # https://www.thegeekstuff.com/2014/12/patch-command-examples/
-    local patch_file_path="${MYDIR}/patches/000-default_patch.conf"
-
-    # CREATE PATH FILE
-    #diff -u ORIGINAL FINAL > PATCH
-
-    (grep "ErrorDocument 404 /error.html" -rnwi "$apache2_sites_available_000_default_conf_path" > /dev/null)
-    if [ "$?" -ne 0 ]
-    then
-        _msg_ "APPLY PATH: sudo patch $apache2_sites_available_000_default_conf_path $patch_file_path"
-        # sudo patch OFFICIAL PATCH
-        sudo patch "$apache2_sites_available_000_default_conf_path" "$patch_file_path"
-
-        _msg_ "PATCH DONE [$?] restart apache2 service"
-        sudo systemctl restart apache2
-    else
-        _msg_ "$apache2_sites_available_000_default_conf_path already patched"
     fi
 }
 
@@ -317,13 +319,9 @@ function restore_backup_cloud_storage_content() {
 
 }
 
-function generate_project_structure() {
-    folder="$REPOROOT"; tree "$folder" -T "RPITOOLS FILE STRUCURE" -H rpitools -C > "${MYDIR}/template/htmls/$(basename ${folder})_file_structure.html"; sed -i 's|href=".*"||g' "${MYDIR}/template/htmls/$(basename ${folder})_file_structure.html"
-}
-
 function create_apache_default_website() {
+    # GENERATE APACHE CONTECT
     generate_project_structure
-
     link_html_folder_to_requested_path
     if [ ! -e "$CACHE_PATH_is_set" ] || [ "$force" == "True" ]
     then
@@ -334,14 +332,16 @@ function create_apache_default_website() {
 
         echo -e "$(date)" > "$CACHE_PATH_is_set"
         link_transmission_downloads_folder
-
-        sites_enabled_000-defaultconf_patch
     else
         _msg_ "HTML template copy already done: ${CACHE_PATH_is_set} exists."
     fi
-    set_shared_folder_password_protected
-    set_embedded_transmission_access
 
+    # HANDLE APACHE CONFIG AND ACCESSES
+    smart_config_patch
+    apache_restart
+
+    set_htaccess_w_passwd_password_protection
+    set_embedded_transmission_access
     motion_stream_forwarding_apache_link_icon
 
     . "${MYDIR}/setup_h5ai.bash"
